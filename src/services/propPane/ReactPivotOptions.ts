@@ -11,7 +11,7 @@ import {
 
   import { Pivot, IPivotStyles, PivotLinkSize, PivotLinkFormat } from 'office-ui-fabric-react/lib/Pivot';
   
-  import * as strings from 'DrilldownWebPartStrings';
+  import * as strings from 'Drilldown7WebPartStrings';
 
   export class PivotOptionsGroup {
 

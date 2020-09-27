@@ -14,14 +14,14 @@ import {
 
 import { PropertyFieldMultiSelect } from '@pnp/spfx-property-controls/lib/PropertyFieldMultiSelect';
 
-import * as strings from 'DrilldownWebPartStrings';
+import * as strings from 'Drilldown7WebPartStrings';
 import { pivotOptionsGroup} from './index';
 
-import * as links from '../../webparts/drilldown/components/HelpInfo/AllLinks';   //              { links.gitRepoDrilldownWebpart.issues }
+import * as links from '../../webparts/drilldown7/components/HelpInfo/AllLinks';   //              { links.gitRepoDrilldown7WebPart.issues }
 
-import { IDrilldownWebPartProps } from '../../webparts/drilldown/DrilldownWebPart';
+import { IDrilldown7WebPartProps } from '../../webparts/drilldown7/Drilldown7WebPart';
 
-import { refinerRuleItems } from '../../webparts/drilldown/components/IReUsableInterfaces';
+import { refinerRuleItems } from '../../webparts/drilldown7/components/IReUsableInterfaces';
 /*
 
   // 1 - Analytics options
@@ -74,7 +74,7 @@ import { refinerRuleItems } from '../../webparts/drilldown/components/IReUsableI
     */
 
 export class IntroPage {
-  public getPropertyPanePage(webPartProps: IDrilldownWebPartProps, _onClickUpdateTitles, _getListDefintions ): IPropertyPanePage {
+  public getPropertyPanePage(webPartProps: IDrilldown7WebPartProps, _onClickUpdateTitles, _getListDefintions ): IPropertyPanePage {
 
     let ruleChoices = refinerRuleItems();
     let showDisabled = false;
@@ -109,9 +109,9 @@ export class IntroPage {
             }),
 
             PropertyPaneLink('About Link' , {
-              text: 'Github Repo:  ' + links.gitRepoDrilldownWebpart.desc ,
-              href: links.gitRepoDrilldownWebpart.href,
-              target: links.gitRepoDrilldownWebpart.target,
+              text: 'Github Repo:  ' + links.gitRepoDrilldown7WebPart.desc ,
+              href: links.gitRepoDrilldown7WebPart.href,
+              target: links.gitRepoDrilldown7WebPart.target,
             }),
           ]
         },

@@ -6,7 +6,7 @@ import * as React from 'react';
 import { HoverCard, HoverCardType } from 'office-ui-fabric-react/lib/HoverCard';
 import { Icon  } from 'office-ui-fabric-react/lib/Icon';
 
-import styles from '../webparts/drilldown/components/Contents/listView.module.scss';
+import styles from '../webparts/drilldown7/components/Contents/listView.module.scss';
 
 import { ColoredLine, ProjectTitleElement, MyIcon } from './drawServices';
 

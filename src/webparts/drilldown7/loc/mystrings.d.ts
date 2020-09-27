@@ -1,4 +1,4 @@
-declare interface IDrilldownWebPartStrings {
+declare interface IDrilldown7WebPartStrings {
 
   // 0 - Context
   PropertyPaneDescription: string;
@@ -53,7 +53,7 @@ declare interface IDrilldownWebPartStrings {
   FieldLabel_PivOptions: string;
 }
 
-declare module 'DrilldownWebPartStrings' {
-  const strings: IDrilldownWebPartStrings;
+declare module 'Drilldown7WebPartStrings' {
+  const strings: IDrilldown7WebPartStrings;
   export = strings;
 }

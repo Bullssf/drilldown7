@@ -116,7 +116,7 @@ public constructor(props:IBasicsProps){
             thisPage =     <div className={styles.infoPane}>
 
             <h3>Please submit any issues or suggestions on github (requires free account)</h3>
-            { links.gitRepoDrilldownWebpart.issues }
+            { links.gitRepoDrilldown7WebPart.issues }
 
           </div>;
 

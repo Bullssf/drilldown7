@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import * as strings from 'DrilldownWebPartStrings';
+import * as strings from 'Drilldown7WebPartStrings';
 
 import { Link, ILinkProps } from 'office-ui-fabric-react';
 

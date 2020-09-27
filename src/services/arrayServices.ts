@@ -1,5 +1,5 @@
 
-import { ISeriesSort } from '../webparts/drilldown/components/IReUsableInterfaces';
+import { ISeriesSort } from '../webparts/drilldown7/components/IReUsableInterfaces';
 
 /**
  * This just takes an object, and returns a string of the Key and Value.
