@@ -11,7 +11,7 @@ import { MyFieldDef, changes, cBool, cCalcN, cCalcT, cChoice, cMChoice, cCurr, c
 
 import { IMyView, IViewField, Eq, Ne, Lt, Gt, Leq, Geq, IsNull, IsNotNull, Contains, MyOperator, BeginsWith } from './viewTypes';
 
-import { IMyProgress } from '../../webparts/drilldown/components/IReUsableInterfaces';
+import { IMyProgress } from '../../webparts/drilldown7/components/IReUsableInterfaces';
 
 import { IListInfo, IMyListInfo, IServiceLog, notify, getXMLObjectFromString } from './listTypes';
 

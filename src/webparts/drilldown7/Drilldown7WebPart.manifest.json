@@ -17,11 +17,11 @@
   "preconfiguredEntries": [{
     "groupId": "5c03119e-3074-46fd-976b-c60198311f70", // Other
     "group": { "default": "Other" },
-    "title": { "default": "Drilldown" },
-    "description": { "default": "Drilldown description" },
+    "title": { "default": "Drilldown7" },
+    "description": { "default": "Drilldown7 description" },
     "officeFabricIconFontName": "Page",
     "properties": {
-      "description": "Drilldown",
+      "description": "Drilldown7",
       "parentListTitle": "TrackMyTime",
       "refiner0": "Story",
       "refiner1": "Chapter",

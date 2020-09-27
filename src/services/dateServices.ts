@@ -1,6 +1,6 @@
 
 
-import { IUser} from '../webparts/drilldown/components/IReUsableInterfaces';
+import { IUser} from '../webparts/drilldown7/components/IReUsableInterfaces';
 
 export const msPerMin = 60000;
 export const msPerHr = 3600000;

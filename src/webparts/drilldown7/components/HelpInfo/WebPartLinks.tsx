@@ -118,9 +118,9 @@ public constructor(props:IWebPartLinksProps){
                     { links.createLink(this.props.childListURL,'_blank', this.props.childListName ) }
                     <div></div>
                     <div><b>Webpart info on Github:</b></div>
-                    { links.gitRepoDrilldownWebpart.repo }
-                    { links.gitRepoDrilldownWebpart.issues }
-                    { links.gitRepoDrilldownWebpart.wiki }
+                    { links.gitRepoDrilldown7WebPart.repo }
+                    { links.gitRepoDrilldown7WebPart.issues }
+                    { links.gitRepoDrilldown7WebPart.wiki }
                 </Stack>
 
             </div>;

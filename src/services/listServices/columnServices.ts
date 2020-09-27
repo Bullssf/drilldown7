@@ -22,7 +22,7 @@ import { IListInfo, IMyListInfo, IServiceLog, notify } from './listTypes';
 
 import { getHelpfullError } from '../ErrorHandler';
 
-import { IMyProgress } from '../../webparts/drilldown/components/IReUsableInterfaces';
+import { IMyProgress } from '../../webparts/drilldown7/components/IReUsableInterfaces';
 
 
 import "@pnp/sp/webs";
