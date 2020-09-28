@@ -653,11 +653,16 @@ public componentDidUpdate(prevProps){
                 let drillPivots1 = showRefiner1 ? this.createPivotObject(this.state.searchMeta[1], '', 1) : null;
                 let drillPivots2 = showRefiner2 ?  this.createPivotObject(this.state.searchMeta[2], '', 2) : null;
 
+
                 if ( showRefiner0 ) { refinersObjects.push( drillPivots0 ) ; }
                 if ( showRefiner1 ) { refinersObjects.push( drillPivots1 ) ; }
                 if ( showRefiner2 ) { refinersObjects.push( drillPivots2 ) ; }
 
             } else if ( this.state.style === 'commandBar' ) {
+
+                let pinCmd1 = createIconButton('Pin','Pin ' + this.state.refiners[1] + ' to top',this.changeRefinerOrder1.bind(this), null, null );
+                let pinCmd2 = createIconButton('Pin','Pin ' + this.state.refiners[2] + ' to top',this.changeRefinerOrder2.bind(this), null, null );
+                let pinSpanStyle = { paddingLeft: '8px', height: '0px' } ;
 
                 thisIsRefiner0 = showRefiner0 ? <div><ResizeGroupOverflowSetExample
                     items={ this.state.cmdCats[0] }
@@ -668,23 +673,23 @@ public componentDidUpdate(prevProps){
                     regroupKey = { this.state.cmdCats.length === 0 ? 'showRefiner0' : this.state.cmdCats[0].map( i => { return i.name;  }).join('|||') }
                 ></ResizeGroupOverflowSetExample></div> : null;
 
-                thisIsRefiner1 = showRefiner1 ?  <div><ResizeGroupOverflowSetExample
+                thisIsRefiner1 = showRefiner1 ?  <div style={{ display: 'inline-block', width: '100%' }}><div style={ pinSpanStyle }>{pinCmd1}</div><div style={{ marginLeft: '40px', left: '0px'}}><ResizeGroupOverflowSetExample
                     items={ this.state.cmdCats[1] }
                     cachingEnabled = { true }
                     checkedItem = { this.state.searchMeta[1] }
                     onClick = { this._onSearchForMetaCmd1.bind(this)}
                     showCatCounts = { this.state.showCatCounts }
                     regroupKey = { this.state.cmdCats.length === 0 ? 'showRefiner1' : this.state.cmdCats[1].map( i => { return i.name;  }).join('|||') }
-                ></ResizeGroupOverflowSetExample></div> : null;
+                ></ResizeGroupOverflowSetExample></div></div> : null;
 
-                thisIsRefiner2 = showRefiner2 ?  <div><ResizeGroupOverflowSetExample
+                thisIsRefiner2 = showRefiner2 ?  <div style={{ display: 'inline-block', width: '100%' }}><div style={ pinSpanStyle }>{pinCmd2}</div><div style={{ marginLeft: '40px', left: '0px'}}><ResizeGroupOverflowSetExample
                     items={ this.state.cmdCats[2] }
                     cachingEnabled = { true }
                     checkedItem = { this.state.searchMeta[2] }
                     onClick = { this._onSearchForMetaCmd2.bind(this)}
                     showCatCounts = { this.state.showCatCounts }
                     regroupKey = { this.state.cmdCats.length === 0 ? 'showRefiner2' : this.state.cmdCats[2].map( i => { return i.name;  }).join('|||') }
-                ></ResizeGroupOverflowSetExample></div> : null;
+                ></ResizeGroupOverflowSetExample></div></div> : null;
 
                 if ( showRefiner0 ) { refinersObjects.push( thisIsRefiner0 ) ; }
                 if ( showRefiner1 ) { refinersObjects.push( thisIsRefiner1 ) ; }
@@ -1055,7 +1060,7 @@ public componentDidUpdate(prevProps){
     public _onSearchForMetaCmd0 = (item): void => {
         let e: any = event;
         let clickInfo = this.getClickInfo( e, item );
-        if ( clickInfo.isAltClick === true ) {
+        if ( clickInfo.isAltClick === '!Value' ) {
             this.changeRefinerOrder('refiner0', clickInfo.validText ) ;
         } else {
             this.searchForItems( this.state.searchText, [clickInfo.validText], 0, 'meta' );
@@ -1069,7 +1074,7 @@ public componentDidUpdate(prevProps){
     public _onSearchForMetaCmd1= (item): void => {
         let e: any = event;
         let clickInfo = this.getClickInfo( e, item );
-        if ( clickInfo.isAltClick === true ) {
+        if ( clickInfo.isAltClick === '!Value' ) {
             this.changeRefinerOrder('refiner1', clickInfo.validText ) ;
         } else {
             this._onSearchForMeta1(clickInfo.validText);
@@ -1103,7 +1108,7 @@ public componentDidUpdate(prevProps){
     public _onSearchForMetaCmd2= (item): void => {
         let e: any = event;
         let clickInfo = this.getClickInfo( e, item );
-        if ( clickInfo.isAltClick === true ) {
+        if ( clickInfo.isAltClick === '!Value' ) {
             this.changeRefinerOrder('refiner2', clickInfo.validText ) ;
         } else {
             this._onSearchForMeta2(clickInfo.validText);
@@ -1130,6 +1135,8 @@ public componentDidUpdate(prevProps){
     this.searchForItems( this.state.searchText, newMeta, 2, 'meta' );
   }
 
+  private changeRefinerOrder1() {   this.changeRefinerOrder( 'refiner1', null );  }
+  private changeRefinerOrder2() {   this.changeRefinerOrder( 'refiner2', null );  }
   private changeRefinerOrder( newLeadRefiner: string, selectedItem: string ) {
 
     let refiners: string[] = [];
