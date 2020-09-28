@@ -51,7 +51,7 @@ import ReactListItems from './reactListView';
 
 //parentListFieldTitles
 
-import { getAllItems, buildRefinersObject } from './drillFunctions';
+import { getAllItems, buildRefinersObject, processAllItems } from './drillFunctions';
 
 import ResizeGroupOverflowSetExample from './refiners/commandBar';
 
@@ -188,7 +188,7 @@ export interface IDrillDownProps {
 
     // 6 - User Feedback:
     progress: IMyProgress;
-    
+
     rules: string;
     stats: string;
 
@@ -199,7 +199,7 @@ export interface IDrillDownProps {
     pivotFormat: string;
     pivotOptions: string;
     pivotTab: string;  //May not be needed because we have projectMasterPriority
-    
+
     /**
      * 2020-09-08:  Add for dynamic data refiners.   onRefiner0Selected  -- callback to update main web part dynamic data props.
      */
@@ -260,6 +260,8 @@ export interface IDrillDownState {
     WebpartHeight?:  number;    //Size courtesy of https://www.netwoven.com/2018/11/13/resizing-of-spfx-react-web-parts-in-different-scenarios/
     WebpartWidth?:   number;    //Size courtesy of https://www.netwoven.com/2018/11/13/resizing-of-spfx-react-web-parts-in-different-scenarios/
 
+    rules: string;
+    refiners: string[]; //String of Keys representing the static name of the column used for drill downs
     refinerObj: IRefinerLayer;
     showDisabled?: boolean;
 
@@ -361,7 +363,7 @@ export default class DrillDown extends React.Component<IDrillDownProps, IDrillDo
         return emptyRules;
     }
 
-    private buildSummaryCountCharts( title: string, refinerObj: IRefinerLayer , chartTypes: ICSSChartTypes[] ) {
+    private buildSummaryCountCharts( title: string, callBackID: string, refinerObj: IRefinerLayer , chartTypes: ICSSChartTypes[] ) {
         let resultSummary = null;
 
         let labels = refinerObj.childrenKeys ;
@@ -384,7 +386,7 @@ export default class DrillDown extends React.Component<IDrillDownProps, IDrillDo
             key: chartKey,
 
             stylesChart: { paddingBottom: 0, marginBottom: 0, marginTop: 0},
-            
+
         };
 //        console.log('2 Creating Chart data: ',labels );
 //        console.log('2 Creating Chart data: ',counts );
@@ -392,6 +394,8 @@ export default class DrillDown extends React.Component<IDrillDownProps, IDrillDo
         resultSummary = 
         <Cssreactbarchart 
             chartData = { [chartData] }
+            callBackID = { callBackID }
+            //onAltClick = { this.changeRefinerOrder.bind(this) }
         ></Cssreactbarchart>;
 
         return resultSummary;
@@ -473,6 +477,7 @@ export default class DrillDown extends React.Component<IDrillDownProps, IDrillDo
 
             progress: null,
 
+            rules: this.props.rules,
             refinerObj: {thisKey: '', childrenKeys: this.props.refiners, childrenObjs: [], childrenCounts: [], childrenMultiCounts: [] , multiCount: 0, itemCount: 0 },
             showDisabled: this.props.showDisabled ? this.props.showDisabled : false,
 
@@ -480,6 +485,7 @@ export default class DrillDown extends React.Component<IDrillDownProps, IDrillDo
             cmdCats: [],
 
             groupByFields : [],
+            refiners: this.props.refiners,
 
             style: this.props.style ? this.props.style : 'commandBar',
 
@@ -657,8 +663,9 @@ public componentDidUpdate(prevProps){
                     items={ this.state.cmdCats[0] }
                     cachingEnabled = { true }
                     checkedItem = { this.state.searchMeta[0] }
-                    onClick = { this._onSearchForMetaCmd0.bind(this)}
+                    onClick = { this._onSearchForMetaCmd0.bind(this) }
                     showCatCounts = { this.state.showCatCounts }
+                    regroupKey = { this.state.cmdCats.length === 0 ? 'showRefiner0' : this.state.cmdCats[0].map( i => { return i.name;  }).join('|||') }
                 ></ResizeGroupOverflowSetExample></div> : null;
 
                 thisIsRefiner1 = showRefiner1 ?  <div><ResizeGroupOverflowSetExample
@@ -667,6 +674,7 @@ public componentDidUpdate(prevProps){
                     checkedItem = { this.state.searchMeta[1] }
                     onClick = { this._onSearchForMetaCmd1.bind(this)}
                     showCatCounts = { this.state.showCatCounts }
+                    regroupKey = { this.state.cmdCats.length === 0 ? 'showRefiner1' : this.state.cmdCats[1].map( i => { return i.name;  }).join('|||') }
                 ></ResizeGroupOverflowSetExample></div> : null;
 
                 thisIsRefiner2 = showRefiner2 ?  <div><ResizeGroupOverflowSetExample
@@ -675,6 +683,7 @@ public componentDidUpdate(prevProps){
                     checkedItem = { this.state.searchMeta[2] }
                     onClick = { this._onSearchForMetaCmd2.bind(this)}
                     showCatCounts = { this.state.showCatCounts }
+                    regroupKey = { this.state.cmdCats.length === 0 ? 'showRefiner2' : this.state.cmdCats[2].map( i => { return i.name;  }).join('|||') }
                 ></ResizeGroupOverflowSetExample></div> : null;
 
                 if ( showRefiner0 ) { refinersObjects.push( thisIsRefiner0 ) ; }
@@ -742,17 +751,17 @@ public componentDidUpdate(prevProps){
 
                 let summaryCharts = [];
                 if ( this.state.showSummary === true ) {
-                    summaryCharts.push( this.buildSummaryCountCharts( this.props.refiners[0], this.state.refinerObj, RefinerChartTypes ) );
+                    summaryCharts.push( this.buildSummaryCountCharts( this.state.refiners[0], 'refiner0' , this.state.refinerObj, RefinerChartTypes ) );
 
                     if ( this.state.searchMeta[0] !== 'All' ) {
 
                         let childIndex0 = this.state.refinerObj.childrenKeys.indexOf(this.state.searchMeta[0]);
-                        summaryCharts.push( this.buildSummaryCountCharts( this.props.refiners[1], this.state.refinerObj.childrenObjs[childIndex0], RefinerChartTypes ) );
+                        summaryCharts.push( this.buildSummaryCountCharts( this.state.refiners[1], 'refiner1' , this.state.refinerObj.childrenObjs[childIndex0], RefinerChartTypes ) );
 
                         if ( this.state.searchMeta.length > 1 && this.state.searchMeta[1] !== 'All' ) {
 
                             let childIndex1 = this.state.refinerObj.childrenObjs[childIndex0].childrenKeys.indexOf(this.state.searchMeta[1]);
-                            summaryCharts.push( this.buildSummaryCountCharts( this.props.refiners[2], this.state.refinerObj.childrenObjs[childIndex0].childrenObjs[childIndex1],  RefinerChartTypes ) );
+                            summaryCharts.push( this.buildSummaryCountCharts( this.state.refiners[2], 'refiner2' , this.state.refinerObj.childrenObjs[childIndex0].childrenObjs[childIndex1],  RefinerChartTypes ) );
 
                         }
 
@@ -843,7 +852,7 @@ public componentDidUpdate(prevProps){
                         { thisPage }
                 </div></div></div>
             );
-            
+
         } else {
             console.log('DrillDown.tsx return null');
             return (  <div className={ styles.contents }>
@@ -859,8 +868,8 @@ public componentDidUpdate(prevProps){
         /**
          * This is copied from constructor when you have to call the data in case something changed.
          */
-        let drillList = this.createDrillList(this.props.webURL, this.props.listName, false, this.props.refiners, this.props.rules, this.props.stats, '');
-        let errMessage = drillList.refinerRules === undefined ? 'Invalid Rule set: ' +  this.props.rules : '';
+        let drillList = this.createDrillList(this.props.webURL, this.props.listName, false, this.props.refiners, this.state.rules, this.props.stats, '');
+        let errMessage = drillList.refinerRules === undefined ? 'Invalid Rule set: ' +  this.state.rules : '';
         if ( drillList.refinerRules === undefined ) { drillList.refinerRules = [[],[],[]] ; } 
 
         let result : any = getAllItems( drillList, this.addTheseItemsToState.bind(this), this.setProgress.bind(this), null );
@@ -895,6 +904,8 @@ public componentDidUpdate(prevProps){
             pivotCats: pivotCats,
             cmdCats: cmdCats,
             drillList: drillList,
+            refiners: drillList.refiners,
+            rules: JSON.stringify(drillList.refinerRules),
         });
 
         //This is required so that the old list items are removed and it's re-rendered.
@@ -1021,13 +1032,34 @@ public componentDidUpdate(prevProps){
         this.searchForItems( this.state.searchText, [validText], 0, 'meta' );
     }
 
-    //This function works great for Pivots, not neccessarily anything with icons.
-    public _onSearchForMetaCmd0 = (item): void => {
+
+    private getClickInfo ( e , item ) {
+
         //This sends back the correct pivot category which matches the category on the tile.
         let validText = this.findMatchtingElementText( item );
         validText = this._getValidCountFromClickItem( item, validText );
 
-        this.searchForItems( this.state.searchText, [validText], 0, 'meta' );
+        let clickInfo = {
+            isAltClick : e.altKey,
+            isShfitClick : e.shiftKey,
+            isCtrlClick : e.ctrlKey,
+            validText : validText,
+        };
+
+        console.log('clickInfo:  ' , clickInfo );
+
+        return clickInfo;
+
+    }
+    //This function works great for Pivots, not neccessarily anything with icons.
+    public _onSearchForMetaCmd0 = (item): void => {
+        let e: any = event;
+        let clickInfo = this.getClickInfo( e, item );
+        if ( clickInfo.isAltClick === true ) {
+            this.changeRefinerOrder('refiner0', clickInfo.validText ) ;
+        } else {
+            this.searchForItems( this.state.searchText, [clickInfo.validText], 0, 'meta' );
+        }
     }
 
     public _onSearchForMetaPivot1= (item): void => {
@@ -1035,10 +1067,13 @@ public componentDidUpdate(prevProps){
     }
 
     public _onSearchForMetaCmd1= (item): void => {
-        let validText = this.findMatchtingElementText(item);
-        validText = this._getValidCountFromClickItem( item, validText );
-
-        this._onSearchForMeta1(validText);
+        let e: any = event;
+        let clickInfo = this.getClickInfo( e, item );
+        if ( clickInfo.isAltClick === true ) {
+            this.changeRefinerOrder('refiner1', clickInfo.validText ) ;
+        } else {
+            this._onSearchForMeta1(clickInfo.validText);
+        }
     }
 
     public _onSearchForMeta1 (validText) {
@@ -1047,17 +1082,17 @@ public componentDidUpdate(prevProps){
         //console.log('searchForItems: e',e);
         //console.log('searchForItems: item', item);
         //console.log('searchForItems: this', this);
-    
+
         //Be sure to pass item.props.itemKey to get filter value
         //let validText = this.findMatchtingElementText( this.state.refinerObj.childrenKeys , item);
-    
+
         let lastMeta = this.state.searchMeta;
         let newMeta : string[] = [];
         if ( lastMeta.length === 1 || lastMeta.length === 2 || lastMeta.length === 3 ) { 
             newMeta.push( lastMeta[0] );
             newMeta.push( validText ) ; 
         } else { alert('Had unexpected error in _onSearchForMeta1, lastMeta.length = ' + lastMeta.length); }
-    
+
         this.searchForItems( this.state.searchText, newMeta, 1, 'meta' );
       }
 
@@ -1066,10 +1101,13 @@ public componentDidUpdate(prevProps){
     }
 
     public _onSearchForMetaCmd2= (item): void => {
-        let validText = this.findMatchtingElementText(item);
-        validText = this._getValidCountFromClickItem( item, validText );
-
-        this._onSearchForMeta2(validText);
+        let e: any = event;
+        let clickInfo = this.getClickInfo( e, item );
+        if ( clickInfo.isAltClick === true ) {
+            this.changeRefinerOrder('refiner2', clickInfo.validText ) ;
+        } else {
+            this._onSearchForMeta2(clickInfo.validText);
+        }
     }
 
   public _onSearchForMeta2 = (validText): void => {
@@ -1092,6 +1130,34 @@ public componentDidUpdate(prevProps){
     this.searchForItems( this.state.searchText, newMeta, 2, 'meta' );
   }
 
+  private changeRefinerOrder( newLeadRefiner: string, selectedItem: string ) {
+
+    let refiners: string[] = [];
+    let refinersOrig: string[] = JSON.parse(JSON.stringify( this.state.refiners ));
+    let refinerRulesNew: IRefinerRules[][] = [];
+    let refinerRulesOrig: IRefinerRules[][] = JSON.parse(JSON.stringify( this.state.drillList.refinerRules ));
+
+    if ( newLeadRefiner === 'refiner0' ) {
+        [0,1,2].map( i => { refiners.push( refinersOrig[i] ); refinerRulesNew.push( refinerRulesOrig[i] ); });
+
+    } else if ( newLeadRefiner === 'refiner1' ) {
+        [1,0,2].map( i => { refiners.push( refinersOrig[i] ); refinerRulesNew.push( refinerRulesOrig[i] ); });
+
+    } else if ( newLeadRefiner === 'refiner2' ) {
+        [2,0,1].map( i => { refiners.push( refinersOrig[i] ); refinerRulesNew.push( refinerRulesOrig[i] ); });
+
+    } else {
+        alert ("I think there is a problem with changeRefinerOrder, " + newLeadRefiner + " was not expected." );
+
+    }
+
+    let drillList = this.createDrillList(this.props.webURL, this.props.listName, false, refiners, JSON.stringify(refinerRulesNew), this.props.stats, '');
+    let errMessage = drillList.refinerRules === undefined ? 'Invalid Rule set: ' +  this.state.rules : '';
+    if ( drillList.refinerRules === undefined ) { drillList.refinerRules = [[],[],[]] ; }
+
+    processAllItems( this.state.allItems, errMessage, drillList, this.addTheseItemsToState.bind(this), this.setProgress.bind(this), null );
+
+  }
 
   private getCurrentRefinerTree(newMeta: string[] ) {
 

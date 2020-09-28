@@ -134,6 +134,7 @@ function generateData(items: ICMDItem[], checkedItem: string, cachingEnabled: bo
 export interface IResizeGroupOverflowSetExampleProps {
 
   items: ICMDItem[];
+  regroupKey: string;
   cachingEnabled: boolean;
   onClick: any;
   checkedItem: string;
@@ -199,7 +200,10 @@ public componentDidUpdate(prevProps){
   if ( prevProps.checkedItem != this.props.checkedItem ) {
       rebuildPart = true;
   }
-
+  if ( prevProps.regroupKey != this.props.regroupKey ) {
+    rebuildPart = true;
+  }
+  
   if ( prevProps.WebpartHeight !== this.props.WebpartHeight || prevProps.WebpartWidth !== this.props.WebpartWidth ) {
       rebuildPart = true ;
     }
