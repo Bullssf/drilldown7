@@ -660,8 +660,8 @@ public componentDidUpdate(prevProps){
 
             } else if ( this.state.style === 'commandBar' ) {
 
-                let pinCmd1 = createIconButton('Pin','Pin ' + this.state.refiners[1] + ' to top',this.changeRefinerOrder1.bind(this), null, null );
-                let pinCmd2 = createIconButton('Pin','Pin ' + this.state.refiners[2] + ' to top',this.changeRefinerOrder2.bind(this), null, null );
+                let pinCmd1 = createIconButton('Pin','Pin ' + this.state.refiners[1] + ' to top, Alt-Click to move DOWNOne level.',this.changeRefinerOrder1.bind(this), null, null );
+                let pinCmd2 = createIconButton('Pin','Pin ' + this.state.refiners[2] + ' to top, Alt-Click to move UP One level.',this.changeRefinerOrder2.bind(this), null, null );
                 let pinSpanStyle = { paddingLeft: '8px', height: '0px' } ;
 
                 thisIsRefiner0 = showRefiner0 ? <div><ResizeGroupOverflowSetExample
@@ -968,6 +968,7 @@ public componentDidUpdate(prevProps){
 
     private findCountOfAriaLabel( item: any ) {
         let result = '';
+        if ( item === null ) { return result; }
         let isValue = false;
         if ( item.currentTarget && item.currentTarget.ariaLabel && item.currentTarget.ariaLabel.length > 0 ) {
 
@@ -995,6 +996,8 @@ public componentDidUpdate(prevProps){
     }
 
     private findMatchtingElementText( item: any ) {
+
+        if ( item === null ) { return '' ; }
 
         let hasItemKey = item.props && item.props.itemKey ? true : false ;
         let hasTargetInnerText = item.target && item.target.innerText ? true : false;
@@ -1135,9 +1138,19 @@ public componentDidUpdate(prevProps){
     this.searchForItems( this.state.searchText, newMeta, 2, 'meta' );
   }
 
-  private changeRefinerOrder1() {   this.changeRefinerOrder( 'refiner1', null );  }
-  private changeRefinerOrder2() {   this.changeRefinerOrder( 'refiner2', null );  }
-  private changeRefinerOrder( newLeadRefiner: string, selectedItem: string ) {
+    private changeRefinerOrder1() { 
+        let e: any = event;
+        let clickInfo = this.getClickInfo( e, null );
+        this.changeRefinerOrder( 'refiner1', clickInfo );
+    }
+
+    private changeRefinerOrder2() {
+        let e: any = event;
+        let clickInfo = this.getClickInfo( e, null );
+        this.changeRefinerOrder( 'refiner2', clickInfo );  
+    }
+
+  private changeRefinerOrder( newLeadRefiner: string, clickInfo ) {
 
     let refiners: string[] = [];
     let refinersOrig: string[] = JSON.parse(JSON.stringify( this.state.refiners ));
@@ -1145,13 +1158,16 @@ public componentDidUpdate(prevProps){
     let refinerRulesOrig: IRefinerRules[][] = JSON.parse(JSON.stringify( this.state.drillList.refinerRules ));
 
     if ( newLeadRefiner === 'refiner0' ) {
-        [0,1,2].map( i => { refiners.push( refinersOrig[i] ); refinerRulesNew.push( refinerRulesOrig[i] ); });
+        let newOrder = clickInfo.isAltClick !== true ? [0,1,2] : [1,0,2];
+        newOrder.map( i => { refiners.push( refinersOrig[i] ); refinerRulesNew.push( refinerRulesOrig[i] ); });
 
     } else if ( newLeadRefiner === 'refiner1' ) {
-        [1,0,2].map( i => { refiners.push( refinersOrig[i] ); refinerRulesNew.push( refinerRulesOrig[i] ); });
+        let newOrder = clickInfo.isAltClick !== true ? [1,0,2] : [0,2,1];
+        newOrder.map( i => { refiners.push( refinersOrig[i] ); refinerRulesNew.push( refinerRulesOrig[i] ); });
 
     } else if ( newLeadRefiner === 'refiner2' ) {
-        [2,0,1].map( i => { refiners.push( refinersOrig[i] ); refinerRulesNew.push( refinerRulesOrig[i] ); });
+        let newOrder = clickInfo.isAltClick !== true ? [2,0,1] : [0,2,1];
+        newOrder.map( i => { refiners.push( refinersOrig[i] ); refinerRulesNew.push( refinerRulesOrig[i] ); });
 
     } else {
         alert ("I think there is a problem with changeRefinerOrder, " + newLeadRefiner + " was not expected." );
