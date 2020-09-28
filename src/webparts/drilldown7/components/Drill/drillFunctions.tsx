@@ -44,10 +44,9 @@ import { IRefinerStat } from '../../components/IReUsableInterfaces';
 //                                                                                                
 //        
 
+// This is what it was before I split off the other part
+export async function getAllItems( drillList: IDrillList, addTheseItemsToState: any, setProgress: any, markComplete: any ): Promise<void>{
 
-export async function getAllItems( drillList: IDrillList, addTheseItemsToState: any, setProgress: any, markComplete: any ): Promise<IDrillItemInfo[]>{
-
-    let allRefiners : IRefinerLayer = null;
 
     //lists.getById(listGUID).webs.orderBy("Title", true).get().then(function(result) {
     //let allItems : IDrillItemInfo[] = await sp.web.webs.get();
@@ -59,21 +58,32 @@ export async function getAllItems( drillList: IDrillList, addTheseItemsToState: 
     try {
         thisListObject = Web(drillList.webURL);
         allItems = await thisListObject.lists.getByTitle(drillList.name).items.orderBy('ID',false).top(300).get();
-    
+
     } catch (e) {
         errMessage = getHelpfullError(e, true, true);
 
     }
 
+    allItems = processAllItems( allItems, errMessage, drillList, addTheseItemsToState, setProgress, markComplete );
+
+}
+
+export function processAllItems( allItems : IDrillItemInfo[], errMessage: string, drillList: IDrillList, addTheseItemsToState: any, setProgress: any, markComplete: any ){
+
+    let allRefiners : IRefinerLayer = null;
+
     let thisIsNow = new Date().toLocaleString();
 
     for (let i in allItems ) {
 
-        allItems[i].timeCreated = makeTheTimeObject(allItems[i].Created);
-        allItems[i].timeModified = makeTheTimeObject(allItems[i].Modified);
+        if ( allItems[i].timeCreated === undefined ) {
+            allItems[i].timeCreated = makeTheTimeObject(allItems[i].Created);
+            allItems[i].timeModified = makeTheTimeObject(allItems[i].Modified);
 
-        allItems[i].bestCreate = getBestTimeDelta(allItems[i].Created, thisIsNow);
-        allItems[i].bestMod = getBestTimeDelta(allItems[i].Modified, thisIsNow);
+            allItems[i].bestCreate = getBestTimeDelta(allItems[i].Created, thisIsNow);
+            allItems[i].bestMod = getBestTimeDelta(allItems[i].Modified, thisIsNow);
+        }
+
 
         allItems[i].refiners = getItemRefiners( drillList, allItems[i] );
 
@@ -85,7 +95,7 @@ export async function getAllItems( drillList: IDrillList, addTheseItemsToState: 
     if ( errMessage === '' && allItems.length === 0 ) { 
         errMessage = 'This site/web does not have any subsites that you can see.';
      }
-    
+
     console.log('drillList.refiners =', drillList.refiners );
     //for ( let i = 0 ; i < 5000 ; i++ ) {
         allRefiners = buildRefinersObject( allItems, drillList );
@@ -102,6 +112,8 @@ export async function getAllItems( drillList: IDrillList, addTheseItemsToState: 
     return allItems;
 
 }
+
+
 
 //    88.    .d88b.  d8888b. d888888b      d8888b. d88888b d88888b d888888b d8b   db d88888b d8888b. 
 //  88'  YP .8P  Y8. 88  `8D `~~88~~'      88  `8D 88'     88'       `88'   888o  88 88'     88  `8D 

@@ -213,7 +213,7 @@ public componentDidUpdate(prevProps){
     let charts = chartData.map( cdO => {
       chartIdx ++ ;
       console.log('buildingLabels:', cdO.labels.join(', '));
-      let selectedChartID = chartIdx.toString();
+      let selectedChartID = [this.props.callBackID , chartIdx.toString()].join('|||');
 
       //2020-09-24:  Added this because the value array was getting mysteriously overwritten to nulls all the time.
       cdO[cdO.barValues] = JSON.parse(JSON.stringify(cdO[cdO.barValues]));
@@ -468,44 +468,62 @@ public componentDidUpdate(prevProps){
 
   private onClick(item) {
 
-        //This sends back the correct pivot category which matches the category on the tile.
-        let e: any = event;
-        let value = 'TBD';
-        let chartIdx = null;
-        if ( e.target.innerText != '' ) {
-          value = e.target.innerText;   
-          chartIdx = e.target.id;
-          if ( chartIdx === '' && item.currentTarget ) { chartIdx = item.currentTarget.id; }
+    //This sends back the correct pivot category which matches the category on the tile.
+    let e: any = event;
+    let value = 'TBD';
+    let chartIdx = null;
+    if ( e.target.innerText != '' ) {
+      value = e.target.innerText;   
+      chartIdx = e.target.id;
+      if ( chartIdx === '' && item.currentTarget ) { chartIdx = item.currentTarget.id; }
 
-        } else if ( item.currentTarget.innerText != '' ){
-          value = item.currentTarget.innerText;
-          chartIdx = item.currentTarget.id;
-          if ( chartIdx === '' && item.target ) { chartIdx = item.target.id; }
+    } else if ( item.currentTarget.innerText != '' ){
+      value = item.currentTarget.innerText;
+      chartIdx = item.currentTarget.id;
+      if ( chartIdx === '' && item.target ) { chartIdx = item.target.id; }
 
-        }
-    
-        console.log('clicked:  ' , chartIdx, value );
+    }
 
-        if ( this.state.useProps === true && chartIdx !== null ) {
+    let isAltClick = e.altKey;
+    let isShfitClick = e.shiftKey;
+    let isCtrlClick = e.ctrlKey;
 
-          let chartData = this.state.chartData;
+    console.log('clicked:  ' , chartIdx, value );
+    console.log('AltClick, ShfitClick, CtrlClick:', isAltClick, isShfitClick, isCtrlClick );
 
-          console.log('Prev chart type:', chartData[chartIdx].chartTypes[ chartData[chartIdx].activeType ] );
+    if ( this.state.useProps === true && chartIdx !== null ) {
 
-          let chartTypesCount = chartData[chartIdx].chartTypes.length;
-          let activeType = chartData[chartIdx].activeType;
-          let nextType =  chartTypesCount - 1 === activeType ? 0 : activeType + 1;
-          chartData[chartIdx].activeType = nextType;
+      //[this.props.callBackID , chartIdx.toString()].join('|||');
+      let thisID = chartIdx.split('|||');
+      let thisChartIndex = thisID[1];
+      let callBackID = thisID[0];
 
-          console.log('Prev chart type:', chartData[chartIdx].chartTypes[ chartData[chartIdx].activeType ] );
-          
-          this.setState({
-            chartData: chartData,
-          });
+      console.log('thisID, thisChartIndex,callBackID' ,thisID , thisChartIndex, callBackID );
 
-        }
+      if ( isAltClick === true && this.props.onAltClick ) {
+        this.props.onAltClick( callBackID, value );
 
+      } else {
+
+        let chartData = this.state.chartData;
+
+        console.log('Prev chart type:', chartData[thisChartIndex].chartTypes[ chartData[thisChartIndex].activeType ] );
+
+        let chartTypesCount = chartData[thisChartIndex].chartTypes.length;
+        let activeType = chartData[thisChartIndex].activeType;
+        let nextType =  chartTypesCount - 1 === activeType ? 0 : activeType + 1;
+        chartData[thisChartIndex].activeType = nextType;
+
+        console.log('Prev chart type:', chartData[thisChartIndex].chartTypes[ chartData[thisChartIndex].activeType ] );
+
+        this.setState({
+          chartData: chartData,
+        });
+
+      }
+    }
   }
+
   /**   This is the legend code:
    *        <div className={ stylesC.xAxis } >
               <h3>X-Axis Title</h3>
