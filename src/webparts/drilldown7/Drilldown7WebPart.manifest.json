@@ -18,11 +18,12 @@
     "groupId": "5c03119e-3074-46fd-976b-c60198311f70", // Other
     "group": { "default": "Other" },
     "title": { "default": "Drilldown7" },
-    "description": { "default": "Drilldown7 description" },
+    "description": { "default": "Drilldown7 cascading filters" },
     "officeFabricIconFontName": "Page",
     "properties": {
       "description": "Drilldown7",
       "parentListTitle": "TrackMyTime",
+      "webPartScenario": "TEAM",
       "refiner0": "Story",
       "refiner1": "Chapter",
       "refiner2": "Created",

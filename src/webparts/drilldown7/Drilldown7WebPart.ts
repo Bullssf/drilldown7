@@ -254,19 +254,30 @@ private _filterBy: any;
     return result;
   }
 
-  public getViewGroupFields( grp: string ){
+  public getViewGroupFields(message: string,  grp: string ){
       let result: IGrouping[] = [];
       let propsGroups: string[];
+      let groupByFieldsJSON : any = {};
 
-      if ( grp ) {
-        propsGroups = grp.indexOf(';') > -1 ? grp.split(';') : [grp];
-        result = propsGroups.map ( g => {
-          return { name: g, order: 1, };
-        });
-        
+      if ( grp === null || grp === undefined ) { return result; }
+      try {
+        grp = grp.replace(/\\\"/g,'"').replace(/\\'"/g,"'"); //Replace any cases where I copied the hashed characters from JSON file directly.
+        groupByFieldsJSON = JSON.parse(grp);
+  
+      } catch(e) {
+        console.log(message + ' is not a valid JSON object.  Please fix it and re-run');
+  
+      }
+
+      if ( groupByFieldsJSON ) {
+        //propsGroups = grp.indexOf(';') > -1 ? grp.split(';') : [grp];  //This was if I just made it comma separated names.  But I'm going to keep the JSON object so sorting can be included.
+        //result = propsGroups.map ( g => {
+          ///return { name: g, order: 1, };
+        //});
+        console.log('groupByFieldsJSON: ', groupByFieldsJSON );
       }
       
-      return result;
+      return groupByFieldsJSON;
   }
 
   public render(): void {
@@ -295,7 +306,7 @@ private _filterBy: any;
     let viewFields2 : IViewField[] = this.getViewFieldsObject('Med Size view', this.properties.viewJSON2, this.properties.groupByFields );
     let viewFields3 : IViewField[] = this.getViewFieldsObject('Small Size view', this.properties.viewJSON3, this.properties.groupByFields );
 
-    let groupByFields: IGrouping[] = this.getViewGroupFields( this.properties.groupByFields);
+    let groupByFields: IGrouping[] = this.getViewGroupFields( 'Group View Fields', this.properties.groupByFields);
     if (viewFields1 !== undefined ) { viewDefs.push( { minWidth: this.properties.viewWidth1, viewFields: viewFields1, groupByFields: groupByFields, includeDetails: this.properties.includeDetails }); }
     if (viewFields2 !== undefined ) { viewDefs.push( { minWidth: this.properties.viewWidth2, viewFields: viewFields2, groupByFields: groupByFields, includeDetails: this.properties.includeDetails }); }
     if (viewFields3 !== undefined ) { viewDefs.push( { minWidth: this.properties.viewWidth3, viewFields: viewFields3, groupByFields: groupByFields, includeDetails: this.properties.includeDetails }); }
@@ -377,7 +388,6 @@ private _filterBy: any;
 
     ReactDom.render(element, this.domElement);
   }
-
 
   /**
    * 2020-09-08:  Add for dynamic data refiners.   private handleFieldSelected:
@@ -466,6 +476,7 @@ private _filterBy: any;
     /**
      * This section is for Templated properties
      */
+
     let newMap = [];
     if ( !this.properties.newMap || forceUpdate === true ) { 
       console.log('GETTING LIST DEFINITIONS');
@@ -475,12 +486,20 @@ private _filterBy: any;
 
       let thisProps: string[] = Object.keys( this.properties );
 
+      let restFilter = '';
+
+      if ( this.properties.webPartScenario !== '' && this.properties.webPartScenario != null ) {
+        //newMap = getAllItems(configWebURL, 'DrilldownPreConfigProps', thisProps );
+        restFilter = "webPartScenario eq '" + this.properties.webPartScenario + "'";
+        console.log('_getListDefintions restFilter:', restFilter );
+      }
+
       //Must remove 'newMap' from props because it's one can't be mapped.
       //let newMapIdx = thisProps.indexOf('newMap');
       //if (newMapIdx > -1) { thisProps.splice(newMapIdx, 1); }
 
       //if ( runAsync === true ) {
-        newMap = await getAllItems(configWebURL, 'DrilldownPreConfigProps', thisProps, runAsync );
+        newMap = await getAllItems(configWebURL, 'DrilldownPreConfigProps', thisProps, restFilter, runAsync );
       //} else {
       //  newMap = getAllItems(configWebURL, 'DrilldownPreConfigProps', thisProps, runAsync );
       //}
@@ -505,17 +524,6 @@ private _filterBy: any;
       //this.properties.listTitle = "TitleChanged!";
       //this.properties.colTitleText = "TitleTextChanged!";
 
-      if (this.properties.webPartScenario === 'DEV' ) {
-        //newMap = getAllItems(configWebURL, 'DrilldownPreConfigProps', thisProps );
-
-      } else if (this.properties.webPartScenario === 'TEAM') {
-        //newMap = getAllItems(configWebURL, 'DrilldownPreConfigProps', thisProps );
-
-      } else if (this.properties.webPartScenario === 'CORP') {
-        //newMap = getAllItems(configWebURL, 'DrilldownPreConfigProps', thisProps );
-
-      }
-
       let thisProps: string[] = Object.keys( this.properties );
       const hasValues = Object.keys(this.properties.newMap).length;
 //      console.log('listDefinition Old & New: ', oldValue, newValue );
@@ -533,7 +541,20 @@ private _filterBy: any;
            */
           thisProps.map( thisWebPartProp => {
 
-            if ( thisWebPartProp !== 'listDefinition') {  
+            /**
+             * Add columns here that are in the PreConfigProps list that should be ignored and are not an actual mapped property.
+             * webPartScenario is an example which is a list column but is used to filter out what list items to load.
+             */
+            let ignoreTheseColumns = ['webPartScenario']; 
+
+            if ( ignoreTheseColumns.indexOf( thisWebPartProp) > -1 ) {  
+              console.log('not mapping this property: ', thisWebPartProp );
+
+            } else if ( thisWebPartProp === 'listDefinition' ) { 
+                console.log('thisWebPartProp === listDefinition:', defIndex, thisWebPartProp);
+                this.properties[thisWebPartProp] = newValue;
+
+            } else {
 
               /**
                * this.properties.newMap is the property defs loaded from the tenanat list.
@@ -568,7 +589,7 @@ private _filterBy: any;
                       try {
                         potentialValue = JSON.parse(potentialValue);
                       } catch (e) {
-                        alert('Hey!  Check the PreConfigProps list ' + thisWebPartProp + ' field.  It should be valid JSON array string, it currently is: ' + potentialValue + '  Drilldown7WebPart.ts onPropertyPaneFieldChanged')
+                        alert('Hey!  Check the PreConfigProps list ' + thisWebPartProp + ' field.  It should be valid JSON array string, it currently is: ' + potentialValue + '  Drilldown7WebPart.ts onPropertyPaneFieldChanged');
                       }
 
                     } else { potentialValue = [] ; }
@@ -582,7 +603,6 @@ private _filterBy: any;
                         this.properties[thisWebPartProp] = potentialValue;
                       }
                   }
-
 
                 } else { 
                   if ( ['rules0','rules1','rules2'].indexOf(thisWebPartProp) > -1 ) { //These should be arrays of strings
@@ -611,9 +631,8 @@ private _filterBy: any;
               }
 
 
-            } else { 
-              console.log('thisWebPartProp === listDefinition:', defIndex, thisWebPartProp);
-              this.properties[thisWebPartProp] = newValue;  }
+            }
+
           });
 
         } else {
