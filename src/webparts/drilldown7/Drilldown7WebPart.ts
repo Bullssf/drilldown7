@@ -522,19 +522,32 @@ private _filterBy: any;
 //      console.log('PropFieldChange keys: ', hasValues );
 
       if (hasValues !== 0) {
+        /**
+         * defIndex is the propertie's list item index that was found for this listDefinition.
+         */
         let defIndex : any = doesObjectExistInArray(this.properties.newMap,'Title',newValue);
         if ( defIndex !== false ) {
+
+          /**
+           * thisProps is an array of of the keys of this webpart's 'properties' keys (properties)
+           */
           thisProps.map( thisWebPartProp => {
 
             if ( thisWebPartProp !== 'listDefinition') {  
 
+              /**
+               * this.properties.newMap is the property defs loaded from the tenanat list.
+               */
               if ( Object.keys(this.properties.newMap[defIndex]).indexOf(thisWebPartProp) < 0 ) {
                 console.log('This thisWebPartProp is not to be mapped or updated:', thisWebPartProp );
               } else {
 
                 /**
-                 * this.properties.newMap is the property defs loaded from the tenanat list.
+                 * At this point, we should only find current this.properties.keys( thisWebPartProp ) found in the newMap list as a column.
+                 * 
+                 * potentialValue is the value found in the list that should be set for this webpart prop.  Currently all are rich text fields.
                  */
+
                 let potentialValue = this.properties.newMap[defIndex][thisWebPartProp] ? this.properties.newMap[defIndex][thisWebPartProp] : undefined;
 
                 if ( potentialValue ) { //If value exists, continue
@@ -546,13 +559,31 @@ private _filterBy: any;
                     else if ( potentialValue === "false" ) { potentialValue = false; }
                   }
 
-                  if ( this.properties[thisWebPartProp] !== potentialValue ) { //If values are different, then update
-                    if ( potentialValue === '') { //If value is intentionally empty string, do the update
-                      this.properties[thisWebPartProp] = potentialValue;
-                    } else {
-                      this.properties[thisWebPartProp] = potentialValue;
-                    }
+                  /**
+                   * Deal with special cases where potentialValue needs to be converted to an array first.
+                   */
+                  if ( ['rules0','rules1','rules2'].indexOf(thisWebPartProp) > -1 ) { //These should be arrays of strings
+
+                    if ( potentialValue != null && potentialValue != undefined ) {
+                      try {
+                        potentialValue = JSON.parse(potentialValue);
+                      } catch (e) {
+                        alert('Hey!  Check the PreConfigProps list ' + thisWebPartProp + ' field.  It should be valid JSON array string, it currently is: ' + potentialValue + '  Drilldown7WebPart.ts onPropertyPaneFieldChanged')
+                      }
+
+                    } else { potentialValue = [] ; }
+
+                    this.properties[thisWebPartProp] = potentialValue;
+
+                  } else if ( this.properties[thisWebPartProp] !== potentialValue ) { //If values are different, then update
+                      if ( potentialValue === '') { //If value is intentionally empty string, do the update
+                        this.properties[thisWebPartProp] = potentialValue;
+                      } else {
+                        this.properties[thisWebPartProp] = potentialValue;
+                      }
                   }
+
+
                 } else { 
                   if ( ['rules0','rules1','rules2'].indexOf(thisWebPartProp) > -1 ) { //These should be arrays of strings
                     if ( thisWebPartProp === 'newMap' ) { alert('Hey!  Why are we trying to set newMap????') ; }
