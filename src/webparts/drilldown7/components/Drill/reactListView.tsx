@@ -41,12 +41,15 @@ export interface IReactListItemsProps {
     groupByFields?:  IGrouping[];
     includeDetails: boolean;
 
+    highlightedFields?: string[];
+
 }
 
 export interface IReactListItemsState {
   maxChars?: number;
   parentListFieldTitles: any;
   viewFields: IViewField[];
+  groupByFields?:  IGrouping[];
   showPanel: boolean;
   panelId: number;
   panelItem: IDrillItemInfo;
@@ -142,10 +145,18 @@ export default class ReactListItems extends React.Component<IReactListItemsProps
             viewFields = this.covertFieldInfoToIViewFields( parentListFieldTitles , [] );
         }
 
+        let groupByFields : IGrouping[] = [];
+        if ( this.props.groupByFields && this.props.groupByFields.length > 0 ) { 
+            this.props.groupByFields.map( gF => {  groupByFields.push(gF) ;  });
+            groupByFields.map( gF => {  gF.name = gF.name.replace('/','') ;  });
+        }
+
+
         this.state = {
           maxChars: this.props.maxChars ? this.props.maxChars : 50,
           parentListFieldTitles:parentListFieldTitles,
           viewFields: viewFields,
+          groupByFields:  groupByFields,
           showPanel: false,
           panelId: null,
           panelItem: null,
