@@ -250,6 +250,7 @@ export class IntroPage {
             label: strings.FieldLabel_Rule1,
             options: ruleChoices,
             selectedKeys: webPartProps.rules1,
+
           }),
           PropertyPaneTextField('refiner2', {
             label: strings.FieldLabel_Refiner2
@@ -268,6 +269,7 @@ export class IntroPage {
           }),
         ]}, // this group
 /* */
+
 
         // 9 - Other web part options
         { groupName: 'Pivot Styles (headings)',

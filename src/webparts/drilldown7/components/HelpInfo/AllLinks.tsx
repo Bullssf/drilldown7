@@ -55,7 +55,7 @@ export const gitRepoSocialiis = createRepoLinks( baseMyRepos + 'Social-iis-7','_
 export const gitRepoInfoIisWebpart = createRepoLinks( baseMyRepos + 'InfoIis','_blank', 'Info-iis' );
 export const gitRepoGenericWebpart = createRepoLinks( baseMyRepos + 'generic-solution','_blank', 'GenericWebPart' );
 
-export const gitRepoDrilldown7WebPart = createRepoLinks( baseMyRepos + 'drilldown-filter','_blank', 'DrillDown' );
+export const gitRepoDrilldown7WebPart = createRepoLinks( baseMyRepos + 'drilldown7','_blank', 'DrillDown' );
 
 
 /**

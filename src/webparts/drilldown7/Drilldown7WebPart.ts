@@ -145,6 +145,15 @@ private _filterBy: any;
       //2020-09-08:  Add for dynamic data refiners.
       this.context.dynamicDataSourceManager.initializeSource(this);
 
+      if ( !this.properties.rules0 ) { 
+        this.properties.rules0 = [] ; 
+      }
+      if ( !this.properties.rules1 ) { 
+        this.properties.rules1 = [] ; 
+      }
+      if ( !this.properties.rules2 ) { 
+        this.properties.rules2 = [] ; 
+      }
 
       // other init code may be present
 
@@ -275,10 +284,6 @@ private _filterBy: any;
     let rules1: RefineRuleValues[] = ['parseBySemiColons'];
     let rules2: RefineRuleValues[] = ['parseBySemiColons'];
     let rules3: RefineRuleValues[] = ['groupByMonthsMMM'];
-
-    this.properties.rules0 = [this.properties.rules0def];
-    this.properties.rules1 = [this.properties.rules1def];
-    this.properties.rules2 = [this.properties.rules2def];
 
     let rules = [];
     if ( this.properties.rules0 && this.properties.rules0.length > 0 ) { rules.push ( this.properties.rules0 ) ; } else { rules.push( ['']) ; }
@@ -527,6 +532,9 @@ private _filterBy: any;
                 console.log('This thisWebPartProp is not to be mapped or updated:', thisWebPartProp );
               } else {
 
+                /**
+                 * this.properties.newMap is the property defs loaded from the tenanat list.
+                 */
                 let potentialValue = this.properties.newMap[defIndex][thisWebPartProp] ? this.properties.newMap[defIndex][thisWebPartProp] : undefined;
 
                 if ( potentialValue ) { //If value exists, continue
@@ -548,7 +556,22 @@ private _filterBy: any;
                 } else { 
                   if ( ['rules0','rules1','rules2'].indexOf(thisWebPartProp) > -1 ) { //These should be arrays of strings
                     if ( thisWebPartProp === 'newMap' ) { alert('Hey!  Why are we trying to set newMap????') ; }
-                    this.properties[thisWebPartProp] = [''];
+
+                    if ( potentialValue != null && potentialValue != undefined ) {
+                      potentialValue = JSON.parse(potentialValue);
+                    } else { potentialValue = [] ; }
+
+                    if ( thisWebPartProp === 'rules0' && potentialValue != null) {
+                      //rules0 was found in list item and so we should update rules0 in props.
+                      this.properties.rules0 = potentialValue;
+                    } else if ( thisWebPartProp === 'rules1' && potentialValue != null) {
+                      //rules0 was found in list item and so we should update rules0 in props.
+                      this.properties.rules1 = potentialValue;
+                    } else if ( thisWebPartProp === 'rules2' && potentialValue != null) {
+                      //rules0 was found in list item and so we should update rules0 in props.
+                      this.properties.rules2 = potentialValue;
+                    }
+
                   } else {
                     this.properties[thisWebPartProp] = '';
                   }
@@ -589,7 +612,8 @@ private _filterBy: any;
      */
     let updateOnThese = [
       'setSize','setTab','otherTab','setTab','otherTab','setTab','otherTab','setTab','otherTab',
-      'parentListFieldTitles','progress','UpdateTitles','parentListTitle','childListTitle','parentListWeb','childListWeb', 'stats'
+      'parentListFieldTitles','progress','UpdateTitles','parentListTitle','childListTitle','parentListWeb','childListWeb', 'stats',
+      'rules0','rules1','rules2'
     ];
     //alert('props updated');
     console.log('onPropertyPaneFieldChanged:', propertyPath, oldValue, newValue);

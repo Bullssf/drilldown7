@@ -18,10 +18,10 @@
     "@microsoft/sp-property-pane": "1.11.0",
     "@microsoft/sp-webpart-base": "1.11.0",
     "@pnp/graph": "^2.0.10",
-    "@pnp/sp": "^2.0.10",
+    "@pnp/sp": "^2.0.6",
     "@pnp/spfx-controls-react": "2.0.0",
     "@pnp/spfx-property-controls": "^2.0.0",
-    "office-ui-fabric-react": "^6.214.0",
+    "office-ui-fabric-react": "^6.214.1",
     "react": "16.8.5",
     "react-dom": "16.8.5"
   },
