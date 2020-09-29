@@ -41,6 +41,8 @@ import { PageContext } from '@microsoft/sp-page-context';
 
 import { pivotOptionsGroup, } from '../../../../services/propPane';
 
+import { getExpandColumns, getKeysLike, getSelectColumns } from '../../../../services/getFunctions';
+
 import * as links from '../HelpInfo/AllLinks';
 
 import { getHelpfullError, } from '../../../../services/ErrorHandler';
@@ -86,6 +88,14 @@ export interface IDrillWeb extends Partial<IPickedWebBasic> {
     emptyRefiner: string;
     refinerRules: IRefinerRules[][];
     refinerStats: IRefinerStat[];
+    viewDefs: ICustViewDef[];
+    staticColumns: string[];
+    selectColumns: string[];
+    expandColumns: string[];
+    staticColumnsStr: string;
+    selectColumnsStr: string;
+    expandColumnsStr: string;
+    removeFromSelect: string[];
   }
 
 export interface IMyPivCat {
@@ -415,7 +425,53 @@ export default class DrillDown extends React.Component<IDrillDownProps, IDrillDo
         return theCalcs;
     }
 
-    private createDrillList(webURL: string, name: string, isLibrary: boolean, refiners: string[], rules: string, stats: string, title: string = null) {
+    private updateDrillListColumns( list: IDrillList ) {
+       
+        let selectCols: string = "*";
+        let expandThese = "";
+  
+        let allColumns = ['Title','Id','Created','Modified','Author/Title','Author/ID','Author/Name','Editor/Title','Editor/ID','Editor/Name'];
+
+        //Add all refiner columns to array.
+        list.refiners.map( r => { allColumns.push(r); }); 
+
+        //Add ViewDef columns to column list
+        list.viewDefs.map( vd => {
+            vd.viewFields.map( vf => {
+                if ( allColumns.indexOf( vf.name ) < 0 && list.removeFromSelect.indexOf(vf.name) < 0 ) {
+                    allColumns.push( vf.name );
+                }
+            });
+        });
+
+        //Add refinerStats to column list
+        list.refinerStats.map( rs => {
+            if ( rs.primaryField && rs.primaryField.length > 0 && allColumns.indexOf( rs.primaryField) < 0  && list.removeFromSelect.indexOf(rs.primaryField) < 0 ) { allColumns.push( rs.primaryField ); }
+            if ( rs.secondField && rs.secondField.length > 0  && allColumns.indexOf( rs.secondField) < 0  && list.removeFromSelect.indexOf(rs.secondField) < 0 ) { allColumns.push( rs.secondField ); }
+        });
+
+        let expColumns = getExpandColumns(allColumns);
+        let selColumns = getSelectColumns(allColumns);
+
+        selColumns.length > 0 ? selectCols += "," + allColumns.join(",") : selectCols = selectCols;
+        if (expColumns.length > 0) { expandThese = expColumns.join(","); }
+
+        list.selectColumns = selColumns;
+        list.staticColumns = allColumns;
+        list.expandColumns = expColumns;
+
+        list.selectColumnsStr = selColumns.join(',') ;
+        list.staticColumnsStr = allColumns.join(',');
+        list.expandColumnsStr = expColumns.join(',');
+
+        return list;
+
+    }
+
+    private createDrillList(webURL: string, name: string, isLibrary: boolean, refiners: string[], rules: string, stats: string, viewDefs: ICustViewDef[], title: string = null) {
+
+        let refinerRules = this.createEmptyRefinerRules( rules );
+        let refinerStats = this.createRefinerRuleCalcs( stats );
 
         let list: IDrillList = {
             title: title,
@@ -425,9 +481,19 @@ export default class DrillDown extends React.Component<IDrillDownProps, IDrillDo
             webURL: webURL,
             refiners: refiners,
             emptyRefiner: 'Unknown',
-            refinerRules: this.createEmptyRefinerRules( rules ),
-            refinerStats: this.createRefinerRuleCalcs( stats ),
+            refinerRules: refinerRules,
+            refinerStats: refinerStats,
+            viewDefs: viewDefs,
+            staticColumns: [],
+            selectColumns: [],
+            expandColumns: [],
+            staticColumnsStr: '',
+            selectColumnsStr: '',
+            expandColumnsStr: '',
+            removeFromSelect: ['currentTime','currentUser'],
         };
+
+        list = this.updateDrillListColumns( list ) ;
 
         return list;
     }
@@ -438,9 +504,10 @@ export default class DrillDown extends React.Component<IDrillDownProps, IDrillDo
         /**
          * This is copied later in code when you have to call the data in case something changed.
          */
-        let drillList = this.createDrillList(this.props.webURL, this.props.listName, false, this.props.refiners, this.props.rules, this.props.stats, '');
+        let drillList = this.createDrillList(this.props.webURL, this.props.listName, false, this.props.refiners, this.props.rules, this.props.stats, this.props.viewDefs, '');
         let errMessage = drillList.refinerRules === undefined ? 'Invalid Rule set: ' +  this.props.rules : '';
         if ( drillList.refinerRules === undefined ) { drillList.refinerRules = [[],[],[]] ; } 
+
 
         this.state = { 
 
@@ -873,7 +940,7 @@ public componentDidUpdate(prevProps){
         /**
          * This is copied from constructor when you have to call the data in case something changed.
          */
-        let drillList = this.createDrillList(this.props.webURL, this.props.listName, false, this.props.refiners, this.state.rules, this.props.stats, '');
+        let drillList = this.createDrillList(this.props.webURL, this.props.listName, false, this.props.refiners, this.state.rules, this.props.stats, this.props.viewDefs, '');
         let errMessage = drillList.refinerRules === undefined ? 'Invalid Rule set: ' +  this.state.rules : '';
         if ( drillList.refinerRules === undefined ) { drillList.refinerRules = [[],[],[]] ; } 
 
@@ -1174,7 +1241,7 @@ public componentDidUpdate(prevProps){
 
     }
 
-    let drillList = this.createDrillList(this.props.webURL, this.props.listName, false, refiners, JSON.stringify(refinerRulesNew), this.props.stats, '');
+    let drillList = this.createDrillList(this.props.webURL, this.props.listName, false, refiners, JSON.stringify(refinerRulesNew), this.props.stats, this.props.viewDefs, '');
     let errMessage = drillList.refinerRules === undefined ? 'Invalid Rule set: ' +  this.state.rules : '';
     if ( drillList.refinerRules === undefined ) { drillList.refinerRules = [[],[],[]] ; }
 

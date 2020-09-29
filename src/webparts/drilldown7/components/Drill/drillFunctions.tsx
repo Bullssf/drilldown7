@@ -51,13 +51,23 @@ export async function getAllItems( drillList: IDrillList, addTheseItemsToState: 
     //lists.getById(listGUID).webs.orderBy("Title", true).get().then(function(result) {
     //let allItems : IDrillItemInfo[] = await sp.web.webs.get();
 
-    let thisListObject = null;
-
     let allItems : IDrillItemInfo[] = [];
     let errMessage = '';
+
+    let thisListWeb = Web(drillList.webURL);
+    let selColumns = drillList.selectColumnsStr;
+    let expandThese = drillList.expandColumnsStr;
+    let staticCols = drillList.staticColumns.length > 0 ? drillList.staticColumns.join(',') : '';
+    let selectCols = '*,' + staticCols;
+
+    let thisListObject = thisListWeb.lists.getByTitle(drillList.name);
+
+    /**
+     * IN FUTURE, ALWAYS BE SURE TO PUT SELECT AND EXPAND AFTER .ITEMS !!!!!!
+     */
+
     try {
-        thisListObject = Web(drillList.webURL);
-        allItems = await thisListObject.lists.getByTitle(drillList.name).items.orderBy('ID',false).top(300).get();
+        allItems = await thisListObject.items.select(selectCols).expand(expandThese).orderBy('ID',false).top(300).get();
 
     } catch (e) {
         errMessage = getHelpfullError(e, true, true);
@@ -84,11 +94,23 @@ export function processAllItems( allItems : IDrillItemInfo[], errMessage: string
             allItems[i].bestMod = getBestTimeDelta(allItems[i].Modified, thisIsNow);
         }
 
+        /**
+         * This loop flattens expanded column objects
+         */
+        if ( drillList.selectColumns.length > 0 ) {
+            drillList.selectColumns.map( expCol => {
+                if (expCol.indexOf('/') > -1 ) {
+                    let oldCol = expCol.split('/');
+                    let newProp = oldCol.join('');
+                    allItems[i][newProp] = allItems[i][oldCol[0]][oldCol[1]];
+                }
+            });
+        }
 
         allItems[i].refiners = getItemRefiners( drillList, allItems[i] );
 
         allItems[i].meta = buildMetaFromItem(allItems[i]);
-        allItems[i].searchString = buildSearchStringFromItem(allItems[i]);
+        allItems[i].searchString = buildSearchStringFromItem(allItems[i], drillList.staticColumns );
 
     }
 
@@ -404,7 +426,7 @@ export function buildRefinersObject ( items: IDrillItemInfo[], drillList: IDrill
             } //for ( let r0 in thisRefinerValuesLev0 )
         }
     }
-
+    console.log('These are the loaded refiners:', refiners );
     return refiners;
 
 }
@@ -437,6 +459,7 @@ export function getItemRefiners( drillList: IDrillList, item: IDrillItemInfo ) {
         let allRules = drillList.refinerRules;
         for ( let r of refiners ) {
             if ( r != null ) {
+                r = r.replace('/','');
                 let thisRuleSet : any = allRules[i];
                 let fieldValue = item[r];
                 itemRefiners['lev' + i] = getRefinerFromField( fieldValue , thisRuleSet , drillList.emptyRefiner );
@@ -677,22 +700,18 @@ function buildMetaFromItem( theItem: IDrillItemInfo ) {
 //                                                                                                 
 //         
 
-function buildSearchStringFromItem (newItem : IDrillItemInfo) {
+function buildSearchStringFromItem (newItem : IDrillItemInfo, staticColumns: string[]) {
 
     let result = '';
     let delim = '|||';
 
     if ( newItem.Title ) { result += 'Title=' + newItem.Title + delim ; }
-
-    if ( newItem.Comments ) { result += 'Comments=' + newItem.Comments + delim ; }
-    if ( newItem.Story ) { result += 'Story=' + newItem.Story + delim ; }
-    if ( newItem.Chapter ) { result += 'Chapter=' + newItem.Chapter + delim ; }
-    if ( newItem.ProjectID1 ) { result += 'ProjectID1=' + newItem.ProjectID1 + delim ; }
-    if ( newItem.ProjectID2 ) { result += 'ProjectID2=' + newItem.ProjectID1 + delim ; }
-
-    if ( newItem.StartTime ) { result += 'StartTime=' + newItem.StartTime + delim ; }
-
     if ( newItem.Id ) { result += 'Id=' + newItem.Id + delim ; }
+
+    staticColumns.map( c => {
+        let thisCol = c.replace('/','');
+        if ( newItem[thisCol] ) { result += c + '=' + newItem[thisCol] + delim ; }
+    });
 
     if ( newItem['odata.type'] ) { result += newItem['odata.type'] + delim ; }
 

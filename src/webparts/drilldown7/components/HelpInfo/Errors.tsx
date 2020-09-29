@@ -110,13 +110,13 @@ public constructor(props:IErrorsProps){
  */
 
             let thisPage = null;
-            let stringsError = <tr><td>  </td><td>  </td><td>  </td></tr>;
+            let stringsError = <tr><td>Refiner just shows "All"</td><td>  </td><td>Refiner Rule must be compatible with the refiner.  For instance, you can't have a date rule for a person field.</td></tr>;
 
             thisPage = <div>
                 <h2></h2>
                 <table className={styles.infoTable}>
                     <tr><th>Issue</th><th>Links</th><th>Notes</th></tr>
-                          
+                    { stringsError }
                 </table>
             </div>;
 

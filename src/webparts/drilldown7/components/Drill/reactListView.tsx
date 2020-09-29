@@ -109,7 +109,15 @@ export default class ReactListItems extends React.Component<IReactListItemsProps
 
     }
 
-    
+    private handleExpandedFieldInfoToIViewFields( viewFields?: IViewField[] ) {
+        
+        viewFields.map( vf => {
+            vf.name = vf.name.replace('/','');
+        });
+
+        return viewFields;
+
+    }  
     /***
  *          .o88b.  .d88b.  d8b   db .d8888. d888888b d8888b. db    db  .o88b. d888888b  .d88b.  d8888b. 
  *         d8P  Y8 .8P  Y8. 888o  88 88'  YP `~~88~~' 88  `8D 88    88 d8P  Y8 `~~88~~' .8P  Y8. 88  `8D 
@@ -129,7 +137,7 @@ export default class ReactListItems extends React.Component<IReactListItemsProps
 
         let viewFields : IViewField[] = [];
         if ( this.props.viewFields.length > 0 ) { 
-            viewFields = this.props.viewFields;
+            viewFields = this.handleExpandedFieldInfoToIViewFields( this.props.viewFields );
         } else { 
             viewFields = this.covertFieldInfoToIViewFields( parentListFieldTitles , [] );
         }
@@ -141,7 +149,6 @@ export default class ReactListItems extends React.Component<IReactListItemsProps
           showPanel: false,
           panelId: null,
           panelItem: null,
-          //viewFields: null,
         };
     }
         
