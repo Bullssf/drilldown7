@@ -19,7 +19,7 @@
     "group": { "default": "Other" },
     "title": { "default": "Drilldown7" },
     "description": { "default": "Drilldown7 cascading filters" },
-    "officeFabricIconFontName": "Page",
+    "officeFabricIconFontName": "DrillExpand",
     "properties": {
       "description": "Drilldown7",
       "parentListTitle": "TrackMyTime",
