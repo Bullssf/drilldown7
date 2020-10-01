@@ -413,6 +413,47 @@ export default class DrillDown extends React.Component<IDrillDownProps, IDrillDo
 
     }
 
+    private buildStatCharts(  stats: IRefinerStat[], callBackID: string, refinerObj: IRefinerLayer , ) {
+        let resultSummary = null;
+        let theseCharts : any[] = [];
+        let i = 0;
+        stats.map( s => {
+
+            let labels = refinerObj.childrenKeys ;
+            let theseStats = refinerObj['stat' + i];
+            let theseCount = refinerObj['stat' + i + 'Count'];    
+            let chartKey : string = labels.join('') + theseCount.join('');
+    
+            let chartData : ICSSChartSeries = {
+                title: s.title,
+                labels: labels,
+                chartTypes: s.chartTypes,
+                barValueAsPercent: false,
+    
+                //The string value here must match the object key below
+                barValues: 'val1',
+                val1: theseStats ,
+                key: chartKey,
+    
+                stylesChart: { paddingBottom: 0, marginBottom: 0, marginTop: 0},
+    
+            };
+    
+            resultSummary = 
+            <Cssreactbarchart 
+                chartData = { [chartData] }
+                callBackID = { callBackID }
+                //onAltClick = { this.changeRefinerOrder.bind(this) }
+            ></Cssreactbarchart>;
+    
+            theseCharts.push( resultSummary );
+
+        });
+
+        return theseCharts;
+
+    }
+
     private createRefinerRuleCalcs( calcs: string ) {
         let theCalcs : any = null;
         try {
@@ -829,22 +870,29 @@ public componentDidUpdate(prevProps){
                  */
 
                 let summaryCharts = [];
+                let statCharts = [];
+                let statRefinerObject = null;
                 if ( this.state.showSummary === true ) {
                     summaryCharts.push( this.buildSummaryCountCharts( this.state.refiners[0], 'refiner0' , this.state.refinerObj, RefinerChartTypes ) );
+                    statRefinerObject = this.state.refinerObj;
 
                     if ( this.state.maxRefinersToShow > 1 && this.state.searchMeta[0] !== 'All' ) {
 
                         let childIndex0 = this.state.refinerObj.childrenKeys.indexOf(this.state.searchMeta[0]);
                         summaryCharts.push( this.buildSummaryCountCharts( this.state.refiners[1], 'refiner1' , this.state.refinerObj.childrenObjs[childIndex0], RefinerChartTypes ) );
+                        statRefinerObject = this.state.refinerObj.childrenObjs[childIndex0];
 
                         if ( this.state.maxRefinersToShow > 2 && this.state.searchMeta.length > 1 && this.state.searchMeta[1] !== 'All' ) {
 
                             let childIndex1 = this.state.refinerObj.childrenObjs[childIndex0].childrenKeys.indexOf(this.state.searchMeta[1]);
                             summaryCharts.push( this.buildSummaryCountCharts( this.state.refiners[2], 'refiner2' , this.state.refinerObj.childrenObjs[childIndex0].childrenObjs[childIndex1],  RefinerChartTypes ) );
-
+                            statRefinerObject = this.state.refinerObj.childrenObjs[childIndex0].childrenObjs[childIndex1];
                         }
 
                     }
+
+                    statCharts = this.buildStatCharts( this.state.drillList.refinerStats, 'summaries' , statRefinerObject );
+
 
                 } else { summaryCharts = null ; }
 
@@ -893,6 +941,7 @@ public componentDidUpdate(prevProps){
                         </Stack>
 
                         <div> { summaryCharts } </div>
+                        <div> { statCharts } </div>
 
                         <div>
 
@@ -966,9 +1015,10 @@ public componentDidUpdate(prevProps){
         cmdCats.push ( this.convertRefinersToCMDs( ['All'],  refinerObj.childrenKeys, countTree, 0 , 0, refinerObj) );
 
         console.log('addTheseItemsToState: refinerObj',refinerObj );
-        console.log('addTheseItemsToState: childrenKeys',refinerObj.childrenKeys );
-        console.log('addTheseItemsToState: childrenCounts',refinerObj.childrenCounts );
-        console.log('addTheseItemsToState: childrenMultiCounts',refinerObj.childrenMultiCounts );
+        console.log('drillList.refinerStats: ', drillList.refinerStats );
+//        console.log('addTheseItemsToState: childrenKeys',refinerObj.childrenKeys );
+//        console.log('addTheseItemsToState: childrenCounts',refinerObj.childrenCounts );
+//        console.log('addTheseItemsToState: childrenMultiCounts',refinerObj.childrenMultiCounts );
 
         console.log('addTheseItemsToState allItems: ', allItems);
 

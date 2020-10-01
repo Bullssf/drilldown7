@@ -1,5 +1,5 @@
 import { ListView, IViewField, SelectionMode, GroupOrder, IGrouping } from "@pnp/spfx-controls-react/lib/ListView";
-  
+
 export interface IRefinerRules {
   rules: RefineRuleValues[];
 }
@@ -16,7 +16,7 @@ export interface IRefinerStat {
   secondField?: string;
   title: string;
   stat: IRefinerStatType;
-  chartType: IRefinerChartType;
+  chartTypes: ICSSChartTypes[];
   eval?: string;
 
 }

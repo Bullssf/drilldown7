@@ -67,7 +67,7 @@ export async function getAllItems( drillList: IDrillList, addTheseItemsToState: 
      */
 
     try {
-        allItems = await thisListObject.items.select(selectCols).expand(expandThese).orderBy('ID',false).top(300).get();
+        allItems = await thisListObject.items.select(selectCols).expand(expandThese).orderBy('ID',false).top(200).get();
 
     } catch (e) {
         errMessage = getHelpfullError(e, true, true);
@@ -498,7 +498,7 @@ export function getRefinerStatsForItem( drillList: IDrillList, item: IDrillItemI
         let secondField = drillList.refinerStats[i].secondField;
         let title = drillList.refinerStats[i].title;
         let stat : IRefinerStatType = drillList.refinerStats[i].stat;
-        let chartType = drillList.refinerStats[i].chartType;
+        let chartType = drillList.refinerStats[i].chartTypes;
         let evalX = drillList.refinerStats[i].eval;
         let x = RefinerStatTypes;
         let thisStat = undefined;
