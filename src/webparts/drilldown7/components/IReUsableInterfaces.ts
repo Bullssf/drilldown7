@@ -123,6 +123,7 @@ export interface IRefiners {
 
 export interface IRefinerLayer {
   thisKey: string;
+  thisLayer: number;
   multiCount: number; // Count when counting multi-value fields each time
   itemCount: number; // Count when only counting multi-value fields once
   childrenKeys: string[];
@@ -250,8 +251,8 @@ export interface IMyFonts{
     fontStyle?: string;
   }
 
-  export type ICSSChartTypes = 'pareto-asc' | 'pareto-dec' | 'pareto-labels' | 'stacked-column-labels' | 'stacked-column-dec' | 'stacked-column-asc';
-  export const CSSChartTypes : ICSSChartTypes[] = ['pareto-asc' , 'pareto-dec' , 'pareto-labels' , 'stacked-column-labels' , 'stacked-column-dec' , 'stacked-column-asc'];
+  export type ICSSChartTypes = 'pareto-asc' | 'pareto-dec' | 'pareto-labels' | 'stacked-column-labels' | 'stacked-column-dec' | 'stacked-column-asc' | 'stacked-asis';
+  export const CSSChartTypes : ICSSChartTypes[] = ['pareto-asc' , 'pareto-dec' , 'pareto-labels' , 'stacked-column-labels' , 'stacked-column-dec' , 'stacked-column-asc', 'stacked-asis'];
 
   export type ISeriesSort = 'asis' | 'labels' | 'asc' | 'dec' | string ;
 

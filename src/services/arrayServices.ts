@@ -275,10 +275,14 @@ export function sortKeysByOtherKey( obj: any, sortKey: ISeriesSort, order: ISeri
     otherKeys.map( m => { otherKeyArrays[m] = [] ; } );
     if ( order === 'asc' ) {
       sortCopy.sort();
-    } else {
+
+    } else if ( order === 'dec' ) {  //Changed this so if it was 'asis' it did not do anything
       sortCopy.sort((a, b) => { return b-a ;});
+
+    } else if ( order === 'asis' ) {  //Changed this so if it was 'asis' it did not do anything
+        //Do nothing with they sortCopy
+        
     }
-    
     
     let x = 0;
     for ( let v of sortCopy) {

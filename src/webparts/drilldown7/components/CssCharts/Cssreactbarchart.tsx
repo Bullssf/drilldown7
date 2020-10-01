@@ -259,6 +259,11 @@ public componentDidUpdate(prevProps){
         sortKey = 'labels';
         stacked = true;
 
+      } else if ( activeChartType === 'stacked-asis' ) {
+        sortOrder = 'asis' ;
+        sortKey = 'labels';
+        stacked = true;
+
       }
 
 

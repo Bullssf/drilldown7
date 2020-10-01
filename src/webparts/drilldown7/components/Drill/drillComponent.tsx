@@ -230,7 +230,7 @@ export interface IStat {
     result?: string;
 }
 
-export const RefinerChartTypes : ICSSChartTypes[] = ['stacked-column-labels', 'pareto-dec'];
+export const RefinerChartTypes : ICSSChartTypes[] = ['stacked-asis', 'pareto-dec'];
 
 export interface IDrillDownState {
 
@@ -545,7 +545,7 @@ export default class DrillDown extends React.Component<IDrillDownProps, IDrillDo
             progress: null,
 
             rules: this.props.rules,
-            refinerObj: {thisKey: '', childrenKeys: this.props.refiners, childrenObjs: [], childrenCounts: [], childrenMultiCounts: [] , multiCount: 0, itemCount: 0 },
+            refinerObj: {thisKey: '', childrenKeys: this.props.refiners, childrenObjs: [], childrenCounts: [], childrenMultiCounts: [] , multiCount: 0, itemCount: 0, thisLayer: 0 },
             showDisabled: this.props.showDisabled ? this.props.showDisabled : false,
 
             pivotCats: [],

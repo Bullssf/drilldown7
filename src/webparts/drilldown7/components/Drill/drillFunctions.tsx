@@ -17,7 +17,7 @@ import { IMyView,  } from '../../../../services/listServices/viewTypes'; //Impor
 
 import { addTheseItemsToList, addTheseItemsToListInBatch } from '../../../../services/listServices/listServices';
 
-import { makeSmallTimeObject, makeTheTimeObject,ITheTime, getAge, getBestTimeDelta, isStringValidDate, monthStr3} from '../../../../services/dateServices';
+import { makeSmallTimeObject, makeTheTimeObject,ITheTime, getAge, getBestTimeDelta, isStringValidDate, monthStr3, weekday3} from '../../../../services/dateServices';
 
 import { doesObjectExistInArray, addItemToArrayIfItDoesNotExist, sortKeysByOtherKey } from '../../../../services/arrayServices';
 
@@ -146,40 +146,98 @@ export function processAllItems( allItems : IDrillItemInfo[], errMessage: string
 //                                                                                                   
 //    
 
+
 function sortRefinerObject ( allRefiners: IRefinerLayer, drillList: IDrillList ) {
 
-    //webPartDefs.sort((a, b) => (a.alias > b.alias) ? 1 : -1);
+    allRefiners = sortRefinerLayer ( allRefiners, drillList );
+    return allRefiners;
 
-//    allRefiners.childrenKeys.sort(); //Removed when using sortKeysByOtherKey
-    allRefiners.childrenObjs.sort((a, b) => (a.thisKey > b.thisKey) ? 1 : -1);
+}
+
+function sortRefinerChildrenObjs ( allRefiners: IRefinerLayer[], drillList: IDrillList ) {
+
+    for ( let r in allRefiners ) { //Go through all list items
+       allRefiners[r] = sortRefinerLayer ( allRefiners[r], drillList );
+    }
+    return allRefiners;
+}
+
+function sortRefinerLayer ( allRefiners: IRefinerLayer, drillList: IDrillList ) {
+
+    /**
+     * Need to eventually use this function and change sortKeysByOtherKey from 'asc' to 'asis'
+     */
+    allRefiners = specialObjectSorts( allRefiners, drillList ) ;
+
+
+    //allRefiners.childrenObjs.sort((a, b) => (a.thisKey > b.thisKey) ? 1 : -1);
+
     let statsToSort : string[] = ['childrenCounts','childrenMultiCounts'];
     for ( let i in drillList.refinerStats ) {
         statsToSort.push('stat' + i);
         statsToSort.push('stat' + i + 'Count');
     }
-    allRefiners = sortKeysByOtherKey ( allRefiners, 'childrenKeys', 'asc', 'string', statsToSort);
-    allRefiners.childrenObjs = sortRefinerLayer( allRefiners.childrenObjs, drillList );
+    allRefiners = sortKeysByOtherKey ( allRefiners, 'childrenKeys', 'asis', 'string', statsToSort); //Changed sort to asis because the children keys were sorted using specialObjectSorts first
+    allRefiners.childrenObjs = sortRefinerChildrenObjs( allRefiners.childrenObjs, drillList );
 
     return allRefiners;
-
 }
 
-function sortRefinerLayer ( allRefiners: IRefinerLayer[], drillList: IDrillList ) {
+function specialObjectSorts( allRefiners: IRefinerLayer, drillList: IDrillList ) {
+    let makeRefiners : IRefinerLayer = JSON.parse(JSON.stringify(allRefiners));
+    let groupByDayOfWeek: any  = "groupByDayOfWeek" ;
+    let groupByMonth: any  = "groupByMonthsMMM" ;
+    makeRefiners.childrenObjs = [];
 
-    for ( let r in allRefiners ) { //Go through all list items
-        //allRefiners[r].childrenKeys.sort();
-        allRefiners[r].childrenObjs.sort((a, b) => (a.thisKey > b.thisKey) ? 1 : -1);
-        let statsToSort : string[] = ['childrenCounts','childrenMultiCounts'];
-        for ( let i in drillList.refinerStats ) {
-            statsToSort.push('stat' + i);
-            statsToSort.push('stat' + i + 'Count');
-        }
-        allRefiners[r] = sortKeysByOtherKey ( allRefiners[r], 'childrenKeys', 'asc', 'string', statsToSort);
-        allRefiners[r].childrenObjs = sortRefinerLayer( allRefiners[r].childrenObjs, drillList );
+    let isValidLayer = drillList.refinerRules[allRefiners.thisLayer] ? true : false;
+
+    if ( isValidLayer && drillList.refinerRules[allRefiners.thisLayer].indexOf( groupByDayOfWeek ) > -1 ) {
+        //Re-order by day of week:
+        weekday3['en-us'].map( d => {   // example:  allRefiners.childrenKeys.indexOf( d ) === 'Wed'
+            let thisWeekdaysChildrenKeyIndex = allRefiners.childrenKeys.indexOf( d ); 
+            if ( thisWeekdaysChildrenKeyIndex > -1 ) {
+                makeRefiners.childrenObjs.push( allRefiners.childrenObjs[ thisWeekdaysChildrenKeyIndex ] );
+            }
+        });
+
+    } else if ( isValidLayer && drillList.refinerRules[allRefiners.thisLayer].indexOf( groupByMonth ) > -1 ) {
+        //Re-order by Month of year:
+
+        monthStr3['en-us'].map( d => {  // example:  allRefiners.childrenKeys.indexOf( d ) === 'Aug'
+            let thisMonthsChildrenKeyIndex = allRefiners.childrenKeys.indexOf( d ); 
+            if ( thisMonthsChildrenKeyIndex > -1 ) {
+                makeRefiners.childrenObjs.push( allRefiners.childrenObjs[ thisMonthsChildrenKeyIndex ] );
+            }
+        });
+
+    } else {
+        allRefiners.childrenObjs.sort((a, b) => (a.thisKey > b.thisKey) ? 1 : -1);
+        makeRefiners = allRefiners;
     }
 
-    return allRefiners;
+    return makeRefiners;
 }
+/*
+Need this type of sort for days of weeks and months of years.
+let makeRefiners : string[] = [];
+let groupByDayOfWeek: any  = "groupByDayOfWeek" ;
+let groupByMonth: any  = "groupByMonthsMMM" ;
+let disabledItems: string[] = [];
+if ( this.state.drillList.refinerRules[ refLayer ].indexOf( groupByDayOfWeek ) > -1 ) {
+    //Re-order by day of week:
+    weekday3['en-us'].map( d => {
+        if ( refiners.indexOf( d ) > - 1 ) { makeRefiners.push(d ); } else { if ( this.state.showDisabled === true ) { makeRefiners.push( d ); } disabledItems.push(d); }
+    });
+} else if ( this.state.drillList.refinerRules[ refLayer ].indexOf( groupByMonth ) > -1 ) {
+    //Re-order by Month of year:
+    monthStr3['en-us'].map( d => {
+        if ( refiners.indexOf( d ) > - 1 ) { makeRefiners.push(d ); } else { if ( this.state.showDisabled === true ) { makeRefiners.push( d ); } disabledItems.push(d); }
+    });
+} else {
+    makeRefiners = refiners.join().split(',');
+}
+
+*/
 
 //  d8888b. db    db d888888b db      d8888b.      d8888b. d88888b d88888b d888888b d8b   db d88888b d8888b. 
 //  88  `8D 88    88   `88'   88      88  `8D      88  `8D 88'     88'       `88'   888o  88 88'     88  `8D 
@@ -191,8 +249,9 @@ function sortRefinerLayer ( allRefiners: IRefinerLayer[], drillList: IDrillList 
 //      
 
 
-function createNewRefinerLayer( thisKey: string, drillList: IDrillList ) {
+function createNewRefinerLayer( thisKey: string, drillList: IDrillList, thisLayer: number ) {
     let newRefiner : IRefinerLayer = {
+        thisLayer: thisLayer,
         multiCount: 0,
         itemCount: 0,
         thisKey: thisKey,
@@ -229,7 +288,7 @@ function buildRefinerLayerDidNotWork ( level: number, refinersParent : IRefinerL
 
             if ( topKeyX < 0 ) { //Add to topKeys and create keys child object
                 refinersParent.childrenKeys.push( thisRefinerX );
-                refinersParent.childrenObjs.push( createNewRefinerLayer ( thisRefinerX, drillList ) );
+                refinersParent.childrenObjs.push( createNewRefinerLayer ( thisRefinerX, drillList, 0 ) );
                 refinersParent.childrenCounts.push( 0 );
                 refinersParent.childrenMultiCounts.push( 0 );
                 topKeyX = refinersParent.childrenKeys.length -1;
@@ -334,11 +393,11 @@ export function updateRefinerStats( i: IDrillItemInfo , topKeyZ: number,  refine
 
 }
 
-export function updateThisRefiner( r0: any, topKeyZ: number,  thisRefiner0: any, refiners:IRefinerLayer, drillList: IDrillList ) {
+export function updateThisRefiner( thisLayer: number, r0: any, topKeyZ: number,  thisRefiner0: any, refiners:IRefinerLayer, drillList: IDrillList ) {
 
     if ( topKeyZ < 0 ) { //Add to topKeys and create keys child object
         refiners.childrenKeys.push( thisRefiner0 );
-        refiners.childrenObjs.push( createNewRefinerLayer ( thisRefiner0, drillList ) );
+        refiners.childrenObjs.push( createNewRefinerLayer ( thisRefiner0, drillList, thisLayer ) );
         refiners.childrenCounts.push( 0 );
         refiners.childrenMultiCounts.push( 0 );
         topKeyZ = refiners.childrenKeys.length -1;
@@ -363,6 +422,7 @@ export function buildRefinersObject ( items: IDrillItemInfo[], drillList: IDrill
 
     let refiners : IRefinerLayer = {
         thisKey: '',
+        thisLayer: 0,
         multiCount: 0,
         itemCount: 0,
         childrenKeys: [],
@@ -392,7 +452,7 @@ export function buildRefinersObject ( items: IDrillItemInfo[], drillList: IDrill
                 let thisRefiner0 = thisRefinerValuesLev0[r0];
                 let topKey0 = refiners.childrenKeys.indexOf( thisRefiner0 );
                 
-                refiners =updateThisRefiner( r0, topKey0,  thisRefiner0, refiners, drillList );
+                refiners =updateThisRefiner( 1, r0, topKey0,  thisRefiner0, refiners, drillList );
                 if (topKey0 < 0 ) { topKey0 = refiners.childrenKeys.length -1; }
                 refiners = updateRefinerStats( i , topKey0,  refiners, drillList );
 
@@ -405,7 +465,7 @@ export function buildRefinersObject ( items: IDrillItemInfo[], drillList: IDrill
                     let refiners1 = refiners.childrenObjs[topKey0];
                     let topKey1 = refiners1.childrenKeys.indexOf( thisRefiner1 );
 
-                    refiners1 =updateThisRefiner( r0, topKey1,  thisRefiner1, refiners1, drillList );
+                    refiners1 =updateThisRefiner( 2, r0, topKey1,  thisRefiner1, refiners1, drillList );
                     if (topKey1 < 0 ) { topKey1 = refiners1.childrenKeys.length -1; }
                     refiners1 = updateRefinerStats( i , topKey1,  refiners1, drillList );
 
@@ -417,7 +477,7 @@ export function buildRefinersObject ( items: IDrillItemInfo[], drillList: IDrill
                         let refiners2 = refiners1.childrenObjs[topKey1];
                         let topKey2 = refiners2.childrenKeys.indexOf( thisRefiner2 );
 
-                        refiners2 =updateThisRefiner( r0, topKey2,  thisRefiner2, refiners2, drillList );
+                        refiners2 =updateThisRefiner( 3, r0, topKey2,  thisRefiner2, refiners2, drillList );
                         if (topKey2 < 0 ) { topKey2 = refiners2.childrenKeys.length -1; }
                         refiners2 = updateRefinerStats( i , topKey2,  refiners2, drillList );
 
