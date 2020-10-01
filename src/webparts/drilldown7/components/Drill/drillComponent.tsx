@@ -272,6 +272,7 @@ export interface IDrillDownState {
 
     rules: string;
     refiners: string[]; //String of Keys representing the static name of the column used for drill downs
+    maxRefinersToShow: number;
     refinerObj: IRefinerLayer;
     showDisabled?: boolean;
 
@@ -508,6 +509,11 @@ export default class DrillDown extends React.Component<IDrillDownProps, IDrillDo
         let errMessage = drillList.refinerRules === undefined ? 'Invalid Rule set: ' +  this.props.rules : '';
         if ( drillList.refinerRules === undefined ) { drillList.refinerRules = [[],[],[]] ; } 
 
+        let maxRefinersToShow = 1;
+        if ( this.props.refiners ) {
+            if ( this.props.refiners.length > 1 ) { maxRefinersToShow = 2; }
+            if ( this.props.refiners.length > 2 ) { maxRefinersToShow = 3; }
+        }
 
         this.state = { 
 
@@ -553,6 +559,7 @@ export default class DrillDown extends React.Component<IDrillDownProps, IDrillDo
 
             groupByFields : [],
             refiners: this.props.refiners,
+            maxRefinersToShow: maxRefinersToShow,
 
             style: this.props.style ? this.props.style : 'commandBar',
 
@@ -706,8 +713,8 @@ public componentDidUpdate(prevProps){
                         
             //                <div> { resizePage0 } </div>
             let showRefiner0 = true;
-            let showRefiner1 = this.state.searchMeta.length >= 1 && this.state.searchMeta[0] !== 'All' ? true : false;
-            let showRefiner2 = this.state.searchMeta.length >= 2 && this.state.searchMeta[1] !== 'All' ? true : false;
+            let showRefiner1 = this.state.maxRefinersToShow >= 2 && this.state.searchMeta[0] !== 'All' ? true : false;
+            let showRefiner2 = this.state.maxRefinersToShow >= 3 && this.state.searchMeta.length >= 2 && this.state.searchMeta[1] !== 'All' ? true : false;
 
             let thisIsRefiner0 = null;
             let thisIsRefiner1 = null;
@@ -825,12 +832,12 @@ public componentDidUpdate(prevProps){
                 if ( this.state.showSummary === true ) {
                     summaryCharts.push( this.buildSummaryCountCharts( this.state.refiners[0], 'refiner0' , this.state.refinerObj, RefinerChartTypes ) );
 
-                    if ( this.state.searchMeta[0] !== 'All' ) {
+                    if ( this.state.maxRefinersToShow > 1 && this.state.searchMeta[0] !== 'All' ) {
 
                         let childIndex0 = this.state.refinerObj.childrenKeys.indexOf(this.state.searchMeta[0]);
                         summaryCharts.push( this.buildSummaryCountCharts( this.state.refiners[1], 'refiner1' , this.state.refinerObj.childrenObjs[childIndex0], RefinerChartTypes ) );
 
-                        if ( this.state.searchMeta.length > 1 && this.state.searchMeta[1] !== 'All' ) {
+                        if ( this.state.maxRefinersToShow > 2 && this.state.searchMeta.length > 1 && this.state.searchMeta[1] !== 'All' ) {
 
                             let childIndex1 = this.state.refinerObj.childrenObjs[childIndex0].childrenKeys.indexOf(this.state.searchMeta[1]);
                             summaryCharts.push( this.buildSummaryCountCharts( this.state.refiners[2], 'refiner2' , this.state.refinerObj.childrenObjs[childIndex0].childrenObjs[childIndex1],  RefinerChartTypes ) );
@@ -965,6 +972,12 @@ public componentDidUpdate(prevProps){
 
         console.log('addTheseItemsToState allItems: ', allItems);
 
+        let maxRefinersToShow = 1;
+        if ( this.props.refiners ) {
+            if ( this.props.refiners.length > 1 ) { maxRefinersToShow = 2; }
+            if ( this.props.refiners.length > 2 ) { maxRefinersToShow = 3; }
+        }
+
         this.setState({
             allItems: allItems,
             searchedItems: allItems, //newFilteredItems,  //Replaced with allItems to update when props change.
@@ -977,6 +990,7 @@ public componentDidUpdate(prevProps){
             cmdCats: cmdCats,
             drillList: drillList,
             refiners: drillList.refiners,
+            maxRefinersToShow: maxRefinersToShow,
             rules: JSON.stringify(drillList.refinerRules),
         });
 
