@@ -1135,7 +1135,7 @@ public componentDidUpdate(prevProps){
             validText : validText,
         };
 
-        console.log('clickInfo:  ' , clickInfo );
+//        console.log('clickInfo:  ' , clickInfo );
 
         return clickInfo;
 

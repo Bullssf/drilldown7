@@ -81,7 +81,7 @@ export async function getAllItems( drillList: IDrillList, addTheseItemsToState: 
 export function processAllItems( allItems : IDrillItemInfo[], errMessage: string, drillList: IDrillList, addTheseItemsToState: any, setProgress: any, markComplete: any ){
 
     let allRefiners : IRefinerLayer = null;
-
+    let itemRefinerErrors: string[] = [];
     let thisIsNow = new Date().toLocaleString();
 
     for (let i in allItems ) {
@@ -109,6 +109,9 @@ export function processAllItems( allItems : IDrillItemInfo[], errMessage: string
 
         allItems[i].refiners = getItemRefiners( drillList, allItems[i] );
 
+        allItems[i].refiners.comments.map( c => {
+            itemRefinerErrors.push( c );
+        });
         allItems[i].meta = buildMetaFromItem(allItems[i]);
         allItems[i].searchString = buildSearchStringFromItem(allItems[i], drillList.staticColumns );
 
@@ -116,6 +119,13 @@ export function processAllItems( allItems : IDrillItemInfo[], errMessage: string
 
     if ( errMessage === '' && allItems.length === 0 ) { 
         errMessage = 'This site/web does not have any subsites that you can see.';
+     }
+
+     if ( itemRefinerErrors.length > 0 ) {
+//        console.log('HEY!  Had some problems with your item refiners:', itemRefinerErrors);
+        console.log('HEY!  Had some problems with your item refiners:', itemRefinerErrors.length);
+        console.log('First error:', itemRefinerErrors[0]);
+
      }
 
     console.log('drillList.refiners =', drillList.refiners );
@@ -447,6 +457,7 @@ export function getItemRefiners( drillList: IDrillList, item: IDrillItemInfo ) {
         lev0: [],
         lev1: [],
         lev2: [],
+        comments: [],
     };
 
     for ( let i in drillList.refinerStats ) {
@@ -515,11 +526,11 @@ export function getRefinerStatsForItem( drillList: IDrillList, item: IDrillItemI
                 itemRefiners['stat' + i] = item[primaryField] ;
 
             } else if ( primaryType === 'null' || primaryType === 'undefined' ) {
-                console.log( item['Id'] + ' does not have a value in property: ' + primaryField + '.  assuming it\s Zero for Sum operations.' );
+                itemRefiners.comments.push( 'Sum Err: ' + item['Id'] + ' does not have a value in property: ' + primaryField + '.  assuming it\s Zero for Sum operations.' ) ;
                 itemRefiners['stat' + i] = 0 ;
 
             } else {
-                console.log('Unable to do ' + stat + ' on ' + primaryType + ' Value...: ' + item[primaryField] + '.  assuming it\s null');
+                itemRefiners.comments.push( 'Sum Err: ' + 'Unable to do ' + stat + ' on ' + primaryType + ' Value...: ' + item[primaryField] + '.  assuming it\s null' ) ;
                 itemRefiners['stat' + i] = null ;
 
             }
@@ -538,7 +549,7 @@ export function getRefinerStatsForItem( drillList: IDrillList, item: IDrillItemI
                 itemRefiners['stat' + i] = new Date(item[primaryField]).getTime() ;
 
             } else {
-                console.log('Unable to do ' + stat + ' on ' + primaryType + ' Value...: ' + item[primaryField] + '.  assuming it\s null');
+                itemRefiners.comments.push( 'AvgMaxMin Err: ' + 'Unable to do ' + stat + ' on ' + primaryType + ' Value...: ' + item[primaryField] + '.  assuming it\s null' ) ;
                 itemRefiners['stat' + i] = null ;
 
             }
@@ -549,12 +560,12 @@ export function getRefinerStatsForItem( drillList: IDrillList, item: IDrillItemI
                 itemRefiners['stat' + i] = getAge( item[primaryField], stat === 'daysAgo' ? 'days' : 'months' ) ;
 
             } else {
-                console.log('Unable to do ' + stat + ' on ' + primaryType + ' Value...: ' + item[primaryField] + '.  assuming it\s null');
+                itemRefiners.comments.push( 'TimeAgo Err: ' + 'Unable to do ' + stat + ' on ' + primaryType + ' Value...: ' + item[primaryField] + '.  assuming it\s null' ) ;
                 itemRefiners['stat' + i] = null ;
             }
 
         } else if ( stat === 'eval' ) {
-            console.log('eval is not yet available:  not calculating ' + title );
+            itemRefiners.comments.push( 'Eval Err: ' + 'eval is not yet available:  not calculating ' + title ) ;
 
         }
 

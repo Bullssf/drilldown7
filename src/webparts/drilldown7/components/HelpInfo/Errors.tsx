@@ -110,13 +110,16 @@ public constructor(props:IErrorsProps){
  */
 
             let thisPage = null;
-            let stringsError = <tr><td>Refiner just shows "All"</td><td>  </td><td>Refiner Rule must be compatible with the refiner.  For instance, you can't have a date rule for a person field.</td></tr>;
+            let messageRows = [];
+
+            messageRows.push( <tr><td>Refiner just shows "All"</td><td>  </td><td>Refiner Rule must be compatible with the refiner.  For instance, you can't have a date rule for a person field.</td></tr> );
+            messageRows.push( <tr><td>Refiner Summary Stack order</td><td>  </td><td>When you have refiner in date format MMM or DDD (like Jan Feb Mar), refiners are sorted in logical order but stacked bar chart is sorted alphabetically.  Given this is not used as much, adds a lot of complexity, it is not on the roadmap to correct.</td></tr> );
 
             thisPage = <div>
                 <h2></h2>
                 <table className={styles.infoTable}>
-                    <tr><th>Issue</th><th>Links</th><th>Notes</th></tr>
-                    { stringsError }
+                    <tr><th style={{ minWidth: '200px' }}>Issue</th><th>Links</th><th>Notes</th></tr>
+                    { messageRows }
                 </table>
             </div>;
 

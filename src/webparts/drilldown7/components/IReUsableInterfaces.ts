@@ -68,6 +68,7 @@ export function refinerRuleItems() {
 
 export interface IItemRefiners {
   lev0: any[]; lev1: any[]; lev2: any[];
+  comments: string[];
   stat0?: number;
   stat1?: number;
   stat2?: number;

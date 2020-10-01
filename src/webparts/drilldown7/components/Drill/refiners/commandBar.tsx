@@ -368,6 +368,6 @@ public componentDidUpdate(prevProps){
   }
 
   private _updateStateOnPropsChange() {
-    console.log('commandBar Prop changed!', this.props.checkedItem );
+    //console.log('commandBar Prop changed!', this.props.checkedItem );
   }
 }

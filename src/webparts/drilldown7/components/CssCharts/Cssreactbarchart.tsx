@@ -212,7 +212,7 @@ public componentDidUpdate(prevProps){
     let chartIdx = -1;
     let charts = chartData.map( cdO => {
       chartIdx ++ ;
-      console.log('buildingLabels:', cdO.labels.join(', '));
+//      console.log('buildingLabels:', cdO.labels.join(', '));
       let selectedChartID = [this.props.callBackID , chartIdx.toString()].join('|||');
 
       //2020-09-24:  Added this because the value array was getting mysteriously overwritten to nulls all the time.
