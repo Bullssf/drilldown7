@@ -120,20 +120,17 @@ public constructor(props:IAdvancedProps){
  */
 
             let row00 = <tr><td>Refiner Rules</td><td></td><td></td></tr>;
-            let row01 = <tr><td>Parse text</td><td>parseBySemiColons</td><td></td></tr>;
-            let row02 = <tr><td>             </td><td>parseByCommas</td><td></td></tr>;
-            let row03 = <tr><td>Group Numbers</td><td>groupBy10s</td><td></td></tr>;
-            let row04 = <tr><td>             </td><td>groupBy100s</td><td></td></tr>;
-            let row05 = <tr><td>             </td><td>groupBy1000s</td><td></td></tr>;
-            let row06 = <tr><td>             </td><td>groupByMillions</td><td></td></tr>;
+            let row01 = <tr><td>Parse text</td><td>parseBySemiColons, parseByCommas</td><td></td></tr>;
+            let row03 = <tr><td>Group Numbers</td><td>groupBy10s, groupBy100s, groupBy1000s, groupByMillions</td><td></td></tr>;
 
-            let row07 = <tr><td>Dates</td><td></td><td></td></tr>;
-            let row08 = <tr><td>             </td><td>isDate</td><td></td></tr>;
-            let row09 = <tr><td>             </td><td>groupByDays</td><td></td></tr>;
-            let row10 = <tr><td>             </td><td>groupByWeeks</td><td></td></tr>;
-            let row11 = <tr><td>             </td><td>groupByMonths</td><td></td></tr>;
-            let row12 = <tr><td>             </td><td>groupByYears</td><td></td></tr>;
-            let row13 = <tr><td>             </td><td>groupByDayOfWeek</td><td></td></tr>;
+
+            let row07 = <tr><td>Dates        </td><td>isDate, groupByDays, groupByWeeks, groupByMonths, groupByYears</td><td></td></tr>;
+            let row08 = <tr><td>             </td><td>groupByDayOfWeek, groupByMonthsMMM, groupByDayOfWeek, </td><td></td></tr>;
+            let row09 = <tr><td>             </td><td>groupByDateBuckets</td><td></td></tr>;
+            let row10 = <tr>Summary Stats    <td></td><td></td><td></td></tr>;
+            let row11 = <tr><td>             </td><td> </td><td></td></tr>;
+            let row12 = <tr><td>             </td><td> </td><td></td></tr>;
+            let row13 = <tr><td>             </td><td> </td><td></td></tr>;
 
             thisPage = <div>
                 <h2></h2>
@@ -141,11 +138,11 @@ public constructor(props:IAdvancedProps){
                     <tr><th>Info</th><th>Example</th><th>Details</th></tr>
                     { row00 }
                     { row01 }
-                    { row02 }
+                    {  }
                     { row03 }
-                    { row04 }
-                    { row05 }
-                    { row06 }
+                    {  }
+                    {  }
+                    {  }
 
                     { row07 }
                     { row08 }

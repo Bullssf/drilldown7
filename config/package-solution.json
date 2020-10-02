@@ -3,7 +3,7 @@
   "solution": {
     "name": "drilldown-7-client-side-solution",
     "id": "bdcf72e6-9215-4cba-9b02-892e5eab42f8",
-    "version": "1.0.3.1",
+    "version": "1.0.4.1",
     "includeClientSideAssets": true,
     "isDomainIsolated": false,
     "developer": {
