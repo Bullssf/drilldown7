@@ -445,7 +445,8 @@ export default class DrillDown extends React.Component<IDrillDownProps, IDrillDo
                 key: chartKey,
     
                 stylesChart: { paddingBottom: 0, marginBottom: 0, marginTop: 0},
-                stylesRow: { paddingBottom: 0, marginBottom: 0, marginTop: 0},   
+                stylesRow: { paddingBottom: 0, marginBottom: 0, marginTop: 0},
+                stylesBlock: s.stylesBlock ? s.stylesBlock : null,
             };
     
             resultSummary = 

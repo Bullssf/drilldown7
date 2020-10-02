@@ -259,6 +259,11 @@ public componentDidUpdate(prevProps){
         sortKey = 'labels';
         stacked = true;
 
+      } else if ( activeChartType === 'kpi-tiles' ) {
+        sortOrder = 'asis' ;
+        sortKey = 'labels';
+        stacked = true;
+
       }
 
 
@@ -277,7 +282,7 @@ public componentDidUpdate(prevProps){
       let stylesChart = cdO.stylesChart ? cdO.stylesChart : null;
       let stylesRow = cdO.stylesRow ? cdO.stylesRow : null;
       let stylesTitle = cdO.stylesTitle ? cdO.stylesTitle : null;
-      let stylesBlock = cdO.stylesBlock ? cdO.stylesBlock : null;
+      let stylesBlock = cdO.stylesBlock && cdO.stylesBlock[cdO.activeType] ? cdO.stylesBlock[cdO.activeType] : null;
       let stylesLabel = cdO.stylesLabel ? cdO.stylesLabel : null;
       let stylesValue = cdO.stylesValue ? cdO.stylesValue : null;
 
@@ -355,7 +360,7 @@ public componentDidUpdate(prevProps){
       for ( let i in chartValueArray ){
         barCount ++;
         let blockStyle : any = stylesBlock != null ? stylesBlock : {} ;
-        blockStyle.height = stateHeight;
+        blockStyle.height = activeChartType === 'kpi-tiles' ? blockStyle.height : stateHeight;
         blockStyle.width = ( cd.percents[i] ) + '%';
         
         if ( randomizeColors && stacked === true ) {
@@ -424,6 +429,14 @@ public componentDidUpdate(prevProps){
 
         }
 
+        if ( activeChartType === 'kpi-tiles' ) {
+          blockStyle.height = blockStyle.height ? blockStyle.height : '75px' ;
+          blockStyle.textAlign = blockStyle.textAlign ? blockStyle.textAlign : 'center' ;
+          blockStyle.margin = blockStyle.margin ? blockStyle.margin : '10px' ;
+          blockStyle.minWidth = blockStyle.minWidth ? blockStyle.minWidth : '100px' ;
+
+          barLabel = <div><div style={{fontSize: 'smaller', marginTop : '5px', marginBottom : '5px'}}> { cd.labels[i] }</div><div style={{fontSize: 'larger'}}> { barLabel }</div></div>;
+        }
 //        console.log('chartData valueStyle:', valueStyle );
 
         thisChart.push(

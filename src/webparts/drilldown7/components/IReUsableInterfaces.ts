@@ -18,7 +18,13 @@ export interface IRefinerStat {
   stat: IRefinerStatType;
   chartTypes: ICSSChartTypes[];
   eval?: string;
-
+  stylesChart?: any;
+  stylesTitle?: any;
+  stylesRow?: any;
+  stylesBlock?: any;
+  stylesLabel?: any;
+  stylesValue?: any;
+  
 }
 
 export interface IRefinerStats {
@@ -251,7 +257,7 @@ export interface IMyFonts{
     fontStyle?: string;
   }
 
-  export type ICSSChartTypes = 'pareto-asc' | 'pareto-dec' | 'pareto-labels' | 'stacked-column-labels' | 'stacked-column-dec' | 'stacked-column-asc';
+  export type ICSSChartTypes = 'pareto-asc' | 'pareto-dec' | 'pareto-labels' | 'stacked-column-labels' | 'stacked-column-dec' | 'stacked-column-asc' | 'kpi-tiles';
   export const CSSChartTypes : ICSSChartTypes[] = ['pareto-asc' , 'pareto-dec' , 'pareto-labels' , 'stacked-column-labels' , 'stacked-column-dec' , 'stacked-column-asc'];
 
   export type ISeriesSort = 'asis' | 'labels' | 'asc' | 'dec' | string ;
