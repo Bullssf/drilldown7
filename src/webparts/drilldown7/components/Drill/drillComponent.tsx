@@ -77,11 +77,13 @@ export interface IDrillWeb extends Partial<IPickedWebBasic> {
     siteIcon?: string;
   }
 
-
   export interface IDrillList extends Partial<IPickedList> {
     title: string;
     name?: string;
     guid?: string;
+    fetchCount: number;
+    fetchCountMobile: number;
+    restFilter: string;
     isLibrary?: boolean;
     webURL?: string;
     refiners: string[]; //String of Keys representing the static name of the column used for drill downs
@@ -368,9 +370,11 @@ export default class DrillDown extends React.Component<IDrillDownProps, IDrillDo
             if ( currentWidth >= vd.minWidth && vd.minWidth >= maxViewWidth ) {
                 result = vd.includeDetails;
                 maxViewWidth = vd.minWidth;
+            } else {
+                
             }
         });
-        //console.log('includeDetails: ', result);
+        console.log('includeDetails: ', result);
         return result;
 
     }
@@ -548,6 +552,11 @@ export default class DrillDown extends React.Component<IDrillDownProps, IDrillDo
             title: title,
             name: name,
             guid: '',
+
+            fetchCount: this.props.performance.fetchCount,
+            fetchCountMobile: this.props.performance.fetchCountMobile,
+            restFilter: this.props.performance.restFilter,
+
             isLibrary: isLibrary,
             webURL: webURL,
             refiners: refiners,
@@ -671,6 +680,16 @@ public componentDidUpdate(prevProps){
     }
     if ( prevProps.listName !== this.props.listName || prevProps.webURL !== this.props.webURL ) {
       rebuildPart = true ;
+    }
+
+    if ( prevProps.performance.fetchCount !== this.props.performance.fetchCount ) {
+        rebuildPart = true ;
+    }
+    if ( prevProps.performance.fetchCountMobile !== this.props.performance.fetchCountMobile ) {
+        rebuildPart = true ;
+    }
+    if ( prevProps.performance.restFilter !== this.props.performance.restFilter ) {
+        rebuildPart = true ;
     }
     if ( prevProps.WebpartHeight !== this.props.WebpartHeight || prevProps.WebpartWidth !== this.props.WebpartWidth ) {
         rebuildPart = true ;
