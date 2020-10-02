@@ -67,7 +67,8 @@ export async function getAllItems( drillList: IDrillList, addTheseItemsToState: 
      */
 
     try {
-        allItems = await thisListObject.items.select(selectCols).expand(expandThese).orderBy('ID',false).top(drillList.fetchCount).filter(drillList.restFilter).get();
+        let fetchCount = drillList.fetchCount > 0 ? drillList.fetchCount : 200;
+        allItems = await thisListObject.items.select(selectCols).expand(expandThese).orderBy('ID',false).top(fetchCount).filter(drillList.restFilter).get();
 
     } catch (e) {
         errMessage = getHelpfullError(e, true, true);

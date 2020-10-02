@@ -370,9 +370,11 @@ export default class DrillDown extends React.Component<IDrillDownProps, IDrillDo
             if ( currentWidth >= vd.minWidth && vd.minWidth >= maxViewWidth ) {
                 result = vd.includeDetails;
                 maxViewWidth = vd.minWidth;
+            } else {
+                
             }
         });
-        //console.log('includeDetails: ', result);
+        console.log('includeDetails: ', result);
         return result;
 
     }
