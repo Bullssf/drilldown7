@@ -505,12 +505,12 @@ private _filterBy: any;
 
       let thisProps: string[] = Object.keys( this.properties );
 
-      let restFilter = '';
+      let restFilterLD = '';
 
       if ( this.properties.webPartScenario !== '' && this.properties.webPartScenario != null ) {
         //newMap = getAllItems(configWebURL, 'DrilldownPreConfigProps', thisProps );
-        restFilter = "webPartScenario eq '" + this.properties.webPartScenario + "'";
-        console.log('_getListDefintions restFilter:', restFilter );
+        restFilterLD = "webPartScenario eq '" + this.properties.webPartScenario + "'";
+        console.log('_getListDefintions restFilterLD:', restFilterLD );
       }
 
       //Must remove 'newMap' from props because it's one can't be mapped.
@@ -518,7 +518,7 @@ private _filterBy: any;
       //if (newMapIdx > -1) { thisProps.splice(newMapIdx, 1); }
 
       //if ( runAsync === true ) {
-        newMap = await getAllItems(configWebURL, 'DrilldownPreConfigProps', thisProps, restFilter, runAsync );
+        newMap = await getAllItems(configWebURL, 'DrilldownPreConfigProps', thisProps, restFilterLD, runAsync );
       //} else {
       //  newMap = getAllItems(configWebURL, 'DrilldownPreConfigProps', thisProps, runAsync );
       //}
@@ -671,8 +671,6 @@ private _filterBy: any;
         console.log('Did NOT List Defintion... updating column name props');
 
       }
-
-
       this.context.propertyPane.refresh();
     }
 
