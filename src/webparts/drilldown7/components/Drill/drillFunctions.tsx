@@ -67,7 +67,7 @@ export async function getAllItems( drillList: IDrillList, addTheseItemsToState: 
      */
 
     try {
-        allItems = await thisListObject.items.select(selectCols).expand(expandThese).orderBy('ID',false).top(200).get();
+        allItems = await thisListObject.items.select(selectCols).expand(expandThese).orderBy('ID',false).top(drillList.fetchCount).filter(drillList.restFilter).get();
 
     } catch (e) {
         errMessage = getHelpfullError(e, true, true);

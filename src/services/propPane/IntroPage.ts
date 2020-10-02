@@ -203,7 +203,7 @@ export class IntroPage {
             min: 100,
             max: 2000,
             step: 100,
-            value: 300,
+            value: webPartProps.fetchCount,
           }),
 
           PropertyPaneSlider('fetchCountMobile', {
@@ -211,7 +211,7 @@ export class IntroPage {
             min: 100,
             max: 2000,
             step: 100,
-            value: 200,
+            value: webPartProps.fetchCountMobile,
             disabled: true,
           }),
 
@@ -219,6 +219,7 @@ export class IntroPage {
             label: 'Rest filter to load only specific items.',
             description: 'See Github Wiki for examples',
             multiline: true,
+            value: webPartProps.restFilter,
           }),
 
           PropertyPaneToggle('updateRefinersOnTextSearch', {
