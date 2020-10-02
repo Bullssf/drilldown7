@@ -272,6 +272,7 @@ export interface IDrillDownState {
 
     rules: string;
     refiners: string[]; //String of Keys representing the static name of the column used for drill downs
+    maxRefinersToShow: number;
     refinerObj: IRefinerLayer;
     showDisabled?: boolean;
 
@@ -389,6 +390,7 @@ export default class DrillDown extends React.Component<IDrillDownProps, IDrillDo
             labels: labels,
             chartTypes: chartTypes,
             barValueAsPercent: false,
+            valueIsCount: true,
 
             //The string value here must match the object key below
             barValues: 'val1',
@@ -409,6 +411,56 @@ export default class DrillDown extends React.Component<IDrillDownProps, IDrillDo
         ></Cssreactbarchart>;
 
         return resultSummary;
+
+    }
+
+    private buildStatCharts(  stats: IRefinerStat[], callBackID: string, refinerObj: IRefinerLayer , ) {
+        let resultSummary = null;
+        let theseCharts : any[] = [];
+        let i = 0;
+        stats.map( s => {
+
+            let labels = refinerObj.childrenKeys ;
+            let theseStats = refinerObj['stat' + i] ;
+            let finalStats = [];
+            let theseCount = refinerObj['stat' + i + 'Count'];
+
+            if ( s.stat === 'avg' ) {
+                theseStats.map( ( v, iV ) => {
+                    finalStats.push( theseCount[ iV ] == 0 ? null : v / theseCount[ iV ] ) ;
+                });
+            } else { finalStats = JSON.parse( JSON.stringify( theseStats ) ) ; }
+
+            let chartKey : string = labels.join('') + theseCount.join('');
+    
+            let chartData : ICSSChartSeries = {
+                title: s.title,
+                labels: labels,
+                chartTypes: s.chartTypes,
+                barValueAsPercent: false,
+    
+                //The string value here must match the object key below
+                barValues: 'val1',
+                val1: finalStats ,
+                key: chartKey,
+    
+                stylesChart: { paddingBottom: 0, marginBottom: 0, marginTop: 0},
+                stylesRow: { paddingBottom: 0, marginBottom: 0, marginTop: 0},
+                stylesBlock: s.stylesBlock ? s.stylesBlock : null,
+            };
+    
+            resultSummary = 
+            <Cssreactbarchart 
+                chartData = { [ chartData ] }
+                callBackID = { callBackID }
+                //onAltClick = { this.changeRefinerOrder.bind(this) }
+            ></Cssreactbarchart>;
+    
+            theseCharts.push( resultSummary );
+
+        });
+
+        return theseCharts;
 
     }
 
@@ -508,6 +560,11 @@ export default class DrillDown extends React.Component<IDrillDownProps, IDrillDo
         let errMessage = drillList.refinerRules === undefined ? 'Invalid Rule set: ' +  this.props.rules : '';
         if ( drillList.refinerRules === undefined ) { drillList.refinerRules = [[],[],[]] ; } 
 
+        let maxRefinersToShow = 1;
+        if ( this.props.refiners ) {
+            if ( this.props.refiners.length > 1 ) { maxRefinersToShow = 2; }
+            if ( this.props.refiners.length > 2 ) { maxRefinersToShow = 3; }
+        }
 
         this.state = { 
 
@@ -553,6 +610,7 @@ export default class DrillDown extends React.Component<IDrillDownProps, IDrillDo
 
             groupByFields : [],
             refiners: this.props.refiners,
+            maxRefinersToShow: maxRefinersToShow,
 
             style: this.props.style ? this.props.style : 'commandBar',
 
@@ -706,8 +764,8 @@ public componentDidUpdate(prevProps){
                         
             //                <div> { resizePage0 } </div>
             let showRefiner0 = true;
-            let showRefiner1 = this.state.searchMeta.length >= 1 && this.state.searchMeta[0] !== 'All' ? true : false;
-            let showRefiner2 = this.state.searchMeta.length >= 2 && this.state.searchMeta[1] !== 'All' ? true : false;
+            let showRefiner1 = this.state.maxRefinersToShow >= 2 && this.state.searchMeta[0] !== 'All' ? true : false;
+            let showRefiner2 = this.state.maxRefinersToShow >= 3 && this.state.searchMeta.length >= 2 && this.state.searchMeta[1] !== 'All' ? true : false;
 
             let thisIsRefiner0 = null;
             let thisIsRefiner1 = null;
@@ -822,22 +880,29 @@ public componentDidUpdate(prevProps){
                  */
 
                 let summaryCharts = [];
+                let statCharts = [];
+                let statRefinerObject = null;
                 if ( this.state.showSummary === true ) {
                     summaryCharts.push( this.buildSummaryCountCharts( this.state.refiners[0], 'refiner0' , this.state.refinerObj, RefinerChartTypes ) );
+                    statRefinerObject = this.state.refinerObj;
 
-                    if ( this.state.searchMeta[0] !== 'All' ) {
+                    if ( this.state.maxRefinersToShow > 1 && this.state.searchMeta[0] !== 'All' ) {
 
                         let childIndex0 = this.state.refinerObj.childrenKeys.indexOf(this.state.searchMeta[0]);
                         summaryCharts.push( this.buildSummaryCountCharts( this.state.refiners[1], 'refiner1' , this.state.refinerObj.childrenObjs[childIndex0], RefinerChartTypes ) );
+                        statRefinerObject = this.state.refinerObj.childrenObjs[childIndex0];
 
-                        if ( this.state.searchMeta.length > 1 && this.state.searchMeta[1] !== 'All' ) {
+                        if ( this.state.maxRefinersToShow > 2 && this.state.searchMeta.length > 1 && this.state.searchMeta[1] !== 'All' ) {
 
                             let childIndex1 = this.state.refinerObj.childrenObjs[childIndex0].childrenKeys.indexOf(this.state.searchMeta[1]);
                             summaryCharts.push( this.buildSummaryCountCharts( this.state.refiners[2], 'refiner2' , this.state.refinerObj.childrenObjs[childIndex0].childrenObjs[childIndex1],  RefinerChartTypes ) );
-
+                            statRefinerObject = this.state.refinerObj.childrenObjs[childIndex0].childrenObjs[childIndex1];
                         }
 
                     }
+
+                    statCharts = this.buildStatCharts( this.state.drillList.refinerStats, 'summaries' , statRefinerObject );
+
 
                 } else { summaryCharts = null ; }
 
@@ -886,6 +951,7 @@ public componentDidUpdate(prevProps){
                         </Stack>
 
                         <div> { summaryCharts } </div>
+                        <div> { statCharts } </div>
 
                         <div>
 
@@ -959,11 +1025,18 @@ public componentDidUpdate(prevProps){
         cmdCats.push ( this.convertRefinersToCMDs( ['All'],  refinerObj.childrenKeys, countTree, 0 , 0, refinerObj) );
 
         console.log('addTheseItemsToState: refinerObj',refinerObj );
-        console.log('addTheseItemsToState: childrenKeys',refinerObj.childrenKeys );
-        console.log('addTheseItemsToState: childrenCounts',refinerObj.childrenCounts );
-        console.log('addTheseItemsToState: childrenMultiCounts',refinerObj.childrenMultiCounts );
+        console.log('drillList.refinerStats: ', drillList.refinerStats );
+//        console.log('addTheseItemsToState: childrenKeys',refinerObj.childrenKeys );
+//        console.log('addTheseItemsToState: childrenCounts',refinerObj.childrenCounts );
+//        console.log('addTheseItemsToState: childrenMultiCounts',refinerObj.childrenMultiCounts );
 
         console.log('addTheseItemsToState allItems: ', allItems);
+
+        let maxRefinersToShow = 1;
+        if ( this.props.refiners ) {
+            if ( this.props.refiners.length > 1 ) { maxRefinersToShow = 2; }
+            if ( this.props.refiners.length > 2 ) { maxRefinersToShow = 3; }
+        }
 
         this.setState({
             allItems: allItems,
@@ -977,6 +1050,7 @@ public componentDidUpdate(prevProps){
             cmdCats: cmdCats,
             drillList: drillList,
             refiners: drillList.refiners,
+            maxRefinersToShow: maxRefinersToShow,
             rules: JSON.stringify(drillList.refinerRules),
         });
 
@@ -1121,7 +1195,7 @@ public componentDidUpdate(prevProps){
             validText : validText,
         };
 
-        console.log('clickInfo:  ' , clickInfo );
+//        console.log('clickInfo:  ' , clickInfo );
 
         return clickInfo;
 

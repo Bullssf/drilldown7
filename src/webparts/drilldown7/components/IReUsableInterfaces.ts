@@ -1,5 +1,5 @@
 import { ListView, IViewField, SelectionMode, GroupOrder, IGrouping } from "@pnp/spfx-controls-react/lib/ListView";
-  
+
 export interface IRefinerRules {
   rules: RefineRuleValues[];
 }
@@ -16,9 +16,15 @@ export interface IRefinerStat {
   secondField?: string;
   title: string;
   stat: IRefinerStatType;
-  chartType: IRefinerChartType;
+  chartTypes: ICSSChartTypes[];
   eval?: string;
-
+  stylesChart?: any;
+  stylesTitle?: any;
+  stylesRow?: any;
+  stylesBlock?: any;
+  stylesLabel?: any;
+  stylesValue?: any;
+  
 }
 
 export interface IRefinerStats {
@@ -68,6 +74,7 @@ export function refinerRuleItems() {
 
 export interface IItemRefiners {
   lev0: any[]; lev1: any[]; lev2: any[];
+  comments: string[];
   stat0?: number;
   stat1?: number;
   stat2?: number;
@@ -250,7 +257,7 @@ export interface IMyFonts{
     fontStyle?: string;
   }
 
-  export type ICSSChartTypes = 'pareto-asc' | 'pareto-dec' | 'pareto-labels' | 'stacked-column-labels' | 'stacked-column-dec' | 'stacked-column-asc';
+  export type ICSSChartTypes = 'pareto-asc' | 'pareto-dec' | 'pareto-labels' | 'stacked-column-labels' | 'stacked-column-dec' | 'stacked-column-asc' | 'kpi-tiles';
   export const CSSChartTypes : ICSSChartTypes[] = ['pareto-asc' , 'pareto-dec' , 'pareto-labels' , 'stacked-column-labels' , 'stacked-column-dec' , 'stacked-column-asc'];
 
   export type ISeriesSort = 'asis' | 'labels' | 'asc' | 'dec' | string ;
@@ -261,6 +268,7 @@ export interface IMyFonts{
     chartTypes: ICSSChartTypes[];
     activeType?: number;
     key: string;
+    valueIsCount?: boolean;
 
     barValueAsPercent? : boolean;
     height?: number | string ; //This would be horizonal bar height... one horizontal layer
