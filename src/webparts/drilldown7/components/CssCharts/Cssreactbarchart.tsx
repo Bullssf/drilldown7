@@ -313,14 +313,29 @@ public componentDidUpdate(prevProps){
       let maxNumber: number = Math.max( ...chartValueArray );  //Need to use ... spread in math operators:  https://stackoverflow.com/a/1669222
       let minNumber: number = Math.min( ...chartValueArray );  //Need to use ... spread in math operators:  https://stackoverflow.com/a/1669222
 
+      let minDivisor = null;
+      if ( minNumber >= 1000000 ) { minDivisor = 1000000 ; }
+//      else if ( minNumber >= 100000 ) { minDivisor = 100000 ; }
+//      else if ( minNumber >= 10000 ) { minDivisor = 10000 ; }
+      else if ( minNumber >= 1000 ) { minDivisor = 1000 ; }
+//      else if ( minNumber >= 100 ) { minDivisor = 100 ; }
+//      else if ( minNumber >= 10 ) { minDivisor = 10 ; }
+      else if ( minNumber >= 1 ) { minDivisor = 1 ; }
+      else if ( minNumber >= .1 ) { minDivisor = .1 ; }
+      else if ( minNumber >= .01 ) { minDivisor = .01 ; }
+      else if ( minNumber >= .001 ) { minDivisor = .001 ; }
+
       let chartRange = maxNumber - minNumber;
       let leftEdgeValue = Math.floor( minNumber - chartRange * .1 );
       if ( leftEdgeValue < 0 && minNumber >= 1 ) { leftEdgeValue = 0 ; } //Set to zero if it's close to 
       let rightEdgeValue = maxNumber;
 
-      let scaleNote = 'Scale: '  + leftEdgeValue + ' to ' + rightEdgeValue;
+      let scaleNote = 'Scale: '  + leftEdgeValue.toPrecision(3) + ' to ' + rightEdgeValue.toPrecision(3);
 
-      let scaleNoteEle = <div style= {{ paddingBottom: 10, paddingTop: 10, fontWeight: 600 , fontSize: 'smaller' }} title={ scaleNote} > { scaleNote }</div>;
+      //https://stackoverflow.com/a/2901298/4210807 - get string value with commas
+      if ( minDivisor > 1 ) { scaleNote += ' in ' + minDivisor.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","); }
+
+      let scaleNoteEle = <div style= {{ paddingBottom: 10, paddingTop: 10, fontWeight: 600 , fontSize: 'smaller', lineHeight: '.75em' }} title={ scaleNote } > { scaleNote }</div>;
 
 //      console.log('chartData after: cd', cd );
 //      console.log('chartData minNumber, maxNumber:', minNumber, maxNumber );
@@ -355,7 +370,17 @@ public componentDidUpdate(prevProps){
         }
 
         let valueStyle : any = stylesValue != null ? stylesValue : {} ;
-        let barLabel = barValueAsPercent === true ? ( cd.percents[i].toFixed(1) ) + '%' : chartValueArray[i];
+
+        let barNumber = null;
+        if ( minDivisor > 1 ) {
+          barNumber = ( chartValueArray[i] / minDivisor ).toFixed(1) ;
+          
+        } else {
+          barNumber = cdO.valueIsCount ? chartValueArray[i] : chartValueArray[i].toPrecision(3) ;
+        }
+
+        let barLabel = barValueAsPercent === true ?
+          ( cd.percents[i].toFixed(1) ) + '%' : barNumber ;
 
         if ( stacked === false ) { 
 
@@ -421,13 +446,18 @@ public componentDidUpdate(prevProps){
       thisRowStyle.fontWeight = '600';
 
       if ( stacked === false ) { 
-        thisRowStyle.maxWidth = '80%';
-        thisRowStyle.marginBottom = null;
+        thisRowStyle.maxWidth = '100%';
+        thisRowStyle.marginBottom = thisRowStyle.marginBottom ? thisRowStyle.marginBottom : null;
       }
       
+      let thisScale = '';
+      if ( minDivisor === 1000000 ) {  thisScale = ' in Millions' ; }
+      else if ( minDivisor === 1000 ) {  thisScale = ' in Thousands' ; }
+
+      let theTitle = cd.title + thisScale;
       let titleEle = titleLocation === 'side' ?
-        <h6 style={ thisTitleStyle }>{ cd.title }</h6> :
-        <div style={ thisTitleStyle }>{ cd.title }<span style={{paddingLeft: '15px', fontSize: 'smaller'}}>( { barCount} ) </span></div>;
+        <h6 style={ thisTitleStyle }>{ theTitle }</h6> :
+        <div style={ thisTitleStyle }>{ theTitle }<span style={{paddingLeft: '15px', fontSize: 'smaller'}}>( { barCount} ) </span></div>;
 
       return <div className={ stylesC.row } style={ thisRowStyle }>
           { titleEle }

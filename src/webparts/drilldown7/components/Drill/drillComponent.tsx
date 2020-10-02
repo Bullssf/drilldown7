@@ -390,6 +390,7 @@ export default class DrillDown extends React.Component<IDrillDownProps, IDrillDo
             labels: labels,
             chartTypes: chartTypes,
             barValueAsPercent: false,
+            valueIsCount: true,
 
             //The string value here must match the object key below
             barValues: 'val1',
@@ -420,8 +421,16 @@ export default class DrillDown extends React.Component<IDrillDownProps, IDrillDo
         stats.map( s => {
 
             let labels = refinerObj.childrenKeys ;
-            let theseStats = refinerObj['stat' + i];
-            let theseCount = refinerObj['stat' + i + 'Count'];    
+            let theseStats = refinerObj['stat' + i] ;
+            let finalStats = [];
+            let theseCount = refinerObj['stat' + i + 'Count'];
+
+            if ( s.stat === 'avg' ) {
+                theseStats.map( ( v, iV ) => {
+                    finalStats.push( theseCount[ iV ] == 0 ? null : v / theseCount[ iV ] ) ;
+                });
+            } else { finalStats = JSON.parse( JSON.stringify( theseStats ) ) ; }
+
             let chartKey : string = labels.join('') + theseCount.join('');
     
             let chartData : ICSSChartSeries = {
@@ -432,16 +441,16 @@ export default class DrillDown extends React.Component<IDrillDownProps, IDrillDo
     
                 //The string value here must match the object key below
                 barValues: 'val1',
-                val1: theseStats ,
+                val1: finalStats ,
                 key: chartKey,
     
                 stylesChart: { paddingBottom: 0, marginBottom: 0, marginTop: 0},
-    
+                stylesRow: { paddingBottom: 0, marginBottom: 0, marginTop: 0},   
             };
     
             resultSummary = 
             <Cssreactbarchart 
-                chartData = { [chartData] }
+                chartData = { [ chartData ] }
                 callBackID = { callBackID }
                 //onAltClick = { this.changeRefinerOrder.bind(this) }
             ></Cssreactbarchart>;
