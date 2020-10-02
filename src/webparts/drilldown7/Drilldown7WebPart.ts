@@ -67,6 +67,13 @@ export interface IDrilldown7WebPartProps {
   rules1: string[];
   rules2: string[];
 
+  togCounts: boolean;
+  togSummary: boolean;
+  togStats: boolean;
+  fetchCount: number;
+  fetchCountMobile: number;
+  restFilter: string;
+
   showCatCounts: boolean;
   showSummary: boolean;
 
@@ -339,6 +346,18 @@ private _filterBy: any;
         analyticsWeb: strings.analyticsWeb,
         analyticsList: strings.analyticsList,
       
+        toggles: {
+            togCounts: this.properties.togCounts,
+            togSummary: this.properties.togSummary,
+            togStats: this.properties.togStats,
+        },
+    
+        performance: {
+            fetchCount: this.properties.fetchCount,
+            fetchCountMobile: this.properties.fetchCountMobile,
+            restFilter: this.properties.restFilter,
+        },
+
         // 2 - Source and destination list information
         listName: this.properties.parentListTitle,
         webURL: parentWeb,
@@ -663,7 +682,9 @@ private _filterBy: any;
     let updateOnThese = [
       'setSize','setTab','otherTab','setTab','otherTab','setTab','otherTab','setTab','otherTab',
       'parentListFieldTitles','progress','UpdateTitles','parentListTitle','childListTitle','parentListWeb','childListWeb', 'stats',
-      'rules0','rules1','rules2'
+      'rules0','rules1','rules2',
+      'togCounts', 'togSummary', 'togStats', 
+      'fetchCount', 'fetchCountMobile', 'restFilter'
     ];
     //alert('props updated');
     console.log('onPropertyPaneFieldChanged:', propertyPath, oldValue, newValue);

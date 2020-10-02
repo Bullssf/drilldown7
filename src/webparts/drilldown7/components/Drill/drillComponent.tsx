@@ -165,6 +165,18 @@ export interface IDrillDownProps {
     
     allLoaded: boolean;
 
+    toggles: {
+        togCounts: boolean;
+        togSummary: boolean;
+        togStats: boolean;
+    };
+
+    performance: {
+        fetchCount: number;
+        fetchCountMobile: number;
+        restFilter: string;
+    };
+
     viewType?: IViewType;
     viewDefs?: ICustViewDef[];
     parentListFieldTitles: string;
@@ -244,6 +256,7 @@ export interface IDrillDownState {
 
     showCatCounts: boolean;
     showSummary: boolean;
+    showStats: boolean;
 
     currentPage: string;
     searchCount: number;
@@ -418,47 +431,53 @@ export default class DrillDown extends React.Component<IDrillDownProps, IDrillDo
         let resultSummary = null;
         let theseCharts : any[] = [];
         let i = 0;
-        stats.map( s => {
+        if ( refinerObj == null || stats == null || stats.length === 0 ) {
+            //Do nothing
 
-            let labels = refinerObj.childrenKeys ;
-            let theseStats = refinerObj['stat' + i] ;
-            let finalStats = [];
-            let theseCount = refinerObj['stat' + i + 'Count'];
+        } else {
+            stats.map( s => {
 
-            if ( s.stat === 'avg' ) {
-                theseStats.map( ( v, iV ) => {
-                    finalStats.push( theseCount[ iV ] == 0 ? null : v / theseCount[ iV ] ) ;
-                });
-            } else { finalStats = JSON.parse( JSON.stringify( theseStats ) ) ; }
+                let labels = refinerObj.childrenKeys ;
+                let theseStats = refinerObj['stat' + i] ;
+                let finalStats = [];
+                let theseCount = refinerObj['stat' + i + 'Count'];
+    
+                if ( s.stat === 'avg' ) {
+                    theseStats.map( ( v, iV ) => {
+                        finalStats.push( theseCount[ iV ] == 0 ? null : v / theseCount[ iV ] ) ;
+                    });
+                } else { finalStats = JSON.parse( JSON.stringify( theseStats ) ) ; }
+    
+                let chartKey : string = labels.join('') + theseCount.join('');
+        
+                let chartData : ICSSChartSeries = {
+                    title: s.title,
+                    labels: labels,
+                    chartTypes: s.chartTypes,
+                    barValueAsPercent: false,
+        
+                    //The string value here must match the object key below
+                    barValues: 'val1',
+                    val1: finalStats ,
+                    key: chartKey,
+        
+                    stylesChart: { paddingBottom: 0, marginBottom: 0, marginTop: 0},
+                    stylesRow: { paddingBottom: 0, marginBottom: 0, marginTop: 0},
+                    stylesBlock: s.stylesBlock ? s.stylesBlock : null,
+                };
+        
+                resultSummary = 
+                <Cssreactbarchart 
+                    chartData = { [ chartData ] }
+                    callBackID = { callBackID }
+                    //onAltClick = { this.changeRefinerOrder.bind(this) }
+                ></Cssreactbarchart>;
+        
+                theseCharts.push( resultSummary );
+    
+            });
+        }
 
-            let chartKey : string = labels.join('') + theseCount.join('');
-    
-            let chartData : ICSSChartSeries = {
-                title: s.title,
-                labels: labels,
-                chartTypes: s.chartTypes,
-                barValueAsPercent: false,
-    
-                //The string value here must match the object key below
-                barValues: 'val1',
-                val1: finalStats ,
-                key: chartKey,
-    
-                stylesChart: { paddingBottom: 0, marginBottom: 0, marginTop: 0},
-                stylesRow: { paddingBottom: 0, marginBottom: 0, marginTop: 0},
-                stylesBlock: s.stylesBlock ? s.stylesBlock : null,
-            };
-    
-            resultSummary = 
-            <Cssreactbarchart 
-                chartData = { [ chartData ] }
-                callBackID = { callBackID }
-                //onAltClick = { this.changeRefinerOrder.bind(this) }
-            ></Cssreactbarchart>;
-    
-            theseCharts.push( resultSummary );
-
-        });
 
         return theseCharts;
 
@@ -577,6 +596,7 @@ export default class DrillDown extends React.Component<IDrillDownProps, IDrillDo
             showTips: false,
             showCatCounts: this.props.showCatCounts ? this.props.showCatCounts : false,
             showSummary: this.props.showSummary ? this.props.showSummary : false,
+            showStats: false,
 
             viewType: this.props.viewType === undefined || this.props.viewType === null ? 'React' : this.props.viewType,
 
@@ -882,30 +902,32 @@ public componentDidUpdate(prevProps){
                 let summaryCharts = [];
                 let statCharts = [];
                 let statRefinerObject = null;
-                if ( this.state.showSummary === true ) {
-                    summaryCharts.push( this.buildSummaryCountCharts( this.state.refiners[0], 'refiner0' , this.state.refinerObj, RefinerChartTypes ) );
-                    statRefinerObject = this.state.refinerObj;
+                let buildStats = this.state.showStats === true && this.state.drillList.refinerStats && this.state.drillList.refinerStats.length > 0 ? true : false;
+                let buildSummary = this.state.showSummary;
+
+                if ( this.state.showSummary === true || this.state.showStats === true) {
+                    
+                    if ( buildSummary ) { summaryCharts.push( this.buildSummaryCountCharts( this.state.refiners[0], 'refiner0' , this.state.refinerObj, RefinerChartTypes ) ); }
+                    if ( buildStats ) {  statRefinerObject = this.state.refinerObj; }
 
                     if ( this.state.maxRefinersToShow > 1 && this.state.searchMeta[0] !== 'All' ) {
 
                         let childIndex0 = this.state.refinerObj.childrenKeys.indexOf(this.state.searchMeta[0]);
-                        summaryCharts.push( this.buildSummaryCountCharts( this.state.refiners[1], 'refiner1' , this.state.refinerObj.childrenObjs[childIndex0], RefinerChartTypes ) );
-                        statRefinerObject = this.state.refinerObj.childrenObjs[childIndex0];
+                        if ( buildSummary ) {  summaryCharts.push( this.buildSummaryCountCharts( this.state.refiners[1], 'refiner1' , this.state.refinerObj.childrenObjs[childIndex0], RefinerChartTypes ) ); }
+                        if ( buildStats ) {  statRefinerObject = this.state.refinerObj.childrenObjs[childIndex0]; }
 
                         if ( this.state.maxRefinersToShow > 2 && this.state.searchMeta.length > 1 && this.state.searchMeta[1] !== 'All' ) {
 
                             let childIndex1 = this.state.refinerObj.childrenObjs[childIndex0].childrenKeys.indexOf(this.state.searchMeta[1]);
-                            summaryCharts.push( this.buildSummaryCountCharts( this.state.refiners[2], 'refiner2' , this.state.refinerObj.childrenObjs[childIndex0].childrenObjs[childIndex1],  RefinerChartTypes ) );
-                            statRefinerObject = this.state.refinerObj.childrenObjs[childIndex0].childrenObjs[childIndex1];
+                            if ( buildSummary ) {  summaryCharts.push( this.buildSummaryCountCharts( this.state.refiners[2], 'refiner2' , this.state.refinerObj.childrenObjs[childIndex0].childrenObjs[childIndex1],  RefinerChartTypes ) ); }
+                            if ( buildStats ) {  statRefinerObject = this.state.refinerObj.childrenObjs[childIndex0].childrenObjs[childIndex1]; }
                         }
-
                     }
 
-                    statCharts = this.buildStatCharts( this.state.drillList.refinerStats, 'summaries' , statRefinerObject );
-
-
-                } else { summaryCharts = null ; }
-
+                    if ( summaryCharts.length === 0 ) { summaryCharts = null ; }
+                    if ( !buildStats || statRefinerObject.childrenKeys.length > 0 ) { statCharts = this.buildStatCharts( this.state.drillList.refinerStats, 'summaries' , statRefinerObject ); }
+    
+                } 
 
                 /***
                  *    d888888b  .d88b.   d888b   d888b  db      d88888b .d8888. 
@@ -920,8 +942,6 @@ public componentDidUpdate(prevProps){
 
 
                 let toggles = <div style={{ float: 'right' }}> { makeToggles(this.getPageToggles()) } </div>;
-
-
 
                 /***
                  *    d888888b db   db d888888b .d8888.      d8888b.  .d8b.   d888b  d88888b 
@@ -1735,14 +1755,14 @@ public componentDidUpdate(prevProps){
             styles: '',
         };
 
-        let togView = {
+        let togStats = {
             //label: <span style={{ color: 'red', fontWeight: 900}}>Rails Off!</span>,
-            label: <span>View</span>,
-            key: 'togggleView',
-            _onChange: this.updateTogggleView.bind(this),
-            checked: this.state.viewType === 'React' ? true : false,
-            onText: 'React',
-            offText: 'MZ',
+            label: <span>Stats</span>,
+            key: 'togggleStats',
+            _onChange: this.updateTogggleStats.bind(this),
+            checked: this.state.showStats === true ? true : false,
+            onText: '',
+            offText: '',
             className: '',
             styles: '',
         };
@@ -1759,8 +1779,19 @@ public componentDidUpdate(prevProps){
             styles: '',
         };
 
-        let theseToggles = [togCounts, togSummary, togView , togRefinerStyle];
 
+        let theseToggles = [];
+
+        if ( this.props.toggles.togCounts === true  ) {
+            theseToggles.push( togCounts ) ;
+        }
+        if ( this.props.toggles.togSummary === true  ) {
+            theseToggles.push( togSummary ) ;
+        }
+        if ( this.props.toggles.togStats === true  ) {
+            theseToggles.push( togStats ) ;
+        }
+        
         let pageToggles : IContentsToggles = {
             toggles: theseToggles,
             childGap: this.props.allowRailsOff === true ? 30 : 30,
@@ -1777,6 +1808,13 @@ public componentDidUpdate(prevProps){
     private updateTogggleSummary() {
         this.setState({
             showSummary: !this.state.showSummary,
+          });
+    }
+
+    
+    private updateTogggleStats() {
+        this.setState({
+            showStats: !this.state.showStats,
           });
     }
 

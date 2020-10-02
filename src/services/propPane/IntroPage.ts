@@ -10,6 +10,7 @@ import {
   IPropertyPaneConfiguration,
   PropertyPaneButton,
   PropertyPaneButtonType,
+  PropertyPaneSlider,
 } from '@microsoft/sp-property-pane';
 
 import { PropertyFieldMultiSelect } from '@pnp/spfx-property-controls/lib/PropertyFieldMultiSelect';
@@ -197,6 +198,32 @@ export class IntroPage {
         { groupName: 'Performance Properties',
         isCollapsed: true ,
         groupFields: [
+          PropertyPaneSlider('fetchCount', {
+            label: 'Load this many items from PC',
+            min: 100,
+            max: 2000,
+            step: 100,
+            value: 300,
+          }),
+
+          PropertyPaneSlider('fetchCountMobile', {
+            label: 'Load this many items',
+            min: 100,
+            max: 2000,
+            step: 100,
+            value: 200,
+            disabled: true,
+          }),
+
+          PropertyPaneSlider('restFilter', {
+            label: 'Min width for Wide view',
+            min: 400,
+            max: 1600,
+            step: 100,
+            value: 1200,
+            disabled: true,
+          }),
+
           PropertyPaneToggle('updateRefinersOnTextSearch', {
             label: 'Update Refiners on text search',
             offText: 'No = Faster',
@@ -289,6 +316,30 @@ export class IntroPage {
               disabled: true,
             }),
           ]}, // this group
+
+                  // 9 - Other web part options
+        { groupName: 'Toggles',
+        isCollapsed: true ,
+        groupFields: [
+          PropertyPaneToggle('togCounts', { //togCounts, togSummary, togStats, fetchCount, fetchCountMobile, restFilter
+            label: 'Show Counts',
+            offText: 'No',
+            onText: 'Yes',
+          }),
+
+          PropertyPaneToggle('togSummary', {
+            label: 'Show Refiner Summary',
+            offText: 'No',
+            onText: 'Yes',
+          }),
+
+          PropertyPaneToggle('togStats', {
+            label: 'Show Statistics',
+            offText: 'No',
+            onText: 'Yes',
+          }),
+
+        ]}, // this group
 
         ]}; // Groups
   } // getPropertyPanePage()

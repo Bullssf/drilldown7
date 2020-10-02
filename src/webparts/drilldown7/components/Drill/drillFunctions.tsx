@@ -31,7 +31,7 @@ import { getDetailValueType, ITypeStrings } from '../../../../services/typeServi
 
 import { mergeAriaAttributeValues } from "office-ui-fabric-react";
 
-import { IRefiners, IRefinerLayer, IItemRefiners, RefineRuleValues, RefinerStatTypes, RefinerChartTypes, IRefinerStats, IRefinerStatType } from '../IReUsableInterfaces';
+import { IRefiners, IRefinerLayer, IItemRefiners, RefineRuleValues, RefinerStatTypes, IRefinerStats, IRefinerStatType } from '../IReUsableInterfaces';
 
 import { IRefinerStat } from '../../components/IReUsableInterfaces';
 
