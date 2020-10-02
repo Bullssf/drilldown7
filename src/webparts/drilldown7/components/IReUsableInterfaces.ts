@@ -7,9 +7,6 @@ export interface IRefinerRules {
 export type IRefinerStatType = 'sum' | 'avg' | 'max' | 'min' | 'daysAgo' | 'monthsAgo' | 'demo' | 'eval';
 export const RefinerStatTypes = ['sum' , 'avg' , 'max' , 'min' , 'daysAgo' , 'monthsAgo' , 'eval' ]; // , ''];
 
-export type IRefinerChartType = 'pareto' | 'stackedColumn' | '' | '' | '' | '' | '' ;
-export const RefinerChartTypes = ['pareto' , 'stackedColumn' ]; // , '' , '' , '' , '' , '' , ''];
-
 export interface IRefinerStat {
 
   primaryField: string;
