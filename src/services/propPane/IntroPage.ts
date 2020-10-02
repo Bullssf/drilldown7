@@ -215,13 +215,10 @@ export class IntroPage {
             disabled: true,
           }),
 
-          PropertyPaneSlider('restFilter', {
-            label: 'Min width for Wide view',
-            min: 400,
-            max: 1600,
-            step: 100,
-            value: 1200,
-            disabled: true,
+          PropertyPaneTextField('restFilter', {
+            label: 'Rest filter to load only specific items.',
+            description: 'See Github Wiki for examples',
+            multiline: true,
           }),
 
           PropertyPaneToggle('updateRefinersOnTextSearch', {
