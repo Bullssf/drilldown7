@@ -381,7 +381,13 @@ public componentDidUpdate(prevProps){
           barNumber = ( chartValueArray[i] / minDivisor ).toFixed(1) ;
           
         } else {
-          barNumber = cdO.valueIsCount ? chartValueArray[i] : chartValueArray[i].toPrecision(3) ;
+          if ( cdO.valueIsCount ) {
+            barNumber = chartValueArray[i];
+          } else if ( chartValueArray[i] == null || chartValueArray[i] == undefined ) {
+            barNumber = null;
+          } else {
+            barNumber = chartValueArray[i].toPrecision(3) ;
+          }
         }
 
         let barLabel = barValueAsPercent === true ?
