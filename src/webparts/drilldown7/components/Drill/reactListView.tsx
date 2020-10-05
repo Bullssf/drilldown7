@@ -2,12 +2,14 @@
 import * as React from 'react';
 import { Icon  } from 'office-ui-fabric-react/lib/Icon';
 
-import { IMyProgress, } from '../IReUsableInterfaces';
+import { IMyProgress, IQuickButton, IQuickCommands} from '../IReUsableInterfaces';
 import { IDrillItemInfo } from './drillComponent';
 
 import { autoDetailsList } from '../../../../services/hoverCardService';
 
 import { doesObjectExistInArray,  } from '../../../../services/arrayServices';
+
+import { findParentElementPropLikeThis } from '../../../../services/basicElements';
 
 
 import stylesL from '../ListView/listView.module.scss';
@@ -43,6 +45,8 @@ export interface IReactListItemsProps {
 
     highlightedFields?: string[];
 
+    quickCommands?: IQuickCommands;
+
 }
 
 export interface IReactListItemsState {
@@ -53,6 +57,7 @@ export interface IReactListItemsState {
   showPanel: boolean;
   panelId: number;
   panelItem: IDrillItemInfo;
+  panelMessage?: any;
 }
 
 const stackFormRowTokens: IStackTokens = { childrenGap: 10 };
@@ -76,6 +81,35 @@ const iconClassInfo = mergeStyles({
 
 export default class ReactListItems extends React.Component<IReactListItemsProps, IReactListItemsState> {
 
+    private createPanelButtons ( quickCommands: IQuickCommands ) {
+
+        let buttons : any[] = [];
+        let result : any = null;
+
+        if ( quickCommands && quickCommands.buttons.length > 0 ) {
+
+            quickCommands.buttons.map( (b,i) => {
+
+                let icon = b.icon ? { iconName: b.icon } : null;
+                let buttonID = 'ButtonID' + i;
+                let buttonTitle = b.label;
+                let thisButton = b.primary === true ?
+                    <div id={ buttonID } title={ buttonTitle } ><PrimaryButton text={b.label} iconProps= { icon } onClick={this._panelButtonClicked.bind(this)} disabled={b.disabled} checked={b.checked} /></div>:
+                    <div id={ buttonID } title={ buttonTitle } ><DefaultButton text={b.label} iconProps= { icon } onClick={this._panelButtonClicked.bind(this)} disabled={b.disabled} checked={b.checked} /></div>;
+                buttons.push( thisButton );
+            });
+
+            const stackQuickCommands: IStackTokens = { childrenGap: 10 };
+            result = <Stack horizontal={ true } tokens={stackQuickCommands}>
+                {buttons}
+            </Stack>;
+
+        }
+
+
+        return result;
+
+    }
 
     private covertFieldInfoToIViewFields( parentListFieldTitles: [] , fieldsToShow: string[] ) {
 
@@ -218,6 +252,7 @@ export default class ReactListItems extends React.Component<IReactListItemsProps
                     isLightDismiss={ true }
                     isFooterAtBottom={ true }
                 >
+                    { this.createPanelButtons( this.props.quickCommands ) }
                     { autoDetailsList(this.state.panelItem, ["Title","refiners"],["search","meta","searchString"],true) }
                 </Panel>;
 
@@ -285,6 +320,61 @@ export default class ReactListItems extends React.Component<IReactListItemsProps
 //        this.setState({
 //        });
     }
+
+
+    private _panelButtonClicked = ( item ) : void => {
+
+        let e: any = event;
+        let thisID = findParentElementPropLikeThis(e.target, 'id', 'ButtonID', 5, 'begins');
+//        console.log( '_panelButtonClicked: item =', item );
+//        console.log( '_panelButtonClicked: e = ', e );
+//        console.log('Click on this button ID: ', thisID);
+        if ( !thisID ) { 
+
+            alert('Whoops! Can not find ID of _panelButtonClicked!');
+            return null;
+
+        } else {
+
+            let thisButtonObject : IQuickButton = this.props.quickCommands.buttons[thisID.replace('ButtonID','')];
+
+            if ( !thisButtonObject ) {
+                alert('_panelButtonClicked - can not find thisButtonObject - ' + thisID );
+            } else {
+                if ( thisButtonObject.alert ) { alert( thisButtonObject.alert ); }
+                if ( thisButtonObject.console ) { console.log( thisButtonObject.alert ); }
+                if ( thisButtonObject.confirm ) {  }
+
+                if ( thisButtonObject.updateItem ) {
+                    let readyToUpdate = true;
+                    if ( !this.props.quickCommands.listWebUrl ) { alert('Missing listWebUrl for quickCommands') ; readyToUpdate = false ; }
+                    if ( !this.props.quickCommands.listName ) { alert('Missing listName for quickCommands') ; readyToUpdate = false ; }
+
+                    if ( readyToUpdate === true ) {
+                        //Attempt to update item:
+
+                    } else {
+                        //Don't update item:
+                    }
+
+                }
+
+                if ( thisButtonObject.panelMessage ) {
+                    this.setState({
+                        panelMessage: thisButtonObject.panelMessage,
+                    });
+                 }
+            }
+
+
+        }
+
+
+
+
+
+    }
+
 
     //private _sampleOnClick = (item): void => {
     private _onShowPanel = (item): void => {

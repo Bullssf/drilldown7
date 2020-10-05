@@ -200,6 +200,25 @@ import {
   
             ]}, // this group
 
+          // 2 - Source and destination list information
+          {  groupName: 'Quick Commands',
+              isCollapsed: true ,
+              groupFields: [
+
+                PropertyPaneLink('JSON Link' , {
+                    text: 'Use this site to more easily work on JSON',
+                    href: 'https://codebeautify.org/jsonviewer',
+                    target: '_blank',
+                  }),
+
+                PropertyPaneTextField('quickCommands', {
+                    label: 'Quick Command buttons',
+                    description: 'Simple Button commands in Item pane',
+                    multiline: true,
+                  }),
+  
+            ]}, // this group
+            
 
           ]}; // Groups
 
