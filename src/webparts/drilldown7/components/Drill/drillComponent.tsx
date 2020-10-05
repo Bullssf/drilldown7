@@ -459,7 +459,7 @@ export default class DrillDown extends React.Component<IDrillDownProps, IDrillDo
                     labels: labels,
                     chartTypes: s.chartTypes,
                     barValueAsPercent: false,
-        
+
                     //The string value here must match the object key below
                     barValues: 'val1',
                     val1: finalStats ,
@@ -555,7 +555,7 @@ export default class DrillDown extends React.Component<IDrillDownProps, IDrillDo
 
             fetchCount: this.props.performance.fetchCount,
             fetchCountMobile: this.props.performance.fetchCountMobile,
-            restFilter: this.props.performance.restFilter,
+            restFilter: !this.props.performance.restFilter ? ' ' : this.props.performance.restFilter,
 
             isLibrary: isLibrary,
             webURL: webURL,

@@ -116,6 +116,7 @@ export interface IDrilldown7WebPartProps {
 
   // 9 - Other web part options
   webPartScenario: string; //DEV, TEAM, CORP
+  definitionToggle: boolean;
   listDefinition: any; //Picked list defintion :  Title
 
   advancedPivotStyles: boolean;
@@ -380,7 +381,7 @@ private _filterBy: any;
         performance: {
             fetchCount: this.properties.fetchCount,
             fetchCountMobile: this.properties.fetchCountMobile,
-            restFilter: this.properties.restFilter,
+            restFilter: !this.properties.restFilter ? ' ' : this.properties.restFilter,
         },
 
         quickCommands: quickCommands,
@@ -709,7 +710,7 @@ private _filterBy: any;
       'parentListFieldTitles','progress','UpdateTitles','parentListTitle','childListTitle','parentListWeb','childListWeb', 'stats',
       'rules0','rules1','rules2',
       'togCounts', 'togSummary', 'togStats', 
-      'fetchCount', 'fetchCountMobile', 'restFilter', 'quickCommands',
+      'fetchCount', 'fetchCountMobile', 'restFilter', 'quickCommands', 'definitionToggle',
     ];
     //alert('props updated');
     console.log('onPropertyPaneFieldChanged:', propertyPath, oldValue, newValue);
