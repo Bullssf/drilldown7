@@ -94,6 +94,110 @@ export interface IItemRefiners {
   stat9Count?: number;
 }
 
+/**
+ * 
+  {
+    "buttons": [
+      {
+        "label": "ParkMe",
+        "primary": true,
+        "alert": "Hey, you Parked the project!",
+        "confirm": "Are you sure you want to Park this Project?",
+        "console": "Confirming we just parked a project",
+        "panelMessage": "ParkedPanel Text goes here!",
+        "icon": "Car",
+        "updateItem": {
+          "StatusTMT": "8. Park"
+        }
+      },
+      {
+        "label": "CompleteMe",
+        "primary": false,
+        "alert": "Hey, you Completed the project!",
+        "confirm": "Are you sure you want to Complete this Project?",
+        "console": "Confirming we just Completed a project",
+        "panelMessage": "Complete Panel Text goes here!",
+        "icon": "Checkbox",
+        "updateItem": {
+          "StatusTMT": "9. Completed",
+          "CompletedByTMT": "",
+          "CompletedDateTMT": ""
+        }
+      }
+    ],
+    "onUpdateAlsoCallback": false,
+    "callBack": null
+  }
+ */
+
+export const QuickCommandsTMT = {
+
+  buttons: [{
+      label: "ParkMe",
+      primary: false,
+      alert: "Hey, you Parked the project!",
+      confirm: "Are you sure you want to Park this Project?",
+      console: "Confirming we just parked a project",
+      panelMessage: "ParkedPanel Text goes here!",
+      icon: "Auto",
+      updateItem: {
+        StatusTMT: "8. Park",
+
+      }
+    },{
+      label: "CompleteMe",
+      primary: false,
+      alert: "Hey, you Completed the project!",
+      confirm: "Are you sure you want to Complete this Project?",
+      console: "Confirming we just Completed a project",
+      panelMessage: "Complete Panel Text goes here!",
+      icon: "Checkbox",
+      updateItem: {
+        StatusTMT: "9. Completed",
+        CompletedByTMT: "",
+        CompletedDateTMT: "",
+
+      }
+    },
+  ],
+  onUpdateAlsoCallback: false,
+  callBack: null,
+
+};
+
+export interface IQuickCommands {
+
+    buttons: IQuickButton[];
+    onUpdateAlsoCallback?: boolean; // If there is an update on button, then do callback
+    callBack?: any;
+    listWebUrl?: string;
+    listName?: string;
+
+}
+
+export interface IQuickButton {
+
+  label: string;
+  primary: boolean; //  Primary, Default
+  secondary?: string;
+  alert?: string;  //  Popup Alert
+  confirm?: string; //  Message to ask confirmation
+  disabled?: boolean;
+  console?: string; //  Command Message
+  icon?: string;
+  checked?: boolean;
+  panelMessage?: string; //Message to put below buttons in panel
+  updateItem: any; //  Should be object of item to update   example: { DueDate: 'setToToday', CompletedBy: 'setToMe' } 
+                  // People column commands:  'setToMe', 'setToClear', 'setToUserID'
+                  // Date column commands:  'setToToday', 'setOffsetDays+10', 'setOffsetDays-10', 'setToClear'
+                  // 'insertField<StaticFieldName>, insertMyName, insertToday, appendToField
+  groupID?: string; //Restrict button to this group of users (ID Number of Group)
+  styleButton?: string;
+  styleIcon?: string;
+
+}
+
+
 export interface IRefiners {
 
   thisKey: string;

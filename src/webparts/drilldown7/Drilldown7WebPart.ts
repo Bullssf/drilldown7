@@ -34,6 +34,7 @@ import { IDynamicDataCallables, IDynamicDataPropertyDefinition } from '@microsof
 import { RefineRuleValues } from './components/IReUsableInterfaces';
 
 import { IGrouping, IViewField } from "@pnp/spfx-controls-react/lib/ListView";
+import { IQuickButton, IQuickCommands } from './components/IReUsableInterfaces';
 
 
 
@@ -87,6 +88,8 @@ export interface IDrilldown7WebPartProps {
   parentListFieldTitles: string;
 
   onlyActiveParents: boolean;
+
+  quickCommands?: string;
 
   // 3 - General how accurate do you want this to be
 
@@ -238,6 +241,25 @@ private _filterBy: any;
     return vars;
   }
 
+
+  public getQuickCommandsObject( message: string, str: string ) {
+
+    let result : IQuickCommands = undefined;
+    
+    if ( str === null || str === undefined ) { return result; }
+    try {
+      str = str.replace(/\\\"/g,'"').replace(/\\'"/g,"'"); //Replace any cases where I copied the hashed characters from JSON file directly.
+      result = JSON.parse(str);
+
+    } catch(e) {
+      console.log(message + ' is not a valid JSON object.  Please fix it and re-run');
+
+    }
+    
+    return result;
+
+  }
+
   /**
    * This will just add the same Group By fields to all the views.
    * @param message 
@@ -318,6 +340,9 @@ private _filterBy: any;
     if (viewFields2 !== undefined ) { viewDefs.push( { minWidth: this.properties.viewWidth2, viewFields: viewFields2, groupByFields: groupByFields, includeDetails: this.properties.includeDetails }); }
     if (viewFields3 !== undefined ) { viewDefs.push( { minWidth: this.properties.viewWidth3, viewFields: viewFields3, groupByFields: groupByFields, includeDetails: this.properties.includeDetails }); }
 
+
+    let quickCommands : IQuickCommands = this.getQuickCommandsObject( 'Group Quick Commands', this.properties.quickCommands);
+
     console.log('Here are view Defs:', viewDefs );
 
     let stringRules: string = JSON.stringify( rules );
@@ -357,6 +382,8 @@ private _filterBy: any;
             fetchCountMobile: this.properties.fetchCountMobile,
             restFilter: this.properties.restFilter,
         },
+
+        quickCommands: quickCommands,
 
         // 2 - Source and destination list information
         listName: this.properties.parentListTitle,
@@ -682,7 +709,7 @@ private _filterBy: any;
       'parentListFieldTitles','progress','UpdateTitles','parentListTitle','childListTitle','parentListWeb','childListWeb', 'stats',
       'rules0','rules1','rules2',
       'togCounts', 'togSummary', 'togStats', 
-      'fetchCount', 'fetchCountMobile', 'restFilter'
+      'fetchCount', 'fetchCountMobile', 'restFilter', 'quickCommands',
     ];
     //alert('props updated');
     console.log('onPropertyPaneFieldChanged:', propertyPath, oldValue, newValue);

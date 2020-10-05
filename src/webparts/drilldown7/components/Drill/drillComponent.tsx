@@ -35,7 +35,7 @@ import { IPickedList, IPickedWebBasic, IMyPivots, IPivot,  ILink, IUser, IMyProg
 
 import { createLink } from '../HelpInfo/AllLinks';
 
-import { IRefiners, IRefinerLayer, IItemRefiners, } from '../IReUsableInterfaces';
+import { IRefiners, IRefinerLayer, IItemRefiners, IQuickButton, IQuickCommands } from '../IReUsableInterfaces';
 
 import { PageContext } from '@microsoft/sp-page-context';
 
@@ -178,6 +178,8 @@ export interface IDrillDownProps {
         fetchCountMobile: number;
         restFilter: string;
     };
+
+    quickCommands?: IQuickCommands;
 
     viewType?: IViewType;
     viewDefs?: ICustViewDef[];
@@ -326,8 +328,6 @@ export default class DrillDown extends React.Component<IDrillDownProps, IDrillDo
             }
         });
 
- //       console.log('getAppropriateViewFields BEST Width:', maxViewWidth );
-
         let avgWidth = result.length > 0 ? currentWidth/result.length : 100;
         let completeResult = result.map( f => {
 
@@ -341,7 +341,7 @@ export default class DrillDown extends React.Component<IDrillDownProps, IDrillDo
             return thisField;
         });
 
-        //console.log('getAppropriateViewFields:', completeResult);
+        console.log('getAppropriateViewFields:', completeResult);
         return completeResult;
 
     }
@@ -357,7 +357,7 @@ export default class DrillDown extends React.Component<IDrillDownProps, IDrillDo
                 maxViewWidth = vd.minWidth;
             }
         });
-        console.log('getAppropriateViewFields: ', result);
+        console.log('getAppropriateViewGroups: ', result);
         return result;
 
     }
@@ -374,7 +374,7 @@ export default class DrillDown extends React.Component<IDrillDownProps, IDrillDo
                 
             }
         });
-        console.log('includeDetails: ', result);
+        console.log('getAppropriateDetailMode: ', result);
         return result;
 
     }
@@ -904,6 +904,7 @@ public componentDidUpdate(prevProps){
                     groupByFields={ currentViewGroups }
                     items={ this.state.searchedItems}
                     includeDetails= { viewDefMode }
+                    quickCommands={ this.props.quickCommands }
                 ></ReactListItems>;
 
 
