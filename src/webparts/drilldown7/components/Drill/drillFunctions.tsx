@@ -587,8 +587,12 @@ function getRefinerFromField ( fieldValue : any, ruleSet: RefineRuleValues[], em
     if ( detailType === 'null' || detailType === 'undefined' || detailType === 'function' ){
         result = [ emptyRefiner ];
 
-    } else if ( detailType === 'boolean' || detailType === 'number'  ){
+    } else if ( detailType === 'boolean'  ){
         result = [ fieldValue ];
+
+    } else if ( detailType === 'number'  ){
+
+        result = [ getGroupByNumber(fieldValue, detailType, ruleSet ) ];
 
     } else if ( detailType === 'array' ){
         result = fieldValue;
@@ -635,6 +639,16 @@ function getRefinerFromField ( fieldValue : any, ruleSet: RefineRuleValues[], em
 
         } 
         result = [ reFormattedDate ];
+    
+    } else if ( detailType === 'numberstring' ) {
+
+        /**
+            options.push( buildKeyText( 'groupBy10s' ) );
+            options.push( buildKeyText( 'groupBy100s' ) );
+            options.push( buildKeyText( 'groupBy1000s' ) );
+            options.push( buildKeyText( 'groupByMillions' ) );
+         */
+        result = [  getGroupByNumber(fieldValue, detailType, ruleSet ) ];
 
     } else if ( detailType === 'string' ){
 
@@ -652,6 +666,104 @@ function getRefinerFromField ( fieldValue : any, ruleSet: RefineRuleValues[], em
             result = [ fieldValue ];
 
         }
+
+    }
+
+    return result;
+
+}
+
+function doThisMathOp( val: number, toThis: number, ref: RefineRuleValues[] ) {
+    let result = val;
+
+    if ( ref.indexOf('mathCeiling') > -1 ) {
+        result = Math.ceil(result/toThis) * toThis ;
+
+    } else if ( ref.indexOf('mathFloor') > -1 ) {
+        result = Math.floor(result/toThis) * toThis ;
+
+    } else if ( ref.indexOf('mathRound') > -1 ) {
+        result = Math.round(result/toThis) * toThis ;
+
+    } else { //This would be default
+        result = Math.round(result/toThis) * toThis ;
+
+    }
+
+    return result;
+
+}
+
+export function getGroupByNumber( fieldValue : any, type : ITypeStrings , ruleSet: RefineRuleValues[] ) {
+
+    //textAsNumber, 
+    let result = fieldValue;
+
+    if ( type === 'numberstring' && ruleSet.indexOf('textAsNumber') === -1 ) {
+        return result; // Do not apply any special rules.
+
+    } else if ( type === 'numberstring' ) { //This needs to be converted to number
+        result = parseFloat(fieldValue);
+
+    } else if ( type === 'number' ) { //This is already a number... do nothing
+
+    } else { //Just for kicks
+        alert('Not sure why this is happening... check out function:  \ngetGroupByNumber');
+
+    }
+
+    if ( ruleSet.indexOf( 'groupBy10s' ) > -1 ) {
+        result = doThisMathOp( result, 10, ruleSet ).toString();
+
+    } else if ( ruleSet.indexOf( 'groupBy100s' ) > -1 ) {
+        result = doThisMathOp( result, 100, ruleSet ).toString();
+
+    } else if ( ruleSet.indexOf( 'groupBy1000s' ) > -1 ) {
+        result = doThisMathOp( result, 1000, ruleSet ).toString();
+
+    } else if ( ruleSet.indexOf( 'groupByMillions' ) > -1 ) {
+        result = doThisMathOp( result, 1000000, ruleSet ).toString();
+
+    } else if ( ruleSet.indexOf( '<log10Group' ) > -1 ) {
+        if ( result < 0 ) { result = '<0' ; } else
+        if ( result < .001 ) { result = '<.001' ; } else
+        if ( result < .01 ) { result = '<.01' ; } else
+        if ( result < .1 ) { result = '<.1' ; } else
+        if ( result < 1 ) { result = '<1' ; } else
+        if ( result < 10 ) { result = '<10' ; } else
+        if ( result < 100 ) { result = '<100' ; } else
+        if ( result < 1000 ) { result = '<1,000' ; } else
+        if ( result < 10000 ) { result = '<10,000' ; } else
+        if ( result < 100000 ) { result = '<100,000' ; } else
+        if ( result < 1000000 ) { result = '<1,000,000' ; } else
+        if ( result < 10000000 ) { result = '<10,000,000' ; } else
+        if ( result < 100000000 ) { result = '<100,000,000' ; } else
+        if ( result < 1000000000 ) { result = '<1,000,000,000' ; }   
+
+    } else if ( ruleSet.indexOf( '>log10Group' ) > -1 ) {
+        if ( result > 1000000000 ) { result = '>1,000,000,000' ; } else  
+        if ( result > 100000000 ) { result = '>100,000,000' ; } else
+        if ( result > 10000000 ) { result = '>10,000,000' ; } else
+        if ( result > 1000000 ) { result = '>1,000,000' ; } else
+        if ( result > 100000 ) { result = '>100,000' ; } else
+        if ( result > 10000 ) { result = '>10,000' ; } else
+        if ( result > 1000 ) { result = '>1,000' ; } else
+        if ( result > 100 ) { result = '>100' ; } else
+        if ( result > 10 ) { result = '>10' ; } else
+        if ( result > 1 ) { result = '>1' ; } else
+        if ( result > .1 ) { result = '>.1' ; } else
+        if ( result > .01 ) { result = '>.01' ; } else
+        if ( result > .001 ) { result = '>.001' ; } else
+        if ( result > 0 ) { result = '>0' ; } else
+         { result = '<0' ; }
+
+    } else if ( ruleSet.indexOf( 'log10e3' ) > -1 ) {
+        if ( result < .001 ) { result = '<.001' ; } else
+        if ( result < 1 ) { result = '<1' ; } else
+        if ( result < 1000 ) { result = '<1,000' ; } else
+        if ( result < 1000000 ) { result = '<1,000,000' ; } else   
+        if ( result < 1000000000 ) { result = '<1,000,000,000' ; } else   
+        if ( result < 1000000000000 ) { result = '<1,000,000,000,000' ; }   
 
     }
 

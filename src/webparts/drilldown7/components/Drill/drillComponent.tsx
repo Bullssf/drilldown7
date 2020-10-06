@@ -1633,7 +1633,8 @@ public componentDidUpdate(prevProps){
                 if ( refiners.indexOf( d ) > - 1 ) { makeRefiners.push(d ); } else { if ( this.state.showDisabled === true ) { makeRefiners.push( d ); } disabledItems.push(d); }
             });
         } else {
-            makeRefiners = refiners.join().split(',');
+            makeRefiners = refiners.join('./.').split('./.'); //changed split join from ',' to avoid issues where meta has a text comma
+
         }
 
         let n = 0;

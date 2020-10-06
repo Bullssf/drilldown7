@@ -29,9 +29,9 @@ export interface IRefinerStats {
 }
 
 export type RefineRuleValues =
-  'parseBySemiColons' | 'parseByCommas' | 'groupBy10s' |  'groupBy100s' |  'groupBy1000s' |  'groupByMillions' | 
+  'parseBySemiColons' | 'textAsNumber' | 'parseByCommas' | 'groupBy10s' |  'groupBy100s' |  'groupBy1000s' |  'groupByMillions' | '<log10Group' | '>log10Group' | 'log10e3' | 'mathCeiling' | 'mathFloor' | 'mathRound' |
   'isDate' | 'groupByDays' | 'groupByDaysDDD' | 'groupByWeeks' |  'groupByMonthsMMM' |    'groupByMonthsYYMM' |'groupByYears' | 'groupByDayOfWeek' |  'groupByDateBuckets' |
-  'groupByUsers' | 'invalidRules' | ''
+  'groupByUsers' | 'invalidRules' |  ''
 ;
 
 export interface ICustViewDef {
@@ -50,10 +50,17 @@ export function refinerRuleItems() {
     let options = [];
     options.push( buildKeyText( 'parseBySemiColons' ) );
     options.push( buildKeyText( 'parseByCommas' ) );
+    options.push( buildKeyText( 'textAsNumber' ) );
+    options.push( buildKeyText( 'mathCeiling' ) );
+    options.push( buildKeyText( 'mathFloor' ) );
+    options.push( buildKeyText( 'mathRound' ) );
     options.push( buildKeyText( 'groupBy10s' ) );
     options.push( buildKeyText( 'groupBy100s' ) );
     options.push( buildKeyText( 'groupBy1000s' ) );
     options.push( buildKeyText( 'groupByMillions' ) );
+    options.push( buildKeyText( '<log10Group' ) );
+    options.push( buildKeyText( '>log10Group' ) );
+    options.push( buildKeyText( 'log10e3' ) );
     options.push( buildKeyText( 'isDate' ) );
     options.push( buildKeyText( 'groupByDays' ) );
     ///options.push( buildKeyText( 'groupByDaysDDD' ) );

@@ -131,7 +131,7 @@ export class IntroPage {
                 options: theListChoices,
                 selectedKey: webPartProps.listDefinition != '' ? webPartProps.listDefinition : 'na',
                 disabled: webPartProps.definitionToggle,
-            }),
+              }),
             ]},
                 
         // 2 - Source and destination list information
