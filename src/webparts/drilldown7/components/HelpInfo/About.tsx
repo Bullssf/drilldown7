@@ -127,6 +127,7 @@ public constructor(props:IInfoAboutMeProps){
                 {/* 3 files to update version number:  package-solution.json, package-lock.json, package.json*/}
                 <table className={styles.infoTable}>
                     <tr><th>Date</th><th>Version</th><th>Focus</th><th>Notes</th></tr>
+                    <tr><td>2020-10-06</td><td>{'1.0.4.4'}</td><td>Fix Refiners based on numbers, add Math Groupings</td><td>+ Bug fixes</td></tr>
                     <tr><td>2020-10-01</td><td>{'1.0.4.3'}</td><td>Add Buttons to Property Pane</td><td></td></tr>
                     <tr><td>2020-10-01</td><td>{'1.0.4.2'}</td><td>Update Prop pane for Toggles and other settings</td><td></td></tr>
                     <tr><td>2020-10-01</td><td>{'1.0.4.1'}</td><td>Add Summary Stats charts, add kpi-tiles chart type</td><td></td></tr>

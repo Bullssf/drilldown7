@@ -120,11 +120,18 @@ export class IntroPage {
         {  groupName: 'Get pre-configured setup',
             isCollapsed: false ,
             groupFields: [
+              PropertyPaneToggle('definitionToggle', {
+                label: 'Lock list defintion - prevents accidently reseting props!',
+                offText: 'Off',
+                onText: 'On',
+              }),
+
               PropertyPaneDropdown('listDefinition', <IPropertyPaneDropdownProps>{
                 label: 'Pre-defined setup choices',
                 options: theListChoices,
                 selectedKey: webPartProps.listDefinition != '' ? webPartProps.listDefinition : 'na',
-            }),
+                disabled: webPartProps.definitionToggle,
+              }),
             ]},
                 
         // 2 - Source and destination list information

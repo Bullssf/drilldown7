@@ -46,6 +46,7 @@
       "fetchCount": 200,
       "fetchCountMobile": 200,
       "restFilter": "",
+      "definitionToggle": true,
 
       "viewJSON1": "[{ \"name\": \"Id\", \"displayName\": \"Id\", \"minWidth\": 50 },{ \"name\": \"Title\", \"displayName\": \"Title\", \"minWidth\": 200 },{ \"name\": \"Created\", \"displayName\": \"Created\", \"minWidth\": 200 },{ \"name\": \"Modified\", \"displayName\": \"Modified\", \"minWidth\": 200 }]",
       "viewJSON2": "[{ \"name\": \"Id\", \"displayName\": \"Id\", \"minWidth\": 50 },{ \"name\": \"Title\", \"displayName\": \"Title\", \"minWidth\": 200 },{ \"name\": \"Modified\", \"displayName\": \"Modified\", \"minWidth\": 200 }]",

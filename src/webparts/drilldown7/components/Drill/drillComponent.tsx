@@ -459,7 +459,7 @@ export default class DrillDown extends React.Component<IDrillDownProps, IDrillDo
                     labels: labels,
                     chartTypes: s.chartTypes,
                     barValueAsPercent: false,
-        
+
                     //The string value here must match the object key below
                     barValues: 'val1',
                     val1: finalStats ,
@@ -555,7 +555,7 @@ export default class DrillDown extends React.Component<IDrillDownProps, IDrillDo
 
             fetchCount: this.props.performance.fetchCount,
             fetchCountMobile: this.props.performance.fetchCountMobile,
-            restFilter: this.props.performance.restFilter,
+            restFilter: !this.props.performance.restFilter ? ' ' : this.props.performance.restFilter,
 
             isLibrary: isLibrary,
             webURL: webURL,
@@ -1633,7 +1633,8 @@ public componentDidUpdate(prevProps){
                 if ( refiners.indexOf( d ) > - 1 ) { makeRefiners.push(d ); } else { if ( this.state.showDisabled === true ) { makeRefiners.push( d ); } disabledItems.push(d); }
             });
         } else {
-            makeRefiners = refiners.join().split(',');
+            makeRefiners = refiners.join('./.').split('./.'); //changed split join from ',' to avoid issues where meta has a text comma
+
         }
 
         let n = 0;
