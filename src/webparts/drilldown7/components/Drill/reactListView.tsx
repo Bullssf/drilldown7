@@ -2,6 +2,9 @@
 import * as React from 'react';
 import { Icon  } from 'office-ui-fabric-react/lib/Icon';
 
+import { Web, IList, IItem, } from "@pnp/sp/presets/all";
+import { Link, ILinkProps } from 'office-ui-fabric-react';
+
 import { IMyProgress, IQuickButton, IQuickCommands} from '../IReUsableInterfaces';
 import { IDrillItemInfo } from './drillComponent';
 
@@ -11,6 +14,7 @@ import { doesObjectExistInArray,  } from '../../../../services/arrayServices';
 
 import { findParentElementPropLikeThis } from '../../../../services/basicElements';
 
+import { getHelpfullError } from '../../../../services/ErrorHandler';
 
 import stylesL from '../ListView/listView.module.scss';
 import { ListView, IViewField, SelectionMode, GroupOrder, IGrouping, } from "@pnp/spfx-controls-react/lib/ListView";
@@ -32,6 +36,9 @@ export interface IReactListItemsProps {
     maxChars?: number;
     items: IDrillItemInfo[];
 
+    webURL: string; //Used for attachments
+    listName: string; //Used for attachments
+
     blueBar?: any;
 
     showIDs?: boolean;
@@ -39,6 +46,7 @@ export interface IReactListItemsProps {
 
     parentListFieldTitles?: string;
     viewFields?: IViewField[];
+    
 
     groupByFields?:  IGrouping[];
     includeDetails: boolean;
@@ -58,7 +66,10 @@ export interface IReactListItemsState {
   showPanel: boolean;
   showAttach: boolean;
   panelId: number;
+  lastPanelId: number;
   panelItem: IDrillItemInfo;
+  panelAttachments: any[];
+  lastAttachId: number;
   panelMessage?: any;
 }
 
@@ -85,6 +96,40 @@ export default class ReactListItems extends React.Component<IReactListItemsProps
 
     private createAttachPanel () {
         return null;
+    }
+
+    private async createPanelAttachments( thisId: any, panelItem: IDrillItemInfo ): Promise<void>{
+
+        let thisListWeb = Web(this.props.webURL);
+        let thisListObject = thisListWeb.lists.getByTitle( this.props.listName );
+        let allItems : any[] = [];
+        let errMessage = null;
+        let attachments: any[] = [];
+
+        if ( panelItem.Attachments && panelItem.Attachments === true ) {
+
+            try {
+                allItems = await thisListObject.items.getById( thisId ).attachmentFiles();
+    
+                allItems.map( a => {
+                let attachmentItem = <div><Link target= { "_blank" } href= { a.ServerRelativeUrl }> { a.FileName }</Link></div>;
+                    attachments.push( attachmentItem );
+    
+                });
+       
+            } catch (e) {
+                errMessage = getHelpfullError(e, true, true);
+        
+            }
+
+        }
+
+        this.setState({ 
+            panelAttachments: attachments,
+            lastAttachId: thisId,
+        });
+
+
     }
 
     private createPanelButtons ( quickCommands: IQuickCommands ) {
@@ -200,7 +245,10 @@ export default class ReactListItems extends React.Component<IReactListItemsProps
           showPanel: false,
           showAttach: false,
           panelId: null,
+          lastPanelId: null,
           panelItem: null,
+          panelAttachments: [],
+          lastAttachId: null,
         };
     }
         
@@ -239,7 +287,6 @@ export default class ReactListItems extends React.Component<IReactListItemsProps
  *                                                          
  */
 
-
     public render(): React.ReactElement<IReactListItemsProps> {
 
         //console.log( 'ReactListItems props & state: ', this.props, this.state );
@@ -248,6 +295,7 @@ export default class ReactListItems extends React.Component<IReactListItemsProps
 
         if ( this.props.items != null && this.props.items.length > 0 ) { 
 
+            let attachments = this.state.showAttach ? this.state.panelAttachments : null ;
             let panel = !this.state.showPanel || this.state.panelId === null || this.state.panelId === undefined || this.state.panelItem === null ? null : 
                 <Panel
                     isOpen={this.state.showPanel}
@@ -259,6 +307,7 @@ export default class ReactListItems extends React.Component<IReactListItemsProps
                     isLightDismiss={ true }
                     isFooterAtBottom={ true }
                 >
+                    { attachments }
                     { this.createPanelButtons( this.props.quickCommands ) }
                     { autoDetailsList(this.state.panelItem, ["Title","refiners"],["search","meta","searchString"],true) }
                 </Panel>;
@@ -282,14 +331,15 @@ export default class ReactListItems extends React.Component<IReactListItemsProps
             if ( this.props.includeAttach ) {
                 //Add attachments column:
 
-                let attachButton = <span>Attach</span>;
                 attachField.push({
-                    name: 'Attach',
-                    displayName: 'string',
+                    name: 'Attachments',
+                    displayName: 'Attach',
                     sorting: true,
                     minWidth: 25,
-                    maxWidth: 25,
-                    render: ( attachButton ),  //render: (item) => any,
+                    maxWidth: 35,
+                    render: (item: IDrillItemInfo) => {
+                        return <span ><Icon iconName= { item.Attachments ? "Attach" : ''}></Icon></span>;
+                    },
                 });
             }
 
@@ -324,7 +374,6 @@ export default class ReactListItems extends React.Component<IReactListItemsProps
                     <div style={{ paddingTop: 10}} className={ stylesInfo.infoPaneTight }>
                     { webTitle }
                     { panel }
-                    { attachPanel }
                     { listView }
                 </div>
                 </div>
@@ -420,23 +469,21 @@ export default class ReactListItems extends React.Component<IReactListItemsProps
   
             //This sends back the correct pivot category which matches the category on the tile.
             let e: any = event;
-            console.log('_onShowPanel: e',e);
-            console.log('_onShowPanel item clicked:',item);
+            console.log('_onShowAttachments: e',e);
+            console.log('_onShowAttachments item clicked:',item);
     
     //        let panelItem : IDrillItemInfo = null;
-    
     
             //Also need to udpate content
             if (item.length > 0 ) {
                 let panelItem  : IDrillItemInfo = this._getItemFromId(this.props.items, 'Id', item[0].Id);
                 this.setState({ 
-                    showPanel: true, 
+                    showPanel: false,
+                    showAttach: true, 
                     panelId: item[0].Id,
                     panelItem: panelItem,
                 });
             }
-    
-    
         }
 
     //private _sampleOnClick = (item): void => {
@@ -448,19 +495,23 @@ export default class ReactListItems extends React.Component<IReactListItemsProps
         console.log('_onShowPanel item clicked:',item);
 
 //        let panelItem : IDrillItemInfo = null;
-
-
         //Also need to udpate content
         if (item.length > 0 ) {
             let panelItem  : IDrillItemInfo = this._getItemFromId(this.props.items, 'Id', item[0].Id);
+            let lastPanelId = this.state.panelId;
+
+            this.createPanelAttachments(item[0].Id, panelItem );
+
             this.setState({ 
-                showPanel: true, 
+                showPanel: true,
+                showAttach: this.props.includeAttach === true ? true : false , 
                 panelId: item[0].Id,
                 panelItem: panelItem,
+                lastPanelId: lastPanelId,
+                panelAttachments: this.state.lastAttachId === item[0].Id ? this.state.panelAttachments : [],
             });
+
         }
-
-
     }
 
     private _getItemFromId( items: IDrillItemInfo[], key: string, val: any ) {

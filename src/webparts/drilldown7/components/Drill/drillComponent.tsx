@@ -69,14 +69,6 @@ import Cssreactbarchart from '../CssCharts/Cssreactbarchart';
 
 export type IRefinerStyles = 'pivot' | 'commandBar' | 'other';
 
-export interface IDrillWeb extends Partial<IPickedWebBasic> {
-    title?: string;
-    ServerRelativeUrl?: string;
-    guid?: string;
-    url: string;
-    siteIcon?: string;
-  }
-
   export interface IDrillList extends Partial<IPickedList> {
     title: string;
     name?: string;
@@ -902,12 +894,17 @@ public componentDidUpdate(prevProps){
 
                 let reactListItems  = this.state.searchedItems.length === 0 ? <div>NO ITEMS FOUND</div> : <ReactListItems 
                     parentListFieldTitles={ this.props.viewDefs.length > 0 ? null : this.props.parentListFieldTitles }
+
+                    webURL = { this.state.drillList.webURL }
+                    listName = { this.state.drillList.name }
+
                     viewFields={ currentViewFields }
                     groupByFields={ currentViewGroups }
                     items={ this.state.searchedItems}
                     includeDetails= { includeDetails }
                     includeAttach= { includeAttach }
                     quickCommands={ this.props.quickCommands }
+                    
                 ></ReactListItems>;
 
 
