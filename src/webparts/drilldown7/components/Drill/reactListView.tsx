@@ -42,6 +42,7 @@ export interface IReactListItemsProps {
 
     groupByFields?:  IGrouping[];
     includeDetails: boolean;
+    includeAttach: boolean;
 
     highlightedFields?: string[];
 
@@ -55,6 +56,7 @@ export interface IReactListItemsState {
   viewFields: IViewField[];
   groupByFields?:  IGrouping[];
   showPanel: boolean;
+  showAttach: boolean;
   panelId: number;
   panelItem: IDrillItemInfo;
   panelMessage?: any;
@@ -80,6 +82,10 @@ const iconClassInfo = mergeStyles({
 
 
 export default class ReactListItems extends React.Component<IReactListItemsProps, IReactListItemsState> {
+
+    private createAttachPanel () {
+        return null;
+    }
 
     private createPanelButtons ( quickCommands: IQuickCommands ) {
 
@@ -192,6 +198,7 @@ export default class ReactListItems extends React.Component<IReactListItemsProps
           viewFields: viewFields,
           groupByFields:  groupByFields,
           showPanel: false,
+          showAttach: false,
           panelId: null,
           panelItem: null,
         };
@@ -256,10 +263,42 @@ export default class ReactListItems extends React.Component<IReactListItemsProps
                     { autoDetailsList(this.state.panelItem, ["Title","refiners"],["search","meta","searchString"],true) }
                 </Panel>;
 
+            let attachPanel = !this.state.showAttach || this.state.panelId === null || this.state.panelId === undefined || this.state.panelItem === null ? null : 
+            <Panel
+                isOpen={this.state.showAttach}
+                type={ PanelType.medium }
+                onDismiss={this._onClosePanel}
+                headerText={ this.state.panelId.toString() }
+                closeButtonAriaLabel="Close"
+                onRenderFooterContent={this._onRenderFooterContent}
+                isLightDismiss={ true }
+                isFooterAtBottom={ true }
+            >
+                { this.createAttachPanel() }
+            </Panel>;
+
+            let viewFieldsBase = this.state.viewFields;
+            let attachField = [];
+            if ( this.props.includeAttach ) {
+                //Add attachments column:
+
+                let attachButton = <span>Attach</span>;
+                attachField.push({
+                    name: 'Attach',
+                    displayName: 'string',
+                    sorting: true,
+                    minWidth: 25,
+                    maxWidth: 25,
+                    render: ( attachButton ),  //render: (item) => any,
+                });
+            }
+
+            let viewFields = attachField.concat( viewFieldsBase );
+
             let listView = <div>
             <ListView
                 items={ this.props.items }
-                viewFields={this.state.viewFields}
+                viewFields={ viewFields }
                 compact={true}
                 selectionMode={ this.props.includeDetails ? SelectionMode.single : SelectionMode.none }
                 selection={this._onShowPanel.bind(this)}
@@ -285,6 +324,7 @@ export default class ReactListItems extends React.Component<IReactListItemsProps
                     <div style={{ paddingTop: 10}} className={ stylesInfo.infoPaneTight }>
                     { webTitle }
                     { panel }
+                    { attachPanel }
                     { listView }
                 </div>
                 </div>
@@ -375,6 +415,29 @@ export default class ReactListItems extends React.Component<IReactListItemsProps
 
     }
 
+    //private _sampleOnClick = (item): void => {
+        private _onShowAttachments = (item): void => {
+  
+            //This sends back the correct pivot category which matches the category on the tile.
+            let e: any = event;
+            console.log('_onShowPanel: e',e);
+            console.log('_onShowPanel item clicked:',item);
+    
+    //        let panelItem : IDrillItemInfo = null;
+    
+    
+            //Also need to udpate content
+            if (item.length > 0 ) {
+                let panelItem  : IDrillItemInfo = this._getItemFromId(this.props.items, 'Id', item[0].Id);
+                this.setState({ 
+                    showPanel: true, 
+                    panelId: item[0].Id,
+                    panelItem: panelItem,
+                });
+            }
+    
+    
+        }
 
     //private _sampleOnClick = (item): void => {
     private _onShowPanel = (item): void => {

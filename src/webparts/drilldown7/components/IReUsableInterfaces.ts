@@ -39,6 +39,7 @@ export interface ICustViewDef {
   viewFields: IViewField[];
   groupByFields?: IGrouping[];
   includeDetails: boolean;
+  includeAttach: boolean;
 }
 
 export function buildKeyText( str: RefineRuleValues) {

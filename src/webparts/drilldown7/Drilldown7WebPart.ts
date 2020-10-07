@@ -82,7 +82,7 @@ export interface IDrilldown7WebPartProps {
 
   newMap?: any[];
 
-  showDisabled?: boolean;
+  showDisabled?: boolean;  //This will show disabled refiners for DaysOfWeek/Months when the day or month has no data
   updateRefinersOnTextSearch?: boolean;
 
   parentListFieldTitles: string;
@@ -106,6 +106,7 @@ export interface IDrilldown7WebPartProps {
   viewJSON3: string;
 
   includeDetails: boolean;
+  includeAttach: boolean;
 
   groupByFields: string;
 
@@ -337,10 +338,16 @@ private _filterBy: any;
     let viewFields3 : IViewField[] = this.getViewFieldsObject('Small Size view', this.properties.viewJSON3, this.properties.groupByFields );
 
     let groupByFields: IGrouping[] = this.getViewGroupFields( 'Group View Fields', this.properties.groupByFields);
-    if (viewFields1 !== undefined ) { viewDefs.push( { minWidth: this.properties.viewWidth1, viewFields: viewFields1, groupByFields: groupByFields, includeDetails: this.properties.includeDetails }); }
-    if (viewFields2 !== undefined ) { viewDefs.push( { minWidth: this.properties.viewWidth2, viewFields: viewFields2, groupByFields: groupByFields, includeDetails: this.properties.includeDetails }); }
-    if (viewFields3 !== undefined ) { viewDefs.push( { minWidth: this.properties.viewWidth3, viewFields: viewFields3, groupByFields: groupByFields, includeDetails: this.properties.includeDetails }); }
 
+    let includeDetails = this.properties.includeDetails;
+    let includeAttach = this.properties.includeAttach;
+    let viewWidth1 = this.properties.viewWidth1;
+    let viewWidth2 = this.properties.viewWidth2;
+    let viewWidth3 = this.properties.viewWidth3;
+
+    if (viewFields1 !== undefined ) { viewDefs.push( { minWidth: viewWidth1, viewFields: viewFields1, groupByFields: groupByFields, includeDetails: includeDetails, includeAttach: includeAttach }); }
+    if (viewFields2 !== undefined ) { viewDefs.push( { minWidth: viewWidth2, viewFields: viewFields2, groupByFields: groupByFields, includeDetails: includeDetails, includeAttach: includeAttach }); }
+    if (viewFields3 !== undefined ) { viewDefs.push( { minWidth: viewWidth3, viewFields: viewFields3, groupByFields: groupByFields, includeDetails: includeDetails, includeAttach: includeAttach }); }
 
     let quickCommands : IQuickCommands = this.getQuickCommandsObject( 'Group Quick Commands', this.properties.quickCommands);
 
