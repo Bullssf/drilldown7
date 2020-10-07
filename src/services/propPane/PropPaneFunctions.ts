@@ -44,7 +44,11 @@ export async function getAllItems( configWebURL: string, propsListName: string, 
 
     try {
         thisListObject = Web(configWebURL);
-        theseProps = await thisListObject.lists.getByTitle(propsListName).items.filter(restFilter).orderBy('Title',false).top(300).get();
+        if ( restFilter.length > 1 ) {
+            theseProps = await thisListObject.lists.getByTitle(propsListName).items.filter(restFilter).orderBy('Title',false).top(300).get();
+        } else {
+            theseProps = await thisListObject.lists.getByTitle(propsListName).items.orderBy('Title',false).top(300).get();
+        }
         console.log('Found theseProps: ' ,theseProps );
 
         theseProps.map( i => {  //Loop through all items

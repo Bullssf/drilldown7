@@ -68,8 +68,11 @@ export async function getAllItems( drillList: IDrillList, addTheseItemsToState: 
 
     try {
         let fetchCount = drillList.fetchCount > 0 ? drillList.fetchCount : 200;
-        allItems = await thisListObject.items.select(selectCols).expand(expandThese).orderBy('ID',false).top(fetchCount).filter(drillList.restFilter).get();
-
+        if ( drillList.restFilter.length > 1 ) {
+            allItems = await thisListObject.items.select(selectCols).expand(expandThese).orderBy('ID',false).top(fetchCount).filter(drillList.restFilter).get();
+        } else {
+            allItems = await thisListObject.items.select(selectCols).expand(expandThese).orderBy('ID',false).top(fetchCount).get();
+        }
     } catch (e) {
         errMessage = getHelpfullError(e, true, true);
 

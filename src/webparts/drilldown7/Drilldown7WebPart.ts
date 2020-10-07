@@ -381,7 +381,7 @@ private _filterBy: any;
         performance: {
             fetchCount: this.properties.fetchCount,
             fetchCountMobile: this.properties.fetchCountMobile,
-            restFilter: !this.properties.restFilter ? ' ' : this.properties.restFilter,
+            restFilter: !this.properties.restFilter ? '' : this.properties.restFilter,
         },
 
         quickCommands: quickCommands,
