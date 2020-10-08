@@ -591,10 +591,9 @@ function getRefinerFromField ( fieldValue : any, ruleSet: RefineRuleValues[], em
         result = [ emptyRefiner ];
 
     } else if ( detailType === 'boolean'  ){
-        result = [ fieldValue ];
+        result = [ fieldValue === true ? 'true' : 'false' ];
 
     } else if ( detailType === 'number'  ){
-
         result = [ getGroupByNumber(fieldValue, detailType, ruleSet ) ];
 
     } else if ( detailType === 'array' ){
@@ -602,7 +601,7 @@ function getRefinerFromField ( fieldValue : any, ruleSet: RefineRuleValues[], em
 
     } else if ( detailType === 'object' ){
         result = [ JSON.stringify(fieldValue) ];
-    
+
     } else if ( detailType === 'datestring' ) {
         let tempDate = makeTheTimeObject( fieldValue );
         let reFormattedDate = null;

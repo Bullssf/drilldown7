@@ -795,8 +795,8 @@ public componentDidUpdate(prevProps){
                         
             //                <div> { resizePage0 } </div>
             let showRefiner0 = true;
-            let showRefiner1 = this.state.maxRefinersToShow >= 2 && this.state.searchMeta[0] !== 'All' ? true : false;
-            let showRefiner2 = this.state.maxRefinersToShow >= 3 && this.state.searchMeta.length >= 2 && this.state.searchMeta[1] !== 'All' ? true : false;
+            let showRefiner1 = this.state.maxRefinersToShow >= 2 && this.state.searchMeta[0] !== 'All' && this.state.cmdCats.length > 1 ? true : false;
+            let showRefiner2 = this.state.maxRefinersToShow >= 3 && this.state.searchMeta.length >= 2 && this.state.searchMeta[1] !== 'All' && this.state.cmdCats.length > 2 ? true : false;
 
             let thisIsRefiner0 = null;
             let thisIsRefiner1 = null;
