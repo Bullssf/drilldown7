@@ -69,14 +69,6 @@ import Cssreactbarchart from '../CssCharts/Cssreactbarchart';
 
 export type IRefinerStyles = 'pivot' | 'commandBar' | 'other';
 
-export interface IDrillWeb extends Partial<IPickedWebBasic> {
-    title?: string;
-    ServerRelativeUrl?: string;
-    guid?: string;
-    url: string;
-    siteIcon?: string;
-  }
-
   export interface IDrillList extends Partial<IPickedList> {
     title: string;
     name?: string;
@@ -193,7 +185,7 @@ export interface IDrillDownProps {
     // 2 - Source and destination list information
 
     refiners: string[]; //String of Keys representing the static name of the column used for drill downs
-    showDisabled?: boolean;
+    showDisabled?: boolean;  //This will show disabled refiners for DaysOfWeek/Months when the day or month has no data
     updateRefinersOnTextSearch?: boolean;
 
     showCatCounts?: boolean;
@@ -291,7 +283,7 @@ export interface IDrillDownState {
     refiners: string[]; //String of Keys representing the static name of the column used for drill downs
     maxRefinersToShow: number;
     refinerObj: IRefinerLayer;
-    showDisabled?: boolean;
+    showDisabled?: boolean;  //This will show disabled refiners for DaysOfWeek/Months when the day or month has no data
 
     pivotCats: IMyPivCat[][];
     cmdCats: ICMDItem[][];
@@ -362,13 +354,13 @@ export default class DrillDown extends React.Component<IDrillDownProps, IDrillDo
 
     }
 
-    private getAppropriateDetailMode ( viewDefs: ICustViewDef[], currentWidth: number ) {
+    private getAppropriateViewProp ( viewDefs: ICustViewDef[], currentWidth: number, prop: 'includeDetails' | 'includeAttach' ) {
         let result : boolean = false;
 
         let maxViewWidth = 0 ;
         viewDefs.map( vd => {
             if ( currentWidth >= vd.minWidth && vd.minWidth >= maxViewWidth ) {
-                result = vd.includeDetails;
+                result = vd[prop];
                 maxViewWidth = vd.minWidth;
             } else {
                 
@@ -892,7 +884,9 @@ public componentDidUpdate(prevProps){
                     ></MyDrillItems>
                     </div>;
 
-                let viewDefMode = this.getAppropriateDetailMode( this.props.viewDefs, this.state.WebpartWidth );
+                let includeDetails = this.getAppropriateViewProp( this.props.viewDefs, this.state.WebpartWidth, 'includeDetails' );
+                let includeAttach = this.getAppropriateViewProp( this.props.viewDefs, this.state.WebpartWidth, 'includeAttach' );
+
                 let currentViewFields: any[] = [];
                 if ( this.props.viewDefs.length > 0 )  { currentViewFields = this.getAppropriateViewFields( this.props.viewDefs, this.state.WebpartWidth ); }
 
@@ -900,11 +894,17 @@ public componentDidUpdate(prevProps){
 
                 let reactListItems  = this.state.searchedItems.length === 0 ? <div>NO ITEMS FOUND</div> : <ReactListItems 
                     parentListFieldTitles={ this.props.viewDefs.length > 0 ? null : this.props.parentListFieldTitles }
+
+                    webURL = { this.state.drillList.webURL }
+                    listName = { this.state.drillList.name }
+
                     viewFields={ currentViewFields }
                     groupByFields={ currentViewGroups }
                     items={ this.state.searchedItems}
-                    includeDetails= { viewDefMode }
+                    includeDetails= { includeDetails }
+                    includeAttach= { includeAttach }
                     quickCommands={ this.props.quickCommands }
+                    
                 ></ReactListItems>;
 
 

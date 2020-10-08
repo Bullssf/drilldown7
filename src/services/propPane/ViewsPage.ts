@@ -170,7 +170,7 @@ import {
             ]}, // this group
 
           // 2 - Source and destination list information
-          {  groupName: 'Details button',
+          {  groupName: 'Details & Attachments',
               isCollapsed: true ,
               groupFields: [
                 PropertyPaneToggle('includeDetails', {
@@ -178,6 +178,11 @@ import {
                     offText: 'No',
                     onText: 'Yes',
                   }),
+                PropertyPaneToggle('includeAttach', {
+                  label: 'Include Attachments panel',
+                  offText: 'No',
+                  onText: 'Yes',
+                }),
   
             ]}, // this group
 

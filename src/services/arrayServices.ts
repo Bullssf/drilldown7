@@ -72,12 +72,18 @@ export function spliceCopyArray(sourceArray, startDel, countDelete, startAddOrig
  * @param propValue 
  */
 
-export function doesObjectExistInArray(sourceArray, objectProperty : string, propValue){
+export function doesObjectExistInArray(sourceArray, objectProperty : string, propValue, exact : boolean = true ){
 
     let result : boolean | string = false;
 
     for (let i in sourceArray){
-        if ( sourceArray[i][objectProperty] === propValue ) {
+        let test = false;
+        if ( exact === true ) { //2020-10-07:  Added this to allow for Id string to number checks
+            test = sourceArray[i][objectProperty] === propValue ? true : false;
+        } else {
+            test = sourceArray[i][objectProperty] == propValue ? true : false;
+        }
+        if ( test ) {
             result = i;
             break;
         }
