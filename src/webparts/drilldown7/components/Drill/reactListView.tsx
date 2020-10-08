@@ -38,6 +38,7 @@ export interface IReactListItemsProps {
 
     webURL: string; //Used for attachments
     listName: string; //Used for attachments
+    parentListURL: string;
 
     blueBar?: any;
 
@@ -279,6 +280,9 @@ export default class ReactListItems extends React.Component<IReactListItemsProps
 
         if ( prevProps.viewFields !== this.props.viewFields ) { redraw = true; }
         if ( prevProps.items.length !== this.props.items.length ) { redraw = true; }
+        if ( prevProps.parentListURL !== this.props.parentListURL ) { redraw = true; }
+
+
         this._updateStateOnPropsChange();
     }
 
@@ -372,9 +376,10 @@ export default class ReactListItems extends React.Component<IReactListItemsProps
             let barText = this.props.blueBar && this.props.blueBar != null ? this.props.blueBar : <span>Items</span>;
 
             let webTitle = null;
+            let listLink = <Link href={ this.props.parentListURL } target={ '_blank'}>Go to list</Link>;
 
             if ( barText != null ) {
-                webTitle =<div className={ stylesInfo.infoHeading }><span style={{ paddingLeft: 20, whiteSpace: 'nowrap' }}>( { this.props.items.length }  ) Items in: { barText }</span></div>;
+                webTitle =<div className={ stylesInfo.infoHeading }><span style={{ paddingLeft: 20, whiteSpace: 'nowrap' }}>( { this.props.items.length }  ) Items in: { barText }</span><span style={{ float: 'right'}}>{ listLink } </span></div>;
 
             
             /*stylesL.reactListView*/

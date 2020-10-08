@@ -7,6 +7,8 @@ import {
 } from '@microsoft/sp-property-pane';
 import { BaseClientSideWebPart } from '@microsoft/sp-webpart-base';
 
+import { Web, IList, IItem } from "@pnp/sp/presets/all";
+
 import * as strings from 'Drilldown7WebPartStrings';
 import DrillDown from './components/Drill/drillComponent';
 import { IDrillDownProps } from './components/Drill/drillComponent';
@@ -55,6 +57,7 @@ export interface IDrilldown7WebPartProps {
   createVerifyLists: boolean;
   parentListTitle: string;
   parentListWeb: string;
+  parentListURL?: string;
 
   refiner0: string;
   refiner1: string;
@@ -125,6 +128,7 @@ export interface IDrilldown7WebPartProps {
   pivotFormat: string;
   pivotOptions: string;
   pivotTab: string;
+
 }
 
 export default class Drilldown7WebPart extends BaseClientSideWebPart<IDrilldown7WebPartProps> {
@@ -396,6 +400,7 @@ private _filterBy: any;
         // 2 - Source and destination list information
         listName: this.properties.parentListTitle,
         webURL: parentWeb,
+        parentListURL: this.properties.parentListURL,
 
         refiners: refiners,
         showDisabled: this.properties.showDisabled,
@@ -709,6 +714,25 @@ private _filterBy: any;
       this.context.propertyPane.refresh();
     }
 
+    if ( propertyPath === 'parentListWeb' || propertyPath === 'parentListTitle' ) {
+      let webUrl = propertyPath === 'parentListWeb' ? newValue : this.properties.parentListWeb;
+      let parentWeb = webUrl && webUrl != '' ? webUrl : this.context.pageContext.web.absoluteUrl;
+
+      let listTitle = propertyPath === 'parentListTitle' ? newValue : this.properties.parentListTitle;
+
+      let thisListWeb = Web( parentWeb );
+      let thisListObject = thisListWeb.lists.getByTitle(listTitle);
+      thisListObject.expand('RootFolder, ParentWeb').select('Title,RootFolder/ServerRelativeUrl, ParentWeb/Url').get().then( (response) => {
+          let tenantURL = response.ParentWebUrl.substring(0, response.ParentWebUrl.indexOf('/sites/') - 1);
+          this.properties.parentListURL = tenantURL + response.RootFolder.ServerRelativeUrl;
+
+      }).catch((e) => {
+      //Throw Error
+          alert(e);
+      });
+
+    }
+
     /**
      * This section is used to determine when to refresh the pane options
      */
@@ -722,7 +746,7 @@ private _filterBy: any;
     //alert('props updated');
     console.log('onPropertyPaneFieldChanged:', propertyPath, oldValue, newValue);
     if (updateOnThese.indexOf(propertyPath) > -1 ) {
-      this.properties[propertyPath] = newValue;   
+      this.properties[propertyPath] = newValue;
       this.context.propertyPane.refresh();
 
     } else { //This can be removed if it works
