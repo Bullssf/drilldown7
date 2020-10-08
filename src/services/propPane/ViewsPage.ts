@@ -183,7 +183,7 @@ import {
                   offText: 'No',
                   onText: 'Yes',
                 }),
-                PropertyPaneToggle('togListLink', {
+                PropertyPaneToggle('includeListLink', {
                   label: 'Show link to List',
                   offText: 'No',
                   onText: 'Yes',

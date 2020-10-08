@@ -127,14 +127,14 @@ public constructor(props:IInfoAboutMeProps){
                 {/* 3 files to update version number:  package-solution.json, package-lock.json, package.json*/}
                 <table className={styles.infoTable}>
                     <tr><th>Date</th><th>Version</th><th>Focus</th><th>Notes</th></tr>
-                    <tr><td>2020-10-06</td><td>{'1.0.4.5'}</td><td>Add support to view <b>list attachments</b></td><td></td></tr>
-                    <tr><td>2020-10-06</td><td>{'1.0.4.4'}</td><td>Fix Refiners based on numbers, add Math Groupings</td><td>+ Bug fixes</td></tr>
+                    <tr><td>2020-10-06</td><td>{'1.0.4.5'}</td><td>Add support to view <b>List attachments, List link</b></td><td></td></tr>
+                    <tr><td>2020-10-06</td><td>{'1.0.4.4'}</td><td>Fix Refiners based on numbers, add <b>Math Groupings</b></td><td>+ Bug fixes</td></tr>
                     <tr><td>2020-10-01</td><td>{'1.0.4.3'}</td><td>Add Buttons to Property Pane</td><td></td></tr>
                     <tr><td>2020-10-01</td><td>{'1.0.4.2'}</td><td>Update Prop pane for Toggles and other settings</td><td></td></tr>
-                    <tr><td>2020-10-01</td><td>{'1.0.4.1'}</td><td>Add Summary Stats charts, add kpi-tiles chart type</td><td></td></tr>
-                    <tr><td>2020-09-29</td><td>{'1.0.3.1'}</td><td>Property Pane listDefinition Selector works now</td><td></td></tr>
+                    <tr><td>2020-10-01</td><td>{'1.0.4.1'}</td><td>Add Summary <b>Stats charts</b>, add <b>kpi-tiles</b> chart type</td><td></td></tr>
+                    <tr><td>2020-09-29</td><td>{'1.0.3.1'}</td><td>Property Pane <b>listDefinition Selector</b> works now</td><td></td></tr>
                     <tr><td>2020-09-25</td><td>{'1.0.2.2'}</td><td>Bump to test hosting issue</td><td></td></tr>
-                    <tr><td>2020-09-25</td><td>{'1.0.2.1'}</td><td>Summary Refiner charts working</td><td>Including On-Click Reformat</td></tr>
+                    <tr><td>2020-09-25</td><td>{'1.0.2.1'}</td><td>Summary <b>Refiner charts</b> working</td><td>Including On-Click Reformat</td></tr>
                     <tr><td>2020-09-15</td><td>{'1.0.2.0'}</td><td>Add Data and Charts</td><td>Testing note</td></tr>
                     <tr><td>2020-09-15</td><td>{'1.0.1.0'}</td><td>Add React based list</td><td>With sorting, columnwidths, grouping and details button</td></tr>
                     <tr><td>2020-09-14</td><td>{'1.0.0.1'}</td><td>Baseline Drilldown from Generic Project</td><td>With basic Pivot and Command bar options</td></tr>

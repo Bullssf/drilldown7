@@ -73,7 +73,7 @@ export interface IDrilldown7WebPartProps {
   togCounts: boolean;
   togSummary: boolean;
   togStats: boolean;
-  togListLink: boolean;
+  includeListLink: boolean;
   fetchCount: number;
   fetchCountMobile: number;
   restFilter: string;
@@ -349,9 +349,11 @@ private _filterBy: any;
     let viewWidth2 = this.properties.viewWidth2;
     let viewWidth3 = this.properties.viewWidth3;
 
-    if (viewFields1 !== undefined ) { viewDefs.push( { minWidth: viewWidth1, viewFields: viewFields1, groupByFields: groupByFields, includeDetails: includeDetails, includeAttach: includeAttach }); }
-    if (viewFields2 !== undefined ) { viewDefs.push( { minWidth: viewWidth2, viewFields: viewFields2, groupByFields: groupByFields, includeDetails: includeDetails, includeAttach: includeAttach }); }
-    if (viewFields3 !== undefined ) { viewDefs.push( { minWidth: viewWidth3, viewFields: viewFields3, groupByFields: groupByFields, includeDetails: includeDetails, includeAttach: includeAttach }); }
+    let includeListLink = this.properties.includeListLink;
+
+    if (viewFields1 !== undefined ) { viewDefs.push( { minWidth: viewWidth1, viewFields: viewFields1, groupByFields: groupByFields, includeDetails: includeDetails, includeAttach: includeAttach, includeListLink: includeListLink }); }
+    if (viewFields2 !== undefined ) { viewDefs.push( { minWidth: viewWidth2, viewFields: viewFields2, groupByFields: groupByFields, includeDetails: includeDetails, includeAttach: includeAttach, includeListLink: includeListLink }); }
+    if (viewFields3 !== undefined ) { viewDefs.push( { minWidth: viewWidth3, viewFields: viewFields3, groupByFields: groupByFields, includeDetails: includeDetails, includeAttach: includeAttach, includeListLink: includeListLink }); }
 
     let quickCommands : IQuickCommands = this.getQuickCommandsObject( 'Group Quick Commands', this.properties.quickCommands);
 
@@ -387,7 +389,6 @@ private _filterBy: any;
             togCounts: this.properties.togCounts,
             togSummary: this.properties.togSummary,
             togStats: this.properties.togStats,
-            togListLink: this.properties.togListLink,
         },
     
         performance: {
@@ -747,7 +748,7 @@ private _filterBy: any;
       'parentListFieldTitles','progress','UpdateTitles','parentListTitle','childListTitle','parentListWeb','childListWeb', 'stats',
       'rules0','rules1','rules2',
       'togCounts', 'togSummary', 'togStats', 
-      'fetchCount', 'fetchCountMobile', 'restFilter', 'quickCommands', 'definitionToggle', 'togListLink',
+      'fetchCount', 'fetchCountMobile', 'restFilter', 'quickCommands', 'definitionToggle', 'includeListLink',
     ];
     //alert('props updated');
     console.log('onPropertyPaneFieldChanged:', propertyPath, oldValue, newValue);

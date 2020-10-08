@@ -40,6 +40,7 @@ export interface ICustViewDef {
   groupByFields?: IGrouping[];
   includeDetails: boolean;
   includeAttach: boolean;
+  includeListLink: boolean;
 }
 
 export function buildKeyText( str: RefineRuleValues) {

@@ -52,8 +52,8 @@ export interface IReactListItemsProps {
     groupByFields?:  IGrouping[];
     includeDetails: boolean;
     includeAttach: boolean;
-    togListLink: boolean;
-    
+    includeListLink: boolean;
+
     highlightedFields?: string[];
 
     quickCommands?: IQuickCommands;
@@ -377,7 +377,7 @@ export default class ReactListItems extends React.Component<IReactListItemsProps
             let barText = this.props.blueBar && this.props.blueBar != null ? this.props.blueBar : <span>Items</span>;
 
             let webTitle = null;
-            let listLink = !this.props.togListLink ? null : <div className={ stylesInfo.infoHeading } onClick={ this._onGoToList.bind(this) } 
+            let listLink = !this.props.includeListLink ? null : <div className={ stylesInfo.infoHeading } onClick={ this._onGoToList.bind(this) } 
                 style={{ paddingRight: 20, whiteSpace: 'nowrap', float: 'right', paddingTop: 0, cursor: 'pointer', fontSize: 'smaller',background: 'transparent' }}>
                     <span style={{ background: 'transparent' }} className={ stylesInfo.listLink }>Go to list</span></div>;
 
@@ -519,7 +519,7 @@ export default class ReactListItems extends React.Component<IReactListItemsProps
 
             let canShowAPanel = thisID === null || thisID === undefined || panelItem === null ? false : true;
             let showFullPanel = canShowAPanel === true && clickedAttach !== true ? true : false;
-            let showAttachPanel = canShowAPanel === true && clickedAttach === true && this.props.includeAttach === true ? true : false;
+            let showAttachPanel = canShowAPanel === true && clickedAttach === true && this.props.includeListLink === true ? true : false;
 
             this.setState({ 
                 showPanel: showFullPanel,
