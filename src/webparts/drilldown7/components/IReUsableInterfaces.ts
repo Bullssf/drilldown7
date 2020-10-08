@@ -4,8 +4,8 @@ export interface IRefinerRules {
   rules: RefineRuleValues[];
 }
 
-export type IRefinerStatType = 'sum' | 'avg' | 'max' | 'min' | 'daysAgo' | 'monthsAgo' | 'demo' | 'eval';
-export const RefinerStatTypes = ['sum' , 'avg' , 'max' , 'min' , 'daysAgo' , 'monthsAgo' , 'eval' ]; // , ''];
+export type IRefinerStatType = 'sum' | 'avg' | 'max' | 'min' | 'count' | 'daysAgo' | 'monthsAgo' | 'demo' | 'eval';
+export const RefinerStatTypes = ['sum' , 'avg' , 'max' , 'min' , 'count', 'daysAgo' , 'monthsAgo' , 'eval' ]; // , ''];
 
 export interface IRefinerStat {
 

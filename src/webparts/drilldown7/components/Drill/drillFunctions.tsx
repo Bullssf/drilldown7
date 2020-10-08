@@ -270,7 +270,11 @@ function buildRefinerLayerDidNotWork ( level: number, refinersParent : IRefinerL
                     let thisValue = i.refiners['stat' + i2];
                     let currentRefinerValue = refinersParent['stat' + i2][topKeyX];
 
-                    if ( thisStat === 'sum' || thisStat === 'avg' || thisStat === 'daysAgo' || thisStat === 'monthsAgo' ) {
+                    if ( thisStat === 'count' ) {
+                        refinersParent['stat' + i2][topKeyX] ++;
+                        refinersParent['stat' + i2 + 'Count'][topKeyX] ++;
+        
+                    } else if ( thisStat === 'sum' || thisStat === 'avg' || thisStat === 'daysAgo' || thisStat === 'monthsAgo' ) {
                         //Add numbers up here and divide by total count later
                         refinersParent['stat' + i2][topKeyX] += thisValue;
                         refinersParent['stat' + i2 + 'Count'][topKeyX] ++;
@@ -315,7 +319,11 @@ export function updateRefinerStats( i: IDrillItemInfo , topKeyZ: number,  refine
             let thisValue = i.refiners['stat' + i2];
             let currentRefinerValue = refiners['stat' + i2][topKeyZ];
 
-            if ( thisStat === 'sum' || thisStat === 'avg' || thisStat === 'daysAgo' || thisStat === 'monthsAgo' ) {
+            if ( thisStat === 'count' ) {
+                refiners['stat' + i2][topKeyZ] ++;
+                refiners['stat' + i2 + 'Count'][topKeyZ] ++;
+
+            } else if ( thisStat === 'sum' || thisStat === 'avg' || thisStat === 'daysAgo' || thisStat === 'monthsAgo' ) {
                 //Add numbers up here and divide by total count later
                 refiners['stat' + i2][topKeyZ] += thisValue;
                 refiners['stat' + i2 + 'Count'][topKeyZ] ++;
@@ -522,7 +530,10 @@ export function getRefinerStatsForItem( drillList: IDrillList, item: IDrillItemI
             secondType = getDetailValueType(  item[secondField] );
         }
 
-        if ( stat === 'sum' ) { 
+        if ( stat === 'count' ) { 
+            itemRefiners['stat' + i] = 1 ;
+
+        } else if ( stat === 'sum' ) { 
             if ( primaryType === 'numberstring' ) {
                 itemRefiners['stat' + i] = parseFloat(item[primaryField]) ;
 
