@@ -52,7 +52,8 @@ export interface IReactListItemsProps {
     groupByFields?:  IGrouping[];
     includeDetails: boolean;
     includeAttach: boolean;
-
+    togListLink: boolean;
+    
     highlightedFields?: string[];
 
     quickCommands?: IQuickCommands;
@@ -376,10 +377,12 @@ export default class ReactListItems extends React.Component<IReactListItemsProps
             let barText = this.props.blueBar && this.props.blueBar != null ? this.props.blueBar : <span>Items</span>;
 
             let webTitle = null;
-            let listLink = <Link href={ this.props.parentListURL } target={ '_blank'}>Go to list</Link>;
+            let listLink = !this.props.togListLink ? null : <div className={ stylesInfo.infoHeading } onClick={ this._onGoToList.bind(this) } 
+                style={{ paddingRight: 20, whiteSpace: 'nowrap', float: 'right', paddingTop: 0, cursor: 'pointer', fontSize: 'smaller',background: 'transparent' }}>
+                    <span style={{ background: 'transparent' }} className={ stylesInfo.listLink }>Go to list</span></div>;
 
             if ( barText != null ) {
-                webTitle =<div className={ stylesInfo.infoHeading }><span style={{ paddingLeft: 20, whiteSpace: 'nowrap' }}>( { this.props.items.length }  ) Items in: { barText }</span><span style={{ float: 'right'}}>{ listLink } </span></div>;
+                webTitle =<div className={ [stylesInfo.infoHeading, stylesInfo.innerShadow].join(' ') }><span style={{ paddingLeft: 20, whiteSpace: 'nowrap' }}>( { this.props.items.length }  ) Items in: { barText }</span>{ listLink }</div>;
 
             
             /*stylesL.reactListView*/
@@ -419,6 +422,23 @@ export default class ReactListItems extends React.Component<IReactListItemsProps
  *                                                                                                          
  *                                                                                                          
  */
+
+    private _onGoToList = () : void => {
+
+        if ( !this.props.parentListURL || this.props.parentListURL == null || this.props.parentListURL == undefined || this.props.parentListURL.length === 0 ) {
+            return; // Do nothing
+        }
+        let e: any = event;
+        let isAltClick = e.altKey;
+        let isShfitClick = e.shiftKey;
+        let isCtrlClick = e.ctrlKey;
+        
+        console.log('AltClick, ShfitClick, CtrlClick:', isAltClick, isShfitClick, isCtrlClick );
+
+        window.open(this.props.parentListURL, "_blank");
+
+    }
+
 
     private _updateStateOnPropsChange(): void {
 //        this.setState({
@@ -472,10 +492,6 @@ export default class ReactListItems extends React.Component<IReactListItemsProps
 
 
         }
-
-
-
-
 
     }
 

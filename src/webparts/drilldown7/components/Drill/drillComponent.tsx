@@ -79,6 +79,7 @@ export type IRefinerStyles = 'pivot' | 'commandBar' | 'other';
     isLibrary?: boolean;
     webURL?: string;
     parentListURL?: string;
+    togListLink?: boolean;
     refiners: string[]; //String of Keys representing the static name of the column used for drill downs
     emptyRefiner: string;
     refinerRules: IRefinerRules[][];
@@ -165,6 +166,7 @@ export interface IDrillDownProps {
         togCounts: boolean;
         togSummary: boolean;
         togStats: boolean;
+        togListLink: boolean;
     };
 
     performance: {
@@ -554,6 +556,7 @@ export default class DrillDown extends React.Component<IDrillDownProps, IDrillDo
             isLibrary: isLibrary,
             webURL: webURL,
             parentListURL: this.props.parentListURL,
+            togListLink: this.props.toggles.togListLink,
             refiners: refiners,
             emptyRefiner: 'Unknown',
             refinerRules: refinerRules,
@@ -686,6 +689,10 @@ public componentDidUpdate(prevProps){
     if ( prevProps.performance.restFilter !== this.props.performance.restFilter ) {
         rebuildPart = true ;
     }
+    if ( prevProps.toggles !== this.props.toggles ) {
+        rebuildPart = true ;
+    }
+
     if ( prevProps.WebpartHeight !== this.props.WebpartHeight || prevProps.WebpartWidth !== this.props.WebpartWidth ) {
         rebuildPart = true ;
       }
@@ -902,6 +909,7 @@ public componentDidUpdate(prevProps){
                     parentListURL = { this.state.drillList.parentListURL }
                     listName = { this.state.drillList.name }
 
+                    togListLink={ this.state.drillList.togListLink }
                     viewFields={ currentViewFields }
                     groupByFields={ currentViewGroups }
                     items={ this.state.searchedItems}

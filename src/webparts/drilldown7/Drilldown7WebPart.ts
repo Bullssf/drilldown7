@@ -27,7 +27,6 @@ import { sp } from '@pnp/sp';
 import { propertyPaneBuilder } from '../../services/propPane/PropPaneBuilder';
 import { getAllItems } from '../../services/propPane/PropPaneFunctions';
 
-
 import { IMyProgress, ICustViewDef } from './components/IReUsableInterfaces';
 
 // 2020-09-08:  Add for dynamic data refiners.
@@ -74,6 +73,7 @@ export interface IDrilldown7WebPartProps {
   togCounts: boolean;
   togSummary: boolean;
   togStats: boolean;
+  togListLink: boolean;
   fetchCount: number;
   fetchCountMobile: number;
   restFilter: string;
@@ -387,6 +387,7 @@ private _filterBy: any;
             togCounts: this.properties.togCounts,
             togSummary: this.properties.togSummary,
             togStats: this.properties.togStats,
+            togListLink: this.properties.togListLink,
         },
     
         performance: {
@@ -721,14 +722,19 @@ private _filterBy: any;
       let listTitle = propertyPath === 'parentListTitle' ? newValue : this.properties.parentListTitle;
 
       let thisListWeb = Web( parentWeb );
-      let thisListObject = thisListWeb.lists.getByTitle(listTitle);
+      let thisListObject : any = thisListWeb.lists.getByTitle(listTitle);
       thisListObject.expand('RootFolder, ParentWeb').select('Title,RootFolder/ServerRelativeUrl, ParentWeb/Url').get().then( (response) => {
-          let tenantURL = response.ParentWebUrl.substring(0, response.ParentWebUrl.indexOf('/sites/') - 1);
+          let tenantURL = response.ParentWeb.Url.substring(0, response.ParentWeb.Url.indexOf('/sites/') );
           this.properties.parentListURL = tenantURL + response.RootFolder.ServerRelativeUrl;
-
+          this.context.propertyPane.refresh();
       }).catch((e) => {
-      //Throw Error
-          alert(e);
+        let errMessage = getHelpfullError(e, false, true);
+        alert(errMessage);
+        if (errMessage.indexOf('missing a column') > -1) {
+          
+        } else {
+
+        }
       });
 
     }
@@ -741,7 +747,7 @@ private _filterBy: any;
       'parentListFieldTitles','progress','UpdateTitles','parentListTitle','childListTitle','parentListWeb','childListWeb', 'stats',
       'rules0','rules1','rules2',
       'togCounts', 'togSummary', 'togStats', 
-      'fetchCount', 'fetchCountMobile', 'restFilter', 'quickCommands', 'definitionToggle',
+      'fetchCount', 'fetchCountMobile', 'restFilter', 'quickCommands', 'definitionToggle', 'togListLink',
     ];
     //alert('props updated');
     console.log('onPropertyPaneFieldChanged:', propertyPath, oldValue, newValue);
