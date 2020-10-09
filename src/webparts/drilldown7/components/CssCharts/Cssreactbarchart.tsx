@@ -318,6 +318,13 @@ public componentDidUpdate(prevProps){
       let maxNumber: number = Math.max( ...chartValueArray );  //Need to use ... spread in math operators:  https://stackoverflow.com/a/1669222
       let minNumber: number = Math.min( ...chartValueArray );  //Need to use ... spread in math operators:  https://stackoverflow.com/a/1669222
 
+      let maxDecimal: number = 0;
+      chartValueArray.map( v => {
+        let decimal = v % 1;
+        if ( decimal > maxDecimal ) { maxDecimal = decimal; }
+       });
+
+
       let minDivisor = null;
       if ( minNumber >= 1000000 ) { minDivisor = 1000000 ; }
 //      else if ( minNumber >= 100000 ) { minDivisor = 100000 ; }
@@ -335,7 +342,10 @@ public componentDidUpdate(prevProps){
       if ( leftEdgeValue < 0 && minNumber >= 1 ) { leftEdgeValue = 0 ; } //Set to zero if it's close to 
       let rightEdgeValue = maxNumber;
 
-      let scaleNote = 'Scale: '  + leftEdgeValue.toPrecision(3) + ' to ' + rightEdgeValue.toPrecision(3);
+      let leftEdgeLabel = maxDecimal === 0 ? parseInt(leftEdgeValue.toFixed()) : leftEdgeValue.toPrecision(3) ;
+      let rightEdgeLabel = maxDecimal === 0 ? parseInt(rightEdgeValue.toFixed()) : rightEdgeValue.toPrecision(3) ;
+
+      let scaleNote = 'Scale: '  + leftEdgeLabel + ' to ' + rightEdgeLabel;
 
       //https://stackoverflow.com/a/2901298/4210807 - get string value with commas
       if ( minDivisor > 1 ) { scaleNote += ' in ' + minDivisor.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","); }
@@ -391,7 +401,7 @@ public componentDidUpdate(prevProps){
         }
 
         let barLabel = barValueAsPercent === true ?
-          ( cd.percents[i].toFixed(1) ) + '%' : barNumber ;
+          ( cd.percents[i].toFixed(1) ) + '%' : maxDecimal === 0 ? parseInt(barNumber) : barNumber ;
 
         if ( stacked === false ) { 
 
@@ -410,6 +420,9 @@ public componentDidUpdate(prevProps){
           //This is adjusting the left side of chart for better perato look
           let scaledBarPercent = 100 * ( chartValueArray[i] - leftEdgeValue ) / ( rightEdgeValue - leftEdgeValue ) ;
           barPercent = scaledBarPercent;
+
+          //This accounts for when all bars are equal.
+          if ( minNumber === maxNumber ) { barPercent = 100; } 
 
           blockStyle.float = 'none' ;
           blockStyle.width = barPercent + '%';
@@ -440,6 +453,7 @@ public componentDidUpdate(prevProps){
           blockStyle.textAlign = blockStyle.textAlign ? blockStyle.textAlign : 'center' ;
           blockStyle.margin = blockStyle.margin ? blockStyle.margin : '10px' ;
           blockStyle.minWidth = blockStyle.minWidth ? blockStyle.minWidth : '100px' ;
+          blockStyle.left = '-10px'; //Added to accomodate 10px shift to right with margin around boxes
 
           barLabel = <div><div style={{fontSize: 'smaller', marginTop : '5px', marginBottom : '5px'}}> { cd.labels[i] }</div><div style={{fontSize: 'larger'}}> { barLabel }</div></div>;
         }

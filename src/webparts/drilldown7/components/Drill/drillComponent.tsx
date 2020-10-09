@@ -78,6 +78,7 @@ export type IRefinerStyles = 'pivot' | 'commandBar' | 'other';
     restFilter: string;
     isLibrary?: boolean;
     webURL?: string;
+    parentListURL?: string;
     refiners: string[]; //String of Keys representing the static name of the column used for drill downs
     emptyRefiner: string;
     refinerRules: IRefinerRules[][];
@@ -154,7 +155,8 @@ export interface IDrillDownProps {
     WebpartElement: HTMLElement;   //Size courtesy of https://www.netwoven.com/2018/11/13/resizing-of-spfx-react-web-parts-in-different-scenarios/
 
     webURL?: string;
-    
+    parentListURL?: string;
+
     listName : string;
     
     allLoaded: boolean;
@@ -354,7 +356,7 @@ export default class DrillDown extends React.Component<IDrillDownProps, IDrillDo
 
     }
 
-    private getAppropriateViewProp ( viewDefs: ICustViewDef[], currentWidth: number, prop: 'includeDetails' | 'includeAttach' ) {
+    private getAppropriateViewProp ( viewDefs: ICustViewDef[], currentWidth: number, prop: 'includeDetails' | 'includeAttach' | 'includeListLink' ) {
         let result : boolean = false;
 
         let maxViewWidth = 0 ;
@@ -363,7 +365,7 @@ export default class DrillDown extends React.Component<IDrillDownProps, IDrillDo
                 result = vd[prop];
                 maxViewWidth = vd.minWidth;
             } else {
-                
+
             }
         });
         console.log('getAppropriateDetailMode: ', result);
@@ -426,13 +428,13 @@ export default class DrillDown extends React.Component<IDrillDownProps, IDrillDo
     private buildStatCharts(  stats: IRefinerStat[], callBackID: string, refinerObj: IRefinerLayer , ) {
         let resultSummary = null;
         let theseCharts : any[] = [];
-        let i = 0;
+        let i = -1;
         if ( refinerObj == null || stats == null || stats.length === 0 ) {
             //Do nothing
 
         } else {
             stats.map( s => {
-
+                i ++;
                 let labels = refinerObj.childrenKeys ;
                 let theseStats = refinerObj['stat' + i] ;
                 let finalStats = [];
@@ -551,6 +553,7 @@ export default class DrillDown extends React.Component<IDrillDownProps, IDrillDo
 
             isLibrary: isLibrary,
             webURL: webURL,
+            parentListURL: this.props.parentListURL,
             refiners: refiners,
             emptyRefiner: 'Unknown',
             refinerRules: refinerRules,
@@ -683,6 +686,10 @@ public componentDidUpdate(prevProps){
     if ( prevProps.performance.restFilter !== this.props.performance.restFilter ) {
         rebuildPart = true ;
     }
+    if ( prevProps.toggles !== this.props.toggles ) {
+        rebuildPart = true ;
+    }
+
     if ( prevProps.WebpartHeight !== this.props.WebpartHeight || prevProps.WebpartWidth !== this.props.WebpartWidth ) {
         rebuildPart = true ;
       }
@@ -792,11 +799,11 @@ public componentDidUpdate(prevProps){
              *                                                                      
              *                                                                      
              */
-                        
+
             //                <div> { resizePage0 } </div>
             let showRefiner0 = true;
-            let showRefiner1 = this.state.maxRefinersToShow >= 2 && this.state.searchMeta[0] !== 'All' ? true : false;
-            let showRefiner2 = this.state.maxRefinersToShow >= 3 && this.state.searchMeta.length >= 2 && this.state.searchMeta[1] !== 'All' ? true : false;
+            let showRefiner1 = this.state.maxRefinersToShow >= 2 && this.state.searchMeta[0] !== 'All' && this.state.cmdCats.length > 1 ? true : false;
+            let showRefiner2 = this.state.maxRefinersToShow >= 3 && this.state.searchMeta.length >= 2 && this.state.searchMeta[1] !== 'All' && this.state.cmdCats.length > 2 ? true : false;
 
             let thisIsRefiner0 = null;
             let thisIsRefiner1 = null;
@@ -886,6 +893,8 @@ public componentDidUpdate(prevProps){
 
                 let includeDetails = this.getAppropriateViewProp( this.props.viewDefs, this.state.WebpartWidth, 'includeDetails' );
                 let includeAttach = this.getAppropriateViewProp( this.props.viewDefs, this.state.WebpartWidth, 'includeAttach' );
+                let includeListLink = this.getAppropriateViewProp( this.props.viewDefs, this.state.WebpartWidth, 'includeListLink' );
+                
 
                 let currentViewFields: any[] = [];
                 if ( this.props.viewDefs.length > 0 )  { currentViewFields = this.getAppropriateViewFields( this.props.viewDefs, this.state.WebpartWidth ); }
@@ -896,6 +905,7 @@ public componentDidUpdate(prevProps){
                     parentListFieldTitles={ this.props.viewDefs.length > 0 ? null : this.props.parentListFieldTitles }
 
                     webURL = { this.state.drillList.webURL }
+                    parentListURL = { this.state.drillList.parentListURL }
                     listName = { this.state.drillList.name }
 
                     viewFields={ currentViewFields }
@@ -903,6 +913,7 @@ public componentDidUpdate(prevProps){
                     items={ this.state.searchedItems}
                     includeDetails= { includeDetails }
                     includeAttach= { includeAttach }
+                    includeListLink = { includeListLink }
                     quickCommands={ this.props.quickCommands }
                     
                 ></ReactListItems>;

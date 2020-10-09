@@ -7,6 +7,8 @@ import {
 } from '@microsoft/sp-property-pane';
 import { BaseClientSideWebPart } from '@microsoft/sp-webpart-base';
 
+import { Web, IList, IItem } from "@pnp/sp/presets/all";
+
 import * as strings from 'Drilldown7WebPartStrings';
 import DrillDown from './components/Drill/drillComponent';
 import { IDrillDownProps } from './components/Drill/drillComponent';
@@ -24,7 +26,6 @@ import { sp } from '@pnp/sp';
 
 import { propertyPaneBuilder } from '../../services/propPane/PropPaneBuilder';
 import { getAllItems } from '../../services/propPane/PropPaneFunctions';
-
 
 import { IMyProgress, ICustViewDef } from './components/IReUsableInterfaces';
 
@@ -55,6 +56,7 @@ export interface IDrilldown7WebPartProps {
   createVerifyLists: boolean;
   parentListTitle: string;
   parentListWeb: string;
+  parentListURL?: string;
 
   refiner0: string;
   refiner1: string;
@@ -71,6 +73,7 @@ export interface IDrilldown7WebPartProps {
   togCounts: boolean;
   togSummary: boolean;
   togStats: boolean;
+  includeListLink: boolean;
   fetchCount: number;
   fetchCountMobile: number;
   restFilter: string;
@@ -125,6 +128,7 @@ export interface IDrilldown7WebPartProps {
   pivotFormat: string;
   pivotOptions: string;
   pivotTab: string;
+
 }
 
 export default class Drilldown7WebPart extends BaseClientSideWebPart<IDrilldown7WebPartProps> {
@@ -345,9 +349,11 @@ private _filterBy: any;
     let viewWidth2 = this.properties.viewWidth2;
     let viewWidth3 = this.properties.viewWidth3;
 
-    if (viewFields1 !== undefined ) { viewDefs.push( { minWidth: viewWidth1, viewFields: viewFields1, groupByFields: groupByFields, includeDetails: includeDetails, includeAttach: includeAttach }); }
-    if (viewFields2 !== undefined ) { viewDefs.push( { minWidth: viewWidth2, viewFields: viewFields2, groupByFields: groupByFields, includeDetails: includeDetails, includeAttach: includeAttach }); }
-    if (viewFields3 !== undefined ) { viewDefs.push( { minWidth: viewWidth3, viewFields: viewFields3, groupByFields: groupByFields, includeDetails: includeDetails, includeAttach: includeAttach }); }
+    let includeListLink = this.properties.includeListLink;
+
+    if (viewFields1 !== undefined ) { viewDefs.push( { minWidth: viewWidth1, viewFields: viewFields1, groupByFields: groupByFields, includeDetails: includeDetails, includeAttach: includeAttach, includeListLink: includeListLink }); }
+    if (viewFields2 !== undefined ) { viewDefs.push( { minWidth: viewWidth2, viewFields: viewFields2, groupByFields: groupByFields, includeDetails: includeDetails, includeAttach: includeAttach, includeListLink: includeListLink }); }
+    if (viewFields3 !== undefined ) { viewDefs.push( { minWidth: viewWidth3, viewFields: viewFields3, groupByFields: groupByFields, includeDetails: includeDetails, includeAttach: includeAttach, includeListLink: includeListLink }); }
 
     let quickCommands : IQuickCommands = this.getQuickCommandsObject( 'Group Quick Commands', this.properties.quickCommands);
 
@@ -396,6 +402,7 @@ private _filterBy: any;
         // 2 - Source and destination list information
         listName: this.properties.parentListTitle,
         webURL: parentWeb,
+        parentListURL: this.properties.parentListURL,
 
         refiners: refiners,
         showDisabled: this.properties.showDisabled,
@@ -709,6 +716,30 @@ private _filterBy: any;
       this.context.propertyPane.refresh();
     }
 
+    if ( propertyPath === 'parentListWeb' || propertyPath === 'parentListTitle' ) {
+      let webUrl = propertyPath === 'parentListWeb' ? newValue : this.properties.parentListWeb;
+      let parentWeb = webUrl && webUrl != '' ? webUrl : this.context.pageContext.web.absoluteUrl;
+
+      let listTitle = propertyPath === 'parentListTitle' ? newValue : this.properties.parentListTitle;
+
+      let thisListWeb = Web( parentWeb );
+      let thisListObject : any = thisListWeb.lists.getByTitle(listTitle);
+      thisListObject.expand('RootFolder, ParentWeb').select('Title,RootFolder/ServerRelativeUrl, ParentWeb/Url').get().then( (response) => {
+          let tenantURL = response.ParentWeb.Url.substring(0, response.ParentWeb.Url.indexOf('/sites/') );
+          this.properties.parentListURL = tenantURL + response.RootFolder.ServerRelativeUrl;
+          this.context.propertyPane.refresh();
+      }).catch((e) => {
+        let errMessage = getHelpfullError(e, false, true);
+        alert(errMessage);
+        if (errMessage.indexOf('missing a column') > -1) {
+          
+        } else {
+
+        }
+      });
+
+    }
+
     /**
      * This section is used to determine when to refresh the pane options
      */
@@ -717,12 +748,12 @@ private _filterBy: any;
       'parentListFieldTitles','progress','UpdateTitles','parentListTitle','childListTitle','parentListWeb','childListWeb', 'stats',
       'rules0','rules1','rules2',
       'togCounts', 'togSummary', 'togStats', 
-      'fetchCount', 'fetchCountMobile', 'restFilter', 'quickCommands', 'definitionToggle',
+      'fetchCount', 'fetchCountMobile', 'restFilter', 'quickCommands', 'definitionToggle', 'includeListLink',
     ];
     //alert('props updated');
     console.log('onPropertyPaneFieldChanged:', propertyPath, oldValue, newValue);
     if (updateOnThese.indexOf(propertyPath) > -1 ) {
-      this.properties[propertyPath] = newValue;   
+      this.properties[propertyPath] = newValue;
       this.context.propertyPane.refresh();
 
     } else { //This can be removed if it works

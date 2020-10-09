@@ -170,7 +170,7 @@ import {
             ]}, // this group
 
           // 2 - Source and destination list information
-          {  groupName: 'Details & Attachments',
+          {  groupName: 'List view Toggles',
               isCollapsed: true ,
               groupFields: [
                 PropertyPaneToggle('includeDetails', {
@@ -183,6 +183,12 @@ import {
                   offText: 'No',
                   onText: 'Yes',
                 }),
+                PropertyPaneToggle('includeListLink', {
+                  label: 'Show link to List',
+                  offText: 'No',
+                  onText: 'Yes',
+                }),
+                
   
             ]}, // this group
 

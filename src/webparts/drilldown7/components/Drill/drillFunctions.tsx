@@ -264,13 +264,18 @@ function buildRefinerLayerDidNotWork ( level: number, refinersParent : IRefinerL
              * By design it ignores any items of EntryType = 'start' because the entry that counts is the one that has time.
              * Maybe I should just ignore any with zero as time.
              */
-            if ( i.EntryType !== 'start') {
+            //if ( i.EntryType !== 'start') {
+
                 for ( let i2 in drillList.refinerStats ) {
                     let thisStat = drillList.refinerStats[i2].stat;
                     let thisValue = i.refiners['stat' + i2];
                     let currentRefinerValue = refinersParent['stat' + i2][topKeyX];
 
-                    if ( thisStat === 'sum' || thisStat === 'avg' || thisStat === 'daysAgo' || thisStat === 'monthsAgo' ) {
+                    if ( thisStat === 'count' ) {
+                        refinersParent['stat' + i2][topKeyX] ++;
+                        refinersParent['stat' + i2 + 'Count'][topKeyX] ++;
+        
+                    } else if ( thisStat === 'sum' || thisStat === 'avg' || thisStat === 'daysAgo' || thisStat === 'monthsAgo' ) {
                         //Add numbers up here and divide by total count later
                         refinersParent['stat' + i2][topKeyX] += thisValue;
                         refinersParent['stat' + i2 + 'Count'][topKeyX] ++;
@@ -295,7 +300,9 @@ function buildRefinerLayerDidNotWork ( level: number, refinersParent : IRefinerL
 
                     } else { console.log('Not sure what to do with this stat: ', thisStat, i.refiners ) ; }
                 }
-            }
+
+            //}
+
             level ++;
             if ( level < 3 ) {
                 result = buildRefinerLayerDidNotWork ( level, refinersParent.childrenObjs[topKeyX] , i, drillList );
@@ -309,13 +316,17 @@ function buildRefinerLayerDidNotWork ( level: number, refinersParent : IRefinerL
 
 export function updateRefinerStats( i: IDrillItemInfo , topKeyZ: number,  refiners:IRefinerLayer, drillList: IDrillList ) {
 
-    if ( i.EntryType !== 'start') {
+    //if ( i.EntryType !== 'start') {
         for ( let i2 in drillList.refinerStats ) {
             let thisStat = drillList.refinerStats[i2].stat;
             let thisValue = i.refiners['stat' + i2];
             let currentRefinerValue = refiners['stat' + i2][topKeyZ];
 
-            if ( thisStat === 'sum' || thisStat === 'avg' || thisStat === 'daysAgo' || thisStat === 'monthsAgo' ) {
+            if ( thisStat === 'count' ) {
+                refiners['stat' + i2][topKeyZ] ++;
+                refiners['stat' + i2 + 'Count'][topKeyZ] ++;
+
+            } else if ( thisStat === 'sum' || thisStat === 'avg' || thisStat === 'daysAgo' || thisStat === 'monthsAgo' ) {
                 //Add numbers up here and divide by total count later
                 refiners['stat' + i2][topKeyZ] += thisValue;
                 refiners['stat' + i2 + 'Count'][topKeyZ] ++;
@@ -342,7 +353,7 @@ export function updateRefinerStats( i: IDrillItemInfo , topKeyZ: number,  refine
             } else { console.log('Not sure what to do with this stat: ', thisStat, i.refiners ) ; }
 
         }
-    }
+    //}
 
     return refiners;
 
@@ -522,7 +533,10 @@ export function getRefinerStatsForItem( drillList: IDrillList, item: IDrillItemI
             secondType = getDetailValueType(  item[secondField] );
         }
 
-        if ( stat === 'sum' ) { 
+        if ( stat === 'count' ) { 
+            itemRefiners['stat' + i] = 1 ;
+
+        } else if ( stat === 'sum' ) { 
             if ( primaryType === 'numberstring' ) {
                 itemRefiners['stat' + i] = parseFloat(item[primaryField]) ;
 
@@ -591,10 +605,9 @@ function getRefinerFromField ( fieldValue : any, ruleSet: RefineRuleValues[], em
         result = [ emptyRefiner ];
 
     } else if ( detailType === 'boolean'  ){
-        result = [ fieldValue ];
+        result = [ fieldValue === true ? 'true' : 'false' ];
 
     } else if ( detailType === 'number'  ){
-
         result = [ getGroupByNumber(fieldValue, detailType, ruleSet ) ];
 
     } else if ( detailType === 'array' ){
@@ -602,7 +615,7 @@ function getRefinerFromField ( fieldValue : any, ruleSet: RefineRuleValues[], em
 
     } else if ( detailType === 'object' ){
         result = [ JSON.stringify(fieldValue) ];
-    
+
     } else if ( detailType === 'datestring' ) {
         let tempDate = makeTheTimeObject( fieldValue );
         let reFormattedDate = null;
