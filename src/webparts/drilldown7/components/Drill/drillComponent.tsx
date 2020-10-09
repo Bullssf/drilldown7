@@ -428,13 +428,13 @@ export default class DrillDown extends React.Component<IDrillDownProps, IDrillDo
     private buildStatCharts(  stats: IRefinerStat[], callBackID: string, refinerObj: IRefinerLayer , ) {
         let resultSummary = null;
         let theseCharts : any[] = [];
-        let i = 0;
+        let i = -1;
         if ( refinerObj == null || stats == null || stats.length === 0 ) {
             //Do nothing
 
         } else {
             stats.map( s => {
-
+                i ++;
                 let labels = refinerObj.childrenKeys ;
                 let theseStats = refinerObj['stat' + i] ;
                 let finalStats = [];

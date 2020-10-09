@@ -321,7 +321,7 @@ public componentDidUpdate(prevProps){
       let maxDecimal: number = 0;
       chartValueArray.map( v => {
         let decimal = v % 1;
-        if ( decimal > maxDecimal ) { maxDecimal = decimal }
+        if ( decimal > maxDecimal ) { maxDecimal = decimal; }
        });
 
 
@@ -422,7 +422,7 @@ public componentDidUpdate(prevProps){
           barPercent = scaledBarPercent;
 
           //This accounts for when all bars are equal.
-          if ( minNumber === maxNumber ) { barPercent = 100 } 
+          if ( minNumber === maxNumber ) { barPercent = 100; } 
 
           blockStyle.float = 'none' ;
           blockStyle.width = barPercent + '%';

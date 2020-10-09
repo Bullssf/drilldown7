@@ -264,7 +264,8 @@ function buildRefinerLayerDidNotWork ( level: number, refinersParent : IRefinerL
              * By design it ignores any items of EntryType = 'start' because the entry that counts is the one that has time.
              * Maybe I should just ignore any with zero as time.
              */
-            if ( i.EntryType !== 'start') {
+            //if ( i.EntryType !== 'start') {
+
                 for ( let i2 in drillList.refinerStats ) {
                     let thisStat = drillList.refinerStats[i2].stat;
                     let thisValue = i.refiners['stat' + i2];
@@ -299,7 +300,9 @@ function buildRefinerLayerDidNotWork ( level: number, refinersParent : IRefinerL
 
                     } else { console.log('Not sure what to do with this stat: ', thisStat, i.refiners ) ; }
                 }
-            }
+
+            //}
+
             level ++;
             if ( level < 3 ) {
                 result = buildRefinerLayerDidNotWork ( level, refinersParent.childrenObjs[topKeyX] , i, drillList );
@@ -313,7 +316,7 @@ function buildRefinerLayerDidNotWork ( level: number, refinersParent : IRefinerL
 
 export function updateRefinerStats( i: IDrillItemInfo , topKeyZ: number,  refiners:IRefinerLayer, drillList: IDrillList ) {
 
-    if ( i.EntryType !== 'start') {
+    //if ( i.EntryType !== 'start') {
         for ( let i2 in drillList.refinerStats ) {
             let thisStat = drillList.refinerStats[i2].stat;
             let thisValue = i.refiners['stat' + i2];
@@ -350,7 +353,7 @@ export function updateRefinerStats( i: IDrillItemInfo , topKeyZ: number,  refine
             } else { console.log('Not sure what to do with this stat: ', thisStat, i.refiners ) ; }
 
         }
-    }
+    //}
 
     return refiners;
 
