@@ -342,8 +342,8 @@ public componentDidUpdate(prevProps){
       if ( leftEdgeValue < 0 && minNumber >= 1 ) { leftEdgeValue = 0 ; } //Set to zero if it's close to 
       let rightEdgeValue = maxNumber;
 
-      let leftEdgeLabel = maxDecimal === 0 ? parseInt(leftEdgeValue.toFixed()) : leftEdgeValue.toPrecision(3) ;
-      let rightEdgeLabel = maxDecimal === 0 ? parseInt(rightEdgeValue.toFixed()) : rightEdgeValue.toPrecision(3) ;
+      let leftEdgeLabel = maxDecimal === 0 ? parseInt((leftEdgeValue/minDivisor).toFixed()) : (leftEdgeValue/minDivisor).toPrecision(3) ;
+      let rightEdgeLabel = maxDecimal === 0 ? parseInt((rightEdgeValue/minDivisor).toFixed()) : (rightEdgeValue/minDivisor).toPrecision(3) ;
 
       let scaleNote = 'Scale: '  + leftEdgeLabel + ' to ' + rightEdgeLabel;
 

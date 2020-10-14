@@ -337,7 +337,7 @@ export function updateRefinerStats( i: IDrillItemInfo , topKeyZ: number,  refine
                     refiners['stat' + i2][topKeyZ] = thisValue;
                     refiners['stat' + i2 + 'Count'][topKeyZ] ++;
                 } else {
-                    console.log( 'no update: ' + thisValue + ' is NOT LARGER than ' +currentRefinerValue );
+                    //console.log( 'no update: ' + thisValue + ' is NOT LARGER than ' +currentRefinerValue );
                 }
 
             } else if ( thisStat === 'min' ) {
@@ -346,7 +346,7 @@ export function updateRefinerStats( i: IDrillItemInfo , topKeyZ: number,  refine
                     refiners['stat' + i2][topKeyZ] = thisValue;
                     refiners['stat' + i2 + 'Count'][topKeyZ] ++;
                 } else {
-                    console.log( 'no update: ' + thisValue + ' is NOT LESS than ' +currentRefinerValue );
+                    //console.log( 'no update: ' + thisValue + ' is NOT LESS than ' +currentRefinerValue );
                 }
 
 
