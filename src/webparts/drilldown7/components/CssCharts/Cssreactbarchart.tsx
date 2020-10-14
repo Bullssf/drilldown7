@@ -41,6 +41,14 @@ export interface ISimpleData {
  */
 // makeChartData ,
 
+//https://stackoverflow.com/a/2901298
+export function numberWithCommas(x) {
+    return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+}
+
+export function stringNumberWithCommas(x) {
+    return x.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+}
 
 export function makeChartData( qty: number, label: string, chartTypes : ICSSChartTypes[] = [] ) {
 
@@ -347,8 +355,11 @@ public componentDidUpdate(prevProps){
 
       let scaleNote = 'Scale: '  + leftEdgeLabel + ' to ' + rightEdgeLabel;
 
+
+
+
       //https://stackoverflow.com/a/2901298/4210807 - get string value with commas
-      if ( minDivisor > 1 ) { scaleNote += ' in ' + minDivisor.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","); }
+      if ( minDivisor > 1 ) { scaleNote += ' in ' + numberWithCommas(minDivisor) ; }
 
       let scaleNoteEle = <div style= {{ paddingBottom: 10, paddingTop: 10, fontWeight: 600 , fontSize: 'smaller', lineHeight: '.75em' }} title={ scaleNote } > { scaleNote }</div>;
 
@@ -388,7 +399,7 @@ public componentDidUpdate(prevProps){
 
         let barNumber = null;
         if ( minDivisor > 1 ) {
-          barNumber = ( chartValueArray[i] / minDivisor ).toFixed(1) ;
+          barNumber = stringNumberWithCommas(  ( chartValueArray[i] / minDivisor ).toFixed(1) )  ;  //Add .valueOf() to fix #35 where certain bars were showing 8 instead of 8.888e3
           
         } else {
           if ( cdO.valueIsCount ) {
@@ -396,7 +407,7 @@ public componentDidUpdate(prevProps){
           } else if ( chartValueArray[i] == null || chartValueArray[i] == undefined ) {
             barNumber = null;
           } else {
-            barNumber = chartValueArray[i].toPrecision(3) ;
+            barNumber = stringNumberWithCommas( chartValueArray[i].toPrecision(3) ) ;   //Add .valueOf() to fix #35 where certain bars were showing 8 instead of 8.888e3
           }
         }
 
