@@ -67,6 +67,8 @@ import { unstable_renderSubtreeIntoContainer } from 'react-dom';
 
 import Cssreactbarchart from '../CssCharts/Cssreactbarchart';
 
+import  EarlyAccess from '../HelpInfo/EarlyAccess';
+
 export type IRefinerStyles = 'pivot' | 'commandBar' | 'other';
 
   export interface IDrillList extends Partial<IPickedList> {
@@ -987,6 +989,7 @@ public componentDidUpdate(prevProps){
 
                 thisPage = <div className={styles.contents}>
                     <div className={stylesD.drillDown}>
+                        <EarlyAccess ></EarlyAccess>
                         <div className={styles.floatRight}>{ toggleTipsButton }</div>
                         <div className={ this.state.errMessage === '' ? styles.hideMe : styles.showErrorMessage  }>{ this.state.errMessage } </div>
                         {  /* <p><mark>Check why picking Assists does not show Help as a chapter even though it's the only chapter...</mark></p> */ }
