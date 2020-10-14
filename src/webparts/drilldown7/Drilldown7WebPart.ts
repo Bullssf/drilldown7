@@ -177,6 +177,10 @@ private _filterBy: any;
 
       console.log(mess);
 
+      if( this.properties.parentListURL === '' ) {
+        this.properties.parentListURL = this.context.pageContext.web.absoluteUrl + '/lists/' + this.properties.parentListTitle;
+      } 
+
       //https://stackoverflow.com/questions/52010321/sharepoint-online-full-width-page
       if ( window.location.href &&  
         window.location.href.toLowerCase().indexOf("layouts/15/workbench.aspx") > 0 ) {
@@ -187,10 +191,15 @@ private _filterBy: any;
       } 
 
       this._getListDefintions(true, true);
+
+
       //console.log('window.location',window.location);
       sp.setup({
         spfxContext: this.context
       });
+
+
+
     });
   }
 

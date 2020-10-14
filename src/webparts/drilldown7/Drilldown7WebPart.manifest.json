@@ -22,6 +22,7 @@
     "officeFabricIconFontName": "DrillExpand",
     "properties": {
       "description": "Drilldown7",
+      "parentListURL": "",
       "parentListTitle": "TrackMyTime",
       "webPartScenario": "TEAM",
       "refiner0": "Story",
@@ -47,7 +48,7 @@
       "fetchCountMobile": 200,
       "restFilter": "",
       "definitionToggle": true,
-      "togListLink": true,
+      "includeListLink": true,
 
       "viewJSON1": "[{ \"name\": \"Id\", \"displayName\": \"Id\", \"minWidth\": 50 },{ \"name\": \"Title\", \"displayName\": \"Title\", \"minWidth\": 200 },{ \"name\": \"Created\", \"displayName\": \"Created\", \"minWidth\": 200 },{ \"name\": \"Modified\", \"displayName\": \"Modified\", \"minWidth\": 200 }]",
       "viewJSON2": "[{ \"name\": \"Id\", \"displayName\": \"Id\", \"minWidth\": 50 },{ \"name\": \"Title\", \"displayName\": \"Title\", \"minWidth\": 200 },{ \"name\": \"Modified\", \"displayName\": \"Modified\", \"minWidth\": 200 }]",
