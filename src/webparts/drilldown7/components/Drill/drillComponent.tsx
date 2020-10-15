@@ -982,7 +982,7 @@ public componentDidUpdate(prevProps){
                 let earlyAccess = 
                 <EarlyAccess 
                     image = { "https://autoliv.sharepoint.com/sites/crs/PublishingImages/Early%20Access%20Image.png" }
-                    messages = { [ "Welcome to ALV Webpart Early Access!!!", "Get more info here -->"] }
+                    messages = { [ <div><span><b>Welcome to ALV Webpart Early Access!!!</b></span></div>, "Get more info here -->"] }
                     links = { [ links.gitRepoDrilldown7WebPart.wiki, links.gitRepoDrilldown7WebPart.issues ]}
                     email = { 'mailto:General - WebPart Dev <0313a49d.Autoliv.onmicrosoft.com@amer.teams.ms>?subject=Drilldown Webpart Feedback&body=Enter your message here :)  \nScreenshots help!' }
                     farRightIcons = { [ toggleTipsButton ] }

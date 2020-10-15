@@ -88,23 +88,22 @@ export default class EarlyAccess extends React.Component<IEarlyAccessProps, IEar
             padding: '0px !important',
           });
 
-        let hasFarRight = this.props.farRightIcons !== null && this.props.farRightIcons !== undefined && this.props.farRightIcons.length > 0 ?  true : false;
+          let hasFarRight = this.props.farRightIcons !== null && this.props.farRightIcons !== undefined && this.props.farRightIcons.length > 0 ?  true : false;
 
-        let iconStyles: any = { root: {
-            //color: h.color ? h.color : "blue",
-            cursor: 'pointer',
-            paddingRight: hasFarRight === true ? null : '20px',
-        }};
-
-        let barLinkHover = styles.barLinkHover;
-        let farLinkHover = styles.farLinkHover;
-
-        defCommandIconStyles.icon.fontWeight = '600' ;
-
-        let emailButton = this.props.email == null || this.props.email == undefined ? null : 
-            <div title={ "Feedback" } className={ farLinkHover } style={{background: 'white', opacity: '.7', borderRadius: '10px' }}>
-            { createIconButton('MailReply','Email',this._onIconClick.bind(this), null, defCommandIconStyles ) } </div>;
-
+          let iconStyles: any = { root: {
+              //color: h.color ? h.color : "blue",
+              cursor: 'pointer',
+              paddingRight: hasFarRight === true ? null : '20px',
+          }};
+  
+          let barLinkHover = styles.barLinkHover;
+          let farLinkHover = styles.farLinkHover;
+  
+          defCommandIconStyles.icon.fontWeight = '600' ;
+  
+          let emailButton = <div title={ "Feedback" } className={ farLinkHover } style={{background: 'white', opacity: '.7', borderRadius: '10px', cursor: 'pointer', marginRight: hasFarRight === true ? null : '20px' }}>
+          { createIconButton('MailReply','Email',this._onIconClick.bind(this), null, defCommandIconStyles ) } </div>;
+  
 //        let emailIcon = this.props.email == null || this.props.email == undefined ? null :
 //                <div className= { styles.mailLinkHover } style={{background: 'white', opacity: '.7', borderRadius: '10px' }}><Icon title={ "Feedback" } iconName={ "MailReply"} className={ iconClassInfo } styles = {iconStyles} onClick = { this._onIconClick.bind(this) } /></div>;
 
