@@ -2,13 +2,13 @@
 
 import * as React from 'react';
 
-import * as links from './AllLinks';
-
 import { Link, ILinkProps } from 'office-ui-fabric-react';
 import { CompoundButton, Stack, IStackTokens, elementContains } from 'office-ui-fabric-react';
 import { IChoiceGroupOption } from 'office-ui-fabric-react/lib/ChoiceGroup';
 
 import WebPartLinks from './WebPartLinks';
+
+import { createIconButton , defCommandIconStyles} from "../createButtons/IconButton";
 
 import { mergeStyles } from 'office-ui-fabric-react/lib/Styling';
 
@@ -20,7 +20,13 @@ import styles from './InfoPane.module.scss';
 
 export interface IEarlyAccessProps {
     image?: string;
-    email?: string;
+    email?: string;   //Valid email URL like:  'mailto:General - WebPart Dev <0313a49d.yourTenant.onmicrosoft.com@amer.teams.ms>?subject=Drilldown Webpart Feedback&body=Enter your message here :)  \nScreenshots help!'
+    messages?: any[];
+    links?: any[];
+    farRightIcons?: any[];
+    stylesImage?: any; //Not yet set up
+    stylesBar?: any; //Not yet set up
+    stylesBanner?: any; //Not yet set up
 
 }
 
@@ -28,8 +34,6 @@ export interface IEarlyAccessState {
     imgHover: boolean;
     eleHover: boolean;
 }
-
-const EmailMessage = 'mailto:mike.zimmerman@autoliv.com?subject=Drilldown Webpart Feedback&body=Enter your message here :)  \nScreenshots help!';
 
 export default class EarlyAccess extends React.Component<IEarlyAccessProps, IEarlyAccessState> {
 
@@ -73,7 +77,7 @@ export default class EarlyAccess extends React.Component<IEarlyAccessProps, IEar
     public render(): React.ReactElement<IEarlyAccessProps> {
 
 
-        const stackTokensBody: IStackTokens = { childrenGap: 30 };
+        const stackTokensBody: IStackTokens = { childrenGap: 10 };
 
         let thisPage = null;
 
@@ -84,37 +88,56 @@ export default class EarlyAccess extends React.Component<IEarlyAccessProps, IEar
             padding: '0px !important',
           });
 
+        let hasFarRight = this.props.farRightIcons !== null && this.props.farRightIcons !== undefined && this.props.farRightIcons.length > 0 ?  true : false;
+
         let iconStyles: any = { root: {
             //color: h.color ? h.color : "blue",
             cursor: 'pointer',
-            paddingRight: '20px',
-            float: 'right',
+            paddingRight: hasFarRight === true ? null : '20px',
         }};
 
-        let normalIcon = <Icon title={ "Feedback" } iconName={ "MailReply"} className={ iconClassInfo } styles = {iconStyles} onClick = { this._onIconClick.bind(this) } />;
+        let barLinkHover = styles.barLinkHover;
+        let farLinkHover = styles.farLinkHover;
+
+        defCommandIconStyles.icon.fontWeight = '600' ;
+
+        let emailButton = <div title={ "Feedback" } className={ farLinkHover } style={{background: 'white', opacity: '.7', borderRadius: '10px' }}>
+        { createIconButton('MailReply','Email',this._onIconClick.bind(this), null, defCommandIconStyles ) } </div>;
+
+//        let emailIcon = this.props.email == null || this.props.email == undefined ? null :
+//                <div className= { styles.mailLinkHover } style={{background: 'white', opacity: '.7', borderRadius: '10px' }}><Icon title={ "Feedback" } iconName={ "MailReply"} className={ iconClassInfo } styles = {iconStyles} onClick = { this._onIconClick.bind(this) } /></div>;
+
         //styles.earlyAccess, styles.innerShadow
         
-        thisPage = <div className= { styles.infoPane } ><div className= { [ styles.earlyAccess, styles.innerShadow ].join(' ') } style={{ background: 'lightgray', color: 'black', width: '100%', verticalAlign: 'center' }}>
+        let image = this.props.image == null || this.props.image == undefined ? null : 
+            <div style={{ paddingLeft: '20px' }}><Image 
+                className={[
+                styles.imgHoverZoom, 
+                ( this.state.imgHover === true  ? styles.imgHoverZoomHover : null )
+                ].join(" ")} 
+                src={ this.props.image } 
+                shouldFadeIn={true} 
+                imageFit={ ImageFit.centerContain }
+                coverStyle={ ImageCoverStyle.landscape }      
+                width={ 100 } height={ 50 }
+            /></div>;
+
+        let messages = this.props.messages == null || this.props.messages == undefined ? null : this.props.messages.map( mess => { return <div style={{whiteSpace: 'nowrap'}}> { mess } </div>; });
+
+        let links = this.props.links == null || this.props.links == undefined ? null : this.props.links.map( link => { return <div className={ barLinkHover } style={{whiteSpace: 'nowrap'}}> { link } </div>; });
+
+        let farRightIcons = this.props.farRightIcons == null || this.props.farRightIcons == undefined ? null : this.props.farRightIcons.map( icon => { return <div className={ farLinkHover }> { icon } </div>; });
+
+        let defBannerStyle = this.props.stylesBanner ? this.props.stylesBanner : { background: 'lightgray', color: 'black', width: '100%', verticalAlign: 'center' };
+
+        thisPage = <div className= { styles.infoPane } ><div className= { [ styles.earlyAccess, styles.innerShadow ].join(' ') } style={ defBannerStyle }>
             <Stack horizontal={true} wrap={true} horizontalAlign={"space-between"} verticalAlign={"center"} tokens={stackTokensBody}>
-                <Image 
-                    className={[
-                    styles.imgHoverZoom, 
-                    ( this.state.imgHover === true  ? styles.imgHoverZoomHover : null )
-                    ].join(" ")} 
-                    src={ "https://autoliv.sharepoint.com/sites/crs/PublishingImages/Early%20Access%20Image.png"} 
-                    shouldFadeIn={true} 
-                    imageFit={ ImageFit.centerContain }
-                    coverStyle={ ImageCoverStyle.landscape }      
-                    width={ 200 } height={ 50 }
-                />
 
-                <div style={{whiteSpace: 'nowrap'}}>Welcome to ALV Webpart Early Access!!!</div>
-                <div style={{whiteSpace: 'nowrap'}}>Get more info here ---  </div>
-
-                { links.gitRepoDrilldown7WebPart.wiki }
-                { links.gitRepoDrilldown7WebPart.issues }
-
-                { normalIcon }
+                { image }
+                { messages }
+                { links }
+                { emailButton }
+                { farRightIcons }
             </Stack>
 
         </div></div>;
@@ -134,7 +157,7 @@ export default class EarlyAccess extends React.Component<IEarlyAccessProps, IEar
       }
 
       private _onIconClick( event ) : void {
-        window.open( EmailMessage );
+        window.open( this.props.email );
       }
 
 }

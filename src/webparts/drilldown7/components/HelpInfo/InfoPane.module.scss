@@ -15,10 +15,54 @@
     }
 
     .innerShadow {
-      -moz-box-shadow:    inset 10px 1010px 10px #000000cc;
-      -webkit-box-shadow: inset 10px 10px 10px #000000cc;
-      box-shadow:         inset 10px 10px 10px #000000cc;
-  }
+        -moz-box-shadow:    inset 10px 1010px 10px #000000cc;
+        -webkit-box-shadow: inset 10px 10px 10px #000000cc;
+        box-shadow:         inset 10px 10px 10px #000000cc;
+    }
+
+    .mailLinkHover {
+      margin-left: 10px;
+      margin-right: 10px;
+      overflow: hidden;
+      border: 1px transparent;
+      transition: all, .25s ease;
+    }
+
+    .mailLinkHover:hover {
+      transform: scale(1.2);
+      transition: all, .25s ease;
+      background: transparent;
+    }
+
+    .barLinkHover {
+      margin-left: 10px;
+      margin-right: 10px;
+      overflow: hidden;
+      border: 1px transparent;
+      transition: all, .25s ease;
+      font-size: 'normal';
+    }
+
+    .barLinkHover:hover {
+      transition: all, .25s ease;
+      font-size: 'larger';
+    }
+
+    .farLinkHover {
+      margin-left: 10px;
+      margin-right: 10px;
+      overflow: hidden;
+      border: 1px transparent;
+      transition: all, .25s ease;
+      font-size: 'normal';
+    }
+    .farLinkHover:hover {
+      transform: scale(1.2);
+      transition: all, .25s ease;
+      font-size: 'larger';
+      background: transparent;
+    }
+    
 
   .block {
     display: "";
