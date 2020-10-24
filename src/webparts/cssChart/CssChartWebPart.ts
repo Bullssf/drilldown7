@@ -12,7 +12,6 @@ import {
    * DD Subscriber: Step 0 - import from sp-dynamic-data
    */
   IWebPartPropertiesMetadata,
-
   PropertyPaneDynamicFieldSet,
   PropertyPaneDynamicField,
   DynamicDataSharedDepth
