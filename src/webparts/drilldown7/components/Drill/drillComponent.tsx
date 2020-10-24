@@ -25,7 +25,7 @@ import InfoPage from '../HelpInfo/infoPages';
 import ButtonCompound from '../createButtons/ICreateButtons';
 import { IButtonProps, ISingleButtonProps, IButtonState } from "../createButtons/ICreateButtons";
 
-import { createIconButton } from "../createButtons/IconButton";
+import { createIconButton , defCommandIconStyles} from "../createButtons/IconButton";
 
 import { createAdvancedContentChoices } from '../fields/choiceFieldBuilder';
 
@@ -66,6 +66,8 @@ import { ListView, IViewField, SelectionMode, GroupOrder, IGrouping } from "@pnp
 import { unstable_renderSubtreeIntoContainer } from 'react-dom';
 
 import Cssreactbarchart from '../CssCharts/Cssreactbarchart';
+
+import  EarlyAccess from '../HelpInfo/EarlyAccess';
 
 export type IRefinerStyles = 'pivot' | 'commandBar' | 'other';
 
@@ -731,8 +733,10 @@ public componentDidUpdate(prevProps){
             //console.log('renderStateWebs', this.state.allItems );
 
             let thisPage = null;
+            let tipsStyles = defCommandIconStyles;
 
-            let toggleTipsButton = createIconButton('Help','Toggle Tips',this.toggleTips.bind(this), null, null );
+            let toggleTipsButton = <div style={{marginRight: "20px", background: 'white', opacity: '.7', borderRadius: '10px' }}>
+                 { createIconButton('Help','Toggle Tips',this.toggleTips.bind(this), null, tipsStyles ) } </div>;
 
             /***
              *    d888888b d8b   db d88888b  .d88b.       d8888b.  .d8b.   d888b  d88888b 
@@ -974,6 +978,17 @@ public componentDidUpdate(prevProps){
 
                 let toggles = <div style={{ float: 'right' }}> { makeToggles(this.getPageToggles()) } </div>;
 
+
+                let earlyAccess = 
+                <EarlyAccess 
+                    image = { "https://autoliv.sharepoint.com/sites/crs/PublishingImages/Early%20Access%20Image.png" }
+                    messages = { [ <div><span><b>Welcome to ALV Webpart Early Access!!!</b></span></div>, "Get more info here -->"] }
+                    links = { [ links.gitRepoDrilldown7WebPart.wiki, links.gitRepoDrilldown7WebPart.issues ]}
+                    email = { 'mailto:General - WebPart Dev <0313a49d.Autoliv.onmicrosoft.com@amer.teams.ms>?subject=Drilldown Webpart Feedback&body=Enter your message here :)  \nScreenshots help!' }
+                    farRightIcons = { [ toggleTipsButton ] }
+                ></EarlyAccess>;
+
+
                 /***
                  *    d888888b db   db d888888b .d8888.      d8888b.  .d8b.   d888b  d88888b 
                  *    `~~88~~' 88   88   `88'   88'  YP      88  `8D d8' `8b 88' Y8b 88'     
@@ -985,9 +1000,11 @@ public componentDidUpdate(prevProps){
                  *                                                                           
                  */
 
+
                 thisPage = <div className={styles.contents}>
                     <div className={stylesD.drillDown}>
-                        <div className={styles.floatRight}>{ toggleTipsButton }</div>
+                        { earlyAccess }
+                        {  /* <div className={styles.floatRight}>{ toggleTipsButton }</div> */ }
                         <div className={ this.state.errMessage === '' ? styles.hideMe : styles.showErrorMessage  }>{ this.state.errMessage } </div>
                         {  /* <p><mark>Check why picking Assists does not show Help as a chapter even though it's the only chapter...</mark></p> */ }
                         <div className={( this.state.showTips ? '' : styles.hideMe )}>
