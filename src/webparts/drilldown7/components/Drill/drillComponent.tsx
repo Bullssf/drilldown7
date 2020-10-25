@@ -1065,7 +1065,7 @@ public componentDidUpdate(prevProps){
                     }
 
                     if ( summaryCharts.length === 0 ) { summaryCharts = null ; }
-                    if ( !buildStats || statRefinerObject.childrenKeys.length > 0 ) { 
+                    if ( !buildStats || ( statRefinerObject && statRefinerObject.childrenKeys.length > 0 ) ) {
                         let resultSummaryArray = buildStatChartsArray( this.state.drillList.refinerStats, 'summaries', statRefinerObject );
                         statCharts = this.buildStatCharts( resultSummaryArray );
 
