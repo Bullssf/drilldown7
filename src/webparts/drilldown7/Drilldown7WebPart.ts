@@ -27,17 +27,21 @@ import { sp } from '@pnp/sp';
 import { propertyPaneBuilder } from '../../services/propPane/PropPaneBuilder';
 import { getAllItems } from '../../services/propPane/PropPaneFunctions';
 
-import { IMyProgress, ICustViewDef } from './components/IReUsableInterfaces';
+import { IMyProgress, ICustViewDef, IRefinerLayer, IRefinerStat, ICSSChartDD } from './components/IReUsableInterfaces';
 
-// 2020-09-08:  Add for dynamic data refiners.
-import { IDynamicDataCallables, IDynamicDataPropertyDefinition } from '@microsoft/sp-dynamic-data';
+/**
+ * DD Provider: Step 1 - import from sp-dynamic-data
+ */
+import { IDynamicDataCallables, IDynamicDataPropertyDefinition} from '@microsoft/sp-dynamic-data';
 
 import { RefineRuleValues } from './components/IReUsableInterfaces';
 
 import { IGrouping, IViewField } from "@pnp/spfx-controls-react/lib/ListView";
 import { IQuickButton, IQuickCommands } from './components/IReUsableInterfaces';
 
+import { ICssChartProps } from '../cssChart/components/ICssChartProps';
 
+require('../../services/propPane/GrayPropPaneAccordions.css');
 
 export interface IDrilldown7WebPartProps {
 
@@ -129,17 +133,28 @@ export interface IDrilldown7WebPartProps {
   pivotOptions: string;
   pivotTab: string;
 
+  /**
+   * DD Provider: Step 0 - add this.properties.switches to WebPartProps
+   */
+  cssChartProps?: ICssChartProps;
 }
 
-export default class Drilldown7WebPart extends BaseClientSideWebPart<IDrilldown7WebPartProps> {
+  /**
+   * DD Provider: Step 2 - add impliments IDynamicDataCallables
+   */
+export default class Drilldown7WebPart extends BaseClientSideWebPart<IDrilldown7WebPartProps>  implements IDynamicDataCallables {
 
+    /**
+   * DD Provider: Step 6 - (9:51) add _selectedSwitch to be the placeholder for what was selected
+   */
+  private _selected_cssChartProps : ICSSChartDD;
 
-/**
- * 2020-09-08:  Add for dynamic data refiners.
- */
-private _selectedRefiner0Name: string;
-private _selectedRefiner0Value: string;
-private _filterBy: any;
+  /**
+   * 2020-09-08:  Add for dynamic data refiners.
+   */
+  private _selectedRefiner0Name: string;
+  private _selectedRefiner0Value: string;
+  private _filterBy: any;
 
 
 
@@ -158,7 +173,10 @@ private _filterBy: any;
   public onInit():Promise<void> {
     return super.onInit().then(_ => {
       
-      //2020-09-08:  Add for dynamic data refiners.
+      /**
+       * DD Provider: Step 3 - add / update OnInit
+       *  Tell DD Service that this is a provider
+       */
       this.context.dynamicDataSourceManager.initializeSource(this);
 
       if ( !this.properties.rules0 ) { 
@@ -196,11 +214,15 @@ private _filterBy: any;
 
 
   /**
-   * 2020-09-08:  Add for dynamic data refiners.   public getPropertyDefinitions():
-   * 
+   * DD Provider: Step 4 - (8:25) add getPropertyDefinitions
+   * This tells SPFx what properties I can publish
    */
   public getPropertyDefinitions(): ReadonlyArray<IDynamicDataPropertyDefinition>{
     return [
+      {
+        id: 'cssChartProps',
+        title: 'Summary Stats 1'
+      },
       {
         id: 'refiner0Name',
         title: 'Field you are filtering on',
@@ -217,10 +239,13 @@ private _filterBy: any;
   }
 
   /**
-   * 2020-09-08:  Add for dynamic data refiners.   public getPropertyValue:
-   * @param propertyId 
+   * DD Provider: Step 5 - (8:43) add getPropertyValue
+   * When something changes, SPFx needs to call the webpart and find out the updated property value
+   *  This is defined on the interface
+   * This takes in the name of the property that you want to return back.
+   * string | any => any could be any interface if you want to use Interface
    */
-  public getPropertyValue(propertyId: string): string {
+  public getPropertyValue(propertyId: string): string | ICSSChartDD {
     switch(propertyId) {
       case 'refiner0Name': 
         return this._selectedRefiner0Name;
@@ -228,11 +253,13 @@ private _filterBy: any;
         return this._selectedRefiner0Value;
       case 'filterBy':
         return this._filterBy;
+      case 'cssChartProps':
+        return this._selected_cssChartProps;
+
     }
     throw new Error('Bad property ID');
 
   }
-
 
   public getUrlVars(): {} {
     var vars = {};
@@ -444,11 +471,38 @@ private _filterBy: any;
         pivotTab: 'Projects', //this.properties.pivotTab (was setTab in pivot-tiles)
         
         onRefiner0Selected: this._handleRefiner0Selected,
+
+        /**
+         * DD Provider: Step 0 - add props to React Component to receive the switches and the handler.
+         */
+        handleSwitch: this.handleSwitch,
+
       }
     );
 
     ReactDom.render(element, this.domElement);
   }
+
+  /**
+   * DD Provider: Step 7 - (10:45) add handleSwichSelected - handler for when things changed.
+   * 1) Set value of selected Switch on the internal property
+   * 2) Tell anybody who subscribed, that property changed
+   */
+  private handleSwitch = ( stats: IRefinerStat[], callBackID: string, refinerObj: IRefinerLayer ) : void => {
+
+    let e = event;
+
+    let cssChartProps : ICSSChartDD = {
+      stats: stats,
+      callBackID: callBackID,
+      refinerObj: refinerObj,
+    };
+
+    this._selected_cssChartProps = cssChartProps;
+    this.context.dynamicDataSourceManager.notifyPropertyChanged( 'cssChartProps' );
+
+  }
+
 
   /**
    * 2020-09-08:  Add for dynamic data refiners.   private handleFieldSelected:

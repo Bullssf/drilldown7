@@ -14,6 +14,7 @@ export interface IRefinerStat {
   title: string;
   stat: IRefinerStatType;
   chartTypes: ICSSChartTypes[];
+  consumer: 1 | 2 | 3;  //Consumer webpart number
   eval?: string;
   stylesChart?: any;
   stylesTitle?: any;
@@ -371,6 +372,15 @@ export interface IMyFonts{
   export const CSSChartTypes : ICSSChartTypes[] = ['pareto-asc' , 'pareto-dec' , 'pareto-labels' , 'stacked-column-labels' , 'stacked-column-dec' , 'stacked-column-asc'];
 
   export type ISeriesSort = 'asis' | 'labels' | 'asc' | 'dec' | string ;
+
+  
+  export interface ICSSChartDD {
+
+    stats: IRefinerStat[];
+    callBackID: string;
+      refinerObj: IRefinerLayer;
+
+  }
 
   export interface ICSSChartSeries {
     title: string;

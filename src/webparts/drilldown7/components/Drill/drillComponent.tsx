@@ -67,9 +67,23 @@ import { unstable_renderSubtreeIntoContainer } from 'react-dom';
 
 import Cssreactbarchart from '../CssCharts/Cssreactbarchart';
 
+import {buildSummaryCountChartsObject ,  buildStatChartsArray} from '../CssCharts/cssChartFunctions';
+
+
 import  EarlyAccess from '../HelpInfo/EarlyAccess';
 
 export type IRefinerStyles = 'pivot' | 'commandBar' | 'other';
+
+/***
+ *    d888888b      d8888b. d8888b. d888888b db      db      db      d888888b .d8888. d888888b 
+ *      `88'        88  `8D 88  `8D   `88'   88      88      88        `88'   88'  YP `~~88~~' 
+ *       88         88   88 88oobY'    88    88      88      88         88    `8bo.      88    
+ *       88         88   88 88`8b      88    88      88      88         88      `Y8b.    88    
+ *      .88.        88  .8D 88 `88.   .88.   88booo. 88booo. 88booo.   .88.   db   8D    88    
+ *    Y888888P      Y8888D' 88   YD Y888888P Y88888P Y88888P Y88888P Y888888P `8888Y'    YP    
+ *                                                                                             
+ *                                                                                             
+ */
 
   export interface IDrillList extends Partial<IPickedList> {
     title: string;
@@ -95,6 +109,17 @@ export type IRefinerStyles = 'pivot' | 'commandBar' | 'other';
     removeFromSelect: string[];
   }
 
+/***
+ *    d888888b      d8888b. d888888b db    db  .o88b.  .d8b.  d888888b .d8888. 
+ *      `88'        88  `8D   `88'   88    88 d8P  Y8 d8' `8b `~~88~~' 88'  YP 
+ *       88         88oodD'    88    Y8    8P 8P      88ooo88    88    `8bo.   
+ *       88         88~~~      88    `8b  d8' 8b      88~~~88    88      `Y8b. 
+ *      .88.        88        .88.    `8bd8'  Y8b  d8 88   88    88    db   8D 
+ *    Y888888P      88      Y888888P    YP     `Y88P' YP   YP    YP    `8888Y' 
+ *                                                                             
+ *                                                                             
+ */
+
 export interface IMyPivCat {
     title: string;
     desc: string;
@@ -111,6 +136,16 @@ export const pivCats = {
     oldUpdate: {title: 'Stale', desc: '', order: 9, count: null  },
 };
 
+/***
+ *    d888888b      d8888b. d8888b. d888888b db      db           d888888b d888888b d88888b .88b  d88.      d888888b d8b   db d88888b  .d88b.  
+ *      `88'        88  `8D 88  `8D   `88'   88      88             `88'   `~~88~~' 88'     88'YbdP`88        `88'   888o  88 88'     .8P  Y8. 
+ *       88         88   88 88oobY'    88    88      88              88       88    88ooooo 88  88  88         88    88V8o 88 88ooo   88    88 
+ *       88         88   88 88`8b      88    88      88              88       88    88~~~~~ 88  88  88         88    88 V8o88 88~~~   88    88 
+ *      .88.        88  .8D 88 `88.   .88.   88booo. 88booo.        .88.      88    88.     88  88  88        .88.   88  V888 88      `8b  d8' 
+ *    Y888888P      Y8888D' 88   YD Y888888P Y88888P Y88888P      Y888888P    YP    Y88888P YP  YP  YP      Y888888P VP   V8P YP       `Y88P'  
+ *                                                                                                                                             
+ *                                                                                                                                             
+ */
 
 export interface IDrillItemInfo extends Partial<any>{
 
@@ -136,6 +171,19 @@ export interface IDrillItemInfo extends Partial<any>{
     Id: any;
 
 }
+
+
+/***
+ *    d888888b      d8888b. d8888b. d888888b db      db      d8888b.  .d88b.  db   d8b   db d8b   db      d8888b. d8888b.  .d88b.  d8888b. .d8888. 
+ *      `88'        88  `8D 88  `8D   `88'   88      88      88  `8D .8P  Y8. 88   I8I   88 888o  88      88  `8D 88  `8D .8P  Y8. 88  `8D 88'  YP 
+ *       88         88   88 88oobY'    88    88      88      88   88 88    88 88   I8I   88 88V8o 88      88oodD' 88oobY' 88    88 88oodD' `8bo.   
+ *       88         88   88 88`8b      88    88      88      88   88 88    88 Y8   I8I   88 88 V8o88      88~~~   88`8b   88    88 88~~~     `Y8b. 
+ *      .88.        88  .8D 88 `88.   .88.   88booo. 88booo. 88  .8D `8b  d8' `8b d8'8b d8' 88  V888      88      88 `88. `8b  d8' 88      db   8D 
+ *    Y888888P      Y8888D' 88   YD Y888888P Y88888P Y88888P Y8888D'  `Y88P'   `8b8' `8d8'  VP   V8P      88      88   YD  `Y88P'  88      `8888Y' 
+ *                                                                                                                                                 
+ *                                                                                                                                                 
+ */
+
 
 export type IViewType = 'React' | 'MZ' | 'Other' ;
 
@@ -229,7 +277,21 @@ export interface IDrillDownProps {
 
     style: IRefinerStyles; //RefinerStyle
 
+    //For DD
+    handleSwitch: any;
+
 }
+
+/***
+ *    d888888b      .d8888. d888888b  .d8b.  d888888b 
+ *      `88'        88'  YP `~~88~~' d8' `8b `~~88~~' 
+ *       88         `8bo.      88    88ooo88    88    
+ *       88           `Y8b.    88    88~~~88    88    
+ *      .88.        db   8D    88    88   88    88    
+ *    Y888888P      `8888Y'    YP    YP   YP    YP    
+ *                                                    
+ *                                                    
+ */
 
 export type IStatType = 'sum' | 'max' | 'mini' | 'range' | '';
 
@@ -242,6 +304,17 @@ export interface IStat {
     result?: string;
 }
 
+
+/***
+ *    d888888b      d8888b. d8888b. d888888b db      db      d8888b.  .d88b.  db   d8b   db d8b   db      .d8888. d888888b  .d8b.  d888888b d88888b 
+ *      `88'        88  `8D 88  `8D   `88'   88      88      88  `8D .8P  Y8. 88   I8I   88 888o  88      88'  YP `~~88~~' d8' `8b `~~88~~' 88'     
+ *       88         88   88 88oobY'    88    88      88      88   88 88    88 88   I8I   88 88V8o 88      `8bo.      88    88ooo88    88    88ooooo 
+ *       88         88   88 88`8b      88    88      88      88   88 88    88 Y8   I8I   88 88 V8o88        `Y8b.    88    88~~~88    88    88~~~~~ 
+ *      .88.        88  .8D 88 `88.   .88.   88booo. 88booo. 88  .8D `8b  d8' `8b d8'8b d8' 88  V888      db   8D    88    88   88    88    88.     
+ *    Y888888P      Y8888D' 88   YD Y888888P Y88888P Y88888P Y8888D'  `Y88P'   `8b8' `8d8'  VP   V8P      `8888Y'    YP    YP   YP    YP    Y88888P 
+ *                                                                                                                                                  
+ *                                                                                                                                                  
+ */
 export const RefinerChartTypes : ICSSChartTypes[] = ['stacked-column-labels', 'pareto-dec'];
 
 export interface IDrillDownState {
@@ -299,17 +372,31 @@ export interface IDrillDownState {
     
 }
 
-export default class DrillDown extends React.Component<IDrillDownProps, IDrillDownState> {
 
 /***
- *          .o88b.  .d88b.  d8b   db .d8888. d888888b d8888b. db    db  .o88b. d888888b  .d88b.  d8888b. 
- *         d8P  Y8 .8P  Y8. 888o  88 88'  YP `~~88~~' 88  `8D 88    88 d8P  Y8 `~~88~~' .8P  Y8. 88  `8D 
- *         8P      88    88 88V8o 88 `8bo.      88    88oobY' 88    88 8P         88    88    88 88oobY' 
- *         8b      88    88 88 V8o88   `Y8b.    88    88`8b   88    88 8b         88    88    88 88`8b   
- *         Y8b  d8 `8b  d8' 88  V888 db   8D    88    88 `88. 88b  d88 Y8b  d8    88    `8b  d8' 88 `88. 
- *          `Y88P'  `Y88P'  VP   V8P `8888Y'    YP    88   YD ~Y8888P'  `Y88P'    YP     `Y88P'  88   YD 
- *                                                                                                       
- *                                                                                                       
+ *    d88888b db    db d8888b.  .d88b.  d8888b. d888888b      d8888b. d88888b d88888b       .o88b. db       .d8b.  .d8888. .d8888. 
+ *    88'     `8b  d8' 88  `8D .8P  Y8. 88  `8D `~~88~~'      88  `8D 88'     88'          d8P  Y8 88      d8' `8b 88'  YP 88'  YP 
+ *    88ooooo  `8bd8'  88oodD' 88    88 88oobY'    88         88   88 88ooooo 88ooo        8P      88      88ooo88 `8bo.   `8bo.   
+ *    88~~~~~  .dPYb.  88~~~   88    88 88`8b      88         88   88 88~~~~~ 88~~~        8b      88      88~~~88   `Y8b.   `Y8b. 
+ *    88.     .8P  Y8. 88      `8b  d8' 88 `88.    88         88  .8D 88.     88           Y8b  d8 88booo. 88   88 db   8D db   8D 
+ *    Y88888P YP    YP 88       `Y88P'  88   YD    YP         Y8888D' Y88888P YP            `Y88P' Y88888P YP   YP `8888Y' `8888Y' 
+ *                                                                                                                                 
+ *                                                                                                                                 
+ */
+
+
+export default class DrillDown extends React.Component<IDrillDownProps, IDrillDownState> {
+
+
+ /***
+ *     d888b  d88888b d888888b      db    db d888888b d88888b db   d8b   db      d88888b db    db d8b   db  .o88b. d888888b d888888b  .d88b.  d8b   db .d8888. 
+ *    88' Y8b 88'     `~~88~~'      88    88   `88'   88'     88   I8I   88      88'     88    88 888o  88 d8P  Y8 `~~88~~'   `88'   .8P  Y8. 888o  88 88'  YP 
+ *    88      88ooooo    88         Y8    8P    88    88ooooo 88   I8I   88      88ooo   88    88 88V8o 88 8P         88       88    88    88 88V8o 88 `8bo.   
+ *    88  ooo 88~~~~~    88         `8b  d8'    88    88~~~~~ Y8   I8I   88      88~~~   88    88 88 V8o88 8b         88       88    88    88 88 V8o88   `Y8b. 
+ *    88. ~8~ 88.        88          `8bd8'    .88.   88.     `8b d8'8b d8'      88      88b  d88 88  V888 Y8b  d8    88      .88.   `8b  d8' 88  V888 db   8D 
+ *     Y888P  Y88888P    YP            YP    Y888888P Y88888P  `8b8' `8d8'       YP      ~Y8888P' VP   V8P  `Y88P'    YP    Y888888P  `Y88P'  VP   V8P `8888Y' 
+ *                                                                                                                                                             
+ *                                                                                                                                                             
  */
 
     private getAppropriateViewFields ( viewDefs: ICustViewDef[], currentWidth: number ) {
@@ -375,6 +462,82 @@ export default class DrillDown extends React.Component<IDrillDownProps, IDrillDo
 
     }
 
+    /***
+     *    d8888b. db    db d888888b db      d8888b.      .d8888. db    db .88b  d88.       .o88b.  .d88b.  db    db d8b   db d888888b       .o88b. db   db  .d8b.  d8888b. d888888b .d8888. 
+     *    88  `8D 88    88   `88'   88      88  `8D      88'  YP 88    88 88'YbdP`88      d8P  Y8 .8P  Y8. 88    88 888o  88 `~~88~~'      d8P  Y8 88   88 d8' `8b 88  `8D `~~88~~' 88'  YP 
+     *    88oooY' 88    88    88    88      88   88      `8bo.   88    88 88  88  88      8P      88    88 88    88 88V8o 88    88         8P      88ooo88 88ooo88 88oobY'    88    `8bo.   
+     *    88~~~b. 88    88    88    88      88   88        `Y8b. 88    88 88  88  88      8b      88    88 88    88 88 V8o88    88         8b      88~~~88 88~~~88 88`8b      88      `Y8b. 
+     *    88   8D 88b  d88   .88.   88booo. 88  .8D      db   8D 88b  d88 88  88  88      Y8b  d8 `8b  d8' 88b  d88 88  V888    88         Y8b  d8 88   88 88   88 88 `88.    88    db   8D 
+     *    Y8888P' ~Y8888P' Y888888P Y88888P Y8888D'      `8888Y' ~Y8888P' YP  YP  YP       `Y88P'  `Y88P'  ~Y8888P' VP   V8P    YP          `Y88P' YP   YP YP   YP 88   YD    YP    `8888Y' 
+     *                                                                                                                                                                                      
+     *                                                                                                                                                                                      
+     */
+
+    private buildSummaryCountCharts( title: string, callBackID: string, refinerObj: IRefinerLayer , chartTypes: ICSSChartTypes[] ) {
+        let resultSummary = null;
+
+        let resultSummaryObject = buildSummaryCountChartsObject( title, callBackID, refinerObj , chartTypes );
+
+        resultSummary = 
+        <Cssreactbarchart 
+            chartData = { resultSummaryObject.chartData }
+            callBackID = { resultSummaryObject.callBackID }
+            //onAltClick = { this.changeRefinerOrder.bind(this) }
+        ></Cssreactbarchart>;
+
+        return resultSummary;
+
+    }
+
+    
+    /***
+     *    d8888b. db    db d888888b db      d8888b.      .d8888. d888888b  .d8b.  d888888b       .o88b. db   db  .d8b.  d8888b. d888888b .d8888. 
+     *    88  `8D 88    88   `88'   88      88  `8D      88'  YP `~~88~~' d8' `8b `~~88~~'      d8P  Y8 88   88 d8' `8b 88  `8D `~~88~~' 88'  YP 
+     *    88oooY' 88    88    88    88      88   88      `8bo.      88    88ooo88    88         8P      88ooo88 88ooo88 88oobY'    88    `8bo.   
+     *    88~~~b. 88    88    88    88      88   88        `Y8b.    88    88~~~88    88         8b      88~~~88 88~~~88 88`8b      88      `Y8b. 
+     *    88   8D 88b  d88   .88.   88booo. 88  .8D      db   8D    88    88   88    88         Y8b  d8 88   88 88   88 88 `88.    88    db   8D 
+     *    Y8888P' ~Y8888P' Y888888P Y88888P Y8888D'      `8888Y'    YP    YP   YP    YP          `Y88P' YP   YP YP   YP 88   YD    YP    `8888Y' 
+     *                                                                                                                                           
+     *                                                                                                                                           
+     */
+
+    private buildStatCharts(  resultSummaryArray) {
+
+        let resultSummary = null;
+        let theseCharts : any[] = [];
+        if ( resultSummaryArray == null || resultSummaryArray.length === 0 ) {
+            //Do nothing
+
+        } else {
+            resultSummaryArray.map( chartDataObject => {
+
+                resultSummary = 
+                <Cssreactbarchart 
+                    chartData = { chartDataObject.chartData }
+                    callBackID = { chartDataObject.callBackID }
+                    //onAltClick = { this.changeRefinerOrder.bind(this) }
+                ></Cssreactbarchart>;
+
+                theseCharts.push( resultSummary );
+
+            });
+        }
+
+        return theseCharts;
+
+    }
+
+/***
+ *     .o88b. d8888b. d88888b  .d8b.  d888888b d88888b      d8888b. d88888b d88888b d888888b d8b   db d88888b d8888b.      d88888b db    db d8b   db  .o88b. d888888b d888888b  .d88b.  d8b   db .d8888. 
+ *    d8P  Y8 88  `8D 88'     d8' `8b `~~88~~' 88'          88  `8D 88'     88'       `88'   888o  88 88'     88  `8D      88'     88    88 888o  88 d8P  Y8 `~~88~~'   `88'   .8P  Y8. 888o  88 88'  YP 
+ *    8P      88oobY' 88ooooo 88ooo88    88    88ooooo      88oobY' 88ooooo 88ooo      88    88V8o 88 88ooooo 88oobY'      88ooo   88    88 88V8o 88 8P         88       88    88    88 88V8o 88 `8bo.   
+ *    8b      88`8b   88~~~~~ 88~~~88    88    88~~~~~      88`8b   88~~~~~ 88~~~      88    88 V8o88 88~~~~~ 88`8b        88~~~   88    88 88 V8o88 8b         88       88    88    88 88 V8o88   `Y8b. 
+ *    Y8b  d8 88 `88. 88.     88   88    88    88.          88 `88. 88.     88        .88.   88  V888 88.     88 `88.      88      88b  d88 88  V888 Y8b  d8    88      .88.   `8b  d8' 88  V888 db   8D 
+ *     `Y88P' 88   YD Y88888P YP   YP    YP    Y88888P      88   YD Y88888P YP      Y888888P VP   V8P Y88888P 88   YD      YP      ~Y8888P' VP   V8P  `Y88P'    YP    Y888888P  `Y88P'  VP   V8P `8888Y' 
+ *                                                                                                                                                                                                       
+ *                                                                                                                                                                                                       
+ */
+    
     private createEmptyRefinerRules( rules: string ) {
         let emptyRules : any = null;
         try {
@@ -387,101 +550,6 @@ export default class DrillDown extends React.Component<IDrillDownProps, IDrillDo
         return emptyRules;
     }
 
-    private buildSummaryCountCharts( title: string, callBackID: string, refinerObj: IRefinerLayer , chartTypes: ICSSChartTypes[] ) {
-        let resultSummary = null;
-
-        let labels = refinerObj.childrenKeys ;
-        let counts = refinerObj.childrenMultiCounts;
-
-        let chartKey : string = labels.join('') + counts.join('');
-
-//        console.log('buildSummaryCountCharts labels:', labels );
-//        console.log('buildSummaryCountCharts counts:', counts );
-
-        let chartData : ICSSChartSeries = {
-            title: title,
-            labels: labels,
-            chartTypes: chartTypes,
-            barValueAsPercent: false,
-            valueIsCount: true,
-
-            //The string value here must match the object key below
-            barValues: 'val1',
-            val1: counts ,
-            key: chartKey,
-
-            stylesChart: { paddingBottom: 0, marginBottom: 0, marginTop: 0},
-
-        };
-//        console.log('2 Creating Chart data: ',labels );
-//        console.log('2 Creating Chart data: ',counts );
-
-        resultSummary = 
-        <Cssreactbarchart 
-            chartData = { [chartData] }
-            callBackID = { callBackID }
-            //onAltClick = { this.changeRefinerOrder.bind(this) }
-        ></Cssreactbarchart>;
-
-        return resultSummary;
-
-    }
-
-    private buildStatCharts(  stats: IRefinerStat[], callBackID: string, refinerObj: IRefinerLayer , ) {
-        let resultSummary = null;
-        let theseCharts : any[] = [];
-        let i = -1;
-        if ( refinerObj == null || stats == null || stats.length === 0 ) {
-            //Do nothing
-
-        } else {
-            stats.map( s => {
-                i ++;
-                let labels = refinerObj.childrenKeys ;
-                let theseStats = refinerObj['stat' + i] ;
-                let finalStats = [];
-                let theseCount = refinerObj['stat' + i + 'Count'];
-    
-                if ( s.stat === 'avg' ) {
-                    theseStats.map( ( v, iV ) => {
-                        finalStats.push( theseCount[ iV ] == 0 ? null : v / theseCount[ iV ] ) ;
-                    });
-                } else { finalStats = JSON.parse( JSON.stringify( theseStats ) ) ; }
-    
-                let chartKey : string = labels.join('') + theseCount.join('');
-        
-                let chartData : ICSSChartSeries = {
-                    title: s.title,
-                    labels: labels,
-                    chartTypes: s.chartTypes,
-                    barValueAsPercent: false,
-
-                    //The string value here must match the object key below
-                    barValues: 'val1',
-                    val1: finalStats ,
-                    key: chartKey,
-        
-                    stylesChart: { paddingBottom: 0, marginBottom: 0, marginTop: 0},
-                    stylesRow: { paddingBottom: 0, marginBottom: 0, marginTop: 0},
-                    stylesBlock: s.stylesBlock ? s.stylesBlock : null,
-                };
-        
-                resultSummary = 
-                <Cssreactbarchart 
-                    chartData = { [ chartData ] }
-                    callBackID = { callBackID }
-                    //onAltClick = { this.changeRefinerOrder.bind(this) }
-                ></Cssreactbarchart>;
-        
-                theseCharts.push( resultSummary );
-    
-            });
-        }
-
-
-        return theseCharts;
-
-    }
 
     private createRefinerRuleCalcs( calcs: string ) {
         let theCalcs : any = null;
@@ -495,6 +563,19 @@ export default class DrillDown extends React.Component<IDrillDownProps, IDrillDo
 
         return theCalcs;
     }
+
+
+/***
+ *    db    db d8888b. d8888b.  .d8b.  d888888b d88888b      d8888b. d8888b. d888888b db      db      db      d888888b .d8888. d888888b       .o88b.  .d88b.  db      db    db .88b  d88. d8b   db .d8888. 
+ *    88    88 88  `8D 88  `8D d8' `8b `~~88~~' 88'          88  `8D 88  `8D   `88'   88      88      88        `88'   88'  YP `~~88~~'      d8P  Y8 .8P  Y8. 88      88    88 88'YbdP`88 888o  88 88'  YP 
+ *    88    88 88oodD' 88   88 88ooo88    88    88ooooo      88   88 88oobY'    88    88      88      88         88    `8bo.      88         8P      88    88 88      88    88 88  88  88 88V8o 88 `8bo.   
+ *    88    88 88~~~   88   88 88~~~88    88    88~~~~~      88   88 88`8b      88    88      88      88         88      `Y8b.    88         8b      88    88 88      88    88 88  88  88 88 V8o88   `Y8b. 
+ *    88b  d88 88      88  .8D 88   88    88    88.          88  .8D 88 `88.   .88.   88booo. 88booo. 88booo.   .88.   db   8D    88         Y8b  d8 `8b  d8' 88booo. 88b  d88 88  88  88 88  V888 db   8D 
+ *    ~Y8888P' 88      Y8888D' YP   YP    YP    Y88888P      Y8888D' 88   YD Y888888P Y88888P Y88888P Y88888P Y888888P `8888Y'    YP          `Y88P'  `Y88P'  Y88888P ~Y8888P' YP  YP  YP VP   V8P `8888Y' 
+ *                                                                                                                                                                                                         
+ *                                                                                                                                                                                                         
+ */
+
 
     private updateDrillListColumns( list: IDrillList ) {
        
@@ -539,6 +620,18 @@ export default class DrillDown extends React.Component<IDrillDownProps, IDrillDo
 
     }
 
+
+    /***
+     *     .o88b. d8888b. d88888b  .d8b.  d888888b d88888b      d8888b. d8888b. d888888b db      db           db      d888888b .d8888. d888888b 
+     *    d8P  Y8 88  `8D 88'     d8' `8b `~~88~~' 88'          88  `8D 88  `8D   `88'   88      88           88        `88'   88'  YP `~~88~~' 
+     *    8P      88oobY' 88ooooo 88ooo88    88    88ooooo      88   88 88oobY'    88    88      88           88         88    `8bo.      88    
+     *    8b      88`8b   88~~~~~ 88~~~88    88    88~~~~~      88   88 88`8b      88    88      88           88         88      `Y8b.    88    
+     *    Y8b  d8 88 `88. 88.     88   88    88    88.          88  .8D 88 `88.   .88.   88booo. 88booo.      88booo.   .88.   db   8D    88    
+     *     `Y88P' 88   YD Y88888P YP   YP    YP    Y88888P      Y8888D' 88   YD Y888888P Y88888P Y88888P      Y88888P Y888888P `8888Y'    YP    
+     *                                                                                                                                          
+     *                                                                                                                                          
+     */
+
     private createDrillList(webURL: string, name: string, isLibrary: boolean, refiners: string[], rules: string, stats: string, viewDefs: ICustViewDef[], title: string = null) {
 
         let refinerRules = this.createEmptyRefinerRules( rules );
@@ -574,6 +667,18 @@ export default class DrillDown extends React.Component<IDrillDownProps, IDrillDo
 
         return list;
     }
+
+
+    /***
+     *     .o88b.  .d88b.  d8b   db .d8888. d888888b d8888b. db    db  .o88b. d888888b  .d88b.  d8888b. 
+     *    d8P  Y8 .8P  Y8. 888o  88 88'  YP `~~88~~' 88  `8D 88    88 d8P  Y8 `~~88~~' .8P  Y8. 88  `8D 
+     *    8P      88    88 88V8o 88 `8bo.      88    88oobY' 88    88 8P         88    88    88 88oobY' 
+     *    8b      88    88 88 V8o88   `Y8b.    88    88`8b   88    88 8b         88    88    88 88`8b   
+     *    Y8b  d8 `8b  d8' 88  V888 db   8D    88    88 `88. 88b  d88 Y8b  d8    88    `8b  d8' 88 `88. 
+     *     `Y88P'  `Y88P'  VP   V8P `8888Y'    YP    88   YD ~Y8888P'  `Y88P'    YP     `Y88P'  88   YD 
+     *                                                                                                  
+     *                                                                                                  
+     */
 
     public constructor(props:IDrillDownProps){
         super(props);
@@ -937,32 +1042,54 @@ public componentDidUpdate(prevProps){
                 let summaryCharts = [];
                 let statCharts = [];
                 let statRefinerObject = null;
-                let buildStats = this.state.showStats === true && this.state.drillList.refinerStats && this.state.drillList.refinerStats.length > 0 ? true : false;
+                let buildStats = this.state.drillList.refinerStats && this.state.drillList.refinerStats.length > 0 ? true : false;
                 let buildSummary = this.state.showSummary;
 
+                let textMaxRefinersToShow = 0;
+                let childIndex0 = null;
+                let childIndex1 = null;
+
+                if ( buildStats ) {  statRefinerObject = this.state.refinerObj; }
+
+                if ( this.state.maxRefinersToShow > 1 && this.state.searchMeta[0] !== 'All' ) { 
+                    textMaxRefinersToShow = 1;
+                    childIndex0 = this.state.refinerObj.childrenKeys.indexOf(this.state.searchMeta[0]);
+                    if ( buildStats ) {  statRefinerObject = this.state.refinerObj.childrenObjs[childIndex0]; }
+                }
+                if ( textMaxRefinersToShow >= 1 && this.state.maxRefinersToShow > 2 && this.state.searchMeta.length > 1 && this.state.searchMeta[1] !== 'All' ) { 
+                    textMaxRefinersToShow = 2;
+                    childIndex1 = this.state.refinerObj.childrenObjs[childIndex0].childrenKeys.indexOf(this.state.searchMeta[1]);
+                    if ( buildStats ) {  statRefinerObject = this.state.refinerObj.childrenObjs[childIndex0].childrenObjs[childIndex1]; }
+                }
+
                 if ( this.state.showSummary === true || this.state.showStats === true) {
-                    
                     if ( buildSummary ) { summaryCharts.push( this.buildSummaryCountCharts( this.state.refiners[0], 'refiner0' , this.state.refinerObj, RefinerChartTypes ) ); }
-                    if ( buildStats ) {  statRefinerObject = this.state.refinerObj; }
-
-                    if ( this.state.maxRefinersToShow > 1 && this.state.searchMeta[0] !== 'All' ) {
-
-                        let childIndex0 = this.state.refinerObj.childrenKeys.indexOf(this.state.searchMeta[0]);
+                    if ( textMaxRefinersToShow >= 1 ) {
                         if ( buildSummary ) {  summaryCharts.push( this.buildSummaryCountCharts( this.state.refiners[1], 'refiner1' , this.state.refinerObj.childrenObjs[childIndex0], RefinerChartTypes ) ); }
-                        if ( buildStats ) {  statRefinerObject = this.state.refinerObj.childrenObjs[childIndex0]; }
-
-                        if ( this.state.maxRefinersToShow > 2 && this.state.searchMeta.length > 1 && this.state.searchMeta[1] !== 'All' ) {
-
-                            let childIndex1 = this.state.refinerObj.childrenObjs[childIndex0].childrenKeys.indexOf(this.state.searchMeta[1]);
+                        if ( textMaxRefinersToShow >= 2 ) {
                             if ( buildSummary ) {  summaryCharts.push( this.buildSummaryCountCharts( this.state.refiners[2], 'refiner2' , this.state.refinerObj.childrenObjs[childIndex0].childrenObjs[childIndex1],  RefinerChartTypes ) ); }
-                            if ( buildStats ) {  statRefinerObject = this.state.refinerObj.childrenObjs[childIndex0].childrenObjs[childIndex1]; }
                         }
                     }
 
                     if ( summaryCharts.length === 0 ) { summaryCharts = null ; }
-                    if ( !buildStats || statRefinerObject.childrenKeys.length > 0 ) { statCharts = this.buildStatCharts( this.state.drillList.refinerStats, 'summaries' , statRefinerObject ); }
+                    if ( this.state.showStats && buildStats &&  statRefinerObject && statRefinerObject.childrenKeys.length > 0  ) {
+                        let resultSummaryArray = buildStatChartsArray( this.state.drillList.refinerStats, 'summaries', statRefinerObject );
+                        statCharts = this.buildStatCharts( resultSummaryArray );
+
+                    } else {
+
+                    }
     
-                } 
+                }
+                if ( statRefinerObject && statRefinerObject.childrenKeys.length > 0  ) {
+
+                    //Update Dynamic Data cssChartData  cssChartProps : ICssChartProps
+                    this.props.handleSwitch ( this.state.drillList.refinerStats, 'summaries', statRefinerObject ) ; //resultSummaryArray  ); //: //  { chartData : ICSSChartSeries[], callBackID: string }[]  
+
+                } else {
+                    //Update Dynamic Data cssChartData
+                    this.props.handleSwitch ( null, null, null ); //: ICssChartProps
+                }
 
                 /***
                  *    d888888b  .d88b.   d888b   d888b  db      d88888b .d8888. 
@@ -987,7 +1114,6 @@ public componentDidUpdate(prevProps){
                     email = { 'mailto:General - WebPart Dev <0313a49d.Autoliv.onmicrosoft.com@amer.teams.ms>?subject=Drilldown Webpart Feedback&body=Enter your message here :)  \nScreenshots help!' }
                     farRightIcons = { [ toggleTipsButton ] }
                 ></EarlyAccess>;
-
 
                 /***
                  *    d888888b db   db d888888b .d8888.      d8888b.  .d8b.   d888b  d88888b 
