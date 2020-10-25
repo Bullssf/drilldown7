@@ -88,6 +88,6 @@ export function buildStatChartsArray(  stats: IRefinerStat[], callBackID: string
         });
     }
 
-    return theseCharts;
+    return theseCharts;  //  { chartData : ICSSChartSeries[], callBackID: string }[]
 
 }

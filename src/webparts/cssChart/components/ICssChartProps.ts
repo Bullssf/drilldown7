@@ -1,6 +1,6 @@
 
 import { IRefiners, IRefinerLayer, IRefinerStat,IItemRefiners, RefineRuleValues, 
-  RefinerStatTypes, IRefinerStats, IRefinerStatType } from '../../drilldown7/components/IReUsableInterfaces';
+  RefinerStatTypes, IRefinerStats, IRefinerStatType, ICSSChartDD } from '../../drilldown7/components/IReUsableInterfaces';
 
 export interface ICssChartProps {
   
@@ -9,5 +9,6 @@ export interface ICssChartProps {
   callBackID: string;
   refinerObj: IRefinerLayer;
   chartElements: any[];
+  cssChartDD: ICSSChartDD;
 
 }

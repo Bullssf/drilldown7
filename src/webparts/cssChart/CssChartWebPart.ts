@@ -27,9 +27,10 @@ import CssChart from './components/CssChart';
 import { ICssChartProps } from './components/ICssChartProps';
 import { description } from '../drilldown7/components/ListView/ViewFields';
 
-
 import { IRefiners, IRefinerLayer, IRefinerStat,IItemRefiners, RefineRuleValues, 
-  RefinerStatTypes, IRefinerStats, IRefinerStatType } from '../drilldown7/components/IReUsableInterfaces';
+  RefinerStatTypes, IRefinerStats, IRefinerStatType, ICSSChartDD } from '../drilldown7/components/IReUsableInterfaces';
+
+require('../../services/propPane/GrayPropPaneAccordions.css');
 
 export interface ICssChartWebPartProps {
   description: string;
@@ -61,15 +62,7 @@ export default class CssChartWebPart extends BaseClientSideWebPart<ICssChartWebP
    * DD Subscriber: Step 6 - (8:33) Check to see if this was wired up 
    */
   const pickedProps : any | undefined = this.properties.cssChartProps.tryGetValue();
-
-  let dynamicData: ICssChartProps = {
-    description: null, // pickedProps ? pickedProps.description : null,
-    stats: null, // pickedProps ? pickedProps.stats : null,
-    callBackID: null, // pickedProps ? pickedProps.callBackID : null,
-    refinerObj: null, // pickedProps ? pickedProps.refinerObj : null,
-    chartElements: pickedProps,
-  };
-  
+ 
   /**
    * DD Subscriber: Step 7 - (8:33) Only if props were set, render component 
    */
@@ -78,11 +71,12 @@ export default class CssChartWebPart extends BaseClientSideWebPart<ICssChartWebP
       const element: React.ReactElement<ICssChartProps> = React.createElement(
         CssChart,
         {
-          description: dynamicData.description,
-          stats: dynamicData.stats,
-          callBackID: dynamicData.callBackID,
-          refinerObj: dynamicData.refinerObj,
+          description: null,
+          stats: null,
+          callBackID: null,
+          refinerObj: null,
           chartElements: pickedProps.elements,
+          cssChartDD: pickedProps,
         }
       );
 

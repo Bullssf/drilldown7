@@ -73,9 +73,7 @@ public componentDidUpdate(prevProps){
     let rebuildPart = false;
    console.log('DIDUPDATE setting:', this.props);
 
-    if ( prevProps.callBackID !== this.props.callBackID) {  rebuildPart = true ; }
-    if ( prevProps.stats !== this.props.stats) {  rebuildPart = true ; }
-    if ( prevProps.refinerObj !== this.props.refinerObj) {  rebuildPart = true ; }
+    if ( prevProps.cssChartDD !== this.props.cssChartDD) {  rebuildPart = true ; }
 
     if (rebuildPart === true) {
       this._updateStateOnPropsChange();
@@ -95,19 +93,27 @@ public componentDidUpdate(prevProps){
 
   public render(): React.ReactElement<ICssChartProps> {
 
-    console.log('CssChart received data: callBackID', this.props.callBackID );
-    console.log('CssChart received data:stats', this.props.stats );
-    console.log('CssChart received data:refinerObj', this.props.refinerObj );
+    let cssChartDD = this.props.cssChartDD;
+    let callBackID = cssChartDD.callBackID;
+    let stats = cssChartDD.stats;
+    let refinerObj = cssChartDD.refinerObj;
+
+    console.log('CssChart received data: callBackID', callBackID );
+    console.log('CssChart received data: stats', stats );
+    console.log('CssChart received data: refinerObj', refinerObj );
 
     let statCharts : any = null;
-    let hasStats = this.props.stats && this.props.stats.length > 0 ? true : false;
-    let hasRefiner = this.props.refinerObj && this.props.refinerObj.childrenKeys.length ? true : false;
-    if ( hasStats === true && hasRefiner === true ) { 
-        let resultSummaryArray = buildStatChartsArray( this.props.stats, this.props.callBackID, this.props.refinerObj );
-        statCharts = this.buildStatCharts( resultSummaryArray ); 
+    if ( cssChartDD ) {
+      let hasStats = stats && stats.length > 0 ? true : false;
+      let hasRefiner = refinerObj && refinerObj.childrenKeys.length ? true : false;
+      if ( hasStats === true && hasRefiner === true ) { 
+          let resultSummaryArray = buildStatChartsArray( stats, callBackID, refinerObj );
+          statCharts = this.buildStatCharts( resultSummaryArray ); 
+      }
     }
 
-    statCharts = this.props.chartElements;
+
+    //statCharts = this.props.chartElements;
 
     return (
       <div className={ styles.cssChart }>
