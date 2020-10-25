@@ -38,7 +38,7 @@ export function buildSummaryCountChartsObject( title: string, callBackID: string
 
 }
 
-export function buildStatChartsArray(  stats: IRefinerStat[], callBackID: string, refinerObj: IRefinerLayer , ) {
+export function buildStatChartsArray(  stats: IRefinerStat[], callBackID: string, refinerObj: IRefinerLayer , consumer: 0 | 1 | 2 | 3 = 0 ) {
     let resultSummaryObject = null;
     let theseCharts : any[] = [];
     let i = -1;
@@ -48,43 +48,49 @@ export function buildStatChartsArray(  stats: IRefinerStat[], callBackID: string
     } else {
         stats.map( s => {
             i ++;
-            let labels = refinerObj.childrenKeys ;
-            let theseStats = refinerObj['stat' + i] ;
-            let finalStats = [];
-            let theseCount = refinerObj['stat' + i + 'Count'];
+            let thisConsumer = s.consumer ? s.consumer : 0 ;
 
-            if ( s.stat === 'avg' ) {
-                theseStats.map( ( v, iV ) => {
-                    finalStats.push( theseCount[ iV ] == 0 ? null : v / theseCount[ iV ] ) ;
-                });
-            } else { finalStats = JSON.parse( JSON.stringify( theseStats ) ) ; }
+            if ( consumer === thisConsumer ) {
 
-            let chartKey : string = labels.join('') + theseCount.join('');
-    
-            let chartData : ICSSChartSeries = {
-                title: s.title,
-                labels: labels,
-                chartTypes: s.chartTypes,
-                barValueAsPercent: false,
+                let labels = refinerObj.childrenKeys ;
+                let theseStats = refinerObj['stat' + i] ;
+                let finalStats = [];
+                let theseCount = refinerObj['stat' + i + 'Count'];
 
-                //The string value here must match the object key below
-                barValues: 'val1',
-                val1: finalStats ,
-                key: chartKey,
-    
-                stylesChart: { paddingBottom: 0, marginBottom: 0, marginTop: 0},
-                stylesRow: { paddingBottom: 0, marginBottom: 0, marginTop: 0},
-                stylesBlock: s.stylesBlock ? s.stylesBlock : null,
-            };
-    
-            resultSummaryObject = {
-                chartData :  [chartData],
-                callBackID :  callBackID ,
-            };
+                if ( s.stat === 'avg' ) {
+                    theseStats.map( ( v, iV ) => {
+                        finalStats.push( theseCount[ iV ] == 0 ? null : v / theseCount[ iV ] ) ;
+                    });
+                } else { finalStats = JSON.parse( JSON.stringify( theseStats ) ) ; }
+
+                let chartKey : string = labels.join('') + theseCount.join('');
         
-    
-            theseCharts.push( resultSummaryObject );
+                let chartData : ICSSChartSeries = {
+                    title: s.title,
+                    labels: labels,
+                    chartTypes: s.chartTypes,
+                    barValueAsPercent: false,
 
+                    //The string value here must match the object key below
+                    barValues: 'val1',
+                    val1: finalStats ,
+                    key: chartKey,
+        
+                    stylesChart: { paddingBottom: 0, marginBottom: 0, marginTop: 0},
+                    stylesRow: { paddingBottom: 0, marginBottom: 0, marginTop: 0},
+                    stylesBlock: s.stylesBlock ? s.stylesBlock : null,
+                };
+        
+                resultSummaryObject = {
+                    chartData :  [chartData],
+                    callBackID :  callBackID ,
+                };
+            
+        
+                theseCharts.push( resultSummaryObject );
+
+                
+            }
         });
     }
 

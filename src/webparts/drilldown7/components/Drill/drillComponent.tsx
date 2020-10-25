@@ -1069,15 +1069,17 @@ public componentDidUpdate(prevProps){
                         let resultSummaryArray = buildStatChartsArray( this.state.drillList.refinerStats, 'summaries', statRefinerObject );
                         statCharts = this.buildStatCharts( resultSummaryArray );
 
-                        //Update Dynamic Data cssChartData  cssChartProps : ICssChartProps
-                        this.props.handleSwitch ( this.state.drillList.refinerStats, 'summaries', statRefinerObject ) ; //resultSummaryArray  ); //: //  { chartData : ICSSChartSeries[], callBackID: string }[]  
-
                     } else {
 
-                        //Update Dynamic Data cssChartData
-                        this.props.handleSwitch ( null, null, null ); //: ICssChartProps
+
                     }
     
+                }
+                if ( statRefinerObject && statRefinerObject.childrenKeys.length > 0  ) {
+
+                    //Update Dynamic Data cssChartData  cssChartProps : ICssChartProps
+                    this.props.handleSwitch ( this.state.drillList.refinerStats, 'summaries', statRefinerObject ) ; //resultSummaryArray  ); //: //  { chartData : ICSSChartSeries[], callBackID: string }[]  
+
                 } else {
                     //Update Dynamic Data cssChartData
                     this.props.handleSwitch ( null, null, null ); //: ICssChartProps

@@ -107,7 +107,7 @@ public componentDidUpdate(prevProps){
       let hasStats = stats && stats.length > 0 ? true : false;
       let hasRefiner = refinerObj && refinerObj.childrenKeys.length ? true : false;
       if ( hasStats === true && hasRefiner === true ) { 
-          let resultSummaryArray = buildStatChartsArray( stats, callBackID, refinerObj );
+          let resultSummaryArray = buildStatChartsArray( stats, callBackID, refinerObj, 1 );
           statCharts = this.buildStatCharts( resultSummaryArray ); 
       }
     }
@@ -118,9 +118,7 @@ public componentDidUpdate(prevProps){
     return (
       <div className={ styles.cssChart }>
         <div className={ styles.container }>
-          <div className={ styles.row }>
             <div> { statCharts } </div>
-          </div>
         </div>
       </div>
     );
