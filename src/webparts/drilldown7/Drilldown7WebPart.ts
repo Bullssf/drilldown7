@@ -488,7 +488,7 @@ export default class Drilldown7WebPart extends BaseClientSideWebPart<IDrilldown7
    * 1) Set value of selected Switch on the internal property
    * 2) Tell anybody who subscribed, that property changed
    */
-  private handleSwitch = ( stats: IRefinerStat[], callBackID: string, refinerObj: IRefinerLayer ) : void => {
+  private handleSwitch = ( stats: IRefinerStat[], callBackID: string, refinerObj: IRefinerLayer, breadCrumb: string[] ) : void => {
 
     let e = event;
 
@@ -496,6 +496,7 @@ export default class Drilldown7WebPart extends BaseClientSideWebPart<IDrilldown7
       stats: stats,
       callBackID: callBackID,
       refinerObj: refinerObj,
+      breadCrumb: breadCrumb,
     };
 
     this._selected_cssChartProps = cssChartProps;

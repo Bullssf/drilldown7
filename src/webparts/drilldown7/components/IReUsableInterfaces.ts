@@ -378,7 +378,8 @@ export interface IMyFonts{
 
     stats: IRefinerStat[];
     callBackID: string;
-      refinerObj: IRefinerLayer;
+    refinerObj: IRefinerLayer;
+    breadCrumb?: string[];
 
   }
 

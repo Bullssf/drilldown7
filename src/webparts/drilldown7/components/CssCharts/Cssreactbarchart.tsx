@@ -279,12 +279,12 @@ public componentDidUpdate(prevProps){
        */
 
       
-      let stylesChart = cdO.stylesChart ? cdO.stylesChart : null;
-      let stylesRow = cdO.stylesRow ? cdO.stylesRow : null;
-      let stylesTitle = cdO.stylesTitle ? cdO.stylesTitle : null;
-      let stylesBlock = cdO.stylesBlock && cdO.stylesBlock[cdO.activeType] ? cdO.stylesBlock[cdO.activeType] : null;
-      let stylesLabel = cdO.stylesLabel ? cdO.stylesLabel : null;
-      let stylesValue = cdO.stylesValue ? cdO.stylesValue : null;
+      let stylesChart = cdO.stylesChart && cdO.stylesChart[cdO.activeType] ? cdO.stylesChart[cdO.activeType] : null;
+      let stylesRow = cdO.stylesRow && cdO.stylesRow[cdO.activeType] ? cdO.stylesRow[cdO.activeType] : null;
+      let stylesTitle = cdO.stylesTitle && cdO.stylesTitle[cdO.activeType] ? cdO.stylesTitle[cdO.activeType] : null;
+      let stylesBlock = cdO.stylesBlock && cdO.stylesBlock[cdO.activeType] && cdO.stylesBlock[cdO.activeType] ? cdO.stylesBlock[cdO.activeType] : null;
+      let stylesLabel = cdO.stylesLabel && cdO.stylesLabel[cdO.activeType] ? cdO.stylesLabel[cdO.activeType] : null;
+      let stylesValue = cdO.stylesValue && cdO.stylesValue[cdO.activeType] ? cdO.stylesValue[cdO.activeType] : null;
 
       /**
        * Set chart defaults
@@ -455,7 +455,7 @@ public componentDidUpdate(prevProps){
           blockStyle.minWidth = blockStyle.minWidth ? blockStyle.minWidth : '100px' ;
           blockStyle.left = '-10px'; //Added to accomodate 10px shift to right with margin around boxes
 
-          barLabel = <div><div style={{fontSize: 'smaller', marginTop : '5px', marginBottom : '5px'}}> { cd.labels[i] }</div><div style={{fontSize: 'larger'}}> { barLabel }</div></div>;
+          barLabel = <div><div style={{fontSize: 'smaller', marginTop : '5px', marginBottom : '5px'}}> { cd.labels[i] }</div><div style={{fontSize: 'larger', }}> { barLabel }</div></div>;
         }
 //        console.log('chartData valueStyle:', valueStyle );
 

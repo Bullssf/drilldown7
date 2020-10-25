@@ -9,6 +9,9 @@ import Cssreactbarchart from '../../drilldown7/components/CssCharts/Cssreactbarc
 
 import {buildSummaryCountChartsObject ,  buildStatChartsArray} from '../../drilldown7/components/CssCharts/cssChartFunctions';
 
+//For Webpart Title component
+import { WebPartTitle } from "@pnp/spfx-controls-react/lib/WebPartTitle";
+
 
 export default class CssChart extends React.Component<ICssChartProps, {}> {
 
@@ -97,6 +100,7 @@ public componentDidUpdate(prevProps){
     let callBackID = cssChartDD.callBackID;
     let stats = cssChartDD.stats;
     let refinerObj = cssChartDD.refinerObj;
+    let breadCrumb = cssChartDD.breadCrumb;
 
     console.log('CssChart received data: callBackID', callBackID );
     console.log('CssChart received data: stats', stats );
@@ -112,12 +116,19 @@ public componentDidUpdate(prevProps){
       }
     }
 
-
     //statCharts = this.props.chartElements;
+
+    let breadCrumbElements = breadCrumb.map( bc => {
+      return <span style={{whiteSpace: 'nowrap'}}> { bc } &gt;</span>;
+    });
 
     return (
       <div className={ styles.cssChart }>
         <div className={ styles.container }>
+            <WebPartTitle displayMode={this.props.displayMode}
+              title={this.props.title}
+              updateProperty={this.props.updateProperty} />
+            <div> { breadCrumbElements } </div>
             <div> { statCharts } </div>
         </div>
       </div>

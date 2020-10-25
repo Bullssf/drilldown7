@@ -65,6 +65,9 @@ export function buildStatChartsArray(  stats: IRefinerStat[], callBackID: string
 
                 let chartKey : string = labels.join('') + theseCount.join('');
         
+                let defStylesChart = [{ paddingBottom: 0, marginBottom: 0, marginTop: 0}];
+                let defStylesRow = [{ paddingBottom: 0, marginBottom: 0, marginTop: 0}];
+
                 let chartData : ICSSChartSeries = {
                     title: s.title,
                     labels: labels,
@@ -75,10 +78,14 @@ export function buildStatChartsArray(  stats: IRefinerStat[], callBackID: string
                     barValues: 'val1',
                     val1: finalStats ,
                     key: chartKey,
-        
-                    stylesChart: { paddingBottom: 0, marginBottom: 0, marginTop: 0},
-                    stylesRow: { paddingBottom: 0, marginBottom: 0, marginTop: 0},
+
+                    stylesChart: s.stylesChart ? s.stylesChart : defStylesChart,
+                    stylesTitle: s.stylesTitle ? s.stylesTitle : null,
+                    stylesRow: s.stylesRow ? s.stylesRow : defStylesRow,
                     stylesBlock: s.stylesBlock ? s.stylesBlock : null,
+                    stylesLabel: s.stylesLabel ? s.stylesLabel : null,
+                    stylesValue: s.stylesValue ? s.stylesValue : null,
+
                 };
         
                 resultSummaryObject = {

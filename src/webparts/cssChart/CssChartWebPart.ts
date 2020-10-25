@@ -34,6 +34,7 @@ require('../../services/propPane/GrayPropPaneAccordions.css');
 
 export interface ICssChartWebPartProps {
   description: string;
+  title: string;
 
     /**
    * DD Subscriber: Step 1 - add this.properties.cssChartProps to WebPartProps
@@ -77,6 +78,13 @@ export default class CssChartWebPart extends BaseClientSideWebPart<ICssChartWebP
           refinerObj: null,
           chartElements: pickedProps.elements,
           cssChartDD: pickedProps,
+
+          //For Webpart Title component
+          title: this.properties.title,
+          displayMode: this.displayMode,
+          updateProperty: (value: string) => {
+            this.properties.title = value;
+          }
         }
       );
 
