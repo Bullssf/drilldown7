@@ -44,7 +44,8 @@
   @media screen and (min-width: 768px) {
     @keyframes expand {
       from {width: 25%;}  //      from {width: 0%;}
-      to {width: calc(100% - 75px);}
+      //to {width: calc(100% - 75px);}
+      to {width: 100%;}
     }
   }
   .chart {

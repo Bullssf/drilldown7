@@ -1042,35 +1042,41 @@ public componentDidUpdate(prevProps){
                 let summaryCharts = [];
                 let statCharts = [];
                 let statRefinerObject = null;
-                let buildStats = this.state.showStats === true && this.state.drillList.refinerStats && this.state.drillList.refinerStats.length > 0 ? true : false;
+                let buildStats = this.state.drillList.refinerStats && this.state.drillList.refinerStats.length > 0 ? true : false;
                 let buildSummary = this.state.showSummary;
 
+                let textMaxRefinersToShow = 0;
+                let childIndex0 = null;
+                let childIndex1 = null;
+
+                if ( buildStats ) {  statRefinerObject = this.state.refinerObj; }
+
+                if ( this.state.maxRefinersToShow > 1 && this.state.searchMeta[0] !== 'All' ) { 
+                    textMaxRefinersToShow = 1;
+                    childIndex0 = this.state.refinerObj.childrenKeys.indexOf(this.state.searchMeta[0]);
+                    if ( buildStats ) {  statRefinerObject = this.state.refinerObj.childrenObjs[childIndex0]; }
+                }
+                if ( textMaxRefinersToShow >= 1 && this.state.maxRefinersToShow > 2 && this.state.searchMeta.length > 1 && this.state.searchMeta[1] !== 'All' ) { 
+                    textMaxRefinersToShow = 2;
+                    childIndex1 = this.state.refinerObj.childrenObjs[childIndex0].childrenKeys.indexOf(this.state.searchMeta[1]);
+                    if ( buildStats ) {  statRefinerObject = this.state.refinerObj.childrenObjs[childIndex0].childrenObjs[childIndex1]; }
+                }
+
                 if ( this.state.showSummary === true || this.state.showStats === true) {
-                    
                     if ( buildSummary ) { summaryCharts.push( this.buildSummaryCountCharts( this.state.refiners[0], 'refiner0' , this.state.refinerObj, RefinerChartTypes ) ); }
-                    if ( buildStats ) {  statRefinerObject = this.state.refinerObj; }
-
-                    if ( this.state.maxRefinersToShow > 1 && this.state.searchMeta[0] !== 'All' ) {
-
-                        let childIndex0 = this.state.refinerObj.childrenKeys.indexOf(this.state.searchMeta[0]);
+                    if ( textMaxRefinersToShow >= 1 ) {
                         if ( buildSummary ) {  summaryCharts.push( this.buildSummaryCountCharts( this.state.refiners[1], 'refiner1' , this.state.refinerObj.childrenObjs[childIndex0], RefinerChartTypes ) ); }
-                        if ( buildStats ) {  statRefinerObject = this.state.refinerObj.childrenObjs[childIndex0]; }
-
-                        if ( this.state.maxRefinersToShow > 2 && this.state.searchMeta.length > 1 && this.state.searchMeta[1] !== 'All' ) {
-
-                            let childIndex1 = this.state.refinerObj.childrenObjs[childIndex0].childrenKeys.indexOf(this.state.searchMeta[1]);
+                        if ( textMaxRefinersToShow >= 2 ) {
                             if ( buildSummary ) {  summaryCharts.push( this.buildSummaryCountCharts( this.state.refiners[2], 'refiner2' , this.state.refinerObj.childrenObjs[childIndex0].childrenObjs[childIndex1],  RefinerChartTypes ) ); }
-                            if ( buildStats ) {  statRefinerObject = this.state.refinerObj.childrenObjs[childIndex0].childrenObjs[childIndex1]; }
                         }
                     }
 
                     if ( summaryCharts.length === 0 ) { summaryCharts = null ; }
-                    if ( !buildStats || ( statRefinerObject && statRefinerObject.childrenKeys.length > 0 ) ) {
+                    if ( this.state.showStats && buildStats &&  statRefinerObject && statRefinerObject.childrenKeys.length > 0  ) {
                         let resultSummaryArray = buildStatChartsArray( this.state.drillList.refinerStats, 'summaries', statRefinerObject );
                         statCharts = this.buildStatCharts( resultSummaryArray );
 
                     } else {
-
 
                     }
     
@@ -1108,7 +1114,6 @@ public componentDidUpdate(prevProps){
                     email = { 'mailto:General - WebPart Dev <0313a49d.Autoliv.onmicrosoft.com@amer.teams.ms>?subject=Drilldown Webpart Feedback&body=Enter your message here :)  \nScreenshots help!' }
                     farRightIcons = { [ toggleTipsButton ] }
                 ></EarlyAccess>;
-
 
                 /***
                  *    d888888b db   db d888888b .d8888.      d8888b.  .d8b.   d888b  d88888b 
