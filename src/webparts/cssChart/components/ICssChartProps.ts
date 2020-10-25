@@ -8,5 +8,6 @@ export interface ICssChartProps {
   stats: IRefinerStat[];
   callBackID: string;
   refinerObj: IRefinerLayer;
+  chartElements: any[];
 
 }

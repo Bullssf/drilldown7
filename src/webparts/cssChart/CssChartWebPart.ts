@@ -63,10 +63,11 @@ export default class CssChartWebPart extends BaseClientSideWebPart<ICssChartWebP
   const pickedProps : any | undefined = this.properties.cssChartProps.tryGetValue();
 
   let dynamicData: ICssChartProps = {
-    description: pickedProps ? pickedProps.description : null,
-    stats: pickedProps ? pickedProps.stats : null,
-    callBackID: pickedProps ? pickedProps.callBackID : null,
-    refinerObj: pickedProps ? pickedProps.refinerObj : null,
+    description: null, // pickedProps ? pickedProps.description : null,
+    stats: null, // pickedProps ? pickedProps.stats : null,
+    callBackID: null, // pickedProps ? pickedProps.callBackID : null,
+    refinerObj: null, // pickedProps ? pickedProps.refinerObj : null,
+    chartElements: pickedProps,
   };
   
   /**
@@ -81,6 +82,7 @@ export default class CssChartWebPart extends BaseClientSideWebPart<ICssChartWebP
           stats: dynamicData.stats,
           callBackID: dynamicData.callBackID,
           refinerObj: dynamicData.refinerObj,
+          chartElements: dynamicData.chartElements,
         }
       );
 

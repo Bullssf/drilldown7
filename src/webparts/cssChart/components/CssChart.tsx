@@ -34,8 +34,8 @@ export default class CssChart extends React.Component<ICssChartProps, {}> {
     } else {
         resultSummaryArray.map( chartDataObject => {
 
-            resultSummary = 
-            <Cssreactbarchart 
+            resultSummary =
+            <Cssreactbarchart
                 chartData = { chartDataObject.chartData }
                 callBackID = { chartDataObject.callBackID }
                 //onAltClick = { this.changeRefinerOrder.bind(this) }
@@ -50,7 +50,54 @@ export default class CssChart extends React.Component<ICssChartProps, {}> {
 
   }
 
+  
+  public componentDidMount() {
+    this._updateStateOnPropsChange();
+    console.log('Mounted!');
+  }
+
+
+  /***
+ *         d8888b. d888888b d8888b.      db    db d8888b. d8888b.  .d8b.  d888888b d88888b 
+ *         88  `8D   `88'   88  `8D      88    88 88  `8D 88  `8D d8' `8b `~~88~~' 88'     
+ *         88   88    88    88   88      88    88 88oodD' 88   88 88ooo88    88    88ooooo 
+ *         88   88    88    88   88      88    88 88~~~   88   88 88~~~88    88    88~~~~~ 
+ *         88  .8D   .88.   88  .8D      88b  d88 88      88  .8D 88   88    88    88.     
+ *         Y8888D' Y888888P Y8888D'      ~Y8888P' 88      Y8888D' YP   YP    YP    Y88888P 
+ *                                                                                         
+ *                                                                                         
+ */
+
+public componentDidUpdate(prevProps){
+
+    let rebuildPart = false;
+   console.log('DIDUPDATE setting:', this.props);
+
+    if ( prevProps.callBackID !== this.props.callBackID) {  rebuildPart = true ; }
+    if ( prevProps.stats !== this.props.stats) {  rebuildPart = true ; }
+    if ( prevProps.refinerObj !== this.props.refinerObj) {  rebuildPart = true ; }
+
+    if (rebuildPart === true) {
+      this._updateStateOnPropsChange();
+    }
+  }
+
+/***
+ *         d8888b. d88888b d8b   db d8888b. d88888b d8888b. 
+ *         88  `8D 88'     888o  88 88  `8D 88'     88  `8D 
+ *         88oobY' 88ooooo 88V8o 88 88   88 88ooooo 88oobY' 
+ *         88`8b   88~~~~~ 88 V8o88 88   88 88~~~~~ 88`8b   
+ *         88 `88. 88.     88  V888 88  .8D 88.     88 `88. 
+ *         88   YD Y88888P VP   V8P Y8888D' Y88888P 88   YD 
+ *                                                          
+ *                                                          
+ */
+
   public render(): React.ReactElement<ICssChartProps> {
+
+    console.log('CssChart received data: callBackID', this.props.callBackID );
+    console.log('CssChart received data:stats', this.props.stats );
+    console.log('CssChart received data:refinerObj', this.props.refinerObj );
 
     let statCharts : any = null;
     let hasStats = this.props.stats && this.props.stats.length > 0 ? true : false;
@@ -59,6 +106,8 @@ export default class CssChart extends React.Component<ICssChartProps, {}> {
         let resultSummaryArray = buildStatChartsArray( this.props.stats, this.props.callBackID, this.props.refinerObj );
         statCharts = this.buildStatCharts( resultSummaryArray ); 
     }
+
+    statCharts = this.props.chartElements;
 
     return (
       <div className={ styles.cssChart }>
@@ -70,4 +119,9 @@ export default class CssChart extends React.Component<ICssChartProps, {}> {
       </div>
     );
   }
+
+  private _updateStateOnPropsChange() {
+
+  }
+
 }
