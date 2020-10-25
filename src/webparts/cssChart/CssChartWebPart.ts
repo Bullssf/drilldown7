@@ -25,6 +25,11 @@ import { DynamicProperty } from '@microsoft/sp-component-base';
 import * as strings from 'CssChartWebPartStrings';
 import CssChart from './components/CssChart';
 import { ICssChartProps } from './components/ICssChartProps';
+import { description } from '../drilldown7/components/ListView/ViewFields';
+
+
+import { IRefiners, IRefinerLayer, IRefinerStat,IItemRefiners, RefineRuleValues, 
+  RefinerStatTypes, IRefinerStats, IRefinerStatType } from '../drilldown7/components/IReUsableInterfaces';
 
 export interface ICssChartWebPartProps {
   description: string;
@@ -45,18 +50,25 @@ export default class CssChartWebPart extends BaseClientSideWebPart<ICssChartWebP
     if ( !this.properties.cssChartProps.reference ) {
         this.properties.cssChartProps.setValue({ title: 'propsNotDefined', id: 'NA' });
     }
-  
+
      return Promise.resolve();
-  
+
     }
 
   public render(): void {
 
-       /**
+  /**
    * DD Subscriber: Step 6 - (8:33) Check to see if this was wired up 
    */
   const pickedProps : any | undefined = this.properties.cssChartProps.tryGetValue();
 
+  let dynamicData: ICssChartProps = {
+    description: pickedProps ? pickedProps.description : null,
+    stats: pickedProps ? pickedProps.stats : null,
+    callBackID: pickedProps ? pickedProps.callBackID : null,
+    refinerObj: pickedProps ? pickedProps.refinerObj : null,
+  };
+  
   /**
    * DD Subscriber: Step 7 - (8:33) Only if props were set, render component 
    */
@@ -65,7 +77,10 @@ export default class CssChartWebPart extends BaseClientSideWebPart<ICssChartWebP
       const element: React.ReactElement<ICssChartProps> = React.createElement(
         CssChart,
         {
-          description: this.properties.description
+          description: dynamicData.description,
+          stats: dynamicData.stats,
+          callBackID: dynamicData.callBackID,
+          refinerObj: dynamicData.refinerObj,
         }
       );
 

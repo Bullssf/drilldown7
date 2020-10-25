@@ -381,7 +381,7 @@ export interface IDrillDownState {
  *                                                                                                                                 
  */
 
- 
+
 export default class DrillDown extends React.Component<IDrillDownProps, IDrillDownState> {
 
 
@@ -498,14 +498,11 @@ export default class DrillDown extends React.Component<IDrillDownProps, IDrillDo
      *                                                                                                                                           
      */
 
-    private buildStatCharts(  stats: IRefinerStat[], callBackID: string, refinerObj: IRefinerLayer , ) {
-
-        let resultSummaryArray = buildStatChartsArray( stats, callBackID, refinerObj );
+    private buildStatCharts(  resultSummaryArray) {
 
         let resultSummary = null;
         let theseCharts : any[] = [];
-        let i = -1;
-        if ( refinerObj == null || stats == null || stats.length === 0 ) {
+        if ( resultSummaryArray == null || resultSummaryArray.length === 0 ) {
             //Do nothing
 
         } else {
@@ -1065,7 +1062,10 @@ public componentDidUpdate(prevProps){
                     }
 
                     if ( summaryCharts.length === 0 ) { summaryCharts = null ; }
-                    if ( !buildStats || statRefinerObject.childrenKeys.length > 0 ) { statCharts = this.buildStatCharts( this.state.drillList.refinerStats, 'summaries' , statRefinerObject ); }
+                    if ( !buildStats || statRefinerObject.childrenKeys.length > 0 ) { 
+                        let resultSummaryArray = buildStatChartsArray( this.state.drillList.refinerStats, 'summaries', statRefinerObject );
+                        statCharts = this.buildStatCharts( resultSummaryArray ); 
+                    }
     
                 } 
 

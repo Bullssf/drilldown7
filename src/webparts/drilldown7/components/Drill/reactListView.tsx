@@ -519,7 +519,8 @@ export default class ReactListItems extends React.Component<IReactListItemsProps
 
             let canShowAPanel = thisID === null || thisID === undefined || panelItem === null ? false : true;
             let showFullPanel = canShowAPanel === true && clickedAttach !== true ? true : false;
-            let showAttachPanel = canShowAPanel === true && clickedAttach === true && this.props.includeListLink === true ? true : false;
+            // 2020-10-13:  The last check in this row just didn't seem right... was && this.props.includeListLink === true ? true : false; 
+            let showAttachPanel = canShowAPanel === true && clickedAttach === true && this.props.includeAttach === true ? true : false; 
 
             this.setState({ 
                 showPanel: showFullPanel,
