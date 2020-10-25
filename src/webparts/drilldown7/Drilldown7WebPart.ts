@@ -145,7 +145,7 @@ export default class Drilldown7WebPart extends BaseClientSideWebPart<IDrilldown7
     /**
    * DD Provider: Step 6 - (9:51) add _selectedSwitch to be the placeholder for what was selected
    */
-  private _selected_cssChartProps : any[]; //ICssChartProps;
+  private _selected_cssChartProps : { elements: any[]}; //ICssChartProps;
 
   /**
    * 2020-09-08:  Add for dynamic data refiners.
@@ -243,7 +243,7 @@ export default class Drilldown7WebPart extends BaseClientSideWebPart<IDrilldown7
    * This takes in the name of the property that you want to return back.
    * string | any => any could be any interface if you want to use Interface
    */
-  public getPropertyValue(propertyId: string): string | any[] { //| ICssChartProps {
+  public getPropertyValue(propertyId: string): string | { elements: any[ ] } { //| ICssChartProps {
     switch(propertyId) {
       case 'refiner0Name': 
         return this._selectedRefiner0Name;
@@ -490,7 +490,7 @@ export default class Drilldown7WebPart extends BaseClientSideWebPart<IDrilldown7
 
     let e = event;
 
-    this._selected_cssChartProps = cssChartProps;
+    this._selected_cssChartProps = { elements: cssChartProps };
     this.context.dynamicDataSourceManager.notifyPropertyChanged( 'cssChartProps' );
 
   }

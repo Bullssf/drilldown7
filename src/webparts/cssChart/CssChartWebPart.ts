@@ -82,7 +82,7 @@ export default class CssChartWebPart extends BaseClientSideWebPart<ICssChartWebP
           stats: dynamicData.stats,
           callBackID: dynamicData.callBackID,
           refinerObj: dynamicData.refinerObj,
-          chartElements: dynamicData.chartElements,
+          chartElements: pickedProps.elements,
         }
       );
 
