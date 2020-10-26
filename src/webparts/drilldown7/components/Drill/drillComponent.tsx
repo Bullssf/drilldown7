@@ -1105,11 +1105,22 @@ public componentDidUpdate(prevProps){
 
                 let toggles = <div style={{ float: 'right' }}> { makeToggles(this.getPageToggles( statCharts.length > 0 ? true : false )) } </div>;
 
+                let messages : any[] = [];
+                if ( this.state.WebpartWidth > 800 ) { 
+                    messages.push( <div><span><b>{ 'Welcome to ALV Webpart Early Access!!!' }</b></span></div> ) ;
+                    messages.push( <div><span><b>{ 'Get more info here -->' }</b></span></div> ) ;
+                }
+                else if ( this.state.WebpartWidth > 700 ) {
+                    messages.push( <div><span><b>{ 'Webpart Early Access!' }</b></span></div> ) ;
+                    messages.push( <div><span><b>{ 'More info ->' }</b></span></div> ) ;
+                } else if ( this.state.WebpartWidth > 600 ) {
+                    messages.push( <div><span><b>{ 'info ->' }</b></span></div> ) ;
+                }
 
                 let earlyAccess = 
                 <div style={{ marginBottom: '15px'}}><EarlyAccess 
                         image = { "https://autoliv.sharepoint.com/sites/crs/PublishingImages/Early%20Access%20Image.png" }
-                        messages = { [ <div><span><b>Welcome to ALV Webpart Early Access!!!</b></span></div>, "Get more info here -->"] }
+                        messages = { messages }
                         links = { [ links.gitRepoDrilldown7WebPart.wiki, links.gitRepoDrilldown7WebPart.issues ]}
                         email = { 'mailto:General - WebPart Dev <0313a49d.Autoliv.onmicrosoft.com@amer.teams.ms>?subject=Drilldown Webpart Feedback&body=Enter your message here :)  \nScreenshots help!' }
                         farRightIcons = { [ toggleTipsButton ] }

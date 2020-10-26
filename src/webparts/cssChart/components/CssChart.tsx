@@ -118,9 +118,9 @@ public componentDidUpdate(prevProps){
 
     //statCharts = this.props.chartElements;
 
-    let breadCrumbElements = breadCrumb.map( bc => {
+    let breadCrumbElements = breadCrumb ? breadCrumb.map( bc => {
       return <span style={{whiteSpace: 'nowrap'}}> { bc } &gt;</span>;
-    });
+    }) : [];
 
     return (
       <div className={ styles.cssChart }>

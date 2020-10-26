@@ -346,6 +346,7 @@ public componentDidUpdate(prevProps){
 
 
       let minDivisor = null;
+      let maxDivisor = null;
       if ( minNumber >= 1000000 ) { minDivisor = 1000000 ; }
 //      else if ( minNumber >= 100000 ) { minDivisor = 100000 ; }
 //      else if ( minNumber >= 10000 ) { minDivisor = 10000 ; }
@@ -511,13 +512,25 @@ public componentDidUpdate(prevProps){
       else if ( minDivisor === 1000 ) {  thisScale = ' in Thousands' ; }
 
       let theTitle = cd.title + thisScale;
-      let titleEle = titleLocation === 'side' ?
-        <h6 style={ thisTitleStyle }>{ theTitle }</h6> :
-        <div style={ thisTitleStyle }>{ theTitle }<span style={{paddingLeft: '15px', fontSize: 'smaller'}}>( { barCount} ) </span></div>;
 
-      console.log('titleEle:', titleEle);
+      let totalE3 = 1;
+      let totalScale = '';
+      if ( cdO.total > 1000000000 ) { totalE3 = 1000000000, totalScale = " B"; }
+      else if ( cdO.total > 1000000 ) { totalE3 = 1000000, totalScale = " M"; }
+      else if ( cdO.total > 1000 ) { totalE3 = 1000, totalScale = " k"; }
+
+      let chartTotal = cdO.total ? ( cdO.total / totalE3 ).toFixed(1) + totalScale + ' in ': null;
+      let subTitle = <span style={{paddingLeft: '15px', fontSize: 'small'}}>( { chartTotal } { barCount} categories ) </span>;
+
+      let titleEle1 = titleLocation === 'side' ?
+        <h6 style={ thisTitleStyle }>{ theTitle }</h6> :
+        <div style={ thisTitleStyle }>{ theTitle } { thisScale === '' ? subTitle : null } </div>;
+
+      let titleEle2 = thisScale === '' ? null : <div style={{ lineHeight: 0, paddingBottom: '15px' }}> { subTitle } </div>;
+
       return <div className={ stylesC.row } style={ thisRowStyle }>
-          { titleEle }
+          { titleEle1 }
+          { titleEle2 }
           <div className={ stylesC.chart } style= { stylesChart } >
             { thisChart }
           </div>

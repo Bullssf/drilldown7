@@ -6,7 +6,7 @@ export interface ICssreactbarchartProps {
   onCtrlClick?: any;
   onShftClick?: any;
   onAltClick?: any;
-
+  
 }
 
 export interface ICssreactbarchartState {
