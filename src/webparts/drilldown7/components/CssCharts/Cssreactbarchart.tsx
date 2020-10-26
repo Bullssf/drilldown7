@@ -210,6 +210,13 @@ public componentDidUpdate(prevProps){
 
 
     let chartIdx = -1;
+
+    let hasStylesFigure = false;
+    let defaultStylesFigure = null;
+
+    let hasStylesGraphic = false;
+    let defaultStylesGraphic = null;
+
     let charts = chartData.map( cdO => {
       chartIdx ++ ;
 //      console.log('buildingLabels:', cdO.labels.join(', '));
@@ -285,6 +292,19 @@ public componentDidUpdate(prevProps){
       let stylesBlock = cdO.stylesBlock && cdO.stylesBlock[cdO.activeType] && cdO.stylesBlock[cdO.activeType] ? cdO.stylesBlock[cdO.activeType] : null;
       let stylesLabel = cdO.stylesLabel && cdO.stylesLabel[cdO.activeType] ? cdO.stylesLabel[cdO.activeType] : null;
       let stylesValue = cdO.stylesValue && cdO.stylesValue[cdO.activeType] ? cdO.stylesValue[cdO.activeType] : null;
+
+      let stylesFigure = cdO.stylesFigure && cdO.stylesFigure[cdO.activeType] ? cdO.stylesFigure[cdO.activeType] : null;
+      let stylesGraphic = cdO.stylesGraphic && cdO.stylesGraphic[cdO.activeType] ? cdO.stylesGraphic[cdO.activeType] : null;
+
+      if ( stylesFigure !== null && hasStylesFigure === false && defaultStylesFigure === null ) {
+        hasStylesFigure = true;
+        defaultStylesFigure = stylesFigure;
+      }
+
+      if ( stylesGraphic !== null && hasStylesGraphic === false && defaultStylesGraphic === null ) {
+        hasStylesGraphic = true;
+        defaultStylesGraphic = stylesFigure;
+      }
 
       /**
        * Set chart defaults
@@ -385,6 +405,9 @@ public componentDidUpdate(prevProps){
         }
 
         let valueStyle : any = stylesValue != null ? stylesValue : {} ;
+        let labelStyle : any = stylesLabel != null ? stylesLabel : {} ; 
+
+        
 
         let barNumber = null;
         if ( minDivisor > 1 ) {
@@ -464,7 +487,7 @@ public componentDidUpdate(prevProps){
               <span className={ stylesC.value } style={ valueStyle } >{ barLabel }</span>
           </span>
         ) ;
-      }
+      }// END MAKE BARS
 
       if ( stacked === false ) {  thisChart.push( scaleNoteEle ) ; }
 
@@ -492,6 +515,7 @@ public componentDidUpdate(prevProps){
         <h6 style={ thisTitleStyle }>{ theTitle }</h6> :
         <div style={ thisTitleStyle }>{ theTitle }<span style={{paddingLeft: '15px', fontSize: 'smaller'}}>( { barCount} ) </span></div>;
 
+      console.log('titleEle:', titleEle);
       return <div className={ stylesC.row } style={ thisRowStyle }>
           { titleEle }
           <div className={ stylesC.chart } style= { stylesChart } >
@@ -517,10 +541,14 @@ public componentDidUpdate(prevProps){
             </div>
  */
 
+
+    console.log( 'defaultStylesFigure:', defaultStylesFigure );
+    console.log( 'defaultStylesGraphic:', defaultStylesGraphic );
+
     return (
       <div className={ styles.cssreactbarchart } style = {{  }}>
-          <figure className={ stylesC.cssChart }>
-            <div className={ stylesC.graphic } >
+          <figure id={ defaultStylesFigure } className={ stylesC.cssChart } style={ defaultStylesFigure }>
+            <div className={ stylesC.graphic } style={ defaultStylesGraphic } >
               { charts }
             </div>
           </figure>

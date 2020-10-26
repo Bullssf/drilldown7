@@ -22,6 +22,8 @@ export interface IRefinerStat {
   stylesBlock?: any;
   stylesLabel?: any;
   stylesValue?: any;
+  stylesFigure?: any;  //Figure is for the entire array of charts... uses first valid stylesFigure object from array of charts.
+  stylesGraphic?: any;  //Figure is for the entire array of charts... uses first valid stylesFigure object from array of charts.
   
 }
 
@@ -416,6 +418,9 @@ export interface IMyFonts{
     stylesBlock?: any;
     stylesLabel?: any;
     stylesValue?: any;
+    stylesFigure?: any;  //Figure is for the entire array of charts... uses first valid stylesFigure object from array of charts.
+    stylesGraphic?: any;  //Figure is for the entire array of charts... uses first valid stylesFigure object from array of charts.
+
   }
   // , IChartSeries, ICharNote
 

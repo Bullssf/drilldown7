@@ -86,6 +86,9 @@ export function buildStatChartsArray(  stats: IRefinerStat[], callBackID: string
                     stylesLabel: s.stylesLabel ? s.stylesLabel : null,
                     stylesValue: s.stylesValue ? s.stylesValue : null,
 
+                    stylesFigure: s.stylesFigure ? s.stylesFigure : null,
+                    stylesGraphic: s.stylesGraphic ? s.stylesGraphic : null,
+
                 };
         
                 resultSummaryObject = {
