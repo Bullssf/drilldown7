@@ -1,3 +1,4 @@
+import { toAbsoluteUrl } from '@pnp/sp';
 import { ICSSChartSeries, ICSSChartTypes, CSSChartTypes, ISeriesSort, IRefinerLayer, IRefinerStat } from '../IReUsableInterfaces';
 
 export function buildSummaryCountChartsObject( title: string, callBackID: string, refinerObj: IRefinerLayer , chartTypes: ICSSChartTypes[] ) {
@@ -6,6 +7,9 @@ export function buildSummaryCountChartsObject( title: string, callBackID: string
     let labels = refinerObj.childrenKeys ;
     let counts = refinerObj.childrenMultiCounts;
 
+    let total = 0;
+    refinerObj.childrenCounts.map( ( v ) => { total += v; });
+    
     let chartKey : string = labels.join('') + counts.join('');
 
 //        console.log('buildSummaryCountCharts labels:', labels );
@@ -22,6 +26,7 @@ export function buildSummaryCountChartsObject( title: string, callBackID: string
         barValues: 'val1',
         val1: counts ,
         key: chartKey,
+        total: total,
 
         stylesChart: { paddingBottom: 0, marginBottom: 0, marginTop: 0},
 
@@ -56,15 +61,34 @@ export function buildStatChartsArray(  stats: IRefinerStat[], callBackID: string
                 let theseStats = refinerObj['stat' + i] ;
                 let finalStats = [];
                 let theseCount = refinerObj['stat' + i + 'Count'];
-
+                let total = null;
+                let totalDiv = null;
                 if ( s.stat === 'avg' ) {
                     theseStats.map( ( v, iV ) => {
                         finalStats.push( theseCount[ iV ] == 0 ? null : v / theseCount[ iV ] ) ;
+                        total += v;
+                        totalDiv += theseCount[ iV ];
                     });
-                } else { finalStats = JSON.parse( JSON.stringify( theseStats ) ) ; }
+                    total = total / totalDiv;
+                } else { 
+                    finalStats = JSON.parse( JSON.stringify( theseStats ) ) ;
+                    if ( s.stat === 'count' ) {
+                        theseCount.map( ( v ) => { total += v; });
+                    } else if ( s.stat === 'min' ) {
+                        theseStats.map( ( v ) => { if ( total === null || v < total ) { total = v; }  });
+                    } else if ( s.stat === 'max' ) {
+                        theseStats.map( ( v ) => { if ( total === null || v > total ) { total = v; }  });
+                    } else if ( s.stat === 'sum' ) {
+                        theseStats.map( ( v ) => { total += v; });
+                    }
+                    
+                }
 
                 let chartKey : string = labels.join('') + theseCount.join('');
         
+                let defStylesChart = [{ paddingBottom: 0, marginBottom: 0, marginTop: 0}];
+                let defStylesRow = [{ paddingBottom: 0, marginBottom: 0, marginTop: 0}];
+
                 let chartData : ICSSChartSeries = {
                     title: s.title,
                     labels: labels,
@@ -75,10 +99,19 @@ export function buildStatChartsArray(  stats: IRefinerStat[], callBackID: string
                     barValues: 'val1',
                     val1: finalStats ,
                     key: chartKey,
-        
-                    stylesChart: { paddingBottom: 0, marginBottom: 0, marginTop: 0},
-                    stylesRow: { paddingBottom: 0, marginBottom: 0, marginTop: 0},
+
+                    total: total,
+                    
+                    stylesChart: s.stylesChart ? s.stylesChart : defStylesChart,
+                    stylesTitle: s.stylesTitle ? s.stylesTitle : null,
+                    stylesRow: s.stylesRow ? s.stylesRow : defStylesRow,
                     stylesBlock: s.stylesBlock ? s.stylesBlock : null,
+                    stylesLabel: s.stylesLabel ? s.stylesLabel : null,
+                    stylesValue: s.stylesValue ? s.stylesValue : null,
+
+                    stylesFigure: s.stylesFigure ? s.stylesFigure : null,
+                    stylesGraphic: s.stylesGraphic ? s.stylesGraphic : null,
+
                 };
         
                 resultSummaryObject = {

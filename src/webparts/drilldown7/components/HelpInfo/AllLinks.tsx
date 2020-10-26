@@ -33,6 +33,7 @@ export const chartJSArea = createLink( 'https://www.chartjs.org/docs/latest/char
 export const chartJSDonut = createLink( 'https://www.chartjs.org/docs/latest/charts/doughnut.html','_blank', 'Chart.js Donut' );
 export const chartJSBar = createLink( 'https://www.chartjs.org/docs/latest/charts/bar.html','_blank', 'Chart.js Donut' );
 
+export const devDocsWebPartTitle = createLink( 'https://pnp.github.io/sp-dev-fx-controls-react/controls/WebPartTitle/','_blank', 'Webpart Title' );
 
 
 

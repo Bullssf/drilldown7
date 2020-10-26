@@ -210,6 +210,13 @@ public componentDidUpdate(prevProps){
 
 
     let chartIdx = -1;
+
+    let hasStylesFigure = false;
+    let defaultStylesFigure = null;
+
+    let hasStylesGraphic = false;
+    let defaultStylesGraphic = null;
+
     let charts = chartData.map( cdO => {
       chartIdx ++ ;
 //      console.log('buildingLabels:', cdO.labels.join(', '));
@@ -279,12 +286,25 @@ public componentDidUpdate(prevProps){
        */
 
       
-      let stylesChart = cdO.stylesChart ? cdO.stylesChart : null;
-      let stylesRow = cdO.stylesRow ? cdO.stylesRow : null;
-      let stylesTitle = cdO.stylesTitle ? cdO.stylesTitle : null;
-      let stylesBlock = cdO.stylesBlock && cdO.stylesBlock[cdO.activeType] ? cdO.stylesBlock[cdO.activeType] : null;
-      let stylesLabel = cdO.stylesLabel ? cdO.stylesLabel : null;
-      let stylesValue = cdO.stylesValue ? cdO.stylesValue : null;
+      let stylesChart = cdO.stylesChart && cdO.stylesChart[cdO.activeType] ? cdO.stylesChart[cdO.activeType] : null;
+      let stylesRow = cdO.stylesRow && cdO.stylesRow[cdO.activeType] ? cdO.stylesRow[cdO.activeType] : null;
+      let stylesTitle = cdO.stylesTitle && cdO.stylesTitle[cdO.activeType] ? cdO.stylesTitle[cdO.activeType] : null;
+      let stylesBlock = cdO.stylesBlock && cdO.stylesBlock[cdO.activeType] && cdO.stylesBlock[cdO.activeType] ? cdO.stylesBlock[cdO.activeType] : null;
+      let stylesLabel = cdO.stylesLabel && cdO.stylesLabel[cdO.activeType] ? cdO.stylesLabel[cdO.activeType] : null;
+      let stylesValue = cdO.stylesValue && cdO.stylesValue[cdO.activeType] ? cdO.stylesValue[cdO.activeType] : null;
+
+      let stylesFigure = cdO.stylesFigure && cdO.stylesFigure[cdO.activeType] ? cdO.stylesFigure[cdO.activeType] : null;
+      let stylesGraphic = cdO.stylesGraphic && cdO.stylesGraphic[cdO.activeType] ? cdO.stylesGraphic[cdO.activeType] : null;
+
+      if ( stylesFigure !== null && hasStylesFigure === false && defaultStylesFigure === null ) {
+        hasStylesFigure = true;
+        defaultStylesFigure = stylesFigure;
+      }
+
+      if ( stylesGraphic !== null && hasStylesGraphic === false && defaultStylesGraphic === null ) {
+        hasStylesGraphic = true;
+        defaultStylesGraphic = stylesFigure;
+      }
 
       /**
        * Set chart defaults
@@ -326,6 +346,7 @@ public componentDidUpdate(prevProps){
 
 
       let minDivisor = null;
+      let maxDivisor = null;
       if ( minNumber >= 1000000 ) { minDivisor = 1000000 ; }
 //      else if ( minNumber >= 100000 ) { minDivisor = 100000 ; }
 //      else if ( minNumber >= 10000 ) { minDivisor = 10000 ; }
@@ -385,6 +406,9 @@ public componentDidUpdate(prevProps){
         }
 
         let valueStyle : any = stylesValue != null ? stylesValue : {} ;
+        let labelStyle : any = stylesLabel != null ? stylesLabel : {} ; 
+
+        
 
         let barNumber = null;
         if ( minDivisor > 1 ) {
@@ -455,7 +479,7 @@ public componentDidUpdate(prevProps){
           blockStyle.minWidth = blockStyle.minWidth ? blockStyle.minWidth : '100px' ;
           blockStyle.left = '-10px'; //Added to accomodate 10px shift to right with margin around boxes
 
-          barLabel = <div><div style={{fontSize: 'smaller', marginTop : '5px', marginBottom : '5px'}}> { cd.labels[i] }</div><div style={{fontSize: 'larger'}}> { barLabel }</div></div>;
+          barLabel = <div><div style={{fontSize: 'smaller', marginTop : '5px', marginBottom : '5px'}}> { cd.labels[i] }</div><div style={{fontSize: 'larger', }}> { barLabel }</div></div>;
         }
 //        console.log('chartData valueStyle:', valueStyle );
 
@@ -464,7 +488,7 @@ public componentDidUpdate(prevProps){
               <span className={ stylesC.value } style={ valueStyle } >{ barLabel }</span>
           </span>
         ) ;
-      }
+      }// END MAKE BARS
 
       if ( stacked === false ) {  thisChart.push( scaleNoteEle ) ; }
 
@@ -488,12 +512,25 @@ public componentDidUpdate(prevProps){
       else if ( minDivisor === 1000 ) {  thisScale = ' in Thousands' ; }
 
       let theTitle = cd.title + thisScale;
-      let titleEle = titleLocation === 'side' ?
+
+      let totalE3 = 1;
+      let totalScale = '';
+      if ( cdO.total > 1000000000 ) { totalE3 = 1000000000, totalScale = " B"; }
+      else if ( cdO.total > 1000000 ) { totalE3 = 1000000, totalScale = " M"; }
+      else if ( cdO.total > 1000 ) { totalE3 = 1000, totalScale = " k"; }
+
+      let chartTotal = cdO.total ? ( cdO.total / totalE3 ).toFixed(1) + totalScale + ' in ': null;
+      let subTitle = <span style={{paddingLeft: '15px', fontSize: 'small'}}>( { chartTotal } { barCount} categories ) </span>;
+
+      let titleEle1 = titleLocation === 'side' ?
         <h6 style={ thisTitleStyle }>{ theTitle }</h6> :
-        <div style={ thisTitleStyle }>{ theTitle }<span style={{paddingLeft: '15px', fontSize: 'smaller'}}>( { barCount} ) </span></div>;
+        <div style={ thisTitleStyle }>{ theTitle } { thisScale === '' ? subTitle : null } </div>;
+
+      let titleEle2 = thisScale === '' ? null : <div style={{ lineHeight: 0, paddingBottom: '15px' }}> { subTitle } </div>;
 
       return <div className={ stylesC.row } style={ thisRowStyle }>
-          { titleEle }
+          { titleEle1 }
+          { titleEle2 }
           <div className={ stylesC.chart } style= { stylesChart } >
             { thisChart }
           </div>
@@ -517,10 +554,14 @@ public componentDidUpdate(prevProps){
             </div>
  */
 
+
+    console.log( 'defaultStylesFigure:', defaultStylesFigure );
+    console.log( 'defaultStylesGraphic:', defaultStylesGraphic );
+
     return (
       <div className={ styles.cssreactbarchart } style = {{  }}>
-          <figure className={ stylesC.cssChart }>
-            <div className={ stylesC.graphic } >
+          <figure id={ defaultStylesFigure } className={ stylesC.cssChart } style={ defaultStylesFigure }>
+            <div className={ stylesC.graphic } style={ defaultStylesGraphic } >
               { charts }
             </div>
           </figure>

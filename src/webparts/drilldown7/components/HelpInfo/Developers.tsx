@@ -132,11 +132,13 @@ public constructor(props:IInfoDevelopersProps){
                     <tr><td>{links.devDocsReGr}</td><td></td><td>Used as Responsive version of Pivots</td></tr>
 
                     
+                    
 
                     <tr><td>{links.devDocsLink}</td><td></td><td>Used for Links</td></tr>
                     
 
-                    <tr><td>{links.chartJSSamples}</td><td></td><td>Used for all charts</td></tr>                    
+                    <tr><td>{links.chartJSSamples}</td><td></td><td>Used for all charts</td></tr>
+                    <tr><td>{links.devDocsWebPartTitle}</td><td></td><td>React Webpart Title</td></tr>
 
                 </table>
 

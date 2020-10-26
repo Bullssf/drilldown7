@@ -22,6 +22,8 @@ export interface IRefinerStat {
   stylesBlock?: any;
   stylesLabel?: any;
   stylesValue?: any;
+  stylesFigure?: any;  //Figure is for the entire array of charts... uses first valid stylesFigure object from array of charts.
+  stylesGraphic?: any;  //Figure is for the entire array of charts... uses first valid stylesFigure object from array of charts.
   
 }
 
@@ -213,6 +215,7 @@ export interface IRefiners {
   thisKey: string;
   multiCount: number; // Count when counting multi-value fields each time
   itemCount: number; // Count when only counting multi-value fields once
+
   childrenKeys: string[];
   childrenObjs: IRefinerLayer[];
   childrenMultiCounts: number[];
@@ -237,6 +240,18 @@ export interface IRefiners {
   stat7Count?: number;
   stat8Count?: number;
   stat9Count?: number;
+  /*
+  stat0Total?: number;
+  stat1Total?: number;
+  stat2Total?: number;
+  stat3Total?: number;
+  stat4Total?: number;
+  stat5Total?: number;
+  stat6Total?: number;
+  stat7Total?: number;
+  stat8Total?: number;
+  stat9Total?: number;
+  */
 }
 
 export interface IRefinerLayer {
@@ -267,6 +282,18 @@ export interface IRefinerLayer {
   stat7Count?: number;
   stat8Count?: number;
   stat9Count?: number;
+  /*
+  stat0Total?: number;
+  stat1Total?: number;
+  stat2Total?: number;
+  stat3Total?: number;
+  stat4Total?: number;
+  stat5Total?: number;
+  stat6Total?: number;
+  stat7Total?: number;
+  stat8Total?: number;
+  stat9Total?: number;
+  */
 }
 
 export interface IPickedWebBasic {
@@ -378,7 +405,8 @@ export interface IMyFonts{
 
     stats: IRefinerStat[];
     callBackID: string;
-      refinerObj: IRefinerLayer;
+    refinerObj: IRefinerLayer;
+    breadCrumb?: string[];
 
   }
 
@@ -405,6 +433,7 @@ export interface IMyFonts{
     sum?: number;
     min?: number;
     max?: number;
+    total?: number; //Added for cssBarCharts to have total "value" on top of chart... like total sum, total avg, total count
     changes?: any[];
     changeNotes?: string[];
     warnNotes?: string[];
@@ -415,6 +444,9 @@ export interface IMyFonts{
     stylesBlock?: any;
     stylesLabel?: any;
     stylesValue?: any;
+    stylesFigure?: any;  //Figure is for the entire array of charts... uses first valid stylesFigure object from array of charts.
+    stylesGraphic?: any;  //Figure is for the entire array of charts... uses first valid stylesFigure object from array of charts.
+
   }
   // , IChartSeries, ICharNote
 
