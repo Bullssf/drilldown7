@@ -1,5 +1,6 @@
 import { ListView, IViewField, SelectionMode, GroupOrder, IGrouping } from "@pnp/spfx-controls-react/lib/ListView";
 
+import { IDrillItemInfo } from './Drill/drillComponent';
 export interface IRefinerRules {
   rules: RefineRuleValues[];
 }
@@ -400,7 +401,26 @@ export interface IMyFonts{
 
   export type ISeriesSort = 'asis' | 'labels' | 'asc' | 'dec' | string ;
 
-  
+    
+  export interface IListViewDD {
+
+    parentListFieldTitles: string;
+    webURL :string;
+    parentListURL : string;
+    listName : string;
+    togOtherListview: boolean;
+
+    viewDefs: ICustViewDef[];
+    viewFields: IViewField[];
+    groupByFields?: IGrouping[];
+
+    quickCommands?: IQuickCommands;
+
+    items : IDrillItemInfo[];
+    breadCrumb: string[];
+
+  }
+
   export interface ICSSChartDD {
 
     stats: IRefinerStat[];

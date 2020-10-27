@@ -17,6 +17,14 @@
           "manifest": "./src/webparts/cssChart/CssChartWebPart.manifest.json"
         }
       ]
+    },
+    "thelist-web-part": {
+      "components": [
+        {
+          "entrypoint": "./lib/webparts/thelist/ThelistWebPart.js",
+          "manifest": "./src/webparts/thelist/ThelistWebPart.manifest.json"
+        }
+      ]
     }
   },
   "externals": {},
@@ -24,6 +32,7 @@
     "Drilldown7WebPartStrings": "lib/webparts/drilldown7/loc/{locale}.js",
     "ControlStrings": "node_modules/@pnp/spfx-controls-react/lib/loc/{locale}.js",
     "PropertyControlStrings": "node_modules/@pnp/spfx-property-controls/lib/loc/{locale}.js",
-    "CssChartWebPartStrings": "lib/webparts/cssChart/loc/{locale}.js"
+    "CssChartWebPartStrings": "lib/webparts/cssChart/loc/{locale}.js",
+    "ThelistWebPartStrings": "lib/webparts/thelist/loc/{locale}.js"
   }
 }

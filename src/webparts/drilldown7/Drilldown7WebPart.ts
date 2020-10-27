@@ -27,7 +27,7 @@ import { sp } from '@pnp/sp';
 import { propertyPaneBuilder } from '../../services/propPane/PropPaneBuilder';
 import { getAllItems } from '../../services/propPane/PropPaneFunctions';
 
-import { IMyProgress, ICustViewDef, IRefinerLayer, IRefinerStat, ICSSChartDD } from './components/IReUsableInterfaces';
+import { IMyProgress, ICustViewDef, IRefinerLayer, IRefinerStat, ICSSChartDD, IListViewDD } from './components/IReUsableInterfaces';
 
 /**
  * DD Provider: Step 1 - import from sp-dynamic-data
@@ -77,6 +77,7 @@ export interface IDrilldown7WebPartProps {
   togCounts: boolean;
   togSummary: boolean;
   togStats: boolean;
+  togOtherListview:  boolean;
   includeListLink: boolean;
   fetchCount: number;
   fetchCountMobile: number;
@@ -137,6 +138,7 @@ export interface IDrilldown7WebPartProps {
    * DD Provider: Step 0 - add this.properties.switches to WebPartProps
    */
   cssChartProps?: ICssChartProps;
+  listProps?: any;
 }
 
   /**
@@ -148,6 +150,9 @@ export default class Drilldown7WebPart extends BaseClientSideWebPart<IDrilldown7
    * DD Provider: Step 6 - (9:51) add _selectedSwitch to be the placeholder for what was selected
    */
   private _selected_cssChartProps : ICSSChartDD;
+  private _selected_listProps : any;
+
+  
 
   /**
    * 2020-09-08:  Add for dynamic data refiners.
@@ -224,6 +229,10 @@ export default class Drilldown7WebPart extends BaseClientSideWebPart<IDrilldown7
         title: 'Summary Stats 1'
       },
       {
+        id: 'listProps',
+        title: 'List Items',
+      },
+      {
         id: 'refiner0Name',
         title: 'Field you are filtering on',
       },
@@ -255,7 +264,8 @@ export default class Drilldown7WebPart extends BaseClientSideWebPart<IDrilldown7
         return this._filterBy;
       case 'cssChartProps':
         return this._selected_cssChartProps;
-
+      case 'listProps': 
+        return this._selected_listProps;
     }
     throw new Error('Bad property ID');
 
@@ -416,6 +426,7 @@ export default class Drilldown7WebPart extends BaseClientSideWebPart<IDrilldown7
             togCounts: this.properties.togCounts,
             togSummary: this.properties.togSummary,
             togStats: this.properties.togStats,
+            togOtherListview:  this.properties.togOtherListview,
         },
     
         performance: {
@@ -476,6 +487,7 @@ export default class Drilldown7WebPart extends BaseClientSideWebPart<IDrilldown7
          * DD Provider: Step 0 - add props to React Component to receive the switches and the handler.
          */
         handleSwitch: this.handleSwitch,
+        handleListPost: this.handleListPost,
 
       }
     );
@@ -502,6 +514,21 @@ export default class Drilldown7WebPart extends BaseClientSideWebPart<IDrilldown7
     this._selected_cssChartProps = cssChartProps;
     this.context.dynamicDataSourceManager.notifyPropertyChanged( 'cssChartProps' );
 
+  }
+
+    /**
+   * DD Provider: Step 7 - (10:45) add handleSwichSelected - handler for when things changed.
+   * 1) Set value of selected Switch on the internal property
+   * 2) Tell anybody who subscribed, that property changed
+   */
+  private handleListPost = ( listProps : IListViewDD ) : void => {
+
+    if ( this.properties.togOtherListview === true ) {
+      let e = event;
+
+      this._selected_listProps = listProps;
+      this.context.dynamicDataSourceManager.notifyPropertyChanged( 'listProps' );
+    }
   }
 
 
@@ -802,7 +829,7 @@ export default class Drilldown7WebPart extends BaseClientSideWebPart<IDrilldown7
       'setSize','setTab','otherTab','setTab','otherTab','setTab','otherTab','setTab','otherTab',
       'parentListFieldTitles','progress','UpdateTitles','parentListTitle','childListTitle','parentListWeb','childListWeb', 'stats',
       'rules0','rules1','rules2',
-      'togCounts', 'togSummary', 'togStats', 
+      'togCounts', 'togSummary', 'togStats', 'togOtherListview',
       'fetchCount', 'fetchCountMobile', 'restFilter', 'quickCommands', 'definitionToggle', 'includeListLink',
     ];
     //alert('props updated');
