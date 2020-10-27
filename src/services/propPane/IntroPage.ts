@@ -326,6 +326,12 @@ export class IntroPage {
         { groupName: 'Toggles',
         isCollapsed: true ,
         groupFields: [
+          PropertyPaneToggle('togOtherListview', {
+            label: 'Where to show items',
+            offText: 'This webpart',
+            onText: 'Other webpart',
+          }),
+
           PropertyPaneToggle('togCounts', { //togCounts, togSummary, togStats, fetchCount, fetchCountMobile, restFilter
             label: 'Show Counts',
             offText: 'No',
@@ -343,6 +349,8 @@ export class IntroPage {
             offText: 'No',
             onText: 'Yes',
           }),
+
+
 
         ]}, // this group
 

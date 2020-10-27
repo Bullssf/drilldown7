@@ -8,5 +8,8 @@ import { IRefiners, IRefinerLayer, IRefinerStat,IItemRefiners, RefineRuleValues,
 import { DisplayMode } from '@microsoft/sp-core-library';
 
 export interface IThelistState {
-  description: string;
+
+  WebpartHeight?:  number;    //Size courtesy of https://www.netwoven.com/2018/11/13/resizing-of-spfx-react-web-parts-in-different-scenarios/
+  WebpartWidth?:   number;    //Size courtesy of https://www.netwoven.com/2018/11/13/resizing-of-spfx-react-web-parts-in-different-scenarios/
+  
 }

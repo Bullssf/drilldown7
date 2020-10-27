@@ -17,6 +17,8 @@ import {
   DynamicDataSharedDepth
 } from '@microsoft/sp-webpart-base';
 
+import { Placeholder, IPlaceholderProps } from "@pnp/spfx-controls-react/lib/Placeholder";
+
 /**
  * DD Subscriber: Step 0 - import from sp-dynamic-data
  */
@@ -78,10 +80,19 @@ export default class ThelistWebPart extends BaseClientSideWebPart<IThelistWebPar
       const element: React.ReactElement<IThelistProps> = React.createElement(
         Thelist,
         {
+
+          // 0 - Context
+          //Size courtesy of https://www.netwoven.com/2018/11/13/resizing-of-spfx-react-web-parts-in-different-scenarios/
+          wpContext: this.context,
+          WebpartElement: this.domElement,
+
           description: this.properties.description,
           callBackID: null,
 
           listPropsDD: pickedProps,
+
+          WebpartHeight: this.domElement.getBoundingClientRect().height ,
+          WebpartWidth:  this.domElement.getBoundingClientRect().width - 50 ,
 
           /**
            *  TITLE:  For Webpart Title component
@@ -95,7 +106,14 @@ export default class ThelistWebPart extends BaseClientSideWebPart<IThelistWebPar
       );
 
       ReactDom.render(element, this.domElement);
+    } else {
+
+      alert ( 'ThisList webpart is not being fed items from the Drilldown webpart... make sure the Toggle is set to show items here!')
+
     }
+
+
+
   }
 
   protected onDispose(): void {

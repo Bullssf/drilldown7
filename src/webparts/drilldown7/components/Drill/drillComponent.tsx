@@ -31,11 +31,12 @@ import { createAdvancedContentChoices } from '../fields/choiceFieldBuilder';
 
 import { IContentsToggles, makeToggles } from '../fields/toggleFieldBuilder';
 
-import { IPickedList, IPickedWebBasic, IMyPivots, IPivot,  ILink, IUser, IMyProgress, IMyIcons, IMyFonts, IChartSeries, ICharNote, IRefinerRules, RefineRuleValues, ICustViewDef, IRefinerStat, ICSSChartSeries, ICSSChartTypes } from '../IReUsableInterfaces';
+import { IPickedList, IPickedWebBasic, IMyPivots, IPivot,  ILink, IUser, IMyProgress, IMyIcons, IMyFonts, IChartSeries, 
+    ICharNote, IRefinerRules, RefineRuleValues, ICustViewDef, IRefinerStat, ICSSChartSeries, ICSSChartTypes } from '../IReUsableInterfaces';
 
 import { createLink } from '../HelpInfo/AllLinks';
 
-import { IRefiners, IRefinerLayer, IItemRefiners, IQuickButton, IQuickCommands } from '../IReUsableInterfaces';
+import { IRefiners, IRefinerLayer, IItemRefiners, IQuickButton, IQuickCommands, IListViewDD } from '../IReUsableInterfaces';
 
 import { PageContext } from '@microsoft/sp-page-context';
 
@@ -68,6 +69,8 @@ import { unstable_renderSubtreeIntoContainer } from 'react-dom';
 import Cssreactbarchart from '../CssCharts/Cssreactbarchart';
 
 import {buildSummaryCountChartsObject ,  buildStatChartsArray} from '../CssCharts/cssChartFunctions';
+
+import { getAppropriateViewFields, getAppropriateViewGroups, getAppropriateViewProp } from './listFunctions';
 
 
 import  EarlyAccess from '../HelpInfo/EarlyAccess';
@@ -215,6 +218,7 @@ export interface IDrillDownProps {
         togCounts: boolean;
         togSummary: boolean;
         togStats: boolean;
+        togOtherListview:  boolean;
     };
 
     performance: {
@@ -279,6 +283,7 @@ export interface IDrillDownProps {
 
     //For DD
     handleSwitch: any;
+    handleListPost: any;
 
 }
 
@@ -388,79 +393,6 @@ export interface IDrillDownState {
 export default class DrillDown extends React.Component<IDrillDownProps, IDrillDownState> {
 
 
- /***
- *     d888b  d88888b d888888b      db    db d888888b d88888b db   d8b   db      d88888b db    db d8b   db  .o88b. d888888b d888888b  .d88b.  d8b   db .d8888. 
- *    88' Y8b 88'     `~~88~~'      88    88   `88'   88'     88   I8I   88      88'     88    88 888o  88 d8P  Y8 `~~88~~'   `88'   .8P  Y8. 888o  88 88'  YP 
- *    88      88ooooo    88         Y8    8P    88    88ooooo 88   I8I   88      88ooo   88    88 88V8o 88 8P         88       88    88    88 88V8o 88 `8bo.   
- *    88  ooo 88~~~~~    88         `8b  d8'    88    88~~~~~ Y8   I8I   88      88~~~   88    88 88 V8o88 8b         88       88    88    88 88 V8o88   `Y8b. 
- *    88. ~8~ 88.        88          `8bd8'    .88.   88.     `8b d8'8b d8'      88      88b  d88 88  V888 Y8b  d8    88      .88.   `8b  d8' 88  V888 db   8D 
- *     Y888P  Y88888P    YP            YP    Y888888P Y88888P  `8b8' `8d8'       YP      ~Y8888P' VP   V8P  `Y88P'    YP    Y888888P  `Y88P'  VP   V8P `8888Y' 
- *                                                                                                                                                             
- *                                                                                                                                                             
- */
-
-    private getAppropriateViewFields ( viewDefs: ICustViewDef[], currentWidth: number ) {
-        let result : IViewField[] = [];
-
-        let maxViewWidth = 0 ;
-
-        viewDefs.map( vd => {
-            if ( currentWidth >= vd.minWidth && vd.minWidth >= maxViewWidth ) {
-                result = vd.viewFields;
-                maxViewWidth = vd.minWidth;
-            }
-        });
-
-        let avgWidth = result.length > 0 ? currentWidth/result.length : 100;
-        let completeResult = result.map( f => {
-
-            let thisField = f;
-            let minWidth = thisField.minWidth ? thisField.minWidth : avgWidth;
-            let maxWidth = thisField.maxWidth ? thisField.maxWidth : minWidth  + 100;
-            if ( thisField.minWidth === undefined ) { thisField.minWidth = minWidth; }
-            if ( thisField.maxWidth === undefined ) { thisField.maxWidth = maxWidth; }
-            if ( thisField.isResizable === undefined ) { thisField.isResizable = true; }
-            if ( thisField.sorting === undefined ) { thisField.sorting = true; }
-            return thisField;
-        });
-
-        console.log('getAppropriateViewFields:', completeResult);
-        return completeResult;
-
-    }
-
-    private getAppropriateViewGroups ( viewDefs: ICustViewDef[], currentWidth: number ) {
-        let result : IGrouping[] = [];
-
-        let maxViewWidth = 0 ;
-
-        viewDefs.map( vd => {
-            if ( currentWidth >= vd.minWidth && vd.minWidth >= maxViewWidth ) {
-                result = vd.groupByFields;
-                maxViewWidth = vd.minWidth;
-            }
-        });
-        console.log('getAppropriateViewGroups: ', result);
-        return result;
-
-    }
-
-    private getAppropriateViewProp ( viewDefs: ICustViewDef[], currentWidth: number, prop: 'includeDetails' | 'includeAttach' | 'includeListLink' ) {
-        let result : boolean = false;
-
-        let maxViewWidth = 0 ;
-        viewDefs.map( vd => {
-            if ( currentWidth >= vd.minWidth && vd.minWidth >= maxViewWidth ) {
-                result = vd[prop];
-                maxViewWidth = vd.minWidth;
-            } else {
-
-            }
-        });
-        console.log('getAppropriateDetailMode: ', result);
-        return result;
-
-    }
 
     /***
      *    d8888b. db    db d888888b db      d8888b.      .d8888. db    db .88b  d88.       .o88b.  .d88b.  db    db d8b   db d888888b       .o88b. db   db  .d8b.  d8888b. d888888b .d8888. 
@@ -1000,17 +932,20 @@ public componentDidUpdate(prevProps){
                     ></MyDrillItems>
                     </div>;
 
-                let includeDetails = this.getAppropriateViewProp( this.props.viewDefs, this.state.WebpartWidth, 'includeDetails' );
-                let includeAttach = this.getAppropriateViewProp( this.props.viewDefs, this.state.WebpartWidth, 'includeAttach' );
-                let includeListLink = this.getAppropriateViewProp( this.props.viewDefs, this.state.WebpartWidth, 'includeListLink' );
+                let includeDetails = getAppropriateViewProp( this.props.viewDefs, this.state.WebpartWidth, 'includeDetails' );
+                let includeAttach = getAppropriateViewProp( this.props.viewDefs, this.state.WebpartWidth, 'includeAttach' );
+                let includeListLink = getAppropriateViewProp( this.props.viewDefs, this.state.WebpartWidth, 'includeListLink' );
                 
-
                 let currentViewFields: any[] = [];
-                if ( this.props.viewDefs.length > 0 )  { currentViewFields = this.getAppropriateViewFields( this.props.viewDefs, this.state.WebpartWidth ); }
+                if ( this.props.viewDefs.length > 0 )  { currentViewFields = getAppropriateViewFields( this.props.viewDefs, this.state.WebpartWidth ); }
 
-                let currentViewGroups : IGrouping[] =  this.getAppropriateViewGroups( this.props.viewDefs , this.state.WebpartWidth );
+                let currentViewGroups : IGrouping[] =  getAppropriateViewGroups( this.props.viewDefs , this.state.WebpartWidth );
 
-                let reactListItems  = this.state.searchedItems.length === 0 ? <div>NO ITEMS FOUND</div> : <ReactListItems 
+                let reactListItems  = null;
+
+                if ( this.props.toggles.togOtherListview === false ) {
+
+                    reactListItems  = this.state.searchedItems.length === 0 ? <div>NO ITEMS FOUND</div> : <ReactListItems 
                     parentListFieldTitles={ this.props.viewDefs.length > 0 ? null : this.props.parentListFieldTitles }
 
                     webURL = { this.state.drillList.webURL }
@@ -1025,7 +960,9 @@ public componentDidUpdate(prevProps){
                     includeListLink = { includeListLink }
                     quickCommands={ this.props.quickCommands }
                     
-                ></ReactListItems>;
+                     ></ReactListItems>;
+                }
+
 
 
                 /***
@@ -1236,12 +1173,39 @@ public componentDidUpdate(prevProps){
 //        console.log('addTheseItemsToState: childrenCounts',refinerObj.childrenCounts );
 //        console.log('addTheseItemsToState: childrenMultiCounts',refinerObj.childrenMultiCounts );
 
-        console.log('addTheseItemsToState allItems: ', allItems);
+        if ( allItems.length < 300 ) {
+            console.log('addTheseItemsToState allItems: ', allItems);
+        } {
+            console.log('addTheseItemsToState allItems: QTY: ', allItems.length );
+        }
+
 
         let maxRefinersToShow = 1;
         if ( this.props.refiners ) {
             if ( this.props.refiners.length > 1 ) { maxRefinersToShow = 2; }
             if ( this.props.refiners.length > 2 ) { maxRefinersToShow = 3; }
+        }
+        if ( this.props.toggles.togOtherListview === true ) {
+            let listViewDD : IListViewDD = {
+
+                parentListFieldTitles: this.props.viewDefs.length > 0 ? null : this.props.parentListFieldTitles,
+                togOtherListview: this.props.toggles.togOtherListview,
+                webURL : drillList.webURL,
+                parentListURL : drillList.parentListURL,
+                listName : drillList.name,
+        
+                viewDefs: this.props.viewDefs,
+                viewFields: null, // This is derived from viewDefs
+                groupByFields: null, // This is derived from viewDefs
+        
+                quickCommands: this.props.quickCommands,
+        
+                items : allItems,
+                breadCrumb: [pivCats.all.title],
+
+            };
+        
+            this.props.handleListPost( listViewDD );
         }
 
         this.setState({
@@ -1655,8 +1619,30 @@ public componentDidUpdate(prevProps){
         cmdCats.push ( this.convertRefinersToCMDs( ['All'],  refinerObj.childrenKeys, countTree, 0 , 0 , refinerObj) );
     }
 
+    if ( this.props.toggles.togOtherListview === true ) {
+        let listViewDD : IListViewDD = {
 
-    searchCount = newFilteredItems.length;
+            parentListFieldTitles: this.props.viewDefs.length > 0 ? null : this.props.parentListFieldTitles,
+            webURL :this.state.drillList.webURL,
+            parentListURL : this.state.drillList.parentListURL,
+            listName : this.state.drillList.name,
+            togOtherListview: this.props.toggles.togOtherListview,
+    
+            viewDefs: this.props.viewDefs,
+            viewFields: null, // This is derived from viewDefs
+            groupByFields: null, // This is derived from viewDefs
+    
+            quickCommands: this.props.quickCommands,
+    
+            items : newFilteredItems,
+            breadCrumb: newMeta,
+    
+        };
+    
+        this.props.handleListPost( listViewDD );
+        searchCount = newFilteredItems.length;
+    }
+
 
     this.setState({
       searchedItems: newFilteredItems,

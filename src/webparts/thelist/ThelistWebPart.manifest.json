@@ -17,8 +17,8 @@
   "preconfiguredEntries": [{
     "groupId": "5c03119e-3074-46fd-976b-c60198311f70", // Other
     "group": { "default": "Other" },
-    "title": { "default": "thelist" },
-    "description": { "default": "thelist description" },
+    "title": { "default": "Drilldown List" },
+    "description": { "default": "List View component to Drilldown Webpart" },
     "officeFabricIconFontName": "Page",
     "properties": {
       "description": "thelist"
