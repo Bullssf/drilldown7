@@ -1206,6 +1206,29 @@ public componentDidUpdate(prevProps){
             };
         
             this.props.handleListPost( listViewDD );
+        } else {
+
+            let listViewDD : IListViewDD = {
+
+                parentListFieldTitles: null,
+                webURL :null,
+                parentListURL : null,
+                listName : null,
+                togOtherListview: this.props.toggles.togOtherListview,
+        
+                viewDefs: null,
+                viewFields: null, // This is derived from viewDefs
+                groupByFields: null, // This is derived from viewDefs
+        
+                quickCommands: null,
+        
+                items : [],
+                breadCrumb: null,
+        
+            };
+        
+            this.props.handleListPost( listViewDD );
+
         }
 
         this.setState({
@@ -1636,6 +1659,28 @@ public componentDidUpdate(prevProps){
     
             items : newFilteredItems,
             breadCrumb: newMeta,
+    
+        };
+    
+        this.props.handleListPost( listViewDD );
+        searchCount = newFilteredItems.length;
+    } else {
+        let listViewDD : IListViewDD = {
+
+            parentListFieldTitles: null,
+            webURL :null,
+            parentListURL : null,
+            listName : null,
+            togOtherListview: this.props.toggles.togOtherListview,
+    
+            viewDefs: null,
+            viewFields: null, // This is derived from viewDefs
+            groupByFields: null, // This is derived from viewDefs
+    
+            quickCommands: null,
+    
+            items : [],
+            breadCrumb: null,
     
         };
     

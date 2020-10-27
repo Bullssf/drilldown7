@@ -487,7 +487,7 @@ export default class Drilldown7WebPart extends BaseClientSideWebPart<IDrilldown7
          * DD Provider: Step 0 - add props to React Component to receive the switches and the handler.
          */
         handleSwitch: this.handleSwitch,
-        handleListPost: this.properties.togOtherListview === true ? this.handleListPost : null,
+        handleListPost: this.handleListPost,
 
       }
     );
