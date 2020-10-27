@@ -3,7 +3,6 @@ import { ListView, IViewField, SelectionMode, GroupOrder, IGrouping } from "@pnp
 
 import { ICustViewDef } from '../../components/IReUsableInterfaces';
 
-
  /***
  *     d888b  d88888b d888888b      db    db d888888b d88888b db   d8b   db      d88888b db    db d8b   db  .o88b. d888888b d888888b  .d88b.  d8b   db .d8888. 
  *    88' Y8b 88'     `~~88~~'      88    88   `88'   88'     88   I8I   88      88'     88    88 888o  88 d8P  Y8 `~~88~~'   `88'   .8P  Y8. 888o  88 88'  YP 
@@ -43,9 +42,9 @@ export function getAppropriateViewFields ( viewDefs: ICustViewDef[], currentWidt
     
         console.log('getAppropriateViewFields:', completeResult);
         return completeResult;
-        
+
     } else {
-        alert('View Def is not available... can not show any items! - see getAppropriateViewFields');
+        alert('View Def is not available... can not show any items! - see getAppropriateViewFields()');
         return null;
     }
 
@@ -66,7 +65,7 @@ export function getAppropriateViewGroups ( viewDefs: ICustViewDef[], currentWidt
         console.log('getAppropriateViewGroups: ', result);
         return result;
     } else {
-        alert('View Def is not available... can not show any items! - see getAppropriateViewFields');
+        alert('View Def is not available... can not show any items! - see getAppropriateViewGroups()');
         return null;
     }
 
