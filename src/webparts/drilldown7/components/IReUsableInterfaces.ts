@@ -15,7 +15,12 @@ export interface IRefinerStat {
   title: string;
   stat: IRefinerStatType;
   chartTypes: ICSSChartTypes[];
-  consumer: 1 | 2 | 3;  //Consumer webpart number
+
+  //Consumer webpart number - undefined means it shows up in main webpart, 1 means it will show up in consumer webpart
+  consumer: 1 | 2 | 3;  
+
+  //collapsed = false shows expanded with accordion, true means collapsed with accordion, undefined means no accordion
+  collapsed: boolean; 
   eval?: string;
   stylesChart?: any;
   stylesTitle?: any;

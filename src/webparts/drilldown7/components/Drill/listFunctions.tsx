@@ -39,8 +39,12 @@ export function getAppropriateViewFields ( viewDefs: ICustViewDef[], currentWidt
             if ( thisField.sorting === undefined ) { thisField.sorting = true; }
             return thisField;
         });
-    
-        console.log('getAppropriateViewFields:', completeResult);
+    /*
+        console.log('getAppropriateViewFields: currentWidth = ', currentWidth);
+        console.log('getAppropriateViewFields: Width >= ', maxViewWidth);
+        console.log('getAppropriateViewFields: result', result);
+        console.log('getAppropriateViewFields: completeResult', completeResult);
+        */
         return completeResult;
 
     } else {
@@ -62,7 +66,7 @@ export function getAppropriateViewGroups ( viewDefs: ICustViewDef[], currentWidt
                 maxViewWidth = vd.minWidth;
             }
         });
-        console.log('getAppropriateViewGroups: ', result);
+        //console.log('getAppropriateViewGroups: ', result);
         return result;
     } else {
         alert('View Def is not available... can not show any items! - see getAppropriateViewGroups()');
@@ -84,7 +88,7 @@ export function getAppropriateViewProp ( viewDefs: ICustViewDef[], currentWidth:
 
             }
         });
-        console.log('getAppropriateDetailMode: ', result);
+        //console.log('getAppropriateDetailMode: ', result);
         return result;
     } else {
         alert('View Def is not available... can not show any items! - see getAppropriateViewProp()');

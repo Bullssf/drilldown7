@@ -3,7 +3,8 @@ import * as ReactDom from 'react-dom';
 import { Version } from '@microsoft/sp-core-library';
 import {
   IPropertyPaneConfiguration,
-  PropertyPaneTextField
+  PropertyPaneTextField,
+  PropertyPaneLink
 } from '@microsoft/sp-property-pane';
 import {
   BaseClientSideWebPart,
@@ -30,12 +31,15 @@ import { description } from '../drilldown7/components/ListView/ViewFields';
 import { IRefiners, IRefinerLayer, IRefinerStat,IItemRefiners, RefineRuleValues, 
   RefinerStatTypes, IRefinerStats, IRefinerStatType, ICSSChartDD } from '../drilldown7/components/IReUsableInterfaces';
 
+import { JSON_Edit_Link } from '../../services/propPane/zReusablePropPane';
+
 require('../../services/propPane/GrayPropPaneAccordions.css');
 
 export interface ICssChartWebPartProps {
   description: string;
   title: string;
 
+  stylesChartTitle?: string;
     /**
    * DD Subscriber: Step 1 - add this.properties.cssChartProps to WebPartProps
    */
@@ -78,6 +82,7 @@ export default class CssChartWebPart extends BaseClientSideWebPart<ICssChartWebP
           refinerObj: null,
           chartElements: pickedProps.elements,
           cssChartDD: pickedProps,
+          stylesChartTitle: this.properties.stylesChartTitle,
 
           //For Webpart Title component
           title: this.properties.title,
@@ -148,7 +153,14 @@ export default class CssChartWebPart extends BaseClientSideWebPart<ICssChartWebP
                 }),
                 PropertyPaneTextField('description', {
                   label: strings.DescriptionFieldLabel
+                }),
+
+                JSON_Edit_Link,
+
+                PropertyPaneTextField('stylesChartTitle', {
+                  label: 'Chart Title Styles'
                 })
+
               ]
             }
           ]

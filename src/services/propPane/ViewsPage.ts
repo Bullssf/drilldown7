@@ -12,6 +12,9 @@ import {
     PropertyPaneButtonType,
   } from '@microsoft/sp-property-pane';
   
+  
+  import { JSON_Edit_Link } from './zReusablePropPane';
+
   import { PropertyFieldMultiSelect } from '@pnp/spfx-property-controls/lib/PropertyFieldMultiSelect';
   
   import * as strings from 'Drilldown7WebPartStrings';
@@ -49,11 +52,7 @@ import {
                 text: 'Copy your view settings and use this site to modify them.  Then copy them back and paste into settings box.'
               }),
   
-              PropertyPaneLink('About Link' , {
-                text: 'Use this site to more easily work on JSON',
-                href: 'https://codebeautify.org/jsonviewer',
-                target: '_blank',
-              }),
+              JSON_Edit_Link,
 
               PropertyPaneLabel('About Text', {
                 text: 'View settings need to be structured in IViewField[] array format documented here:'
@@ -100,11 +99,7 @@ import {
                     value: 1200,
                     }),
 
-                PropertyPaneLink('JSON Link' , {
-                    text: 'Use this site to more easily work on JSON',
-                    href: 'https://codebeautify.org/jsonviewer',
-                    target: '_blank',
-                    }),
+                JSON_Edit_Link,
 
                 PropertyPaneTextField('viewJSON1', {
                     label: 'View settings',
@@ -127,11 +122,7 @@ import {
                     value: 800,
                     }),
 
-                PropertyPaneLink('JSON Link' , {
-                    text: 'Use this site to more easily work on JSON',
-                    href: 'https://codebeautify.org/jsonviewer',
-                    target: '_blank',
-                    }),
+                JSON_Edit_Link,
 
                 PropertyPaneTextField('viewJSON2', {
                     label: 'View settings',
@@ -154,11 +145,7 @@ import {
                     value: 400,
                     }),
 
-                PropertyPaneLink('JSON Link' , {
-                    text: 'Use this site to more easily work on JSON',
-                    href: 'https://codebeautify.org/jsonviewer',
-                    target: '_blank',
-                    }),
+                JSON_Edit_Link,
 
 
                 PropertyPaneTextField('viewJSON3', {
@@ -197,11 +184,7 @@ import {
               isCollapsed: true ,
               groupFields: [
 
-                PropertyPaneLink('JSON Link' , {
-                    text: 'Use this site to more easily work on JSON',
-                    href: 'https://codebeautify.org/jsonviewer',
-                    target: '_blank',
-                    }),
+                JSON_Edit_Link,
 
                 PropertyPaneTextField('stats', {
                     label: 'Summary Stats',
@@ -216,11 +199,7 @@ import {
               isCollapsed: true ,
               groupFields: [
 
-                PropertyPaneLink('JSON Link' , {
-                    text: 'Use this site to more easily work on JSON',
-                    href: 'https://codebeautify.org/jsonviewer',
-                    target: '_blank',
-                  }),
+                JSON_Edit_Link,
 
                 PropertyPaneTextField('quickCommands', {
                     label: 'Quick Command buttons',

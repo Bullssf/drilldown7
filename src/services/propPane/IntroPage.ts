@@ -13,6 +13,8 @@ import {
   PropertyPaneSlider,
 } from '@microsoft/sp-property-pane';
 
+import { JSON_Edit_Link } from './zReusablePropPane';
+
 import { PropertyFieldMultiSelect } from '@pnp/spfx-property-controls/lib/PropertyFieldMultiSelect';
 
 import * as strings from 'Drilldown7WebPartStrings';
@@ -332,14 +334,14 @@ export class IntroPage {
             onText: 'Other webpart',
           }),
 
-          PropertyPaneToggle('togCounts', { //togCounts, togSummary, togStats, fetchCount, fetchCountMobile, restFilter
-            label: 'Show Counts',
+          PropertyPaneToggle('togRefinerCounts', { //togRefinerCounts, togCountChart, togStats, fetchCount, fetchCountMobile, restFilter
+            label: 'Show Counts on Refiners',
             offText: 'No',
             onText: 'Yes',
           }),
 
-          PropertyPaneToggle('togSummary', {
-            label: 'Show Refiner Summary',
+          PropertyPaneToggle('togCountChart', {
+            label: 'Show Refiner count Charts',
             offText: 'No',
             onText: 'Yes',
           }),

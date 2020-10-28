@@ -74,8 +74,8 @@ export interface IDrilldown7WebPartProps {
   rules1: string[];
   rules2: string[];
 
-  togCounts: boolean;
-  togSummary: boolean;
+  togRefinerCounts: boolean;
+  togCountChart: boolean;
   togStats: boolean;
   togOtherListview:  boolean;
   includeListLink: boolean;
@@ -423,8 +423,8 @@ export default class Drilldown7WebPart extends BaseClientSideWebPart<IDrilldown7
         analyticsList: strings.analyticsList,
       
         toggles: {
-            togCounts: this.properties.togCounts,
-            togSummary: this.properties.togSummary,
+            togRefinerCounts: this.properties.togRefinerCounts,
+            togCountChart: this.properties.togCountChart,
             togStats: this.properties.togStats,
             togOtherListview:  this.properties.togOtherListview,
         },
@@ -829,7 +829,7 @@ export default class Drilldown7WebPart extends BaseClientSideWebPart<IDrilldown7
       'setSize','setTab','otherTab','setTab','otherTab','setTab','otherTab','setTab','otherTab',
       'parentListFieldTitles','progress','UpdateTitles','parentListTitle','childListTitle','parentListWeb','childListWeb', 'stats',
       'rules0','rules1','rules2',
-      'togCounts', 'togSummary', 'togStats', 'togOtherListview',
+      'togRefinerCounts', 'togCountChart', 'togStats', 'togOtherListview',
       'fetchCount', 'fetchCountMobile', 'restFilter', 'quickCommands', 'definitionToggle', 'includeListLink',
     ];
     //alert('props updated');

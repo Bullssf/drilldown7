@@ -285,7 +285,8 @@ public componentDidUpdate(prevProps){
        *                                                                                                                                                                             
        */
 
-      
+      let stylesAccor = cdO.stylesChart && cdO.stylesChart[cdO.activeType] ? cdO.stylesChart[cdO.activeType] : null;
+
       let stylesChart = cdO.stylesChart && cdO.stylesChart[cdO.activeType] ? cdO.stylesChart[cdO.activeType] : null;
       let stylesRow = cdO.stylesRow && cdO.stylesRow[cdO.activeType] ? cdO.stylesRow[cdO.activeType] : null;
       let stylesTitle = cdO.stylesTitle && cdO.stylesTitle[cdO.activeType] ? cdO.stylesTitle[cdO.activeType] : null;
@@ -506,6 +507,9 @@ public componentDidUpdate(prevProps){
         thisRowStyle.maxWidth = '100%';
         thisRowStyle.marginBottom = thisRowStyle.marginBottom ? thisRowStyle.marginBottom : null;
       }
+
+
+
       
       let thisScale = '';
       if ( minDivisor === 1000000 ) {  thisScale = ' in Millions' ; }
@@ -555,8 +559,8 @@ public componentDidUpdate(prevProps){
  */
 
 
-    console.log( 'defaultStylesFigure:', defaultStylesFigure );
-    console.log( 'defaultStylesGraphic:', defaultStylesGraphic );
+    //console.log( 'defaultStylesFigure:', defaultStylesFigure );
+    //console.log( 'defaultStylesGraphic:', defaultStylesGraphic );
 
     return (
       <div className={ styles.cssreactbarchart } style = {{  }}>

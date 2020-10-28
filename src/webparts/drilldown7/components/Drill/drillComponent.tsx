@@ -68,7 +68,7 @@ import { unstable_renderSubtreeIntoContainer } from 'react-dom';
 
 import Cssreactbarchart from '../CssCharts/Cssreactbarchart';
 
-import {buildSummaryCountChartsObject ,  buildStatChartsArray} from '../CssCharts/cssChartFunctions';
+import {buildCountChartsObject ,  buildStatChartsArray} from '../CssCharts/cssChartFunctions';
 
 import { getAppropriateViewFields, getAppropriateViewGroups, getAppropriateViewProp } from './listFunctions';
 
@@ -215,8 +215,8 @@ export interface IDrillDownProps {
     allLoaded: boolean;
 
     toggles: {
-        togCounts: boolean;
-        togSummary: boolean;
+        togRefinerCounts: boolean;
+        togCountChart: boolean;
         togStats: boolean;
         togOtherListview:  boolean;
     };
@@ -244,8 +244,8 @@ export interface IDrillDownProps {
     showDisabled?: boolean;  //This will show disabled refiners for DaysOfWeek/Months when the day or month has no data
     updateRefinersOnTextSearch?: boolean;
 
-    showCatCounts?: boolean;
-    showSummary?: boolean;
+    showRefinerCounts?: boolean;
+    showCountChart?: boolean;
 
     /**    
      * 'parseBySemiColons' |
@@ -332,8 +332,8 @@ export interface IDrillDownState {
 
     showTips: boolean;
 
-    showCatCounts: boolean;
-    showSummary: boolean;
+    showRefinerCounts: boolean;
+    showCountChart: boolean;
     showStats: boolean;
 
     currentPage: string;
@@ -405,10 +405,13 @@ export default class DrillDown extends React.Component<IDrillDownProps, IDrillDo
      *                                                                                                                                                                                      
      */
 
-    private buildSummaryCountCharts( title: string, callBackID: string, refinerObj: IRefinerLayer , chartTypes: ICSSChartTypes[] ) {
+     /**
+      * This builds the refiner count horizontal stacked bars
+      */
+    private buildCountCharts( title: string, callBackID: string, refinerObj: IRefinerLayer , chartTypes: ICSSChartTypes[] ) {
         let resultSummary = null;
 
-        let resultSummaryObject = buildSummaryCountChartsObject( title, callBackID, refinerObj , chartTypes );
+        let resultSummaryObject = buildCountChartsObject( title, callBackID, refinerObj , chartTypes );
 
         resultSummary = 
         <Cssreactbarchart 
@@ -433,24 +436,27 @@ export default class DrillDown extends React.Component<IDrillDownProps, IDrillDo
      *                                                                                                                                           
      */
 
-    private buildStatCharts(  resultSummaryArray) {
+     /**
+      * This builds the custom stat charts (that are set to consumer = 0 --> inside this webpart)
+      */
+    private buildStatCharts(  statArray) {
 
-        let resultSummary = null;
+        let statChart = null;
         let theseCharts : any[] = [];
-        if ( resultSummaryArray == null || resultSummaryArray.length === 0 ) {
+        if ( statArray == null || statArray.length === 0 ) {
             //Do nothing
 
         } else {
-            resultSummaryArray.map( chartDataObject => {
+            statArray.map( chartDataObject => {
 
-                resultSummary = 
+                statChart = 
                 <Cssreactbarchart 
                     chartData = { chartDataObject.chartData }
                     callBackID = { chartDataObject.callBackID }
                     //onAltClick = { this.changeRefinerOrder.bind(this) }
                 ></Cssreactbarchart>;
 
-                theseCharts.push( resultSummary );
+                theseCharts.push( statChart );
 
             });
         }
@@ -637,8 +643,8 @@ export default class DrillDown extends React.Component<IDrillDownProps, IDrillDo
             drillList: drillList,
 
             showTips: false,
-            showCatCounts: this.props.showCatCounts ? this.props.showCatCounts : false,
-            showSummary: this.props.showSummary ? this.props.showSummary : false,
+            showRefinerCounts: this.props.showRefinerCounts ? this.props.showRefinerCounts : false,
+            showCountChart: this.props.showCountChart ? this.props.showCountChart : false,
             showStats: false,
 
             viewType: this.props.viewType === undefined || this.props.viewType === null ? 'React' : this.props.viewType,
@@ -873,7 +879,7 @@ public componentDidUpdate(prevProps){
                     cachingEnabled = { true }
                     checkedItem = { this.state.searchMeta[0] }
                     onClick = { this._onSearchForMetaCmd0.bind(this) }
-                    showCatCounts = { this.state.showCatCounts }
+                    showRefinerCounts = { this.state.showRefinerCounts }
                     regroupKey = { this.state.cmdCats.length === 0 ? 'showRefiner0' : this.state.cmdCats[0].map( i => { return i.name;  }).join('|||') }
                 ></ResizeGroupOverflowSetExample></div> : null;
 
@@ -882,7 +888,7 @@ public componentDidUpdate(prevProps){
                     cachingEnabled = { true }
                     checkedItem = { this.state.searchMeta[1] }
                     onClick = { this._onSearchForMetaCmd1.bind(this)}
-                    showCatCounts = { this.state.showCatCounts }
+                    showRefinerCounts = { this.state.showRefinerCounts }
                     regroupKey = { this.state.cmdCats.length === 0 ? 'showRefiner1' : this.state.cmdCats[1].map( i => { return i.name;  }).join('|||') }
                 ></ResizeGroupOverflowSetExample></div></div> : null;
 
@@ -891,7 +897,7 @@ public componentDidUpdate(prevProps){
                     cachingEnabled = { true }
                     checkedItem = { this.state.searchMeta[2] }
                     onClick = { this._onSearchForMetaCmd2.bind(this)}
-                    showCatCounts = { this.state.showCatCounts }
+                    showRefinerCounts = { this.state.showRefinerCounts }
                     regroupKey = { this.state.cmdCats.length === 0 ? 'showRefiner2' : this.state.cmdCats[2].map( i => { return i.name;  }).join('|||') }
                 ></ResizeGroupOverflowSetExample></div></div> : null;
 
@@ -976,11 +982,11 @@ public componentDidUpdate(prevProps){
                  *                                                                    
                  */
 
-                let summaryCharts = [];
+                let countCharts = [];
                 let statCharts = [];
                 let statRefinerObject = null;
                 let buildStats = this.state.drillList.refinerStats && this.state.drillList.refinerStats.length > 0 ? true : false;
-                let buildSummary = this.state.showSummary;
+                let buildCount = this.state.showCountChart;
 
                 let textMaxRefinersToShow = 0;
                 let childIndex0 = null;
@@ -999,19 +1005,19 @@ public componentDidUpdate(prevProps){
                     if ( buildStats ) {  statRefinerObject = this.state.refinerObj.childrenObjs[childIndex0].childrenObjs[childIndex1]; }
                 }
 
-                if ( this.state.showSummary === true || this.state.showStats === true) {
-                    if ( buildSummary ) { summaryCharts.push( this.buildSummaryCountCharts( this.state.refiners[0], 'refiner0' , this.state.refinerObj, RefinerChartTypes ) ); }
+                if ( this.state.showCountChart === true || this.props.toggles.togStats === true) {
+                    if ( buildCount ) { countCharts.push( this.buildCountCharts( this.state.refiners[0], 'refiner0' , this.state.refinerObj, RefinerChartTypes ) ); }
                     if ( textMaxRefinersToShow >= 1 ) {
-                        if ( buildSummary ) {  summaryCharts.push( this.buildSummaryCountCharts( this.state.refiners[1], 'refiner1' , this.state.refinerObj.childrenObjs[childIndex0], RefinerChartTypes ) ); }
+                        if ( buildCount ) {  countCharts.push( this.buildCountCharts( this.state.refiners[1], 'refiner1' , this.state.refinerObj.childrenObjs[childIndex0], RefinerChartTypes ) ); }
                         if ( textMaxRefinersToShow >= 2 ) {
-                            if ( buildSummary ) {  summaryCharts.push( this.buildSummaryCountCharts( this.state.refiners[2], 'refiner2' , this.state.refinerObj.childrenObjs[childIndex0].childrenObjs[childIndex1],  RefinerChartTypes ) ); }
+                            if ( buildCount ) {  countCharts.push( this.buildCountCharts( this.state.refiners[2], 'refiner2' , this.state.refinerObj.childrenObjs[childIndex0].childrenObjs[childIndex1],  RefinerChartTypes ) ); }
                         }
                     }
 
-                    if ( summaryCharts.length === 0 ) { summaryCharts = null ; }
-                    if ( this.state.showStats && buildStats &&  statRefinerObject && statRefinerObject.childrenKeys.length > 0  ) {
-                        let resultSummaryArray = buildStatChartsArray( this.state.drillList.refinerStats, 'summaries', statRefinerObject );
-                        statCharts = this.buildStatCharts( resultSummaryArray );
+                    if ( countCharts.length === 0 ) { countCharts = null ; }
+                    if ( buildStats && this.props.toggles.togStats === true && statRefinerObject && statRefinerObject.childrenKeys.length > 0  ) {
+                        let statChartArray = buildStatChartsArray( this.state.drillList.refinerStats, 'summaries', statRefinerObject );
+                        statCharts = this.buildStatCharts( statChartArray );
 
                     } else {
 
@@ -1052,13 +1058,17 @@ public componentDidUpdate(prevProps){
                     messages.push( <div><span><b>{ 'More info ->' }</b></span></div> ) ;
                 } else if ( this.state.WebpartWidth > 600 ) {
                     messages.push( <div><span><b>{ 'info ->' }</b></span></div> ) ;
+
+                } else if ( this.state.WebpartWidth > 400 ) {
+                    messages.push( <div><span><b>{ 'info ->' }</b></span></div> ) ;
                 }
 
                 let earlyAccess = 
                 <div style={{ marginBottom: '15px'}}><EarlyAccess 
                         image = { "https://autoliv.sharepoint.com/sites/crs/PublishingImages/Early%20Access%20Image.png" }
                         messages = { messages }
-                        links = { [ links.gitRepoDrilldown7WebPart.wiki, links.gitRepoDrilldown7WebPart.issues ]}
+                        links = { [ this.state.WebpartWidth > 450 ? links.gitRepoDrilldown7WebPart.wiki : null, 
+                            this.state.WebpartWidth > 600 ? links.gitRepoDrilldown7WebPart.issues : null ]}
                         email = { 'mailto:General - WebPart Dev <0313a49d.Autoliv.onmicrosoft.com@amer.teams.ms>?subject=Drilldown Webpart Feedback&body=Enter your message here :)  \nScreenshots help!' }
                         farRightIcons = { [ toggleTipsButton ] }
                     ></EarlyAccess>
@@ -1093,8 +1103,8 @@ public componentDidUpdate(prevProps){
                             { refinersObjects  }
                         </Stack>
 
-                        <div> { summaryCharts } </div>
-                        <div> { statCharts } </div>
+                        <div> { this.state.showCountChart === true ? countCharts : null } </div>
+                        <div> { this.state.showStats === true ? statCharts : null } </div>
 
                         <div>
 
@@ -1356,7 +1366,7 @@ public componentDidUpdate(prevProps){
     }
 
     public _getValidCountFromClickItem( item, validText: string) {
-        if ( this.state.showCatCounts === true ) {
+        if ( this.state.showRefinerCounts === true ) {
             let countOf = this.findCountOfAriaLabel( item );
             validText = validText.replace(' ('+countOf+')','');
         }
@@ -1564,7 +1574,7 @@ public componentDidUpdate(prevProps){
         multiTree: multiTree,
     };
 
-    console.log('getCurrentRefinerTree: ', result);
+    //console.log('getCurrentRefinerTree: ', result);
     return result;
 
   }
@@ -1949,24 +1959,24 @@ public componentDidUpdate(prevProps){
 
     private getPageToggles( showStats ) {
 
-        let togCounts = {
+        let togRefinerCounts = {
             //label: <span style={{ color: 'red', fontWeight: 900}}>Rails Off!</span>,
-            label: <span>Counts</span>,
+            label: <span>Refiner Counts</span>,
             key: 'togggleCount',
-            _onChange: this.updateTogggleCount.bind(this),
-            checked: this.state.showCatCounts === true ? true : false,
+            _onChange: this.updateRefinerCount.bind(this),
+            checked: this.state.showRefinerCounts === true ? true : false,
             onText: '',
             offText: '',
             className: '',
             styles: '',
         };
 
-        let togSummary = {
+        let togCountChart = {
             //label: <span style={{ color: 'red', fontWeight: 900}}>Rails Off!</span>,
-            label: <span>Summary</span>,
-            key: 'togggleStats',
-            _onChange: this.updateTogggleSummary.bind(this),
-            checked: this.state.showSummary === true ? true : false,
+            label: <span>Count Charts</span>,
+            key: 'togggleCountChart',
+            _onChange: this.updateTogggleCountChart.bind(this),
+            checked: this.state.showCountChart === true ? true : false,
             onText: '',
             offText: '',
             className: '',
@@ -1975,7 +1985,7 @@ public componentDidUpdate(prevProps){
 
         let togStats = {
             //label: <span style={{ color: 'red', fontWeight: 900}}>Rails Off!</span>,
-            label: <span>Stats</span>,
+            label: <span>Stat Charts</span>,
             key: 'togggleStats',
             _onChange: this.updateTogggleStats.bind(this),
             checked: this.state.showStats === true ? true : false,
@@ -2000,11 +2010,11 @@ public componentDidUpdate(prevProps){
 
         let theseToggles = [];
 
-        if ( this.props.toggles.togCounts === true  ) {
-            theseToggles.push( togCounts ) ;
+        if ( this.props.toggles.togRefinerCounts === true  ) {
+            theseToggles.push( togRefinerCounts ) ;
         }
-        if ( this.props.toggles.togSummary === true  ) {
-            theseToggles.push( togSummary ) ;
+        if ( this.props.toggles.togCountChart === true  ) {
+            theseToggles.push( togCountChart ) ;
         }
         if ( showStats && this.props.toggles.togStats === true  ) {
             theseToggles.push( togStats ) ;
@@ -2023,9 +2033,9 @@ public componentDidUpdate(prevProps){
 
     }
 
-    private updateTogggleSummary() {
+    private updateTogggleCountChart() {
         this.setState({
-            showSummary: !this.state.showSummary,
+            showCountChart: !this.state.showCountChart,
           });
     }
 
@@ -2036,9 +2046,9 @@ public componentDidUpdate(prevProps){
           });
     }
 
-    private updateTogggleCount() {
+    private updateRefinerCount() {
         this.setState({
-            showCatCounts: !this.state.showCatCounts,
+            showRefinerCounts: !this.state.showRefinerCounts,
           });
     }
 

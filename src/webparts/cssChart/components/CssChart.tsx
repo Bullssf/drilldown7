@@ -7,7 +7,7 @@ import { escape } from '@microsoft/sp-lodash-subset';
 
 import Cssreactbarchart from '../../drilldown7/components/CssCharts/Cssreactbarchart';
 
-import {buildSummaryCountChartsObject ,  buildStatChartsArray} from '../../drilldown7/components/CssCharts/cssChartFunctions';
+import {buildCountChartsObject ,  buildStatChartsArray} from '../../drilldown7/components/CssCharts/cssChartFunctions';
 
 //For Webpart Title component
 import { WebPartTitle } from "@pnp/spfx-controls-react/lib/WebPartTitle";
@@ -77,7 +77,8 @@ public componentDidUpdate(prevProps){
    console.log('DIDUPDATE setting:', this.props);
 
     if ( prevProps.cssChartDD !== this.props.cssChartDD) {  rebuildPart = true ; }
-
+    if ( prevProps.stylesChartTitle !== this.props.stylesChartTitle) {  rebuildPart = true ; }
+    
     if (rebuildPart === true) {
       this._updateStateOnPropsChange();
     }
@@ -102,15 +103,32 @@ public componentDidUpdate(prevProps){
     let refinerObj = cssChartDD.refinerObj;
     let breadCrumb = cssChartDD.breadCrumb;
 
-    console.log('CssChart received data: callBackID', callBackID );
-    console.log('CssChart received data: stats', stats );
-    console.log('CssChart received data: refinerObj', refinerObj );
+    //console.log('CssChart received data: callBackID', callBackID );
+    //console.log('CssChart received data: stats', stats );
+    //console.log('CssChart received data: refinerObj', refinerObj );
 
     let statCharts : any = null;
     if ( cssChartDD ) {
       let hasStats = stats && stats.length > 0 ? true : false;
       let hasRefiner = refinerObj && refinerObj.childrenKeys.length ? true : false;
       if ( hasStats === true && hasRefiner === true ) { 
+
+          if ( this.props.stylesChartTitle ) {
+            let stylesChartTitle : any = null;
+            try { 
+              stylesChartTitle = JSON.parse( this.props.stylesChartTitle ) ;
+              stats.map( s => {
+                s.chartTypes.map( t => {
+                  if ( !s['stylesTitle'] ) { s['stylesTitle'] = []; }
+                  s['stylesTitle'].push( stylesChartTitle );
+                });
+              });
+            } catch (e) {
+              alert('There was an error with your Chart Styles... not valid JSON format!');
+              stylesChartTitle = undefined;
+            }
+          }
+
           let resultSummaryArray = buildStatChartsArray( stats, callBackID, refinerObj, 1 );
           statCharts = this.buildStatCharts( resultSummaryArray ); 
       }
@@ -119,7 +137,7 @@ public componentDidUpdate(prevProps){
     //statCharts = this.props.chartElements;
 
     let breadCrumbElements = breadCrumb ? breadCrumb.map( bc => {
-      return <span style={{whiteSpace: 'nowrap'}}> { bc } &gt;</span>;
+      return <span style={{whiteSpace: 'nowrap', fontWeight: 600 }}> { bc } &gt;</span>;
     }) : [];
 
     return (
