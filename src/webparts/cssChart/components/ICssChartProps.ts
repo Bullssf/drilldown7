@@ -14,6 +14,8 @@ export interface ICssChartProps {
   chartElements: any[];
   cssChartDD: ICSSChartDD;
 
+  stylesChartTitle?: string;
+  
   //For Webpart Title component
   title: string;
   displayMode: DisplayMode;

@@ -18,10 +18,10 @@
     "groupId": "5c03119e-3074-46fd-976b-c60198311f70", // Other
     "group": { "default": "Other" },
     "title": { "default": "Drilldown List" },
-    "description": { "default": "List View component to Drilldown Webpart" },
-    "officeFabricIconFontName": "Page",
+    "description": { "default": "List Consumer for Drilldown Webpart.  This lets you arrange the info in different ways." },
+    "officeFabricIconFontName": "PageListFilter",
     "properties": {
-      "description": "thelist"
+      "description": "List Consumer for Drilldown Webpart.  This lets you arrange the info in different ways."
     }
   }]
 }

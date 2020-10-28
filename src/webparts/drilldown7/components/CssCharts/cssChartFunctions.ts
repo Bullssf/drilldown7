@@ -1,7 +1,7 @@
 import { toAbsoluteUrl } from '@pnp/sp';
 import { ICSSChartSeries, ICSSChartTypes, CSSChartTypes, ISeriesSort, IRefinerLayer, IRefinerStat } from '../IReUsableInterfaces';
 
-export function buildSummaryCountChartsObject( title: string, callBackID: string, refinerObj: IRefinerLayer , chartTypes: ICSSChartTypes[] ) {
+export function buildCountChartsObject( title: string, callBackID: string, refinerObj: IRefinerLayer , chartTypes: ICSSChartTypes[] ) {
     let resultSummaryObject = null;
 
     let labels = refinerObj.childrenKeys ;
@@ -12,8 +12,8 @@ export function buildSummaryCountChartsObject( title: string, callBackID: string
     
     let chartKey : string = labels.join('') + counts.join('');
 
-//        console.log('buildSummaryCountCharts labels:', labels );
-//        console.log('buildSummaryCountCharts counts:', counts );
+//        console.log('buildCountChartsObject labels:', labels );
+//        console.log('buildCountChartsObject counts:', counts );
 
     let chartData : ICSSChartSeries = {
         title: title,
@@ -44,7 +44,7 @@ export function buildSummaryCountChartsObject( title: string, callBackID: string
 }
 
 export function buildStatChartsArray(  stats: IRefinerStat[], callBackID: string, refinerObj: IRefinerLayer , consumer: 0 | 1 | 2 | 3 = 0 ) {
-    let resultSummaryObject = null;
+    let resultStatObject = null;
     let theseCharts : any[] = [];
     let i = -1;
     if ( refinerObj == null || stats == null || stats.length === 0 ) {
@@ -114,13 +114,13 @@ export function buildStatChartsArray(  stats: IRefinerStat[], callBackID: string
 
                 };
         
-                resultSummaryObject = {
+                resultStatObject = {
                     chartData :  [chartData],
                     callBackID :  callBackID ,
                 };
             
         
-                theseCharts.push( resultSummaryObject );
+                theseCharts.push( resultStatObject );
 
                 
             }

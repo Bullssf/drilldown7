@@ -89,12 +89,12 @@ function  _functionOnClick(item){
     console.log('item', item);
 }
 
-function generateData(items: ICMDItem[], checkedItem: string, cachingEnabled: boolean, showCatCounts: boolean, onClick: any): IOverflowData {
+function generateData(items: ICMDItem[], checkedItem: string, cachingEnabled: boolean, showRefinerCounts: boolean, onClick: any): IOverflowData {
   const dataItems = [];
   let cacheKey = '';
   if ( items ) {
     for (let index = 0; index < items.length; index++) {
-      let countLabel = showCatCounts ? ' (' + items[index].count + ')' : '';
+      let countLabel = showRefinerCounts ? ' (' + items[index].count + ')' : '';
 
       let ariaLabel = items[index].name + countLabel;
       items[index].data = items[index].count;
@@ -140,7 +140,7 @@ export interface IResizeGroupOverflowSetExampleProps {
   checkedItem: string;
   WebpartHeight?:  number;    //Size courtesy of https://www.netwoven.com/2018/11/13/resizing-of-spfx-react-web-parts-in-different-scenarios/
   WebpartWidth?:   number;    //Size courtesy of https://www.netwoven.com/2018/11/13/resizing-of-spfx-react-web-parts-in-different-scenarios/
-  showCatCounts: boolean;
+  showRefinerCounts: boolean;
 }
 
 export interface IResizeGroupOverflowSetExampleState {
@@ -216,7 +216,7 @@ public componentDidUpdate(prevProps){
   public render(): JSX.Element {
     const { numberOfItems, cachingEnabled, buttonsChecked, short, onGrowDataEnabled } = this.state;
     //const dataToRender = generateData(numberOfItems, cachingEnabled, buttonsChecked);
-    const commandsToRender = generateData( this.props.items , this.props.checkedItem, this.props.cachingEnabled, this.props.showCatCounts, this.props.onClick );
+    const commandsToRender = generateData( this.props.items , this.props.checkedItem, this.props.cachingEnabled, this.props.showRefinerCounts, this.props.onClick );
 
     return (
       <div className={short ? styles.resizeIsShort : 'notResized'}>

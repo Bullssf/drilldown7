@@ -19,6 +19,8 @@ import {
 
 import { Placeholder, IPlaceholderProps } from "@pnp/spfx-controls-react/lib/Placeholder";
 
+import { JSON_Edit_Link } from '../../services/propPane/zReusablePropPane';
+
 /**
  * DD Subscriber: Step 0 - import from sp-dynamic-data
  */
@@ -108,11 +110,11 @@ export default class ThelistWebPart extends BaseClientSideWebPart<IThelistWebPar
       ReactDom.render(element, this.domElement);
     } else {
 
-      alert ( 'ThisList webpart is not being fed items from the Drilldown webpart... make sure the Toggle is set to show items here!')
+      console.log ( 'THELIST WARNING !!!!');
+      console.log ( 'TheList Webpart is NOT Recieving any Items');
+      console.log ( 'Make sure the Toggle is set to show items here!');
 
     }
-
-
 
   }
 

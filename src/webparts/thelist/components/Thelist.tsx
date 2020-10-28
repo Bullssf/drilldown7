@@ -164,7 +164,7 @@ public componentDidUpdate(prevProps){
         }
   
         breadCrumbElements = breadCrumb ? breadCrumb.map( bc => {
-          return <span style={{whiteSpace: 'nowrap'}}> { bc } &gt;</span>;
+          return <span style={{whiteSpace: 'nowrap', fontWeight: 600 }}> { bc } &gt;</span>;
         }) : [];
 
       }

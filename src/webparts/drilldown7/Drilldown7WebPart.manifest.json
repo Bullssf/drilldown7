@@ -17,11 +17,11 @@
   "preconfiguredEntries": [{
     "groupId": "5c03119e-3074-46fd-976b-c60198311f70", // Other
     "group": { "default": "Other" },
-    "title": { "default": "Drilldown7" },
-    "description": { "default": "Drilldown7 cascading filters" },
+    "title": { "default": "Drilldown Filters" },
+    "description": { "default": "Drilldown cascading filters" },
     "officeFabricIconFontName": "DrillExpand",
     "properties": {
-      "description": "Drilldown7",
+      "description": "Drilldown cascading filters",
       "parentListTitle": "TrackMyTime",
       "webPartScenario": "TEAM",
       "refiner0": "Story",
@@ -40,9 +40,10 @@
       "showSummary": false,
       
       "groupByFields": "",
-      "togCounts": false,
-      "togSummary": true,
+      "togRefinerCounts": false,
+      "togCountChart": true,
       "togStats": true,
+      "togOtherListview": false,
       "fetchCount": 200,
       "fetchCountMobile": 200,
       "restFilter": "",

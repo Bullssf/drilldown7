@@ -40,7 +40,7 @@ export async function getAllItems( configWebURL: string, propsListName: string, 
     let errMessage = '';
 
     let selectProps : string[] = ['Id','Title','Template'].concat(thisProps);
-    console.log('selecting these props: ' ,selectProps );
+    //console.log('selecting these props: ' ,selectProps );
 
     try {
         thisListObject = Web(configWebURL);
@@ -49,7 +49,7 @@ export async function getAllItems( configWebURL: string, propsListName: string, 
         } else {
             theseProps = await thisListObject.lists.getByTitle(propsListName).items.orderBy('Title',false).top(300).get();
         }
-        console.log('Found theseProps: ' ,theseProps );
+        //console.log('Found theseProps: ' ,theseProps );
 
         theseProps.map( i => {  //Loop through all items
             // i = preConfigProps list item.
@@ -58,7 +58,7 @@ export async function getAllItems( configWebURL: string, propsListName: string, 
 
             selectProps.map( p => { //Loop through all select props
                 if ( currentItemProps.indexOf(p) < 0 ) {
-                    console.log('Skipping this prop... not in the PreConfigProps list: ', p );
+                    //console.log('Skipping this prop... not in the PreConfigProps list: ', p );
                 } else { 
                     if ( i[p] ) { 
                         iProps[p] = i[p] ; 

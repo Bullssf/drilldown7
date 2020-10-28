@@ -17,11 +17,12 @@
   "preconfiguredEntries": [{
     "groupId": "5c03119e-3074-46fd-976b-c60198311f70", // Other
     "group": { "default": "Other" },
-    "title": { "default": "cssChart" },
-    "description": { "default": "cssChart consumer for Drilldown Webpart" },
-    "officeFabricIconFontName": "Page",
+    "title": { "default": "Drilldown Chart" },
+    "description": { "default": "Chart consumer for Drilldown Webpart.  This lets you arrange the info in different ways." },
+    "officeFabricIconFontName": "StackedBarChart",
     "properties": {
-      "description": "cssChart"
+      "description": "Chart consumer for Drilldown Webpart.  This lets you arrange the info in different ways.",
+      "stylesChartTitle": "{ \"backgroundColor\": \"lightgray\",   \"color\": \"blue\",   \"paddingLeft\": \"10px\" }"
     }
   }]
 }
