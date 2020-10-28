@@ -25,6 +25,7 @@ import { Fabric, Stack, IStackTokens, initializeIcons } from 'office-ui-fabric-r
 import { Panel, PanelType } from 'office-ui-fabric-react/lib/Panel';
 import { PrimaryButton, DefaultButton } from 'office-ui-fabric-react/lib/Button';
 
+import { updateReactListItem } from './listFunctions';
 
 import styles from '../Contents/listView.module.scss';
 import stylesInfo from '../HelpInfo/InfoPane.module.scss';
@@ -139,17 +140,20 @@ export default class ReactListItems extends React.Component<IReactListItemsProps
 
     }
 
-    private createPanelButtons ( quickCommands: IQuickCommands ) {
+    private delim = '|||';
+
+    private createPanelButtons ( quickCommands: IQuickCommands, item: IDrillItemInfo ) {
 
         let buttons : any[] = [];
         let result : any = null;
+
 
         if ( quickCommands && quickCommands.buttons.length > 0 ) {
 
             quickCommands.buttons.map( (b,i) => {
 
                 let icon = b.icon ? { iconName: b.icon } : null;
-                let buttonID = 'ButtonID' + i;
+                let buttonID = ['ButtonID', i , item.Id].join(this.delim);
                 let buttonTitle = b.label;
                 let thisButton = b.primary === true ?
                     <div id={ buttonID } title={ buttonTitle } ><PrimaryButton text={b.label} iconProps= { icon } onClick={this._panelButtonClicked.bind(this)} disabled={b.disabled} checked={b.checked} /></div>:
@@ -320,7 +324,7 @@ export default class ReactListItems extends React.Component<IReactListItemsProps
                     isFooterAtBottom={ true }
                 >
                     { attachments }
-                    { this.createPanelButtons( this.props.quickCommands ) }
+                    { this.createPanelButtons( this.props.quickCommands, this.state.panelItem ) }
                     { autoDetailsList(this.state.panelItem, ["Title","refiners"],["search","meta","searchString"],true) }
                 </Panel>;
 
@@ -445,7 +449,19 @@ export default class ReactListItems extends React.Component<IReactListItemsProps
 //        });
     }
 
+/***
+ *    d8888b. db    db d888888b d888888b  .d88b.  d8b   db       .o88b. db      d888888b  .o88b. db   dD 
+ *    88  `8D 88    88 `~~88~~' `~~88~~' .8P  Y8. 888o  88      d8P  Y8 88        `88'   d8P  Y8 88 ,8P' 
+ *    88oooY' 88    88    88       88    88    88 88V8o 88      8P      88         88    8P      88,8P   
+ *    88~~~b. 88    88    88       88    88    88 88 V8o88      8b      88         88    8b      88`8b   
+ *    88   8D 88b  d88    88       88    `8b  d8' 88  V888      Y8b  d8 88booo.   .88.   Y8b  d8 88 `88. 
+ *    Y8888P' ~Y8888P'    YP       YP     `Y88P'  VP   V8P       `Y88P' Y88888P Y888888P  `Y88P' YP   YD 
+ *                                                                                                       
+ *                                                                                                       
+ */
 
+ //private async ensureTrackTimeList(myListName: string, myListDesc: string, ProjectOrTime: string): Promise<boolean> {
+     
     private _panelButtonClicked = ( item ) : void => {
 
         let e: any = event;
@@ -453,14 +469,19 @@ export default class ReactListItems extends React.Component<IReactListItemsProps
 //        console.log( '_panelButtonClicked: item =', item );
 //        console.log( '_panelButtonClicked: e = ', e );
 //        console.log('Click on this button ID: ', thisID);
+
+        // buttonID = ['ButtonID', i , item.Id].join(delim);
+
         if ( !thisID ) { 
 
             alert('Whoops! Can not find ID of _panelButtonClicked!');
             return null;
 
         } else {
-
-            let thisButtonObject : IQuickButton = this.props.quickCommands.buttons[thisID.replace('ButtonID','')];
+            let buttonID = thisID.split(this.delim);
+            let buttonIndex = buttonID[1];
+            let itemId = buttonID[2];
+            let thisButtonObject : IQuickButton = this.props.quickCommands.buttons[ buttonIndex ];
 
             if ( !thisButtonObject ) {
                 alert('_panelButtonClicked - can not find thisButtonObject - ' + thisID );
@@ -471,11 +492,12 @@ export default class ReactListItems extends React.Component<IReactListItemsProps
 
                 if ( thisButtonObject.updateItem ) {
                     let readyToUpdate = true;
-                    if ( !this.props.quickCommands.listWebUrl ) { alert('Missing listWebUrl for quickCommands') ; readyToUpdate = false ; }
-                    if ( !this.props.quickCommands.listName ) { alert('Missing listName for quickCommands') ; readyToUpdate = false ; }
+                    if ( !this.props.webURL ) { alert('Missing listWebUrl for quickCommands') ; readyToUpdate = false ; }
+                    if ( !this.props.listName ) { alert('Missing listName for quickCommands') ; readyToUpdate = false ; }
 
                     if ( readyToUpdate === true ) {
                         //Attempt to update item:
+                        let result = updateReactListItem( this.props.webURL, this.props.listName, itemId, thisButtonObject.updateItem );
 
                     } else {
                         //Don't update item:
@@ -494,6 +516,17 @@ export default class ReactListItems extends React.Component<IReactListItemsProps
         }
 
     }
+
+/***
+ *    .d8888. db   db  .d88b.  db   d8b   db      d8888b.  .d8b.  d8b   db d88888b db      
+ *    88'  YP 88   88 .8P  Y8. 88   I8I   88      88  `8D d8' `8b 888o  88 88'     88      
+ *    `8bo.   88ooo88 88    88 88   I8I   88      88oodD' 88ooo88 88V8o 88 88ooooo 88      
+ *      `Y8b. 88~~~88 88    88 Y8   I8I   88      88~~~   88~~~88 88 V8o88 88~~~~~ 88      
+ *    db   8D 88   88 `8b  d8' `8b d8'8b d8'      88      88   88 88  V888 88.     88booo. 
+ *    `8888Y' YP   YP  `Y88P'   `8b8' `8d8'       88      YP   YP VP   V8P Y88888P Y88888P 
+ *                                                                                         
+ *                                                                                         
+ */
 
     private _onShowPanel = (item): void => {
   
@@ -554,6 +587,18 @@ export default class ReactListItems extends React.Component<IReactListItemsProps
             clickedAttach: false,
          });
       }
+
+
+/***
+ *    d8888b.  .d8b.  d8b   db d88888b db           d88888b  .d88b.   .d88b.  d888888b d88888b d8888b. 
+ *    88  `8D d8' `8b 888o  88 88'     88           88'     .8P  Y8. .8P  Y8. `~~88~~' 88'     88  `8D 
+ *    88oodD' 88ooo88 88V8o 88 88ooooo 88           88ooo   88    88 88    88    88    88ooooo 88oobY' 
+ *    88~~~   88~~~88 88 V8o88 88~~~~~ 88           88~~~   88    88 88    88    88    88~~~~~ 88`8b   
+ *    88      88   88 88  V888 88.     88booo.      88      `8b  d8' `8b  d8'    88    88.     88 `88. 
+ *    88      YP   YP VP   V8P Y88888P Y88888P      YP       `Y88P'   `Y88P'     YP    Y88888P 88   YD 
+ *                                                                                                     
+ *                                                                                                     
+ */
 
       /**
        * This was copied from codepen example code to render a footer with buttons:

@@ -1,7 +1,11 @@
 
 import { ListView, IViewField, SelectionMode, GroupOrder, IGrouping } from "@pnp/spfx-controls-react/lib/ListView";
 
+import { Web, IList, IItem } from "@pnp/sp/presets/all";
+
 import { ICustViewDef } from '../../components/IReUsableInterfaces';
+
+import { getHelpfullError } from '../../../../services/ErrorHandler';
 
  /***
  *     d888b  d88888b d888888b      db    db d888888b d88888b db   d8b   db      d88888b db    db d8b   db  .o88b. d888888b d888888b  .d88b.  d8b   db .d8888. 
@@ -94,4 +98,34 @@ export function getAppropriateViewProp ( viewDefs: ICustViewDef[], currentWidth:
         alert('View Def is not available... can not show any items! - see getAppropriateViewProp()');
         return null;
     }
+}
+
+export async function updateReactListItem( webUrl: string, listName: string, Id: string, updateMe: any ): Promise<void>{
+
+
+    //lists.getById(listGUID).webs.orderBy("Title", true).get().then(function(result) {
+    //let allItems : IDrillItemInfo[] = await sp.web.webs.get();
+
+    let results : any[] = [];
+
+    let IdNumber : number = parseInt(Id);
+
+    let thisListWeb = Web(webUrl);
+
+    let errMessage = null;
+
+    try {
+        let thisListObject = await thisListWeb.lists.getByTitle(listName);
+        await thisListObject.items.getById(IdNumber).update(updateMe).then((response) => {
+            alert("We updated your item!");
+            console.log('updated item:', response);
+        });
+
+    } catch (e) {
+        errMessage = getHelpfullError(e, true, true);
+        
+    }
+
+    return errMessage;
+
 }
