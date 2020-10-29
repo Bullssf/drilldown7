@@ -3,7 +3,7 @@ import { ListView, IViewField, SelectionMode, GroupOrder, IGrouping } from "@pnp
 
 import { Web, IList, IItem } from "@pnp/sp/presets/all";
 
-import { ICustViewDef } from '../../components/IReUsableInterfaces';
+import { ICustViewDef, IQuickButton } from '../../components/IReUsableInterfaces';
 
 import { getHelpfullError } from '../../../../services/ErrorHandler';
 
@@ -43,12 +43,12 @@ export function getAppropriateViewFields ( viewDefs: ICustViewDef[], currentWidt
             if ( thisField.sorting === undefined ) { thisField.sorting = true; }
             return thisField;
         });
-    /*
+    /*        */
         console.log('getAppropriateViewFields: currentWidth = ', currentWidth);
         console.log('getAppropriateViewFields: Width >= ', maxViewWidth);
         console.log('getAppropriateViewFields: result', result);
         console.log('getAppropriateViewFields: completeResult', completeResult);
-        */
+
         return completeResult;
 
     } else {
@@ -100,7 +100,7 @@ export function getAppropriateViewProp ( viewDefs: ICustViewDef[], currentWidth:
     }
 }
 
-export async function updateReactListItem( webUrl: string, listName: string, Id: string, updateMe: any ): Promise<void>{
+export async function updateReactListItem( webUrl: string, listName: string, Id: number, thisButtonObject : IQuickButton ): Promise<void>{
 
 
     //lists.getById(listGUID).webs.orderBy("Title", true).get().then(function(result) {
@@ -108,22 +108,24 @@ export async function updateReactListItem( webUrl: string, listName: string, Id:
 
     let results : any[] = [];
 
-    let IdNumber : number = parseInt(Id);
-
     let thisListWeb = Web(webUrl);
 
     let errMessage = null;
 
     try {
         let thisListObject = await thisListWeb.lists.getByTitle(listName);
-        await thisListObject.items.getById(IdNumber).update(updateMe).then((response) => {
-            alert("We updated your item!");
-            console.log('updated item:', response);
+        await thisListObject.items.getById(Id).update( thisButtonObject.updateItem ).then((response) => {
+            if ( thisButtonObject.alert )  { alert( 'Success!\n' + thisButtonObject.alert ); }
+            if ( thisButtonObject.console )  { console.log(thisButtonObject.console, response ); }
+            
         });
 
     } catch (e) {
         errMessage = getHelpfullError(e, true, true);
-        
+        if ( thisButtonObject.alert )  { 
+            alert( 'Update Failed!\n' + thisButtonObject.alert + "\n" + errMessage );
+         }
+         console.log('Update Failed!\n' + thisButtonObject.alert + "\n" + errMessage );
     }
 
     return errMessage;
