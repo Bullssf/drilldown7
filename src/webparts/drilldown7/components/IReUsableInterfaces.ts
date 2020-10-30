@@ -143,7 +143,7 @@ export interface IItemRefiners {
         }
       }
     ],
-    "onUpdateAlsoCallback": false,
+    "onUpdateCallback": false,
     "callBack": null
   }
  */
@@ -178,15 +178,15 @@ export const QuickCommandsTMT = {
       }
     },
   ],
-  onUpdateAlsoCallback: false,
+  onUpdateCallback: false,
   callBack: null,
 
 };
 
 export interface IQuickCommands {
 
-    buttons: IQuickButton[];
-    onUpdateAlsoCallback?: boolean; // If there is an update on button, then do callback
+    buttons: IQuickButton[][];
+    onUpdateCallback?: boolean; // If there is an update on button, then do callback
     callBack?: any;
     listWebUrl?: string;
     listName?: string;

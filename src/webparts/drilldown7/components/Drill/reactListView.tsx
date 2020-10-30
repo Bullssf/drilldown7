@@ -157,30 +157,42 @@ export default class ReactListItems extends React.Component<IReactListItemsProps
 
     private createPanelButtons ( quickCommands: IQuickCommands, item: IDrillItemInfo ) {
 
-        let buttons : any[] = [];
-        let result : any = null;
+
+        let allButtonRows : any[] = [];
 
         if ( quickCommands && quickCommands.buttons.length > 0 ) {
 
-            quickCommands.buttons.map( (b,i) => {
+            quickCommands.buttons.map( (buttonRow, r) => {
 
-                let icon = b.icon ? { iconName: b.icon } : null;
-                let buttonID = ['ButtonID', i , item.Id].join(this.delim);
-                let buttonTitle = b.label;
-                let thisButton = b.primary === true ?
-                    <div id={ buttonID } title={ buttonTitle } ><PrimaryButton text={b.label} iconProps= { icon } onClick={this._panelButtonClicked.bind(this)} disabled={b.disabled} checked={b.checked} /></div>:
-                    <div id={ buttonID } title={ buttonTitle } ><DefaultButton text={b.label} iconProps= { icon } onClick={this._panelButtonClicked.bind(this)} disabled={b.disabled} checked={b.checked} /></div>;
-                buttons.push( thisButton );
+                if ( buttonRow && buttonRow.length > 0 ) {
+                    let rowResult : any = null;
+                    let buttons : any[] = [];
+
+                    buttonRow.map( (b,i) => {
+
+                        let icon = b.icon ? { iconName: b.icon } : null;
+                        let buttonID = ['ButtonID', r, i , item.Id].join(this.delim);
+                        let buttonTitle = b.label;
+                        let thisButton = b.primary === true ?
+                            <div id={ buttonID } title={ buttonTitle } ><PrimaryButton text={b.label} iconProps= { icon } onClick={this._panelButtonClicked.bind(this)} disabled={b.disabled} checked={b.checked} /></div>:
+                            <div id={ buttonID } title={ buttonTitle } ><DefaultButton text={b.label} iconProps= { icon } onClick={this._panelButtonClicked.bind(this)} disabled={b.disabled} checked={b.checked} /></div>;
+                        buttons.push( thisButton );
+                    });
+
+                    const stackQuickCommands: IStackTokens = { childrenGap: 10 };
+                    rowResult = <Stack horizontal={ true } tokens={stackQuickCommands}>
+                        {buttons}
+                    </Stack>;
+
+                    allButtonRows.push(rowResult);
+
+                } //END   if ( buttonRow && buttonRow.length > 0 ) {
+
             });
-
-            const stackQuickCommands: IStackTokens = { childrenGap: 10 };
-            result = <Stack horizontal={ true } tokens={stackQuickCommands}>
-                {buttons}
-            </Stack>;
 
         }
 
-        return result;
+        return allButtonRows;
 
     }
 
@@ -550,9 +562,11 @@ export default class ReactListItems extends React.Component<IReactListItemsProps
     private async startThisQuickUpdate ( thisID: string ) {
 
         let buttonID = thisID.split(this.delim);
-        let buttonIndex = buttonID[1];
-        let itemId = buttonID[2];
-        let thisButtonObject : IQuickButton = this.props.quickCommands.buttons[ buttonIndex ];
+        //let buttonID = ['ButtonID', r, i , item.Id].join(this.delim);
+        let buttonRow = buttonID[1];
+        let buttonIndex = buttonID[2];
+        let itemId = buttonID[3];
+        let thisButtonObject : IQuickButton = this.props.quickCommands.buttons[ buttonRow ][ buttonIndex ];
 
         if ( !thisButtonObject ) {
             alert('_panelButtonClicked - can not find thisButtonObject - ' + thisID );
