@@ -107,11 +107,17 @@ export async function updateReactListItem( webUrl: string, listName: string, Id:
     //lists.getById(listGUID).webs.orderBy("Title", true).get().then(function(result) {
     //let allItems : IDrillItemInfo[] = await sp.web.webs.get();
 
+    let currentTime = new Date().toLocaleString();
+
     let results : any[] = [];
 
     let thisListWeb = Web(webUrl);
 
     let errMessage = null;
+
+    let newUpdateItem = JSON.stringify(thisButtonObject.updateItem);
+
+    newUpdateItem = newUpdateItem.replace(/[Today]/g, currentTime);
 
     try {
         let thisListObject = await thisListWeb.lists.getByTitle(listName);
