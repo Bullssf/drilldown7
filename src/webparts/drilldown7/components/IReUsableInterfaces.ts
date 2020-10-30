@@ -213,6 +213,7 @@ export interface IQuickButton {
   styleButton?: string;
   styleIcon?: string;
   successReload?: boolean; //Setting to true will automatically reload the data from the list to show all updated data.
+  theseRefiners?: string[]; //Only show button on specific refiners... like "Status"... if you don't have Status on the view it may lead to errors if you can "Park" a project that may already be "Parked"
 
 }
 

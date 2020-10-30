@@ -18,18 +18,34 @@ import { getHelpfullError } from '../../../../services/ErrorHandler';
  *                                                                                                                                                             
  */
 
+function getBestFitView (  viewDefs: ICustViewDef[], currentWidth: number ) {
+    let result : ICustViewDef = null;
+
+    let maxViewWidth: number = 0 ;
+
+    viewDefs.map( vd => {
+        let thisWidth: number = typeof vd.minWidth === 'string' ? parseInt(vd.minWidth,10) : vd.minWidth;
+        if ( currentWidth >= thisWidth && thisWidth >= maxViewWidth ) {
+            result = vd;
+            maxViewWidth = thisWidth;
+        }
+    });
+
+    console.log('getAppropriateViewFields: currentWidth = ', currentWidth);
+    console.log('getAppropriateViewFields: Width >= ', maxViewWidth);
+    console.log('getAppropriateViewFields: vd result', result);
+
+    return result;
+    
+}
+
+
 export function getAppropriateViewFields ( viewDefs: ICustViewDef[], currentWidth: number ) {
     let result : IViewField[] = [];
 
-    let maxViewWidth = 0 ;
-
     if ( viewDefs ) {
-        viewDefs.map( vd => {
-            if ( currentWidth >= vd.minWidth && vd.minWidth >= maxViewWidth ) {
-                result = vd.viewFields;
-                maxViewWidth = vd.minWidth;
-            }
-        });
+
+        result = getBestFitView( viewDefs, currentWidth ).viewFields;
     
         let avgWidth = result.length > 0 ? currentWidth/result.length : 100;
         let completeResult = result.map( f => {
@@ -43,10 +59,8 @@ export function getAppropriateViewFields ( viewDefs: ICustViewDef[], currentWidt
             if ( thisField.sorting === undefined ) { thisField.sorting = true; }
             return thisField;
         });
-    /*        */
-        console.log('getAppropriateViewFields: currentWidth = ', currentWidth);
-        console.log('getAppropriateViewFields: Width >= ', maxViewWidth);
-        console.log('getAppropriateViewFields: result', result);
+        /*        */
+
         console.log('getAppropriateViewFields: completeResult', completeResult);
 
         return completeResult;
@@ -61,17 +75,12 @@ export function getAppropriateViewFields ( viewDefs: ICustViewDef[], currentWidt
 export function getAppropriateViewGroups ( viewDefs: ICustViewDef[], currentWidth: number ) {
     let result : IGrouping[] = [];
 
-    let maxViewWidth = 0 ;
-
     if ( viewDefs ) {
-        viewDefs.map( vd => {
-            if ( currentWidth >= vd.minWidth && vd.minWidth >= maxViewWidth ) {
-                result = vd.groupByFields;
-                maxViewWidth = vd.minWidth;
-            }
-        });
+
+        result = getBestFitView( viewDefs, currentWidth ).groupByFields;
         //console.log('getAppropriateViewGroups: ', result);
         return result;
+
     } else {
         alert('View Def is not available... can not show any items! - see getAppropriateViewGroups()');
         return null;
@@ -83,15 +92,7 @@ export function getAppropriateViewProp ( viewDefs: ICustViewDef[], currentWidth:
     let result : boolean = false;
 
     if ( viewDefs ) {
-        let maxViewWidth = 0 ;
-        viewDefs.map( vd => {
-            if ( currentWidth >= vd.minWidth && vd.minWidth >= maxViewWidth ) {
-                result = vd[prop];
-                maxViewWidth = vd.minWidth;
-            } else {
-
-            }
-        });
+        result = getBestFitView( viewDefs, currentWidth )[prop];
         //console.log('getAppropriateDetailMode: ', result);
         return result;
     } else {
