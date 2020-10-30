@@ -16,6 +16,8 @@ import { findParentElementPropLikeThis } from '../../../../services/basicElement
 
 import { getHelpfullError } from '../../../../services/ErrorHandler';
 
+import { buildConfirmDialog, IMyDialogProps } from '../../../../services/dialogBoxService'; 
+
 import stylesL from '../ListView/listView.module.scss';
 import { ListView, IViewField, SelectionMode, GroupOrder, IGrouping, } from "@pnp/spfx-controls-react/lib/ListView";
 import { IGroup } from 'office-ui-fabric-react/lib/components/DetailsList';
@@ -25,6 +27,14 @@ import { Fabric, Stack, IStackTokens, initializeIcons } from 'office-ui-fabric-r
 import { Panel, PanelType } from 'office-ui-fabric-react/lib/Panel';
 import { PrimaryButton, DefaultButton } from 'office-ui-fabric-react/lib/Button';
 
+
+import { Dialog, DialogType, DialogFooter, IDialogProps } 	from 'office-ui-fabric-react/lib/Dialog';
+import { Button, ButtonType, } 			from 'office-ui-fabric-react/lib/Button';
+import { Label } 			from 'office-ui-fabric-react/lib/Label';
+
+import { updateReactListItem } from './listFunctions';
+
+import { IContentsToggles, makeToggles } from '../fields/toggleFieldBuilder';
 
 import styles from '../Contents/listView.module.scss';
 import stylesInfo from '../HelpInfo/InfoPane.module.scss';
@@ -67,6 +77,7 @@ export interface IReactListItemsState {
   groupByFields?:  IGrouping[];
   
   showPanel: boolean;
+  panelWidth: PanelType;
   showAttach: boolean;
   clickedAttach: boolean;  //if you clicked the attached icon (vs selected row), it only will show the attachments in the panel for cleaner implimentation
 
@@ -76,6 +87,9 @@ export interface IReactListItemsState {
   panelAttachments: any[];
   lastAttachId: number;
   panelMessage?: any;
+
+  myDialog? : IMyDialogProps;
+  pickedCommand?: string; //Index of command and ID of panel item
 
 }
 
@@ -139,7 +153,9 @@ export default class ReactListItems extends React.Component<IReactListItemsProps
 
     }
 
-    private createPanelButtons ( quickCommands: IQuickCommands ) {
+    private delim = '|||';
+
+    private createPanelButtons ( quickCommands: IQuickCommands, item: IDrillItemInfo ) {
 
         let buttons : any[] = [];
         let result : any = null;
@@ -149,7 +165,7 @@ export default class ReactListItems extends React.Component<IReactListItemsProps
             quickCommands.buttons.map( (b,i) => {
 
                 let icon = b.icon ? { iconName: b.icon } : null;
-                let buttonID = 'ButtonID' + i;
+                let buttonID = ['ButtonID', i , item.Id].join(this.delim);
                 let buttonTitle = b.label;
                 let thisButton = b.primary === true ?
                     <div id={ buttonID } title={ buttonTitle } ><PrimaryButton text={b.label} iconProps= { icon } onClick={this._panelButtonClicked.bind(this)} disabled={b.disabled} checked={b.checked} /></div>:
@@ -163,7 +179,6 @@ export default class ReactListItems extends React.Component<IReactListItemsProps
             </Stack>;
 
         }
-
 
         return result;
 
@@ -213,6 +228,23 @@ export default class ReactListItems extends React.Component<IReactListItemsProps
         return viewFields;
 
     }  
+
+    private createBlankDialog() {
+
+        let myDialog: IMyDialogProps = {
+            title: '',
+            dialogMessage: '',
+            showDialog: false,
+            confirmButton: '',
+            _confirmDialog: this._confirmUpdateDialog.bind(this),
+            _closeDialog: this._closeDialog.bind(this),
+        };
+
+        return myDialog;
+
+    }
+
+
     /***
  *          .o88b.  .d88b.  d8b   db .d8888. d888888b d8888b. db    db  .o88b. d888888b  .d88b.  d8888b. 
  *         d8P  Y8 .8P  Y8. 888o  88 88'  YP `~~88~~' 88  `8D 88    88 d8P  Y8 `~~88~~' .8P  Y8. 88  `8D 
@@ -243,7 +275,6 @@ export default class ReactListItems extends React.Component<IReactListItemsProps
             groupByFields.map( gF => {  gF.name = gF.name.replace('/','') ;  });
         }
 
-
         this.state = {
           maxChars: this.props.maxChars ? this.props.maxChars : 50,
           parentListFieldTitles:parentListFieldTitles,
@@ -257,6 +288,9 @@ export default class ReactListItems extends React.Component<IReactListItemsProps
           panelAttachments: [],
           lastAttachId: null,
           clickedAttach: false,
+          myDialog: this.createBlankDialog(),
+          pickedCommand: '',
+          panelWidth: PanelType.medium,
         };
     }
         
@@ -308,10 +342,26 @@ export default class ReactListItems extends React.Component<IReactListItemsProps
 
             let attachments = this.state.panelAttachments.length > 0 ? this.state.panelAttachments : null ;
 
+            let dialog = !this.state.myDialog.showDialog ? null : buildConfirmDialog( this.state.myDialog );
+
+
+            /***
+             *    d888888b  .d88b.   d888b   d888b  db      d88888b .d8888. 
+             *    `~~88~~' .8P  Y8. 88' Y8b 88' Y8b 88      88'     88'  YP 
+             *       88    88    88 88      88      88      88ooooo `8bo.   
+             *       88    88    88 88  ooo 88  ooo 88      88~~~~~   `Y8b. 
+             *       88    `8b  d8' 88. ~8~ 88. ~8~ 88booo. 88.     db   8D 
+             *       YP     `Y88P'   Y888P   Y888P  Y88888P Y88888P `8888Y' 
+             *                                                              
+             *                                                              
+             */
+
+            let toggles = !this.state.showPanel ? null : <div style={{ float: 'right' }}> { makeToggles(this.getPageToggles( this.state.panelWidth )) } </div>;
+
             let fullPanel = !this.state.showPanel ? null : 
                 <Panel
                     isOpen={this.state.showPanel}
-                    type={ PanelType.medium }
+                    type={ this.state.panelWidth }
                     onDismiss={this._onClosePanel}
                     headerText={ this.state.panelId.toString() }
                     closeButtonAriaLabel="Close"
@@ -319,15 +369,16 @@ export default class ReactListItems extends React.Component<IReactListItemsProps
                     isLightDismiss={ true }
                     isFooterAtBottom={ true }
                 >
+                    { toggles }
                     { attachments }
-                    { this.createPanelButtons( this.props.quickCommands ) }
+                    { this.createPanelButtons( this.props.quickCommands, this.state.panelItem ) }
                     { autoDetailsList(this.state.panelItem, ["Title","refiners"],["search","meta","searchString"],true) }
                 </Panel>;
 
             let attachPanel = !this.state.showAttach ? null : 
             <Panel
                 isOpen={this.state.showAttach}
-                type={ PanelType.medium }
+                type={ this.state.panelWidth }
                 onDismiss={this._onClosePanel}
                 headerText={ this.state.panelId.toString() }
                 closeButtonAriaLabel="Close"
@@ -392,6 +443,7 @@ export default class ReactListItems extends React.Component<IReactListItemsProps
                     { webTitle }
                     { fullPanel }
                     { attachPanel }
+                    { dialog }
                     { listView }
                 </div>
                 </div>
@@ -445,14 +497,24 @@ export default class ReactListItems extends React.Component<IReactListItemsProps
 //        });
     }
 
+/***
+ *    d8888b. db    db d888888b d888888b  .d88b.  d8b   db       .o88b. db      d888888b  .o88b. db   dD 
+ *    88  `8D 88    88 `~~88~~' `~~88~~' .8P  Y8. 888o  88      d8P  Y8 88        `88'   d8P  Y8 88 ,8P' 
+ *    88oooY' 88    88    88       88    88    88 88V8o 88      8P      88         88    8P      88,8P   
+ *    88~~~b. 88    88    88       88    88    88 88 V8o88      8b      88         88    8b      88`8b   
+ *    88   8D 88b  d88    88       88    `8b  d8' 88  V888      Y8b  d8 88booo.   .88.   Y8b  d8 88 `88. 
+ *    Y8888P' ~Y8888P'    YP       YP     `Y88P'  VP   V8P       `Y88P' Y88888P Y888888P  `Y88P' YP   YD 
+ *                                                                                                       
+ *                                                                                                       
+ */
 
+ //private async ensureTrackTimeList(myListName: string, myListDesc: string, ProjectOrTime: string): Promise<boolean> {
+     
     private _panelButtonClicked = ( item ) : void => {
 
         let e: any = event;
         let thisID = findParentElementPropLikeThis(e.target, 'id', 'ButtonID', 5, 'begins');
-//        console.log( '_panelButtonClicked: item =', item );
-//        console.log( '_panelButtonClicked: e = ', e );
-//        console.log('Click on this button ID: ', thisID);
+
         if ( !thisID ) { 
 
             alert('Whoops! Can not find ID of _panelButtonClicked!');
@@ -460,46 +522,114 @@ export default class ReactListItems extends React.Component<IReactListItemsProps
 
         } else {
 
-            let thisButtonObject : IQuickButton = this.props.quickCommands.buttons[thisID.replace('ButtonID','')];
-
-            if ( !thisButtonObject ) {
-                alert('_panelButtonClicked - can not find thisButtonObject - ' + thisID );
-            } else {
-                if ( thisButtonObject.alert ) { alert( thisButtonObject.alert ); }
-                if ( thisButtonObject.console ) { console.log( thisButtonObject.alert ); }
-                if ( thisButtonObject.confirm ) {  }
-
-                if ( thisButtonObject.updateItem ) {
-                    let readyToUpdate = true;
-                    if ( !this.props.quickCommands.listWebUrl ) { alert('Missing listWebUrl for quickCommands') ; readyToUpdate = false ; }
-                    if ( !this.props.quickCommands.listName ) { alert('Missing listName for quickCommands') ; readyToUpdate = false ; }
-
-                    if ( readyToUpdate === true ) {
-                        //Attempt to update item:
-
-                    } else {
-                        //Don't update item:
-                    }
-
-                }
-
-                if ( thisButtonObject.panelMessage ) {
-                    this.setState({
-                        panelMessage: thisButtonObject.panelMessage,
-                    });
-                 }
-            }
-
+            this.startThisQuickUpdate( thisID );
 
         }
 
     }
 
+
+    
+    /**
+     * Open the dialog
+     */
+    //private _confirmUpdateDialog = () => {
+    private _confirmUpdateDialog = (item): void => {
+
+        let e: any = event;
+        
+        let thisButtonObject : IQuickButton = this.props.quickCommands.buttons[ this.state.pickedCommand ];
+        this.completeThisQuickUpdate( this.state.panelId.toString(), thisButtonObject );
+
+        this.setState({
+            myDialog: this.createBlankDialog(),
+        });
+
+    }
+
+    private async startThisQuickUpdate ( thisID: string ) {
+
+        let buttonID = thisID.split(this.delim);
+        let buttonIndex = buttonID[1];
+        let itemId = buttonID[2];
+        let thisButtonObject : IQuickButton = this.props.quickCommands.buttons[ buttonIndex ];
+
+        if ( !thisButtonObject ) {
+            alert('_panelButtonClicked - can not find thisButtonObject - ' + thisID );
+        } else {
+
+            if ( thisButtonObject.updateItem ) {
+                let readyToUpdate = true;
+                if ( !this.props.webURL ) { alert('Missing listWebUrl for quickCommands') ; readyToUpdate = false ; }
+                if ( !this.props.listName ) { alert('Missing listName for quickCommands') ; readyToUpdate = false ; }
+
+                if ( readyToUpdate === true ) {
+                    //Attempt to update item:
+                    if ( thisButtonObject.confirm && thisButtonObject.confirm.length > 0 ) { 
+
+                        let myDialog = this.createBlankDialog();
+                        myDialog.title = "Are you sure you want to make this update?";
+                        myDialog.dialogMessage = thisButtonObject.confirm + '';
+                        myDialog.confirmButton = thisButtonObject.label + '';
+                        myDialog.showDialog = true;
+    
+                        this.setState({
+                            pickedCommand: buttonIndex,
+                            myDialog: myDialog,
+                        });
+
+                    } else {
+                        this.completeThisQuickUpdate ( itemId, thisButtonObject );
+
+                    }
+
+
+
+                } else {
+                    //Don't update item:
+                }
+            }
+
+            if ( thisButtonObject.panelMessage ) {
+                this.setState({
+                    panelMessage: thisButtonObject.panelMessage,
+                });
+            }
+        }
+
+    }
+
+    private completeThisQuickUpdate( itemId: string, thisButtonObject : IQuickButton ) {
+
+        let result = updateReactListItem( this.props.webURL, this.props.listName, parseInt(itemId), thisButtonObject, );
+
+    }
+    /**
+     * Close the dialog
+     */
+    private _closeDialog = () => {
+        this.setState({
+            myDialog: this.createBlankDialog(),
+        });
+    }
+
+
+/***
+ *    .d8888. db   db  .d88b.  db   d8b   db      d8888b.  .d8b.  d8b   db d88888b db      
+ *    88'  YP 88   88 .8P  Y8. 88   I8I   88      88  `8D d8' `8b 888o  88 88'     88      
+ *    `8bo.   88ooo88 88    88 88   I8I   88      88oodD' 88ooo88 88V8o 88 88ooooo 88      
+ *      `Y8b. 88~~~88 88    88 Y8   I8I   88      88~~~   88~~~88 88 V8o88 88~~~~~ 88      
+ *    db   8D 88   88 `8b  d8' `8b d8'8b d8'      88      88   88 88  V888 88.     88booo. 
+ *    `8888Y' YP   YP  `Y88P'   `8b8' `8d8'       88      YP   YP VP   V8P Y88888P Y88888P 
+ *                                                                                         
+ *                                                                                         
+ */
+
     private _onShowPanel = (item): void => {
   
         let e: any = event;
-        console.log('_onShowPanel: e',e);
-        console.log('_onShowPanel item clicked:',item);
+//        console.log('_onShowPanel: e',e);
+//        console.log('_onShowPanel item clicked:',item);
 
         let clickedAttachIcon = e !== undefined && e != null && e.target.dataset && e.target.dataset.iconName === 'Attach' ? true : false;
 
@@ -555,6 +685,18 @@ export default class ReactListItems extends React.Component<IReactListItemsProps
          });
       }
 
+
+/***
+ *    d8888b.  .d8b.  d8b   db d88888b db           d88888b  .d88b.   .d88b.  d888888b d88888b d8888b. 
+ *    88  `8D d8' `8b 888o  88 88'     88           88'     .8P  Y8. .8P  Y8. `~~88~~' 88'     88  `8D 
+ *    88oodD' 88ooo88 88V8o 88 88ooooo 88           88ooo   88    88 88    88    88    88ooooo 88oobY' 
+ *    88~~~   88~~~88 88 V8o88 88~~~~~ 88           88~~~   88    88 88    88    88    88~~~~~ 88`8b   
+ *    88      88   88 88  V888 88.     88booo.      88      `8b  d8' `8b  d8'    88    88.     88 `88. 
+ *    88      YP   YP VP   V8P Y88888P Y88888P      YP       `Y88P'   `Y88P'     YP    Y88888P 88   YD 
+ *                                                                                                     
+ *                                                                                                     
+ */
+
       /**
        * This was copied from codepen example code to render a footer with buttons:
        * https://fabricweb.z5.web.core.windows.net/oufr/6.50.2/#/examples/panel
@@ -572,5 +714,55 @@ export default class ReactListItems extends React.Component<IReactListItemsProps
         </div>
         );
     }
+
+        
+    /***
+     *         d888888b  .d88b.   d888b   d888b  db      d88888b .d8888. 
+     *         `~~88~~' .8P  Y8. 88' Y8b 88' Y8b 88      88'     88'  YP 
+     *            88    88    88 88      88      88      88ooooo `8bo.   
+     *            88    88    88 88  ooo 88  ooo 88      88~~~~~   `Y8b. 
+     *            88    `8b  d8' 88. ~8~ 88. ~8~ 88booo. 88.     db   8D 
+     *            YP     `Y88P'   Y888P   Y888P  Y88888P Y88888P `8888Y' 
+     *                                                                   
+     *                                                                   
+     */
+
+    private getPageToggles( showStats ) {
+
+        let togRefinerCounts = {
+            //label: <span style={{ color: 'red', fontWeight: 900}}>Rails Off!</span>,
+            label: <span>Panel width</span>,
+            key: 'togggleWidth',
+            _onChange: this.updatePanelWidth.bind(this),
+            checked: this.state.panelWidth === PanelType.medium ? false : true,
+            onText: 'Wide',
+            offText: 'Medium',
+            className: '',
+            styles: '',
+        };
+
+        let theseToggles = [];
+
+        theseToggles.push( togRefinerCounts ) ;
+        
+        let pageToggles : IContentsToggles = {
+            toggles: theseToggles,
+            childGap: 10,
+            vertical: false,
+            hAlign: 'end',
+            vAlign: 'start',
+            rootStyle: { width: 100 , paddingTop: 0, paddingRight: 0, }, //This defines the styles on each toggle
+        };
+
+        return pageToggles;
+
+    }
+
+    private updatePanelWidth() {
+        this.setState({
+            panelWidth: this.state.panelWidth === PanelType.medium ? PanelType.large : PanelType.medium,
+        });
+    }
+
 
 }

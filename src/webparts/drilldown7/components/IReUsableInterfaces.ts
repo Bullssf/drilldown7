@@ -198,10 +198,10 @@ export interface IQuickButton {
   label: string;
   primary: boolean; //  Primary, Default
   secondary?: string;
-  alert?: string;  //  Popup Alert
+  alert?: string;  //  Popup Alert after save.
   confirm?: string; //  Message to ask confirmation
   disabled?: boolean;
-  console?: string; //  Command Message
+  console?: string; //  Command Message on save or error
   icon?: string;
   checked?: boolean;
   panelMessage?: string; //Message to put below buttons in panel
@@ -212,6 +212,8 @@ export interface IQuickButton {
   groupID?: string; //Restrict button to this group of users (ID Number of Group)
   styleButton?: string;
   styleIcon?: string;
+  successReload?: boolean; //Setting to true will automatically reload the data from the list to show all updated data.
+  theseRefiners?: string[]; //Only show button on specific refiners... like "Status"... if you don't have Status on the view it may lead to errors if you can "Park" a project that may already be "Parked"
 
 }
 

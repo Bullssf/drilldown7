@@ -1,7 +1,11 @@
 
 import { ListView, IViewField, SelectionMode, GroupOrder, IGrouping } from "@pnp/spfx-controls-react/lib/ListView";
 
-import { ICustViewDef } from '../../components/IReUsableInterfaces';
+import { Web, IList, IItem } from "@pnp/sp/presets/all";
+
+import { ICustViewDef, IQuickButton } from '../../components/IReUsableInterfaces';
+
+import { getHelpfullError } from '../../../../services/ErrorHandler';
 
  /***
  *     d888b  d88888b d888888b      db    db d888888b d88888b db   d8b   db      d88888b db    db d8b   db  .o88b. d888888b d888888b  .d88b.  d8b   db .d8888. 
@@ -14,18 +18,34 @@ import { ICustViewDef } from '../../components/IReUsableInterfaces';
  *                                                                                                                                                             
  */
 
+function getBestFitView (  viewDefs: ICustViewDef[], currentWidth: number ) {
+    let result : ICustViewDef = null;
+
+    let maxViewWidth: number = 0 ;
+
+    viewDefs.map( vd => {
+        let thisWidth: number = typeof vd.minWidth === 'string' ? parseInt(vd.minWidth,10) : vd.minWidth;
+        if ( currentWidth >= thisWidth && thisWidth >= maxViewWidth ) {
+            result = vd;
+            maxViewWidth = thisWidth;
+        }
+    });
+
+    console.log('getAppropriateViewFields: currentWidth = ', currentWidth);
+    console.log('getAppropriateViewFields: Width >= ', maxViewWidth);
+    console.log('getAppropriateViewFields: vd result', result);
+
+    return result;
+    
+}
+
+
 export function getAppropriateViewFields ( viewDefs: ICustViewDef[], currentWidth: number ) {
     let result : IViewField[] = [];
 
-    let maxViewWidth = 0 ;
-
     if ( viewDefs ) {
-        viewDefs.map( vd => {
-            if ( currentWidth >= vd.minWidth && vd.minWidth >= maxViewWidth ) {
-                result = vd.viewFields;
-                maxViewWidth = vd.minWidth;
-            }
-        });
+
+        result = getBestFitView( viewDefs, currentWidth ).viewFields;
     
         let avgWidth = result.length > 0 ? currentWidth/result.length : 100;
         let completeResult = result.map( f => {
@@ -39,12 +59,10 @@ export function getAppropriateViewFields ( viewDefs: ICustViewDef[], currentWidt
             if ( thisField.sorting === undefined ) { thisField.sorting = true; }
             return thisField;
         });
-    /*
-        console.log('getAppropriateViewFields: currentWidth = ', currentWidth);
-        console.log('getAppropriateViewFields: Width >= ', maxViewWidth);
-        console.log('getAppropriateViewFields: result', result);
+        /*        */
+
         console.log('getAppropriateViewFields: completeResult', completeResult);
-        */
+
         return completeResult;
 
     } else {
@@ -57,17 +75,12 @@ export function getAppropriateViewFields ( viewDefs: ICustViewDef[], currentWidt
 export function getAppropriateViewGroups ( viewDefs: ICustViewDef[], currentWidth: number ) {
     let result : IGrouping[] = [];
 
-    let maxViewWidth = 0 ;
-
     if ( viewDefs ) {
-        viewDefs.map( vd => {
-            if ( currentWidth >= vd.minWidth && vd.minWidth >= maxViewWidth ) {
-                result = vd.groupByFields;
-                maxViewWidth = vd.minWidth;
-            }
-        });
+
+        result = getBestFitView( viewDefs, currentWidth ).groupByFields;
         //console.log('getAppropriateViewGroups: ', result);
         return result;
+
     } else {
         alert('View Def is not available... can not show any items! - see getAppropriateViewGroups()');
         return null;
@@ -79,19 +92,43 @@ export function getAppropriateViewProp ( viewDefs: ICustViewDef[], currentWidth:
     let result : boolean = false;
 
     if ( viewDefs ) {
-        let maxViewWidth = 0 ;
-        viewDefs.map( vd => {
-            if ( currentWidth >= vd.minWidth && vd.minWidth >= maxViewWidth ) {
-                result = vd[prop];
-                maxViewWidth = vd.minWidth;
-            } else {
-
-            }
-        });
+        result = getBestFitView( viewDefs, currentWidth )[prop];
         //console.log('getAppropriateDetailMode: ', result);
         return result;
     } else {
         alert('View Def is not available... can not show any items! - see getAppropriateViewProp()');
         return null;
     }
+}
+
+export async function updateReactListItem( webUrl: string, listName: string, Id: number, thisButtonObject : IQuickButton ): Promise<void>{
+
+
+    //lists.getById(listGUID).webs.orderBy("Title", true).get().then(function(result) {
+    //let allItems : IDrillItemInfo[] = await sp.web.webs.get();
+
+    let results : any[] = [];
+
+    let thisListWeb = Web(webUrl);
+
+    let errMessage = null;
+
+    try {
+        let thisListObject = await thisListWeb.lists.getByTitle(listName);
+        await thisListObject.items.getById(Id).update( thisButtonObject.updateItem ).then((response) => {
+            if ( thisButtonObject.alert )  { alert( 'Success!\n' + thisButtonObject.alert ); }
+            if ( thisButtonObject.console )  { console.log(thisButtonObject.console, response ); }
+            
+        });
+
+    } catch (e) {
+        errMessage = getHelpfullError(e, true, true);
+        if ( thisButtonObject.alert )  { 
+            alert( 'Update Failed!\n' + thisButtonObject.alert + "\n" + errMessage );
+         }
+         console.log('Update Failed!\n' + thisButtonObject.alert + "\n" + errMessage );
+    }
+
+    return errMessage;
+
 }

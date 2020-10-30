@@ -812,7 +812,7 @@ export default class Drilldown7WebPart extends BaseClientSideWebPart<IDrilldown7
           this.context.propertyPane.refresh();
       }).catch((e) => {
         let errMessage = getHelpfullError(e, false, true);
-        alert(errMessage);
+        console.log(errMessage);
         if (errMessage.indexOf('missing a column') > -1) {
           
         } else {
