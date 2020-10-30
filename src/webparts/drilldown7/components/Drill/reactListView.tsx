@@ -34,6 +34,8 @@ import { Label } 			from 'office-ui-fabric-react/lib/Label';
 
 import { updateReactListItem } from './listFunctions';
 
+import { IContentsToggles, makeToggles } from '../fields/toggleFieldBuilder';
+
 import styles from '../Contents/listView.module.scss';
 import stylesInfo from '../HelpInfo/InfoPane.module.scss';
 import { IView } from '@pnp/sp/views';
@@ -75,6 +77,7 @@ export interface IReactListItemsState {
   groupByFields?:  IGrouping[];
   
   showPanel: boolean;
+  panelWidth: PanelType;
   showAttach: boolean;
   clickedAttach: boolean;  //if you clicked the attached icon (vs selected row), it only will show the attachments in the panel for cleaner implimentation
 
@@ -176,7 +179,6 @@ export default class ReactListItems extends React.Component<IReactListItemsProps
             </Stack>;
 
         }
-
 
         return result;
 
@@ -288,6 +290,7 @@ export default class ReactListItems extends React.Component<IReactListItemsProps
           clickedAttach: false,
           myDialog: this.createBlankDialog(),
           pickedCommand: '',
+          panelWidth: PanelType.medium,
         };
     }
         
@@ -341,10 +344,24 @@ export default class ReactListItems extends React.Component<IReactListItemsProps
 
             let dialog = !this.state.myDialog.showDialog ? null : buildConfirmDialog( this.state.myDialog );
 
+
+            /***
+             *    d888888b  .d88b.   d888b   d888b  db      d88888b .d8888. 
+             *    `~~88~~' .8P  Y8. 88' Y8b 88' Y8b 88      88'     88'  YP 
+             *       88    88    88 88      88      88      88ooooo `8bo.   
+             *       88    88    88 88  ooo 88  ooo 88      88~~~~~   `Y8b. 
+             *       88    `8b  d8' 88. ~8~ 88. ~8~ 88booo. 88.     db   8D 
+             *       YP     `Y88P'   Y888P   Y888P  Y88888P Y88888P `8888Y' 
+             *                                                              
+             *                                                              
+             */
+
+            let toggles = !this.state.showPanel ? null : <div style={{ float: 'right' }}> { makeToggles(this.getPageToggles( this.state.panelWidth )) } </div>;
+
             let fullPanel = !this.state.showPanel ? null : 
                 <Panel
                     isOpen={this.state.showPanel}
-                    type={ PanelType.medium }
+                    type={ this.state.panelWidth }
                     onDismiss={this._onClosePanel}
                     headerText={ this.state.panelId.toString() }
                     closeButtonAriaLabel="Close"
@@ -352,6 +369,7 @@ export default class ReactListItems extends React.Component<IReactListItemsProps
                     isLightDismiss={ true }
                     isFooterAtBottom={ true }
                 >
+                    { toggles }
                     { attachments }
                     { this.createPanelButtons( this.props.quickCommands, this.state.panelItem ) }
                     { autoDetailsList(this.state.panelItem, ["Title","refiners"],["search","meta","searchString"],true) }
@@ -360,7 +378,7 @@ export default class ReactListItems extends React.Component<IReactListItemsProps
             let attachPanel = !this.state.showAttach ? null : 
             <Panel
                 isOpen={this.state.showAttach}
-                type={ PanelType.medium }
+                type={ this.state.panelWidth }
                 onDismiss={this._onClosePanel}
                 headerText={ this.state.panelId.toString() }
                 closeButtonAriaLabel="Close"
@@ -696,5 +714,55 @@ export default class ReactListItems extends React.Component<IReactListItemsProps
         </div>
         );
     }
+
+        
+    /***
+     *         d888888b  .d88b.   d888b   d888b  db      d88888b .d8888. 
+     *         `~~88~~' .8P  Y8. 88' Y8b 88' Y8b 88      88'     88'  YP 
+     *            88    88    88 88      88      88      88ooooo `8bo.   
+     *            88    88    88 88  ooo 88  ooo 88      88~~~~~   `Y8b. 
+     *            88    `8b  d8' 88. ~8~ 88. ~8~ 88booo. 88.     db   8D 
+     *            YP     `Y88P'   Y888P   Y888P  Y88888P Y88888P `8888Y' 
+     *                                                                   
+     *                                                                   
+     */
+
+    private getPageToggles( showStats ) {
+
+        let togRefinerCounts = {
+            //label: <span style={{ color: 'red', fontWeight: 900}}>Rails Off!</span>,
+            label: <span>Panel width</span>,
+            key: 'togggleWidth',
+            _onChange: this.updatePanelWidth.bind(this),
+            checked: this.state.panelWidth === PanelType.medium ? false : true,
+            onText: 'Wide',
+            offText: 'Medium',
+            className: '',
+            styles: '',
+        };
+
+        let theseToggles = [];
+
+        theseToggles.push( togRefinerCounts ) ;
+        
+        let pageToggles : IContentsToggles = {
+            toggles: theseToggles,
+            childGap: 10,
+            vertical: false,
+            hAlign: 'end',
+            vAlign: 'start',
+            rootStyle: { width: 100 , paddingTop: 0, paddingRight: 0, }, //This defines the styles on each toggle
+        };
+
+        return pageToggles;
+
+    }
+
+    private updatePanelWidth() {
+        this.setState({
+            panelWidth: this.state.panelWidth === PanelType.medium ? PanelType.large : PanelType.medium,
+        });
+    }
+
 
 }
