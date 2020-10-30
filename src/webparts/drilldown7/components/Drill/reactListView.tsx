@@ -89,7 +89,7 @@ export interface IReactListItemsState {
   panelMessage?: any;
 
   myDialog? : IMyDialogProps;
-  pickedCommand?: string; //Index of command and ID of panel item
+  pickedCommand?: IQuickButton; //Index of command and ID of panel item
 
 }
 
@@ -157,7 +157,6 @@ export default class ReactListItems extends React.Component<IReactListItemsProps
 
     private createPanelButtons ( quickCommands: IQuickCommands, item: IDrillItemInfo ) {
 
-
         let allButtonRows : any[] = [];
 
         if ( quickCommands && quickCommands.buttons.length > 0 ) {
@@ -184,7 +183,19 @@ export default class ReactListItems extends React.Component<IReactListItemsProps
                         {buttons}
                     </Stack>;
 
-                    allButtonRows.push(rowResult);
+                    let styleRows = {paddingBottom: 10};
+                    if ( quickCommands.styleRow ) {
+                        try {
+                            //let styleRow = JSON.parse( quickCommands.styleRow );
+                            Object.keys(quickCommands.styleRow).map( k => {
+                                styleRows[k] = quickCommands.styleRow[k];
+                            });
+                        } catch (e) {
+                            alert('quickCommands.styleRow is not valid JSON... please fix: ' +quickCommands.styleRow );
+                        }
+
+                    }
+                    allButtonRows.push( <div style={ styleRows }> { rowResult } </div> );
 
                 } //END   if ( buttonRow && buttonRow.length > 0 ) {
 
@@ -301,7 +312,7 @@ export default class ReactListItems extends React.Component<IReactListItemsProps
           lastAttachId: null,
           clickedAttach: false,
           myDialog: this.createBlankDialog(),
-          pickedCommand: '',
+          pickedCommand: null,
           panelWidth: PanelType.medium,
         };
     }
@@ -550,7 +561,7 @@ export default class ReactListItems extends React.Component<IReactListItemsProps
 
         let e: any = event;
         
-        let thisButtonObject : IQuickButton = this.props.quickCommands.buttons[ this.state.pickedCommand ];
+        let thisButtonObject : IQuickButton = this.state.pickedCommand ;
         this.completeThisQuickUpdate( this.state.panelId.toString(), thisButtonObject );
 
         this.setState({
@@ -588,7 +599,7 @@ export default class ReactListItems extends React.Component<IReactListItemsProps
                         myDialog.showDialog = true;
     
                         this.setState({
-                            pickedCommand: buttonIndex,
+                            pickedCommand: thisButtonObject,
                             myDialog: myDialog,
                         });
 
