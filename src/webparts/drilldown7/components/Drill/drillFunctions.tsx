@@ -4,6 +4,8 @@ import { sp } from "@pnp/sp";
 
 import "@pnp/sp/webs";
 import "@pnp/sp/clientside-pages/web";
+import "@pnp/sp/site-users/web";
+
 import { ClientsideWebpart } from "@pnp/sp/clientside-pages";
 import { CreateClientsidePage, PromotedState, ClientsidePageLayoutType, ClientsideText,  } from "@pnp/sp/clientside-pages";
 
@@ -29,9 +31,11 @@ import { IAnyArray } from  '../../../../services/listServices/listServices';
 
 import { getDetailValueType, ITypeStrings } from '../../../../services/typeServices';
 
+import { ensureUserInfo } from '../../../../services/userServices';
+
 import { mergeAriaAttributeValues } from "office-ui-fabric-react";
 
-import { IRefiners, IRefinerLayer, IItemRefiners, RefineRuleValues, RefinerStatTypes, IRefinerStats, IRefinerStatType } from '../IReUsableInterfaces';
+import { IRefiners, IRefinerLayer, IItemRefiners, RefineRuleValues, RefinerStatTypes, IRefinerStats, IRefinerStatType, IUser } from '../IReUsableInterfaces';
 
 import { IRefinerStat } from '../../components/IReUsableInterfaces';
 
@@ -47,7 +51,9 @@ import { IRefinerStat } from '../../components/IReUsableInterfaces';
 // This is what it was before I split off the other part
 export async function getAllItems( drillList: IDrillList, addTheseItemsToState: any, setProgress: any, markComplete: any ): Promise<void>{
 
+    let sourceUserInfo: any = ensureUserInfo( drillList.webURL, drillList.contextUserInfo.email );
 
+    drillList.sourceUserInfo = sourceUserInfo;
     //lists.getById(listGUID).webs.orderBy("Title", true).get().then(function(result) {
     //let allItems : IDrillItemInfo[] = await sp.web.webs.get();
 

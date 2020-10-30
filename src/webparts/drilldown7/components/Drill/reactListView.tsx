@@ -5,7 +5,7 @@ import { Icon  } from 'office-ui-fabric-react/lib/Icon';
 import { Web, IList, IItem, } from "@pnp/sp/presets/all";
 import { Link, ILinkProps } from 'office-ui-fabric-react';
 
-import { IMyProgress, IQuickButton, IQuickCommands} from '../IReUsableInterfaces';
+import { IMyProgress, IQuickButton, IQuickCommands, IUser } from '../IReUsableInterfaces';
 import { IDrillItemInfo } from './drillComponent';
 
 import { autoDetailsList } from '../../../../services/hoverCardService';
@@ -50,6 +50,9 @@ export interface IReactListItemsProps {
     listName: string; //Used for attachments
     parentListURL: string;
 
+    contextUserInfo: IUser;  //For site you are on ( aka current page context )
+    sourceUserInfo: IUser;   //For site where the list is stored
+
     blueBar?: any;
 
     showIDs?: boolean;
@@ -58,7 +61,6 @@ export interface IReactListItemsProps {
     parentListFieldTitles?: string;
     viewFields?: IViewField[];
     
-
     groupByFields?:  IGrouping[];
     includeDetails: boolean;
     includeAttach: boolean;
@@ -186,14 +188,12 @@ export default class ReactListItems extends React.Component<IReactListItemsProps
                     let styleRows = {paddingBottom: 10};
                     if ( quickCommands.styleRow ) {
                         try {
-                            //let styleRow = JSON.parse( quickCommands.styleRow );
                             Object.keys(quickCommands.styleRow).map( k => {
                                 styleRows[k] = quickCommands.styleRow[k];
                             });
                         } catch (e) {
-                            alert('quickCommands.styleRow is not valid JSON... please fix: ' +quickCommands.styleRow );
+                            alert( `quickCommands.styleRow is not valid JSON... please fix: ${quickCommands.styleRow}` );
                         }
-
                     }
                     allButtonRows.push( <div style={ styleRows }> { rowResult } </div> );
 

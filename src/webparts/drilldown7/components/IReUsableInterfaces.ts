@@ -376,6 +376,7 @@ export interface ILink {
     tertiaryText?: string; //                           From React People Picker control
     secondaryText?: string; // same as email;           From React People Picker control
   
+    ensureWeb?: string;
   }
 
 export interface IMyFonts{
@@ -427,6 +428,9 @@ export interface IMyFonts{
 
     items : IDrillItemInfo[];
     breadCrumb: string[];
+
+    contextUserInfo: IUser;  //For site you are on ( aka current page context )
+    sourceUserInfo: IUser;   //For site where the list is stored
 
   }
 
