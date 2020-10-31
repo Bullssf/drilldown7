@@ -626,7 +626,7 @@ export default class ReactListItems extends React.Component<IReactListItemsProps
 
     private completeThisQuickUpdate( itemId: string, thisButtonObject : IQuickButton ) {
 
-        let result = updateReactListItem( this.props.webURL, this.props.listName, parseInt(itemId), thisButtonObject, );
+        let result = updateReactListItem( this.props.webURL, this.props.listName, parseInt(itemId), thisButtonObject, this.props.sourceUserInfo, this.state.panelItem );
 
     }
     /**
