@@ -143,7 +143,7 @@ export interface IItemRefiners {
         }
       }
     ],
-    "onUpdateAlsoCallback": false,
+    "onUpdateCallback": false,
     "callBack": null
   }
  */
@@ -178,18 +178,19 @@ export const QuickCommandsTMT = {
       }
     },
   ],
-  onUpdateAlsoCallback: false,
+  onUpdateCallback: false,
   callBack: null,
 
 };
 
 export interface IQuickCommands {
 
-    buttons: IQuickButton[];
-    onUpdateAlsoCallback?: boolean; // If there is an update on button, then do callback
+    buttons: IQuickButton[][];
+    onUpdateCallback?: boolean; // If there is an update on button, then do callback
     callBack?: any;
     listWebUrl?: string;
     listName?: string;
+    styleRow?: any; //Valid react JSON object for style
 
 }
 
@@ -210,8 +211,9 @@ export interface IQuickButton {
                   // Date column commands:  'setToToday', 'setOffsetDays+10', 'setOffsetDays-10', 'setToClear'
                   // 'insertField<StaticFieldName>, insertMyName, insertToday, appendToField
   groupID?: string; //Restrict button to this group of users (ID Number of Group)
-  styleButton?: string;
   styleIcon?: string;
+  styleButton?: string;
+
   successReload?: boolean; //Setting to true will automatically reload the data from the list to show all updated data.
   theseRefiners?: string[]; //Only show button on specific refiners... like "Status"... if you don't have Status on the view it may lead to errors if you can "Park" a project that may already be "Parked"
 
@@ -374,6 +376,7 @@ export interface ILink {
     tertiaryText?: string; //                           From React People Picker control
     secondaryText?: string; // same as email;           From React People Picker control
   
+    ensureWeb?: string;
   }
 
 export interface IMyFonts{
@@ -425,6 +428,9 @@ export interface IMyFonts{
 
     items : IDrillItemInfo[];
     breadCrumb: string[];
+
+    contextUserInfo: IUser;  //For site you are on ( aka current page context )
+    sourceUserInfo: IUser;   //For site where the list is stored
 
   }
 

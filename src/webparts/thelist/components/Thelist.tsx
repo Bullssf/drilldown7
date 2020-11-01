@@ -152,6 +152,9 @@ public componentDidUpdate(prevProps){
               parentListURL = { listPropsDD.parentListURL }
               listName = { listPropsDD.listName }
   
+              contextUserInfo = { listPropsDD.contextUserInfo }
+              sourceUserInfo = { listPropsDD.sourceUserInfo }
+
               viewFields={ currentViewFields }
               groupByFields={ currentViewGroups }
               items={ searchedItems}

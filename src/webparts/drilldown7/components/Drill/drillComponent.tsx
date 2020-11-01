@@ -54,7 +54,7 @@ import ReactListItems from './reactListView';
 
 //parentListFieldTitles
 
-import { getAllItems, buildRefinersObject, processAllItems } from './drillFunctions';
+import { getAllItems, buildRefinersObject, processAllItems, } from './drillFunctions';
 
 import ResizeGroupOverflowSetExample from './refiners/commandBar';
 
@@ -98,6 +98,9 @@ export type IRefinerStyles = 'pivot' | 'commandBar' | 'other';
     isLibrary?: boolean;
     webURL?: string;
     parentListURL?: string;
+    contextUserInfo?: IUser;  //For site you are on ( aka current page context )
+    sourceUserInfo?: IUser;   //For site where the list is stored
+
     refiners: string[]; //String of Keys representing the static name of the column used for drill downs
     emptyRefiner: string;
     refinerRules: IRefinerRules[][];
@@ -579,7 +582,12 @@ export default class DrillDown extends React.Component<IDrillDownProps, IDrillDo
             title: title,
             name: name,
             guid: '',
-
+            contextUserInfo: {
+                LoginName: this.props.pageContext.user.loginName,
+                Title: this.props.pageContext.user.displayName,
+                email: this.props.pageContext.user.email,
+            },
+            sourceUserInfo: null,
             fetchCount: this.props.performance.fetchCount,
             fetchCountMobile: this.props.performance.fetchCountMobile,
             restFilter: !this.props.performance.restFilter ? ' ' : this.props.performance.restFilter,
@@ -958,6 +966,9 @@ public componentDidUpdate(prevProps){
                     parentListURL = { this.state.drillList.parentListURL }
                     listName = { this.state.drillList.name }
 
+                    contextUserInfo = { this.state.drillList.contextUserInfo }
+                    sourceUserInfo = { this.state.drillList.sourceUserInfo }
+
                     viewFields={ currentViewFields }
                     groupByFields={ currentViewGroups }
                     items={ this.state.searchedItems}
@@ -1208,6 +1219,9 @@ public componentDidUpdate(prevProps){
                 viewFields: null, // This is derived from viewDefs
                 groupByFields: null, // This is derived from viewDefs
         
+                contextUserInfo: drillList.contextUserInfo,  //For site you are on ( aka current page context )
+                sourceUserInfo: drillList.sourceUserInfo,   //For site where the list is stored
+
                 quickCommands: this.props.quickCommands,
         
                 items : allItems,
@@ -1230,6 +1244,9 @@ public componentDidUpdate(prevProps){
                 viewFields: null, // This is derived from viewDefs
                 groupByFields: null, // This is derived from viewDefs
         
+                contextUserInfo: null,  //For site you are on ( aka current page context )
+                sourceUserInfo: null,   //For site where the list is stored
+
                 quickCommands: null,
         
                 items : [],
@@ -1665,6 +1682,9 @@ public componentDidUpdate(prevProps){
             viewFields: null, // This is derived from viewDefs
             groupByFields: null, // This is derived from viewDefs
     
+            contextUserInfo: this.state.drillList.contextUserInfo,  //For site you are on ( aka current page context )
+            sourceUserInfo: this.state.drillList.sourceUserInfo,   //For site where the list is stored
+
             quickCommands: this.props.quickCommands,
     
             items : newFilteredItems,
@@ -1687,6 +1707,9 @@ public componentDidUpdate(prevProps){
             viewFields: null, // This is derived from viewDefs
             groupByFields: null, // This is derived from viewDefs
     
+            contextUserInfo: null,  //For site you are on ( aka current page context )
+            sourceUserInfo: null,   //For site where the list is stored
+
             quickCommands: null,
     
             items : [],

@@ -5,7 +5,7 @@ import { Icon  } from 'office-ui-fabric-react/lib/Icon';
 import { Web, IList, IItem, } from "@pnp/sp/presets/all";
 import { Link, ILinkProps } from 'office-ui-fabric-react';
 
-import { IMyProgress, IQuickButton, IQuickCommands} from '../IReUsableInterfaces';
+import { IMyProgress, IQuickButton, IQuickCommands, IUser } from '../IReUsableInterfaces';
 import { IDrillItemInfo } from './drillComponent';
 
 import { autoDetailsList } from '../../../../services/hoverCardService';
@@ -50,6 +50,9 @@ export interface IReactListItemsProps {
     listName: string; //Used for attachments
     parentListURL: string;
 
+    contextUserInfo: IUser;  //For site you are on ( aka current page context )
+    sourceUserInfo: IUser;   //For site where the list is stored
+
     blueBar?: any;
 
     showIDs?: boolean;
@@ -58,7 +61,6 @@ export interface IReactListItemsProps {
     parentListFieldTitles?: string;
     viewFields?: IViewField[];
     
-
     groupByFields?:  IGrouping[];
     includeDetails: boolean;
     includeAttach: boolean;
@@ -89,7 +91,7 @@ export interface IReactListItemsState {
   panelMessage?: any;
 
   myDialog? : IMyDialogProps;
-  pickedCommand?: string; //Index of command and ID of panel item
+  pickedCommand?: IQuickButton; //Index of command and ID of panel item
 
 }
 
@@ -157,30 +159,51 @@ export default class ReactListItems extends React.Component<IReactListItemsProps
 
     private createPanelButtons ( quickCommands: IQuickCommands, item: IDrillItemInfo ) {
 
-        let buttons : any[] = [];
-        let result : any = null;
+        let allButtonRows : any[] = [];
 
         if ( quickCommands && quickCommands.buttons.length > 0 ) {
 
-            quickCommands.buttons.map( (b,i) => {
+            quickCommands.buttons.map( (buttonRow, r) => {
 
-                let icon = b.icon ? { iconName: b.icon } : null;
-                let buttonID = ['ButtonID', i , item.Id].join(this.delim);
-                let buttonTitle = b.label;
-                let thisButton = b.primary === true ?
-                    <div id={ buttonID } title={ buttonTitle } ><PrimaryButton text={b.label} iconProps= { icon } onClick={this._panelButtonClicked.bind(this)} disabled={b.disabled} checked={b.checked} /></div>:
-                    <div id={ buttonID } title={ buttonTitle } ><DefaultButton text={b.label} iconProps= { icon } onClick={this._panelButtonClicked.bind(this)} disabled={b.disabled} checked={b.checked} /></div>;
-                buttons.push( thisButton );
+                if ( buttonRow && buttonRow.length > 0 ) {
+                    let rowResult : any = null;
+                    let buttons : any[] = [];
+
+                    buttonRow.map( (b,i) => {
+
+                        let icon = b.icon ? { iconName: b.icon } : null;
+                        let buttonID = ['ButtonID', r, i , item.Id].join(this.delim);
+                        let buttonTitle = b.label;
+                        let thisButton = b.primary === true ?
+                            <div id={ buttonID } title={ buttonTitle } ><PrimaryButton text={b.label} iconProps= { icon } onClick={this._panelButtonClicked.bind(this)} disabled={b.disabled} checked={b.checked} /></div>:
+                            <div id={ buttonID } title={ buttonTitle } ><DefaultButton text={b.label} iconProps= { icon } onClick={this._panelButtonClicked.bind(this)} disabled={b.disabled} checked={b.checked} /></div>;
+                        buttons.push( thisButton );
+                    });
+
+                    const stackQuickCommands: IStackTokens = { childrenGap: 10 };
+                    rowResult = <Stack horizontal={ true } tokens={stackQuickCommands}>
+                        {buttons}
+                    </Stack>;
+
+                    let styleRows = {paddingBottom: 10};
+                    if ( quickCommands.styleRow ) {
+                        try {
+                            Object.keys(quickCommands.styleRow).map( k => {
+                                styleRows[k] = quickCommands.styleRow[k];
+                            });
+                        } catch (e) {
+                            alert( `quickCommands.styleRow is not valid JSON... please fix: ${quickCommands.styleRow}` );
+                        }
+                    }
+                    allButtonRows.push( <div style={ styleRows }> { rowResult } </div> );
+
+                } //END   if ( buttonRow && buttonRow.length > 0 ) {
+
             });
-
-            const stackQuickCommands: IStackTokens = { childrenGap: 10 };
-            result = <Stack horizontal={ true } tokens={stackQuickCommands}>
-                {buttons}
-            </Stack>;
 
         }
 
-        return result;
+        return allButtonRows;
 
     }
 
@@ -289,7 +312,7 @@ export default class ReactListItems extends React.Component<IReactListItemsProps
           lastAttachId: null,
           clickedAttach: false,
           myDialog: this.createBlankDialog(),
-          pickedCommand: '',
+          pickedCommand: null,
           panelWidth: PanelType.medium,
         };
     }
@@ -538,7 +561,7 @@ export default class ReactListItems extends React.Component<IReactListItemsProps
 
         let e: any = event;
         
-        let thisButtonObject : IQuickButton = this.props.quickCommands.buttons[ this.state.pickedCommand ];
+        let thisButtonObject : IQuickButton = this.state.pickedCommand ;
         this.completeThisQuickUpdate( this.state.panelId.toString(), thisButtonObject );
 
         this.setState({
@@ -550,9 +573,11 @@ export default class ReactListItems extends React.Component<IReactListItemsProps
     private async startThisQuickUpdate ( thisID: string ) {
 
         let buttonID = thisID.split(this.delim);
-        let buttonIndex = buttonID[1];
-        let itemId = buttonID[2];
-        let thisButtonObject : IQuickButton = this.props.quickCommands.buttons[ buttonIndex ];
+        //let buttonID = ['ButtonID', r, i , item.Id].join(this.delim);
+        let buttonRow = buttonID[1];
+        let buttonIndex = buttonID[2];
+        let itemId = buttonID[3];
+        let thisButtonObject : IQuickButton = this.props.quickCommands.buttons[ buttonRow ][ buttonIndex ];
 
         if ( !thisButtonObject ) {
             alert('_panelButtonClicked - can not find thisButtonObject - ' + thisID );
@@ -574,7 +599,7 @@ export default class ReactListItems extends React.Component<IReactListItemsProps
                         myDialog.showDialog = true;
     
                         this.setState({
-                            pickedCommand: buttonIndex,
+                            pickedCommand: thisButtonObject,
                             myDialog: myDialog,
                         });
 
@@ -601,7 +626,7 @@ export default class ReactListItems extends React.Component<IReactListItemsProps
 
     private completeThisQuickUpdate( itemId: string, thisButtonObject : IQuickButton ) {
 
-        let result = updateReactListItem( this.props.webURL, this.props.listName, parseInt(itemId), thisButtonObject, );
+        let result = updateReactListItem( this.props.webURL, this.props.listName, parseInt(itemId), thisButtonObject, this.props.sourceUserInfo, this.state.panelItem );
 
     }
     /**

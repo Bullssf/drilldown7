@@ -3,9 +3,13 @@ import { ListView, IViewField, SelectionMode, GroupOrder, IGrouping } from "@pnp
 
 import { Web, IList, IItem } from "@pnp/sp/presets/all";
 
-import { ICustViewDef, IQuickButton } from '../../components/IReUsableInterfaces';
+import { ICustViewDef, IQuickButton, IUser } from '../../components/IReUsableInterfaces';
 
 import { getHelpfullError } from '../../../../services/ErrorHandler';
+
+import { removeItemFromArrayOnce, removeItemFromArrayAll, addItemToArrayIfItDoesNotExist } from '../../../../services/arrayServices';
+
+import { IDrillItemInfo } from './drillComponent';
 
  /***
  *     d888b  d88888b d888888b      db    db d888888b d88888b db   d8b   db      d88888b db    db d8b   db  .o88b. d888888b d888888b  .d88b.  d8b   db .d8888. 
@@ -101,11 +105,13 @@ export function getAppropriateViewProp ( viewDefs: ICustViewDef[], currentWidth:
     }
 }
 
-export async function updateReactListItem( webUrl: string, listName: string, Id: number, thisButtonObject : IQuickButton ): Promise<void>{
+export async function updateReactListItem( webUrl: string, listName: string, Id: number, thisButtonObject : IQuickButton, sourceUserInfo: IUser, panelItem: IDrillItemInfo ): Promise<void>{
 
 
     //lists.getById(listGUID).webs.orderBy("Title", true).get().then(function(result) {
     //let allItems : IDrillItemInfo[] = await sp.web.webs.get();
+
+    let currentTime = new Date().toLocaleString();
 
     let results : any[] = [];
 
@@ -113,9 +119,89 @@ export async function updateReactListItem( webUrl: string, listName: string, Id:
 
     let errMessage = null;
 
+    let newUpdateItem = JSON.stringify(thisButtonObject.updateItem);
+
+    //Replace [Today] with currect time
+    newUpdateItem = newUpdateItem.replace(/\B\[Today\]\B/gi, currentTime);
+
+    //Regex looks for anything matching [Today-+xxx] and replaces with date string
+    var newUpdateItem2 = newUpdateItem.replace(/\[Today(.*?)\]/gi, (match =>  {
+        let numb = parseInt(match.toLowerCase().substring(6).replace("]",""),10);
+        var today = new Date();
+        var newdate = new Date();
+        newdate.setDate(today.getDate()+numb);
+        let newDateString = newdate.toLocaleString();
+        return newDateString;
+    }) );
+
+    // Replace [MyName] with userId.Title
+    newUpdateItem2 = newUpdateItem2.replace(/\[MyName\]/gi, sourceUserInfo.Title );
+
+    let newUpdateItemObj = JSON.parse(newUpdateItem2);
+
+    //Replace [Me]
+    Object.keys(newUpdateItemObj).map( k => {
+        let thisColumn: any = newUpdateItemObj[k];
+        if ( typeof thisColumn === 'string' ) { 
+
+            //Single value set to current user
+            if ( thisColumn.toLowerCase() === '[me]' ) {
+                thisColumn = sourceUserInfo.Id; 
+                console.log('thisColumn is: ', thisColumn ) ;
+
+            //Single value only remove you
+            } else if ( thisColumn.toLowerCase() === '[-me]' ) {
+                thisColumn = panelItem[k] === sourceUserInfo.Id ? null : panelItem[k]; 
+
+            //Multi value set to current user
+            } else if ( thisColumn.toLowerCase() === '{me}' ) { 
+                thisColumn = { results: [ sourceUserInfo.Id ]}; 
+
+            //Multi value add current user
+            } else if ( thisColumn.toLowerCase() === '{+me}' ) { 
+
+                if ( panelItem[k] ) {
+                    try {
+                        //thisColumn = panelItem[k].results.push( sourceUserInfo.Id ); //Errored out
+                        thisColumn = panelItem[k];
+                        if ( thisColumn.indexOf( sourceUserInfo.Id ) < 0 )  { thisColumn.push( sourceUserInfo.Id ); }
+                        thisColumn = { results: thisColumn };
+
+                    } catch (e) {
+                        let err = getHelpfullError(e);
+                        alert( `Error updating item Column ${k} : \n\n${err}` );
+                        console.log( `Error updating item Column ${k} :`, err );
+                    }
+                } else { 
+                    thisColumn = { results: [ sourceUserInfo.Id ]} ;
+                }
+
+            //Multi value remove current user
+            } else if ( thisColumn.toLowerCase() === '{-me}' ) { 
+
+                if ( panelItem[k] ) {
+                    try {
+                        thisColumn = panelItem[k];
+                        thisColumn = removeItemFromArrayAll(thisColumn, sourceUserInfo.Id);
+                        thisColumn = { results: thisColumn };
+
+                    } catch (e) {
+                        let err = getHelpfullError(e);
+                        alert( `Error updating item Column ${k} : \n\n${err}` );
+                        console.log( `Error updating item Column ${k} :`, err );
+                    }
+                } { console.log( `Did not find Column ${k} and could not remove you from it.`, panelItem );
+                    console.log( `Here's the full panelItem:`, panelItem );
+                }
+            } 
+
+            newUpdateItemObj[k] = thisColumn;
+        } // END This key value is string
+    });
+
     try {
         let thisListObject = await thisListWeb.lists.getByTitle(listName);
-        await thisListObject.items.getById(Id).update( thisButtonObject.updateItem ).then((response) => {
+        await thisListObject.items.getById(Id).update( newUpdateItemObj ).then((response) => {
             if ( thisButtonObject.alert )  { alert( 'Success!\n' + thisButtonObject.alert ); }
             if ( thisButtonObject.console )  { console.log(thisButtonObject.console, response ); }
             

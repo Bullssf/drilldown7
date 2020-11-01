@@ -16,7 +16,7 @@
     if (result.indexOf('Failed to fetch') > -1 ) { friendlyMessage = 'This can happen if the web url is not valid.'; }
     if (result.indexOf('A null value was detected in the items of a collection property value') > -1 ) { friendlyMessage= 'This can happen if you are saving a null value where an array is expected... Maybe try saving an empty array instead :).'; }
     if (result.indexOf('An unexpected \'PrimitiveValue\' node was found when reading from the JSON reader. A \'StartObject\' node was expected') > -1 ) { 
-      friendlyMessage = 'Common causes:  Saving a string to a URL column, saving text to multi-select choice column.';
+      friendlyMessage = 'Common causes:  \nSaving a string to a URL column, \nSaving text to multi-select choice column,\nSaving a single User ID to Multiselect User column';
     }
     if (result.indexOf('does not exist') > -1 && result.indexOf('Column') > -1) { 
       friendlyMessage = 'Missing column: ' + result.split('\'')[1]; 
