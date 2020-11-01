@@ -317,22 +317,34 @@ export function sortKeysByOtherKey( obj: any, sortKey: ISeriesSort, order: ISeri
   //import { removeItemFromArrayOnce, removeItemFromArrayAll } from '../../../services/arrayServices';
   //https://stackoverflow.com/a/5767357
   export function removeItemFromArrayOnce(arr, value) {
-    var index = arr.indexOf(value);
-    if (index > -1) {
-      arr.splice(index, 1);
+      
+    if ( arr === null || arr === undefined ) {
+        //Do nothing... 
+    } else {
+        var index = arr.indexOf(value);
+        if (index > -1) {
+          arr.splice(index, 1);
+        }
     }
+
     return arr;
   }
   
   //https://stackoverflow.com/a/5767357
   export function removeItemFromArrayAll(arr, value) {
-    var i = 0;
-    while (i < arr.length) {
-      if (arr[i] === value) {
-        arr.splice(i, 1);
-      } else {
-        ++i;
-      }
+
+    if ( arr === null || arr === undefined ) {
+        //Do nothing... 
+    } else {
+        var i = 0;
+        while (i < arr.length) {
+          if (arr[i] === value) {
+            arr.splice(i, 1);
+          } else {
+            ++i;
+          }
+        }
     }
+
     return arr;
   }

@@ -136,17 +136,15 @@ export async function updateReactListItem( webUrl: string, listName: string, Id:
             //Single value set to current user
             if ( thisColumn.toLowerCase() === '[me]' ) {
                 thisColumn = sourceUserInfo.Id; 
-                addItemToArrayIfItDoesNotExist( likelyPeopleColumns, k ); 
+                console.log('thisColumn is: ', thisColumn ) ;
 
             //Single value only remove you
             } else if ( thisColumn.toLowerCase() === '[-me]' ) {
                 thisColumn = panelItem[k] === sourceUserInfo.Id ? null : panelItem[k]; 
-                addItemToArrayIfItDoesNotExist( likelyPeopleColumns, k ); 
 
             //Multi value set to current user
             } else if ( thisColumn.toLowerCase() === '{me}' ) { 
                 thisColumn = { results: [ sourceUserInfo.Id ]}; 
-                addItemToArrayIfItDoesNotExist( likelyPeopleColumns, k ); 
 
             //Multi value add current user
             } else if ( thisColumn.toLowerCase() === '{+me}' ) { 
@@ -154,7 +152,6 @@ export async function updateReactListItem( webUrl: string, listName: string, Id:
                 if ( panelItem[k] ) {
                     try {
                         thisColumn = panelItem[k].results.push( sourceUserInfo.Id );
-                        addItemToArrayIfItDoesNotExist( likelyPeopleColumns, k );
                     } catch (e) {
                         let err = getHelpfullError(e);
                         alert( `Error updating item Column ${k} : \n\n${err}` );
@@ -162,7 +159,6 @@ export async function updateReactListItem( webUrl: string, listName: string, Id:
                     }
                 } else { 
                     thisColumn = { results: [ sourceUserInfo.Id ]} ;
-                    addItemToArrayIfItDoesNotExist( likelyPeopleColumns, k );
                 }
 
             //Multi value remove current user
@@ -171,8 +167,8 @@ export async function updateReactListItem( webUrl: string, listName: string, Id:
                 if ( panelItem[k] ) {
                     try {
                         thisColumn = panelItem[k];
-                        thisColumn.results = removeItemFromArrayAll(thisColumn.results, sourceUserInfo.Id);
-                        addItemToArrayIfItDoesNotExist( likelyPeopleColumns, k );
+                        thisColumn = removeItemFromArrayAll(thisColumn, sourceUserInfo.Id);
+                        thisColumn = { results: thisColumn };
 
                     } catch (e) {
                         let err = getHelpfullError(e);
@@ -183,8 +179,12 @@ export async function updateReactListItem( webUrl: string, listName: string, Id:
                     console.log( `Here's the full panelItem:`, panelItem );
                 }
             
-            }  
-        }
+            } 
+
+            newUpdateItemObj[k] = thisColumn;
+        } // END This key value is string
+
+
     });
 
 

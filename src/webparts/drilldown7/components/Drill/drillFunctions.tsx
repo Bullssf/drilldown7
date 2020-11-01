@@ -51,7 +51,7 @@ import { IRefinerStat } from '../../components/IReUsableInterfaces';
 // This is what it was before I split off the other part
 export async function getAllItems( drillList: IDrillList, addTheseItemsToState: any, setProgress: any, markComplete: any ): Promise<void>{
 
-    let sourceUserInfo: any = ensureUserInfo( drillList.webURL, drillList.contextUserInfo.email );
+    let sourceUserInfo: any = await ensureUserInfo( drillList.webURL, drillList.contextUserInfo.email );
 
     drillList.sourceUserInfo = sourceUserInfo;
     //lists.getById(listGUID).webs.orderBy("Title", true).get().then(function(result) {
@@ -112,7 +112,8 @@ export function processAllItems( allItems : IDrillItemInfo[], errMessage: string
                 if (expCol.indexOf('/') > -1 ) {
                     let oldCol = expCol.split('/');
                     let newProp = oldCol.join('');
-                    allItems[i][newProp] = allItems[i][oldCol[0]][oldCol[1]];
+
+                    allItems[i][newProp] = allItems[i][oldCol[0]] ? allItems[i][oldCol[0]][oldCol[1]] : null;
                 }
             });
         }
