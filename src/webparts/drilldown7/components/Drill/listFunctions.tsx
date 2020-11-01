@@ -123,11 +123,22 @@ export async function updateReactListItem( webUrl: string, listName: string, Id:
 
     //Replace [Today] with currect time
     newUpdateItem = newUpdateItem.replace(/\B\[Today\]\B/gi, currentTime);
-    newUpdateItem = newUpdateItem.replace(/\$MyName\$/gi, sourceUserInfo.Title );
 
-    let newUpdateItemObj = JSON.parse(newUpdateItem);
+    //Regex looks for anything matching [Today-+xxx] and replaces with date string
+    var newUpdateItem2 = newUpdateItem.replace(/\[Today(.*?)\]/gi, (match =>  {
+        let numb = parseInt(match.toLowerCase().substring(6).replace("]",""),10);
+        var today = new Date();
+        var newdate = new Date();
+        newdate.setDate(today.getDate()+numb);
+        let newDateString = newdate.toLocaleString();
+        return newDateString;
+    }) );
 
-    let likelyPeopleColumns : string[] = [];
+    // Replace [MyName] with userId.Title
+    newUpdateItem2 = newUpdateItem2.replace(/\[MyName\]/gi, sourceUserInfo.Title );
+
+    let newUpdateItemObj = JSON.parse(newUpdateItem2);
+
     //Replace [Me]
     Object.keys(newUpdateItemObj).map( k => {
         let thisColumn: any = newUpdateItemObj[k];
@@ -151,7 +162,11 @@ export async function updateReactListItem( webUrl: string, listName: string, Id:
 
                 if ( panelItem[k] ) {
                     try {
-                        thisColumn = panelItem[k].results.push( sourceUserInfo.Id );
+                        //thisColumn = panelItem[k].results.push( sourceUserInfo.Id ); //Errored out
+                        thisColumn = panelItem[k];
+                        if ( thisColumn.indexOf( sourceUserInfo.Id ) < 0 )  { thisColumn.push( sourceUserInfo.Id ); }
+                        thisColumn = { results: thisColumn };
+
                     } catch (e) {
                         let err = getHelpfullError(e);
                         alert( `Error updating item Column ${k} : \n\n${err}` );
@@ -178,17 +193,11 @@ export async function updateReactListItem( webUrl: string, listName: string, Id:
                 } { console.log( `Did not find Column ${k} and could not remove you from it.`, panelItem );
                     console.log( `Here's the full panelItem:`, panelItem );
                 }
-            
             } 
 
             newUpdateItemObj[k] = thisColumn;
         } // END This key value is string
-
-
     });
-
-
-
 
     try {
         let thisListObject = await thisListWeb.lists.getByTitle(listName);
