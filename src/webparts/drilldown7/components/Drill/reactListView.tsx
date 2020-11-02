@@ -157,49 +157,82 @@ export default class ReactListItems extends React.Component<IReactListItemsProps
 
     private delim = '|||';
 
-    private createPanelButtons ( quickCommands: IQuickCommands, item: IDrillItemInfo ) {
+    /**
+     * 
+     * @param quickCommands 
+     * @param item 
+     * @param sourceUserInfo  //This is just passed in in order to allow for user targeted b.showWhenEvalTrue checks
+     */
+    private createPanelButtons ( quickCommands: IQuickCommands, item: IDrillItemInfo , sourceUserInfo: IUser ) {
 
         let allButtonRows : any[] = [];
 
         if ( quickCommands && quickCommands.buttons.length > 0 ) {
 
-            quickCommands.buttons.map( (buttonRow, r) => {
+            let buildAllButtonsTest = true;
+            if ( quickCommands.showWhenEvalTrue && quickCommands.showWhenEvalTrue.length > 0 ) {
+                buildAllButtonsTest = eval( quickCommands.showWhenEvalTrue );
+                if ( buildAllButtonsTest === true ) {
+                    //build all the buttons ( subject to individual button checks )
+                } else { buildAllButtonsTest = false; }
+            }
 
-                if ( buttonRow && buttonRow.length > 0 ) {
-                    let rowResult : any = null;
-                    let buttons : any[] = [];
+            if ( buildAllButtonsTest === true ) {
+                quickCommands.buttons.map( (buttonRow, r) => {
 
-                    buttonRow.map( (b,i) => {
-
-                        let icon = b.icon ? { iconName: b.icon } : null;
-                        let buttonID = ['ButtonID', r, i , item.Id].join(this.delim);
-                        let buttonTitle = b.label;
-                        let thisButton = b.primary === true ?
-                            <div id={ buttonID } title={ buttonTitle } ><PrimaryButton text={b.label} iconProps= { icon } onClick={this._panelButtonClicked.bind(this)} disabled={b.disabled} checked={b.checked} /></div>:
-                            <div id={ buttonID } title={ buttonTitle } ><DefaultButton text={b.label} iconProps= { icon } onClick={this._panelButtonClicked.bind(this)} disabled={b.disabled} checked={b.checked} /></div>;
-                        buttons.push( thisButton );
-                    });
-
-                    const stackQuickCommands: IStackTokens = { childrenGap: 10 };
-                    rowResult = <Stack horizontal={ true } tokens={stackQuickCommands}>
-                        {buttons}
-                    </Stack>;
-
-                    let styleRows = {paddingBottom: 10};
-                    if ( quickCommands.styleRow ) {
-                        try {
-                            Object.keys(quickCommands.styleRow).map( k => {
-                                styleRows[k] = quickCommands.styleRow[k];
-                            });
-                        } catch (e) {
-                            alert( `quickCommands.styleRow is not valid JSON... please fix: ${quickCommands.styleRow}` );
+                    if ( buttonRow && buttonRow.length > 0 ) {
+                        let rowResult : any = null;
+                        let buttons : any[] = [];
+    
+                        buttonRow.map( (b,i) => {
+    
+                            let buildThisButton = true;
+    
+                            /**
+                             * showWhenEvalTrue must be run in the context of this section of code to be valid.
+                             */
+    
+                            if ( b.showWhenEvalTrue && b.showWhenEvalTrue.length > 0 ) {
+                                let buildButtonTest = eval( b.showWhenEvalTrue );
+                                if ( buildButtonTest === true ) {
+                                    //build all the buttons
+                                } else { buildThisButton = false; }
+                            }
+                            if ( buildThisButton === true ) {
+                                let icon = b.icon ? { iconName: b.icon } : null;
+                                let buttonID = ['ButtonID', r, i , item.Id].join(this.delim);
+                                let buttonTitle = b.label;
+                                let thisButton = b.primary === true ?
+                                    <div id={ buttonID } title={ buttonTitle } ><PrimaryButton text={b.label} iconProps= { icon } onClick={this._panelButtonClicked.bind(this)} disabled={b.disabled} checked={b.checked} /></div>:
+                                    <div id={ buttonID } title={ buttonTitle } ><DefaultButton text={b.label} iconProps= { icon } onClick={this._panelButtonClicked.bind(this)} disabled={b.disabled} checked={b.checked} /></div>;
+                                buttons.push( thisButton );
+                            }
+    
+                        }); //END buttonRow.map( (b,i) => {
+    
+                        const stackQuickCommands: IStackTokens = { childrenGap: 10 };
+                        rowResult = <Stack horizontal={ true } tokens={stackQuickCommands}>
+                            {buttons}
+                        </Stack>;
+    
+                        let styleRows = {paddingBottom: 10};
+                        if ( quickCommands.styleRow ) {
+                            try {
+                                Object.keys(quickCommands.styleRow).map( k => {
+                                    styleRows[k] = quickCommands.styleRow[k];
+                                });
+                            } catch (e) {
+                                alert( `quickCommands.styleRow is not valid JSON... please fix: ${quickCommands.styleRow}` );
+                            }
                         }
-                    }
-                    allButtonRows.push( <div style={ styleRows }> { rowResult } </div> );
+                        allButtonRows.push( <div style={ styleRows }> { rowResult } </div> );
+    
+                    } //END   if ( buttonRow && buttonRow.length > 0 ) {
+    
+                }); //END  quickCommands.buttons.map( (buttonRow, r) => {
 
-                } //END   if ( buttonRow && buttonRow.length > 0 ) {
+            } //END   if ( buildAllButtonsTest === true ) {
 
-            });
 
         }
 
@@ -394,7 +427,7 @@ export default class ReactListItems extends React.Component<IReactListItemsProps
                 >
                     { toggles }
                     { attachments }
-                    { this.createPanelButtons( this.props.quickCommands, this.state.panelItem ) }
+                    { this.createPanelButtons( this.props.quickCommands, this.state.panelItem, this.props.sourceUserInfo ) }
                     { autoDetailsList(this.state.panelItem, ["Title","refiners"],["search","meta","searchString"],true) }
                 </Panel>;
 
