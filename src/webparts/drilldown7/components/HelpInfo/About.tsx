@@ -127,6 +127,7 @@ public constructor(props:IInfoAboutMeProps){
                 {/* 3 files to update version number:  package-solution.json, package-lock.json, package.json*/}
                 <table className={styles.infoTable}>
                     <tr><th>Date</th><th>Version</th><th>Focus</th><th>Notes</th></tr>
+                    <tr><td>2020-10-06</td><td>{'1.1.0.1'}</td><td>Change solution guid from 892e5eab42f8 to bf19e6f8-99d0-47c2-9578-a8379831da9a</td><td></td></tr>
                     <tr><td>2020-10-06</td><td>{'1.1.0.0'}</td><td>Add separate webparts for additional page layouts - 3 webparts available:  <b>Filters, Charts, List</b> </td><td></td></tr>
                     <tr><td>2020-10-06</td><td>{'1.1.0.0'}</td><td>Add <b>Quick Commands</b> including Filtering buttons, updating <b>Text, People, Dates, Numbers</b></td><td></td></tr>
                     <tr><td>2020-10-06</td><td>{'1.0.4.6'}</td><td>Add <b>Early Access bar</b></td><td></td></tr>
