@@ -4,7 +4,7 @@
     "environment": "spo",
     "version": "1.11.0",
     "libraryName": "drilldown-7",
-    "libraryId": "bf19e6f8-99d0-47c2-9578-a8379831da9a",
+    "libraryId": "bdcf72e6-9215-4cba-9b02-892e5eab42f8",
     "packageManager": "npm",
     "isDomainIsolated": false,
     "componentType": "webpart"
