@@ -127,6 +127,8 @@ public constructor(props:IInfoAboutMeProps){
                 {/* 3 files to update version number:  package-solution.json, package-lock.json, package.json*/}
                 <table className={styles.infoTable}>
                     <tr><th>Date</th><th>Version</th><th>Focus</th><th>Notes</th></tr>
+                    <tr><td>2020-10-06</td><td>{'1.1.0.0'}</td><td>Add separate webparts for additional page layouts - 3 webparts available:  <b>Filters, Charts, List</b> </td><td></td></tr>
+                    <tr><td>2020-10-06</td><td>{'1.1.0.0'}</td><td>Add <b>Quick Commands</b> including Filtering buttons, updating <b>Text, People, Dates, Numbers</b></td><td></td></tr>
                     <tr><td>2020-10-06</td><td>{'1.0.4.6'}</td><td>Add <b>Early Access bar</b></td><td></td></tr>
                     <tr><td>2020-10-06</td><td>{'1.0.4.5'}</td><td>Add support to view <b>List attachments, List link, Stat chart updates</b></td><td></td></tr>
                     <tr><td>2020-10-06</td><td>{'1.0.4.4'}</td><td>Fix Refiners based on numbers, add <b>Math Groupings</b></td><td>+ Bug fixes</td></tr>
