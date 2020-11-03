@@ -127,11 +127,13 @@ public constructor(props:IInfoAboutMeProps){
                 {/* 3 files to update version number:  package-solution.json, package-lock.json, package.json*/}
                 <table className={styles.infoTable}>
                     <tr><th>Date</th><th>Version</th><th>Focus</th><th>Notes</th></tr>
-                    <tr><td>2020-10-06</td><td>{'1.1.0.1'}</td><td>Change solution guid from 892e5eab42f8 to bf19e6f8-99d0-47c2-9578-a8379831da9a</td><td></td></tr>
-                    <tr><td>2020-10-06</td><td>{'1.1.0.0'}</td><td>Add separate webparts for additional page layouts - 3 webparts available:  <b>Filters, Charts, List</b> </td><td></td></tr>
-                    <tr><td>2020-10-06</td><td>{'1.1.0.0'}</td><td>Add <b>Quick Commands</b> including Filtering buttons, updating <b>Text, People, Dates, Numbers</b></td><td></td></tr>
-                    <tr><td>2020-10-06</td><td>{'1.0.4.6'}</td><td>Add <b>Early Access bar</b></td><td></td></tr>
-                    <tr><td>2020-10-06</td><td>{'1.0.4.5'}</td><td>Add support to view <b>List attachments, List link, Stat chart updates</b></td><td></td></tr>
+                    <tr><td>2020-11-03</td><td>{'1.1.0.3'}</td><td>Prod Testing bugs, collapsable charts, displays in narrow section</td><td></td></tr>
+                    <tr><td>2020-11-03</td><td>{'1.1.0.3'}</td><td>Change solution guid back to 892e5eab42f8</td><td></td></tr>
+                    <tr><td>2020-11-02</td><td>{'1.1.0.1'}</td><td>Change solution guid from 892e5eab42f8 to bf19e6f8-99d0-47c2-9578-a8379831da9a</td><td></td></tr>
+                    <tr><td>2020-11-01</td><td>{'1.1.0.0'}</td><td>Add separate webparts for additional page layouts - 3 webparts available:  <b>Filters, Charts, List</b> </td><td></td></tr>
+                    <tr><td>2020-11-01</td><td>{'1.1.0.0'}</td><td>Add <b>Quick Commands</b> including Filtering buttons, updating <b>Text, People, Dates, Numbers</b></td><td></td></tr>
+                    <tr><td>2020-10-14</td><td>{'1.0.4.6'}</td><td>Add <b>Early Access bar</b></td><td></td></tr>
+                    <tr><td>2020-10-08</td><td>{'1.0.4.5'}</td><td>Add support to view <b>List attachments, List link, Stat chart updates</b></td><td></td></tr>
                     <tr><td>2020-10-06</td><td>{'1.0.4.4'}</td><td>Fix Refiners based on numbers, add <b>Math Groupings</b></td><td>+ Bug fixes</td></tr>
                     <tr><td>2020-10-01</td><td>{'1.0.4.3'}</td><td>Add Buttons to Property Pane</td><td></td></tr>
                     <tr><td>2020-10-01</td><td>{'1.0.4.2'}</td><td>Update Prop pane for Toggles and other settings</td><td></td></tr>
