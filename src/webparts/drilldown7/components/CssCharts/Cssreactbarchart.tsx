@@ -287,6 +287,8 @@ public componentDidUpdate(prevProps){
        *                                                                                                                                                                             
        */
 
+      let chartShowStyle = isCollapsed === 1 ? stylesC.chartHide : stylesC.chartShow ;
+      
       let stylesAccor = cdO.stylesChart && cdO.stylesChart[cdO.activeType] ? cdO.stylesChart[cdO.activeType] : null;
 
       let stylesChart = cdO.stylesChart && cdO.stylesChart[cdO.activeType] ? cdO.stylesChart[cdO.activeType] : null;
@@ -559,7 +561,7 @@ public componentDidUpdate(prevProps){
         </div>;
       }
 
-      let chartShowStyle = isCollapsed === 1 ? stylesC.chartHide : stylesC.chartShow ;
+
       return <div className={ stylesC.row } style={ thisRowStyle }>
 
         <div className={ stylesC.chart } style= { stylesChart } >

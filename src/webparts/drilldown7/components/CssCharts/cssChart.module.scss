@@ -168,21 +168,22 @@
       opacity: .65;
     }
 
+    $themeWhite: '[theme:white, default:white]';
+
+    //https://stackoverflow.com/a/8331169
     .chartHide {
+      max-height: 0;
       opacity: 0;
-      height: 0;
-      position: relative;
+      transition: max-height 0.15s ease-out;
+      transition: opacity 0.3s ease-out;
       overflow: hidden;
-      transition: all, .4s ease;
-      display: flex;
     }
-    
+
     .chartShow {
       opacity: 1;
-      position: relative;
-      overflow: hidden;
-      transition: all, .4s ease;
-      display: '';
+      max-height: 500px;
+      transition: opacity 0.15s ease-in;
+      transition: max-height 0.3s ease-in;
     }
     //credit for box shadow:  https://css-tricks.com/snippets/css/css-box-shadow/#example
     .innerShadow {
