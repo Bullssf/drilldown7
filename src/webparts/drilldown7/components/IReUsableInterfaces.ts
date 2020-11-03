@@ -16,11 +16,12 @@ export interface IRefinerStat {
   stat: IRefinerStatType;
   chartTypes: ICSSChartTypes[];
 
+  //collapsed = false shows expanded with accordion, true means collapsed with accordion, undefined means no accordion
+  isCollapsed: 1 | 0 | -1; 
+
   //Consumer webpart number - undefined means it shows up in main webpart, 1 means it will show up in consumer webpart
   consumer: 1 | 2 | 3;  
 
-  //collapsed = false shows expanded with accordion, true means collapsed with accordion, undefined means no accordion
-  collapsed: boolean; 
   eval?: string;
   stylesChart?: any;
   stylesTitle?: any;
@@ -453,6 +454,9 @@ export interface IMyFonts{
     key: string;
     valueIsCount?: boolean;
 
+    //isCollapsed = false shows expanded with accordion, true means isCollapsed with accordion, undefined means no accordion
+    isCollapsed: 1 | 0 | -1; 
+
     barValueAsPercent? : boolean;
     height?: number | string ; //This would be horizonal bar height... one horizontal layer
     barValues?: 'val1' | 'sums' | 'avgs' | 'percents' | string ;
@@ -481,9 +485,6 @@ export interface IMyFonts{
     stylesValue?: any;
     stylesFigure?: any;  //Figure is for the entire array of charts... uses first valid stylesFigure object from array of charts.
     stylesGraphic?: any;  //Figure is for the entire array of charts... uses first valid stylesFigure object from array of charts.
-
-    //collapsed = false shows expanded with accordion, true means collapsed with accordion, undefined means no accordion
-    collapsed: boolean; 
 
   }
   // , IChartSeries, ICharNote

@@ -30,7 +30,7 @@ export function buildCountChartsObject( title: string, callBackID: string, refin
 
         stylesChart: { paddingBottom: 0, marginBottom: 0, marginTop: 0},
 
-        collapsed: null,
+        isCollapsed: 1,
 
     };
 //        console.log('2 Creating Chart data: ',labels );
@@ -56,6 +56,10 @@ export function buildStatChartsArray(  stats: IRefinerStat[], callBackID: string
         stats.map( s => {
             i ++;
             let thisConsumer = s.consumer ? s.consumer : 0 ;
+
+            //2020-11-02: For some isCollapsed is always undefined even when it is showing in the console... therefore defaulting to 1.
+            let isCollapsed : 1 | 0 | -1 = s.isCollapsed ? s.isCollapsed : 1 ;
+            console.log( 'collpased:', s.isCollapsed );
 
             if ( consumer === thisConsumer ) {
 
@@ -114,7 +118,7 @@ export function buildStatChartsArray(  stats: IRefinerStat[], callBackID: string
                     stylesFigure: s.stylesFigure ? s.stylesFigure : null,
                     stylesGraphic: s.stylesGraphic ? s.stylesGraphic : null,
 
-                    collapsed: s.collapsed ? s.collapsed : null,
+                    isCollapsed: isCollapsed ? isCollapsed : null,
 
                 };
         

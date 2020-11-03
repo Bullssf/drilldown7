@@ -62,7 +62,7 @@ export function makeChartData( qty: number, label: string, chartTypes : ICSSChar
     val1: randomNums,
     percents: percents,
     sum: arrSum,
-    collapsed: true,
+    isCollapsed: 1,
   };
 
   return chartData;
@@ -231,7 +231,7 @@ public componentDidUpdate(prevProps){
       let stacked : boolean = null;
       let sortKey : ISeriesSort = null;
       let barValues : string = cdO.barValues;
-      let collapsed : boolean = cdO.collapsed;
+      let isCollapsed : 1 | 0 | -1 = cdO.isCollapsed;
 
       if ( this.state.useProps !== true ) {
 
@@ -487,7 +487,7 @@ public componentDidUpdate(prevProps){
 //        console.log('chartData valueStyle:', valueStyle );
 
         thisChart.push(
-          <span id= { selectedChartID } onClick={ this.onClick.bind(this) }className={ [stylesC.block, stylesC.innerShadow].join(' ') } style={ blockStyle } title={ cd.labels[i] } >
+          <span id= { selectedChartID } onClick={ this.onClick.bind(this) } className={ [stylesC.block, stylesC.innerShadow].join(' ') } style={ blockStyle } title={ cd.labels[i] } >
               <span className={ stylesC.value } style={ valueStyle } >{ barLabel }</span>
           </span>
         ) ;
@@ -530,32 +530,47 @@ public componentDidUpdate(prevProps){
 
       let titleEle1 = null;
       let titleEle2 = null;
+
+      let titleEle2Style = { lineHeight: 0, paddingBottom: '15px', paddingTop: '5px' };
+
       if ( titleLocation === 'side' ) {
         titleEle1 = <h6 style={ thisTitleStyle }>{ theTitle }</h6>;
-        titleEle2 = thisScale === '' ? null : <div style={{ lineHeight: 0, paddingBottom: '15px' }}> { subTitle } </div>;
+        titleEle2 = thisScale === '' ? null : <div style={ titleEle2Style }> { subTitle } </div>;
 
       } else if ( this.props.WebpartWidth > 400 ) {
         titleEle1 = <div style={ thisTitleStyle }>{ theTitle } { thisScale === '' ? subTitle : null } </div>;
-        titleEle2 = thisScale === '' ? null : <div style={{ lineHeight: 0, paddingBottom: '15px' }}> { subTitle } </div>;
+        titleEle2 = thisScale === '' ? null : <div style={ titleEle2Style }> { subTitle } </div>;
 
       } else {
         titleEle1 = <div style={ thisTitleStyle }>{ theTitle } </div>;
-        titleEle2 = <div style={{ lineHeight: 0, paddingBottom: '15px' }}> { subTitle } </div>;
+        titleEle2 = <div style={ titleEle2Style }> { subTitle } </div>;
 
       }
 
-      if ( collapsed === true || collapsed === false ) {
+      if ( isCollapsed === 1 || isCollapsed === 0 ) {
         //show titleEle1 in accordion
-        
+        titleEle1 = <div 
+          id= { selectedChartID } 
+          onClick={ this.onAccordionClick.bind(this) } 
+          className={ [stylesC.titleBlock, stylesC.innerShadow].join(' ') } 
+          style={ {marginBottom: isCollapsed === 0 ? '10px' : '0px' } } 
+          title={ theTitle } >
+            { titleEle1 }
+        </div>;
       }
 
-
+      let chartShowStyle = isCollapsed === 1 ? stylesC.chartHide : stylesC.chartShow ;
       return <div className={ stylesC.row } style={ thisRowStyle }>
+
+        <div className={ stylesC.chart } style= { stylesChart } >
           { titleEle1 }
-          { titleEle2 }
-          <div className={ stylesC.chart } style= { stylesChart } >
-            { thisChart }
+          <div className={ chartShowStyle } style={{  }}>
+            { titleEle2 }
+              { thisChart }
+            </div>
           </div>
+
+
         </div>;
     });
 
@@ -591,6 +606,70 @@ public componentDidUpdate(prevProps){
     );
   }
 
+  private onAccordionClick( item ) {
+
+    
+    //This sends back the correct pivot category which matches the category on the tile.
+    let e: any = event;
+    let value = 'TBD';
+    let chartIdx = null;
+    if ( e.target.innerText != '' ) {
+      value = e.target.innerText;   
+      chartIdx = e.target.id;
+      if ( chartIdx === '' && item.currentTarget ) { chartIdx = item.currentTarget.id; }
+
+    } else if ( item.currentTarget.innerText != '' ){
+      value = item.currentTarget.innerText;
+      chartIdx = item.currentTarget.id;
+      if ( chartIdx === '' && item.target ) { chartIdx = item.target.id; }
+
+    }
+
+    let isAltClick = e.altKey;
+    let isShfitClick = e.shiftKey;
+    let isCtrlClick = e.ctrlKey;
+
+    console.log('clicked:  ' , chartIdx, value );
+    console.log('AltClick, ShfitClick, CtrlClick:', isAltClick, isShfitClick, isCtrlClick );
+
+    if ( this.state.useProps === true && chartIdx !== null ) {
+
+      //[this.props.callBackID , chartIdx.toString()].join('|||');
+      let thisID = chartIdx.split('|||');
+      let thisChartIndex = thisID[1];
+      let callBackID = thisID[0];
+
+      console.log('thisID, thisChartIndex,callBackID' ,thisID , thisChartIndex, callBackID );
+
+      if ( isAltClick === true && this.props.onAltClick ) {
+        this.props.onAltClick( callBackID, value );
+
+      } else {
+
+        let chartData = this.state.chartData;
+
+        console.log('Prev chart type:', chartData[thisChartIndex].isCollapsed );
+        let isCollapsed = chartData[thisChartIndex].isCollapsed;
+
+        //If current chart's accordion ==== true then set to false,   if  it's false then set to true, else leave as null ( no accordion )
+
+        if ( isCollapsed === 1 ) {
+          isCollapsed = 0;
+        } else if ( isCollapsed === 0 ) {
+          isCollapsed = 1;
+        }
+
+        console.log('Collapsed prev vs new:', chartData[thisChartIndex].isCollapsed, isCollapsed );
+        chartData[thisChartIndex].isCollapsed = isCollapsed;
+
+        this.setState({
+          chartData: chartData,
+        });
+
+      }
+    }
+
+  }
 
   private onClick(item) {
 
