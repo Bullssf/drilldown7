@@ -17,7 +17,7 @@ export interface IRefinerStat {
   chartTypes: ICSSChartTypes[];
 
   //collapsed = false shows expanded with accordion, true means collapsed with accordion, undefined means no accordion
-  isCollapsed: 1 | 0 | -1; 
+  isCollapsed: number; 
 
   //Consumer webpart number - undefined means it shows up in main webpart, 1 means it will show up in consumer webpart
   consumer: 1 | 2 | 3;  
@@ -455,7 +455,7 @@ export interface IMyFonts{
     valueIsCount?: boolean;
 
     //isCollapsed = false shows expanded with accordion, true means isCollapsed with accordion, undefined means no accordion
-    isCollapsed: 1 | 0 | -1; 
+    isCollapsed: number; 
 
     barValueAsPercent? : boolean;
     height?: number | string ; //This would be horizonal bar height... one horizontal layer

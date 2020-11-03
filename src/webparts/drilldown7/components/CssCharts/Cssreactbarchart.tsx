@@ -231,7 +231,9 @@ public componentDidUpdate(prevProps){
       let stacked : boolean = null;
       let sortKey : ISeriesSort = null;
       let barValues : string = cdO.barValues;
-      let isCollapsed : 1 | 0 | -1 = cdO.isCollapsed;
+      let isCollapsed : number = cdO.isCollapsed;
+
+      console.log('cssChart cdO - stats:', cdO);
 
       if ( this.state.useProps !== true ) {
 
