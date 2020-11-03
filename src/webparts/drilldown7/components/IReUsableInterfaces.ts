@@ -446,6 +446,60 @@ export interface IMyFonts{
 
   }
 
+  export interface ICSSChartData {
+    
+    axisTitle?: string;
+    val1?: number[];
+    percents?: any[];
+    count?: number;
+    avg?: number;
+    sum?: number;
+    min?: number;
+    max?: number;
+    total?: number; //Added for cssBarCharts to have total "value" on top of chart... like total sum, total avg, total count
+    changes?: any[];
+    changeNotes?: string[];
+    warnNotes?: string[];
+    errorNotes?: string[];
+
+    barValueAsPercent? : boolean;
+    
+    key: string; //This needs to be in data because this is the join of the currently selected refiners which can change.
+
+    labels: any[];
+
+  }
+
+  export interface ICSSChartSettings {
+    title: string;
+
+    chartTypes: ICSSChartTypes[];
+    activeType?: number;
+
+    valueIsCount?: boolean;
+
+    //isCollapsed = false shows expanded with accordion, true means isCollapsed with accordion, undefined means no accordion
+    isCollapsed: number; 
+
+    height?: number | string ; //This would be horizonal bar height... one horizontal layer
+    barValues?: 'val1' | 'sums' | 'avgs' | 'percents' | string ;
+    titleLocation?: 'top' | 'side';
+
+    barColors?: 'blue' | 'green' |'brown' | 'gray' | 'red' | 'brown' | 'themed' | 'custom' ;
+    customColors?: ILabelColor[];
+
+    stylesChart?: any;
+    stylesTitle?: any;
+    stylesRow?: any;
+    stylesBlock?: any;
+    stylesLabel?: any;
+    stylesValue?: any;
+    stylesFigure?: any;  //Figure is for the entire array of charts... uses first valid stylesFigure object from array of charts.
+    stylesGraphic?: any;  //Figure is for the entire array of charts... uses first valid stylesFigure object from array of charts.
+
+  }
+
+  /*
   export interface ICSSChartSeries {
     title: string;
     labels: any[];
@@ -487,6 +541,7 @@ export interface IMyFonts{
     stylesGraphic?: any;  //Figure is for the entire array of charts... uses first valid stylesFigure object from array of charts.
 
   }
+  */
   // , IChartSeries, ICharNote
 
 export interface IChartSeries {

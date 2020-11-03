@@ -40,6 +40,7 @@ export default class CssChart extends React.Component<ICssChartProps, {}> {
             resultSummary =
             <Cssreactbarchart
                 chartData = { chartDataObject.chartData }
+                chartSettings = { chartDataObject.chartSettings }
                 callBackID = { chartDataObject.callBackID }
                 WebpartWidth = { this.props.WebpartWidth }
                 //onAltClick = { this.changeRefinerOrder.bind(this) }

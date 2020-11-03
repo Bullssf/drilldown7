@@ -1,5 +1,5 @@
 import { toAbsoluteUrl } from '@pnp/sp';
-import { ICSSChartSeries, ICSSChartTypes, CSSChartTypes, ISeriesSort, IRefinerLayer, IRefinerStat } from '../IReUsableInterfaces';
+import { ICSSChartSettings, ICSSChartData, ICSSChartTypes, CSSChartTypes, ISeriesSort, IRefinerLayer, IRefinerStat } from '../IReUsableInterfaces';
 
 export function buildCountChartsObject( title: string, callBackID: string, refinerObj: IRefinerLayer , chartTypes: ICSSChartTypes[] ) {
     let resultSummaryObject = null;
@@ -15,22 +15,28 @@ export function buildCountChartsObject( title: string, callBackID: string, refin
 //        console.log('buildCountChartsObject labels:', labels );
 //        console.log('buildCountChartsObject counts:', counts );
 
-    let chartData : ICSSChartSeries = {
+    let chartSettings: ICSSChartSettings = {
         title: title,
-        labels: labels,
         chartTypes: chartTypes,
-        barValueAsPercent: false,
         valueIsCount: true,
 
-        //The string value here must match the object key below
-        barValues: 'val1',
-        val1: counts ,
-        key: chartKey,
-        total: total,
+        //This needs to match the property in chartData that has the data so it's hard coded to match it below
+        barValues: 'val1',  
 
         stylesChart: { paddingBottom: 0, marginBottom: 0, marginTop: 0},
-
         isCollapsed: 1,
+
+    };
+
+    let chartData : ICSSChartData = {
+
+        labels: labels,
+        barValueAsPercent: false,
+        key: chartKey,
+
+        //The property key here must match the barValues key set above
+        val1: counts ,
+        total: total,
 
     };
 //        console.log('2 Creating Chart data: ',labels );
@@ -38,6 +44,7 @@ export function buildCountChartsObject( title: string, callBackID: string, refin
 
     resultSummaryObject = {
         chartData :  [chartData],
+        chartSettings :  [chartSettings],
         callBackID :  callBackID ,
     };
 
@@ -93,34 +100,41 @@ export function buildStatChartsArray(  stats: IRefinerStat[], callBackID: string
                 let defStylesChart = [{ paddingBottom: 0, marginBottom: 0, marginTop: 0}];
                 let defStylesRow = [{ paddingBottom: 0, marginBottom: 0, marginTop: 0}];
 
-                let chartData : ICSSChartSeries = {
+                let chartSettings: ICSSChartSettings = {
                     title: s.title,
-                    labels: labels,
                     chartTypes: s.chartTypes,
-                    barValueAsPercent: false,
 
-                    //The string value here must match the object key below
-                    barValues: 'val1',
-                    val1: finalStats ,
+                    //This needs to match the property in chartData that has the data so it's hard coded to match it below
+                    barValues: 'val1',  
+
+                    stylesChart: s.stylesChart ? s.stylesChart : defStylesChart,
+                    stylesTitle: s.stylesTitle == null ? null : s.stylesTitle,
+                    stylesRow: s.stylesRow ? s.stylesRow : defStylesRow,
+                    stylesBlock: s.stylesBlock == null ? null : s.stylesBlock,
+                    stylesLabel: s.stylesLabel == null ? null : s.stylesLabel,
+                    stylesValue: s.stylesValue == null ? null : s.stylesValue,
+
+                    stylesFigure: s.stylesFigure == null ? null : s.stylesFigure,
+                    stylesGraphic: s.stylesGraphic == null ? null : s.stylesGraphic,
+
+                    isCollapsed: s.isCollapsed == null ? null : s.isCollapsed ,
+
+                };
+
+                let chartData : ICSSChartData = {
+
+                    labels: labels,
+                    barValueAsPercent: false,
                     key: chartKey,
 
+                    //The property key here must match the barValues key set above
+                    val1: finalStats ,
                     total: total,
-                    
-                    stylesChart: s.stylesChart ? s.stylesChart : defStylesChart,
-                    stylesTitle: s.stylesTitle ? s.stylesTitle : null,
-                    stylesRow: s.stylesRow ? s.stylesRow : defStylesRow,
-                    stylesBlock: s.stylesBlock ? s.stylesBlock : null,
-                    stylesLabel: s.stylesLabel ? s.stylesLabel : null,
-                    stylesValue: s.stylesValue ? s.stylesValue : null,
-
-                    stylesFigure: s.stylesFigure ? s.stylesFigure : null,
-                    stylesGraphic: s.stylesGraphic ? s.stylesGraphic : null,
-
-                    isCollapsed: s.isCollapsed ? s.isCollapsed : null,
 
                 };
         
                 resultStatObject = {
+                    chartSettings :  [chartSettings],
                     chartData :  [chartData],
                     callBackID :  callBackID ,
                 };

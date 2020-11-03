@@ -5,7 +5,7 @@ import { ICssreactbarchartProps, ICssreactbarchartState } from './ICssreactbarch
 import { getRandomInt, getRandomFromArray, generateVals, generateTitles, randomDate, getRandomChance } from '../../../../services/randomServices';
 import { sortKeysByOtherKey, convertNumberArrayToRelativePercents } from '../../../../services/arrayServices';
 
-import { ICSSChartSeries, ICSSChartTypes, CSSChartTypes, ISeriesSort } from '../IReUsableInterfaces';
+import { ICSSChartSettings, ICSSChartData, ICSSChartTypes, CSSChartTypes, ISeriesSort } from '../IReUsableInterfaces';
 
 import stylesC from './cssChart.module.scss';
 
@@ -42,6 +42,23 @@ export interface ISimpleData {
 // makeChartData ,
 
 
+export function makeChartSettings( qty: number, label: string, chartTypes : ICSSChartTypes[] = [] ) {
+
+  let randomNums = generateVals( qty, 35, 90 );
+  let randomTitles = generateTitles( label, qty );
+
+  if ( chartTypes === [] ) { chartTypes = CSSChartTypes; }
+
+  let chartData: ICSSChartSettings = {
+    title: label,
+    activeType: getRandomInt( 0,CSSChartTypes.length -1 ),
+    chartTypes: chartTypes,
+    isCollapsed: 1,
+  };
+
+  return chartData;
+
+}
 export function makeChartData( qty: number, label: string, chartTypes : ICSSChartTypes[] = [] ) {
 
   let randomNums = generateVals( qty, 35, 90 );
@@ -51,18 +68,12 @@ export function makeChartData( qty: number, label: string, chartTypes : ICSSChar
 
   let chartKey : string = randomTitles.join('') + randomNums.join('');
 
-  if ( chartTypes === [] ) { chartTypes = CSSChartTypes; }
-
-  let chartData: ICSSChartSeries = {
-    title: label,
-    activeType: getRandomInt( 0,CSSChartTypes.length -1 ),
-    key: chartKey,
-    chartTypes: chartTypes,
+  let chartData: ICSSChartData = {
     labels: randomTitles,
     val1: randomNums,
     percents: percents,
     sum: arrSum,
-    isCollapsed: 1,
+    key: chartKey,
   };
 
   return chartData;
@@ -89,16 +100,14 @@ const randomPallets = [ColorsBlue, ColorsBrown, ColorsGray, ColorsGreen, ColorsR
 
 export default class Cssreactbarchart extends React.Component<ICssreactbarchartProps, ICssreactbarchartState> {
 
-  private getCurrentChartData( chartDataB4 : ICSSChartSeries[] ) {
+  private getCurrentChartData( chartDataB4 : ICSSChartData[] ) {
 
-    let chartDataAfter : ICSSChartSeries[] = [] ;
+    let chartDataAfter : ICSSChartData[] = [] ;
 
     if ( chartDataB4 && chartDataB4.length > 0 ) {
       chartDataB4.map( cd => {
         chartDataAfter.push( JSON.parse( JSON.stringify( cd ) ) ) ;
       });
-      //set activeType
-      chartDataAfter.map( cd => { cd.activeType = 0; });
 
     } else { 
       chartDataAfter.push( makeChartData(getRandomInt(5 , 30), 'Category') ) ;
@@ -110,11 +119,32 @@ export default class Cssreactbarchart extends React.Component<ICssreactbarchartP
 
   }
 
+  private getCurrentChartSettings( chartSettingsB4 : ICSSChartSettings[] ) {
+
+    let chartSettingsAfter : ICSSChartSettings[] = [] ;
+
+    if ( chartSettingsB4 && chartSettingsB4.length > 0 ) {
+      chartSettingsB4.map( cd => {
+        chartSettingsAfter.push( JSON.parse( JSON.stringify( cd ) ) ) ;
+      });
+      //set activeType
+      chartSettingsAfter.map( cd => { cd.activeType = 0; });
+
+    } else { 
+      chartSettingsAfter.push( makeChartSettings(getRandomInt(5 , 30), 'Category') ) ;
+      chartSettingsAfter.push( makeChartSettings(getRandomInt(5 , 30), 'Item') ) ;
+      chartSettingsAfter.push( makeChartSettings(getRandomInt(5 , 20), 'Product') ) ;
+    }
+
+    return chartSettingsAfter;
+
+  }
 
   public constructor(props:ICssreactbarchartProps){
     super(props);
 
-    let chartData : ICSSChartSeries[] = this.getCurrentChartData(this.props.chartData);
+    let chartData : ICSSChartData[] = this.getCurrentChartData(this.props.chartData);
+    let chartSettings : ICSSChartSettings[] = this.getCurrentChartSettings(this.props.chartSettings);
 
     let chartKeys = chartData.map( cd => {
       return cd.key;
@@ -124,6 +154,7 @@ export default class Cssreactbarchart extends React.Component<ICssreactbarchartP
 
     this.state = { 
       chartData: chartData,
+      chartSettings: chartSettings,
       useProps: useProps,
       chartKeys: chartKeys,
     };
@@ -150,6 +181,9 @@ export default class Cssreactbarchart extends React.Component<ICssreactbarchartP
 public componentDidUpdate(prevProps){
 
     let rebuildPart = false;
+    let settingsChanged = false;
+    let dataChanged = false;
+    let otherChanged = false;
     console.log('DIDUPDATE setting chartData:', this.props.chartData);
 
     let prevChartKeys = prevProps.chartData.map( cd => {
@@ -163,10 +197,19 @@ public componentDidUpdate(prevProps){
     if ( prevChartKeys !== newChartKeys ) {
         rebuildPart = true;
     }
+
+    if ( prevProps.chartSettings !== this.props.chartSettings ) {
+      settingsChanged = true;
+      rebuildPart = true;
+    }
+    if ( prevProps.chartData !== this.props.chartData ) {
+      dataChanged = true;
+      rebuildPart = true;
+    }
     console.log('DIDUPDATE setting chartData:', rebuildPart );
 
     if (rebuildPart === true) {
-      this._updateStateOnPropsChange();
+      this._updateStateOnPropsChange( settingsChanged, dataChanged, rebuildPart );
     }
   }
 
@@ -196,7 +239,8 @@ public componentDidUpdate(prevProps){
 
     // Styles & Chart code for chart compliments of:  https://codepen.io/richardramsay/pen/ZKmQJv?editors=1010
 
-    let chartData: ICSSChartSeries[] = this.state.chartData;
+    let chartData: ICSSChartData[] = this.state.chartData;
+    let chartSettings : ICSSChartSettings[] = this.state.chartSettings;
 
     /***
      *    db       .d88b.   .d88b.  d8888b.       .o88b. db   db  .d8b.  d8888b. d888888b .d8888. 
@@ -218,20 +262,22 @@ public componentDidUpdate(prevProps){
     let hasStylesGraphic = false;
     let defaultStylesGraphic = null;
 
-    let charts = chartData.map( cdO => {
+    let charts = chartData.map( ( cdO, j ) => {
       chartIdx ++ ;
 //      console.log('buildingLabels:', cdO.labels.join(', '));
       let selectedChartID = [this.props.callBackID , chartIdx.toString()].join('|||');
 
-      //2020-09-24:  Added this because the value array was getting mysteriously overwritten to nulls all the time.
-      cdO[cdO.barValues] = JSON.parse(JSON.stringify(cdO[cdO.barValues]));
-      cdO.percents = convertNumberArrayToRelativePercents(cdO[cdO.barValues]);
-
       let sortOrder : ISeriesSort = 'asis';
       let stacked : boolean = null;
       let sortKey : ISeriesSort = null;
-      let barValues : string = cdO.barValues;
-      let isCollapsed : number = cdO.isCollapsed;
+      let thisChartsSettings = chartSettings[j];
+      let barValues : string = thisChartsSettings.barValues;
+      let isCollapsed : number = thisChartsSettings.isCollapsed;
+      let activeType = thisChartsSettings.activeType;
+
+      //2020-09-24:  Added this because the value array was getting mysteriously overwritten to nulls all the time.
+      chartData[thisChartsSettings.barValues] = JSON.parse(JSON.stringify(cdO[barValues]));
+      cdO.percents = convertNumberArrayToRelativePercents(cdO[barValues]);
 
       console.log('cssChart cdO - stats:', cdO);
 
@@ -239,7 +285,7 @@ public componentDidUpdate(prevProps){
 
       }
       
-      let activeChartType = cdO.chartTypes[cdO.activeType] ;
+      let activeChartType = thisChartsSettings.chartTypes[activeType] ;
       if ( activeChartType === 'pareto-asc' ) {
         sortOrder = 'asc' ;
         sortKey = barValues;
@@ -291,17 +337,17 @@ public componentDidUpdate(prevProps){
 
       let chartShowStyle = isCollapsed === 1 ? stylesC.chartHide : stylesC.chartShow ;
       
-      let stylesAccor = cdO.stylesChart && cdO.stylesChart[cdO.activeType] ? cdO.stylesChart[cdO.activeType] : null;
+      let stylesAccor = thisChartsSettings.stylesChart && thisChartsSettings.stylesChart[activeType] ? thisChartsSettings.stylesChart[activeType] : null;
 
-      let stylesChart = cdO.stylesChart && cdO.stylesChart[cdO.activeType] ? cdO.stylesChart[cdO.activeType] : null;
-      let stylesRow = cdO.stylesRow && cdO.stylesRow[cdO.activeType] ? cdO.stylesRow[cdO.activeType] : null;
-      let stylesTitle = cdO.stylesTitle && cdO.stylesTitle[cdO.activeType] ? cdO.stylesTitle[cdO.activeType] : null;
-      let stylesBlock = cdO.stylesBlock && cdO.stylesBlock[cdO.activeType] && cdO.stylesBlock[cdO.activeType] ? cdO.stylesBlock[cdO.activeType] : null;
-      let stylesLabel = cdO.stylesLabel && cdO.stylesLabel[cdO.activeType] ? cdO.stylesLabel[cdO.activeType] : null;
-      let stylesValue = cdO.stylesValue && cdO.stylesValue[cdO.activeType] ? cdO.stylesValue[cdO.activeType] : null;
+      let stylesChart = thisChartsSettings.stylesChart && thisChartsSettings.stylesChart[activeType] ? thisChartsSettings.stylesChart[activeType] : null;
+      let stylesRow = thisChartsSettings.stylesRow && thisChartsSettings.stylesRow[activeType] ? thisChartsSettings.stylesRow[activeType] : null;
+      let stylesTitle = thisChartsSettings.stylesTitle && thisChartsSettings.stylesTitle[activeType] ? thisChartsSettings.stylesTitle[activeType] : null;
+      let stylesBlock = thisChartsSettings.stylesBlock && thisChartsSettings.stylesBlock[activeType] ? thisChartsSettings.stylesBlock[activeType] : null;
+      let stylesLabel = thisChartsSettings.stylesLabel && thisChartsSettings.stylesLabel[activeType] ? thisChartsSettings.stylesLabel[activeType] : null;
+      let stylesValue = thisChartsSettings.stylesValue && thisChartsSettings.stylesValue[activeType] ? thisChartsSettings.stylesValue[activeType] : null;
 
-      let stylesFigure = cdO.stylesFigure && cdO.stylesFigure[cdO.activeType] ? cdO.stylesFigure[cdO.activeType] : null;
-      let stylesGraphic = cdO.stylesGraphic && cdO.stylesGraphic[cdO.activeType] ? cdO.stylesGraphic[cdO.activeType] : null;
+      let stylesFigure = thisChartsSettings.stylesFigure && thisChartsSettings.stylesFigure[activeType] ? thisChartsSettings.stylesFigure[activeType] : null;
+      let stylesGraphic = thisChartsSettings.stylesGraphic && thisChartsSettings.stylesGraphic[activeType] ? thisChartsSettings.stylesGraphic[activeType] : null;
 
       if ( stylesFigure !== null && hasStylesFigure === false && defaultStylesFigure === null ) {
         hasStylesFigure = true;
@@ -319,17 +365,17 @@ public componentDidUpdate(prevProps){
 
 //      let sortOrder = this.state.useProps === true && cdO.sortOrder !== undefined ? cdO.sortOrder : getRandomFromArray([false,'asc','dec']);
       let barValueAsPercent = this.state.useProps === true && cdO.barValueAsPercent !== undefined ? cdO.barValueAsPercent : getRandomFromArray([true,false]);
-      let height = this.state.useProps === true && cdO.height ? cdO.height : heightDef;
-      let titleLocation = this.state.useProps === true && cdO.titleLocation ? cdO.titleLocation : titleLocationDef;
+      let height = this.state.useProps === true && thisChartsSettings.height ? thisChartsSettings.height : heightDef;
+      let titleLocation = this.state.useProps === true && thisChartsSettings.titleLocation ? thisChartsSettings.titleLocation : titleLocationDef;
       let stateHeight = stacked === false ? "40px" : height;
       let randomPallet = getRandomFromArray(randomPallets);
-      let randomizeColors = this.state.useProps === true && cdO.barColors ? false : true ;
+      let randomizeColors = this.state.useProps === true && thisChartsSettings.barColors ? false : true ;
 
       if ( stacked === false && cdO[barValues].length > 15 ) { stateHeight = '20px'; }
       else if ( stacked === false && cdO[barValues].length > 8 ) { stateHeight = '30px'; }
       else { stateHeight = '40px'; }
 
-      let cd : ICSSChartSeries = null;
+      let cd : ICSSChartData = null;
 
       if ( sortOrder !== 'asis' ) {
         let otherKeysToSort = ['labels', barValues];
@@ -422,7 +468,7 @@ public componentDidUpdate(prevProps){
           barNumber = ( chartValueArray[i] / minDivisor ).toFixed(1) ;
           
         } else {
-          if ( cdO.valueIsCount ) {
+          if ( thisChartsSettings.valueIsCount ) {
             barNumber = chartValueArray[i];
           } else if ( chartValueArray[i] == null || chartValueArray[i] == undefined ) {
             barNumber = null;
@@ -521,7 +567,7 @@ public componentDidUpdate(prevProps){
       if ( minDivisor === 1000000 ) {  thisScale = ' in Millions' ; }
       else if ( minDivisor === 1000 ) {  thisScale = ' in Thousands' ; }
 
-      let theTitle = cd.title + thisScale;
+      let theTitle = thisChartsSettings.title + thisScale;
 
       let totalE3 = 1;
       let totalScale = '';
@@ -650,10 +696,10 @@ public componentDidUpdate(prevProps){
 
       } else {
 
-        let chartData = this.state.chartData;
+        let chartSettings = this.state.chartSettings;
 
-        console.log('Prev chart type:', chartData[thisChartIndex].isCollapsed );
-        let isCollapsed = chartData[thisChartIndex].isCollapsed;
+        console.log('Prev chart type:', chartSettings[thisChartIndex].isCollapsed );
+        let isCollapsed = chartSettings[thisChartIndex].isCollapsed;
 
         //If current chart's accordion ==== true then set to false,   if  it's false then set to true, else leave as null ( no accordion )
 
@@ -663,11 +709,11 @@ public componentDidUpdate(prevProps){
           isCollapsed = 1;
         }
 
-        console.log('Collapsed prev vs new:', chartData[thisChartIndex].isCollapsed, isCollapsed );
-        chartData[thisChartIndex].isCollapsed = isCollapsed;
+        console.log('Collapsed prev vs new:', chartSettings[thisChartIndex].isCollapsed, isCollapsed );
+        chartSettings[thisChartIndex].isCollapsed = isCollapsed;
 
         this.setState({
-          chartData: chartData,
+          chartSettings: chartSettings,
         });
 
       }
@@ -714,19 +760,19 @@ public componentDidUpdate(prevProps){
 
       } else {
 
-        let chartData = this.state.chartData;
+        let chartSettings = this.state.chartSettings;
 
-        console.log('Prev chart type:', chartData[thisChartIndex].chartTypes[ chartData[thisChartIndex].activeType ] );
+        console.log('Prev chart type:', chartSettings[thisChartIndex].chartTypes[ chartSettings[thisChartIndex].activeType ] );
 
-        let chartTypesCount = chartData[thisChartIndex].chartTypes.length;
-        let activeType = chartData[thisChartIndex].activeType;
+        let chartTypesCount = chartSettings[thisChartIndex].chartTypes.length;
+        let activeType = chartSettings[thisChartIndex].activeType;
         let nextType =  chartTypesCount - 1 === activeType ? 0 : activeType + 1;
-        chartData[thisChartIndex].activeType = nextType;
+        chartSettings[thisChartIndex].activeType = nextType;
 
-        console.log('Prev chart type:', chartData[thisChartIndex].chartTypes[ chartData[thisChartIndex].activeType ] );
+        console.log('Prev chart type:', chartSettings[thisChartIndex].chartTypes[ chartSettings[thisChartIndex].activeType ] );
 
         this.setState({
-          chartData: chartData,
+          chartSettings: chartSettings,
         });
 
       }
@@ -747,17 +793,20 @@ public componentDidUpdate(prevProps){
             </div>
    */
 
-    private _updateStateOnPropsChange(): void {
+    private _updateStateOnPropsChange( settingsChanged: boolean, dataChanged: boolean, other : boolean ): void {
 
-      let chartData : ICSSChartSeries[] = this.getCurrentChartData(this.props.chartData);
+      let chartData : ICSSChartData[] = dataChanged !== true ? this.state.chartData : this.getCurrentChartData(this.props.chartData);
+      let chartSettings : ICSSChartSettings[] = settingsChanged !== true ? this.state.chartSettings : this.getCurrentChartSettings(this.props.chartSettings);
 
-      let chartKeys = chartData.map( cd => {
-        return cd.key;
-      }).join('');
+      let chartKeys = dataChanged !== true ? this.state.chartKeys :
+        chartData.map( cd => {
+            return cd.key;
+        }).join('');
   
       let useProps = this.props.chartData !== null && this.props.chartData !== undefined && this.props.chartData.length > 0 ? true : false;
   
       this.setState({
+        chartSettings: chartSettings,
         chartData: chartData,
         useProps: useProps,
         chartKeys: chartKeys,

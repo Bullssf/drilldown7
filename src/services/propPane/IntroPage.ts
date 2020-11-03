@@ -348,8 +348,8 @@ export class IntroPage {
           
           PropertyPaneToggle('togOtherChartpart', {
             label: 'Where to show Summary Charts',
-            offText: 'This webpart',
-            onText: 'Other webpart',
+            offText: 'Default this webpart',
+            onText: 'Always other webpart',
           }),
           
 

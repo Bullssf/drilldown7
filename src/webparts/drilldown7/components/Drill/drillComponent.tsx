@@ -32,7 +32,7 @@ import { createAdvancedContentChoices } from '../fields/choiceFieldBuilder';
 import { IContentsToggles, makeToggles } from '../fields/toggleFieldBuilder';
 
 import { IPickedList, IPickedWebBasic, IMyPivots, IPivot,  ILink, IUser, IMyProgress, IMyIcons, IMyFonts, IChartSeries, 
-    ICharNote, IRefinerRules, RefineRuleValues, ICustViewDef, IRefinerStat, ICSSChartSeries, ICSSChartTypes } from '../IReUsableInterfaces';
+    ICharNote, IRefinerRules, RefineRuleValues, ICustViewDef, IRefinerStat, ICSSChartSettings, ICSSChartData, ICSSChartTypes } from '../IReUsableInterfaces';
 
 import { createLink } from '../HelpInfo/AllLinks';
 
@@ -420,6 +420,7 @@ export default class DrillDown extends React.Component<IDrillDownProps, IDrillDo
         resultSummary = 
         <Cssreactbarchart 
             chartData = { resultSummaryObject.chartData }
+            chartSettings = { resultSummaryObject.chartSettings }
             callBackID = { resultSummaryObject.callBackID }
             WebpartWidth = { this.state.WebpartWidth }
             //onAltClick = { this.changeRefinerOrder.bind(this) }
@@ -457,6 +458,7 @@ export default class DrillDown extends React.Component<IDrillDownProps, IDrillDo
                 statChart = 
                 <Cssreactbarchart 
                     chartData = { chartDataObject.chartData }
+                    chartSettings = { chartDataObject.chartSettings }
                     callBackID = { chartDataObject.callBackID }
                     WebpartWidth = { this.state.WebpartWidth }
                     //onAltClick = { this.changeRefinerOrder.bind(this) }
