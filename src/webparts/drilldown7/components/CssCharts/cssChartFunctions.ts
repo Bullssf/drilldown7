@@ -30,6 +30,8 @@ export function buildCountChartsObject( title: string, callBackID: string, refin
 
         stylesChart: { paddingBottom: 0, marginBottom: 0, marginTop: 0},
 
+        collapsed: null,
+
     };
 //        console.log('2 Creating Chart data: ',labels );
 //        console.log('2 Creating Chart data: ',counts );
@@ -111,6 +113,8 @@ export function buildStatChartsArray(  stats: IRefinerStat[], callBackID: string
 
                     stylesFigure: s.stylesFigure ? s.stylesFigure : null,
                     stylesGraphic: s.stylesGraphic ? s.stylesGraphic : null,
+
+                    collapsed: s.collapsed ? s.collapsed : null,
 
                 };
         

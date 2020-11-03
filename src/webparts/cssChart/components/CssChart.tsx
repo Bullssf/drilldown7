@@ -41,6 +41,7 @@ export default class CssChart extends React.Component<ICssChartProps, {}> {
             <Cssreactbarchart
                 chartData = { chartDataObject.chartData }
                 callBackID = { chartDataObject.callBackID }
+                WebpartWidth = { this.props.WebpartWidth }
                 //onAltClick = { this.changeRefinerOrder.bind(this) }
             ></Cssreactbarchart>;
 
@@ -78,6 +79,7 @@ public componentDidUpdate(prevProps){
 
     if ( prevProps.cssChartDD !== this.props.cssChartDD) {  rebuildPart = true ; }
     if ( prevProps.stylesChartTitle !== this.props.stylesChartTitle) {  rebuildPart = true ; }
+    if ( prevProps.WebpartWidth !== this.props.WebpartWidth) {  rebuildPart = true ; }    
     
     if (rebuildPart === true) {
       this._updateStateOnPropsChange();

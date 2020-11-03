@@ -62,6 +62,7 @@ export function makeChartData( qty: number, label: string, chartTypes : ICSSChar
     val1: randomNums,
     percents: percents,
     sum: arrSum,
+    collapsed: true,
   };
 
   return chartData;
@@ -230,6 +231,7 @@ public componentDidUpdate(prevProps){
       let stacked : boolean = null;
       let sortKey : ISeriesSort = null;
       let barValues : string = cdO.barValues;
+      let collapsed : boolean = cdO.collapsed;
 
       if ( this.state.useProps !== true ) {
 
@@ -526,11 +528,27 @@ public componentDidUpdate(prevProps){
       let chartTotal = cdO.total ? ( cdO.total / totalE3 ).toFixed(1) + totalScale + ' in ': null;
       let subTitle = <span style={{paddingLeft: '15px', fontSize: 'small'}}>( { chartTotal } { barCount} categories ) </span>;
 
-      let titleEle1 = titleLocation === 'side' ?
-        <h6 style={ thisTitleStyle }>{ theTitle }</h6> :
-        <div style={ thisTitleStyle }>{ theTitle } { thisScale === '' ? subTitle : null } </div>;
+      let titleEle1 = null;
+      let titleEle2 = null;
+      if ( titleLocation === 'side' ) {
+        titleEle1 = <h6 style={ thisTitleStyle }>{ theTitle }</h6>;
+        titleEle2 = thisScale === '' ? null : <div style={{ lineHeight: 0, paddingBottom: '15px' }}> { subTitle } </div>;
 
-      let titleEle2 = thisScale === '' ? null : <div style={{ lineHeight: 0, paddingBottom: '15px' }}> { subTitle } </div>;
+      } else if ( this.props.WebpartWidth > 400 ) {
+        titleEle1 = <div style={ thisTitleStyle }>{ theTitle } { thisScale === '' ? subTitle : null } </div>;
+        titleEle2 = thisScale === '' ? null : <div style={{ lineHeight: 0, paddingBottom: '15px' }}> { subTitle } </div>;
+
+      } else {
+        titleEle1 = <div style={ thisTitleStyle }>{ theTitle } </div>;
+        titleEle2 = <div style={{ lineHeight: 0, paddingBottom: '15px' }}> { subTitle } </div>;
+
+      }
+
+      if ( collapsed === true || collapsed === false ) {
+        //show titleEle1 in accordion
+        
+      }
+
 
       return <div className={ stylesC.row } style={ thisRowStyle }>
           { titleEle1 }

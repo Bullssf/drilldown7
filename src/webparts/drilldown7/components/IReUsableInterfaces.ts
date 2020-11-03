@@ -482,6 +482,9 @@ export interface IMyFonts{
     stylesFigure?: any;  //Figure is for the entire array of charts... uses first valid stylesFigure object from array of charts.
     stylesGraphic?: any;  //Figure is for the entire array of charts... uses first valid stylesFigure object from array of charts.
 
+    //collapsed = false shows expanded with accordion, true means collapsed with accordion, undefined means no accordion
+    collapsed: boolean; 
+
   }
   // , IChartSeries, ICharNote
 
