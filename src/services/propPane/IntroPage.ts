@@ -345,6 +345,13 @@ export class IntroPage {
             offText: 'No',
             onText: 'Yes',
           }),
+          
+          PropertyPaneToggle('togOtherChartpart', {
+            label: 'Where to show Summary Charts',
+            offText: 'Default this webpart',
+            onText: 'Always other webpart',
+          }),
+          
 
           PropertyPaneToggle('togStats', {
             label: 'Show Statistics',

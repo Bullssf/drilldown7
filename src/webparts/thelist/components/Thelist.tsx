@@ -73,7 +73,8 @@ public componentDidUpdate(prevProps){
    console.log('DIDUPDATE setting:', this.props);
 
     if ( prevProps.listPropsDD !== this.props.listPropsDD) {  rebuildPart = true ; }
-
+    if ( prevProps.WebpartWidth !== this.props.WebpartWidth) {  rebuildPart = true ; }    
+    
     if (rebuildPart === true) {
       this._updateStateOnPropsChange();
     }

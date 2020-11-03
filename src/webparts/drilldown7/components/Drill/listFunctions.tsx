@@ -24,8 +24,10 @@ import { IDrillItemInfo } from './drillComponent';
 
 function getBestFitView (  viewDefs: ICustViewDef[], currentWidth: number ) {
     let result : ICustViewDef = null;
+    let minResult : ICustViewDef = null;
 
     let maxViewWidth: number = 0 ;
+    let minViewWidth: number = 10000;
 
     viewDefs.map( vd => {
         let thisWidth: number = typeof vd.minWidth === 'string' ? parseInt(vd.minWidth,10) : vd.minWidth;
@@ -34,6 +36,19 @@ function getBestFitView (  viewDefs: ICustViewDef[], currentWidth: number ) {
             maxViewWidth = thisWidth;
         }
     });
+
+    //This section was created in case the webpart width is smaller than the smallest defined width
+    if ( result === null ) {
+        console.log('getAppropriateViewFields ERR:  User defined are to big for this webpart width.');
+        viewDefs.map( vd => {
+            let thisWidth: number = typeof vd.minWidth === 'string' ? parseInt(vd.minWidth,10) : vd.minWidth;
+            if ( thisWidth < minViewWidth ) {
+                minResult = vd;
+                minViewWidth = thisWidth;
+            }
+        });
+        result = minResult;
+    }
 
     console.log('getAppropriateViewFields: currentWidth = ', currentWidth);
     console.log('getAppropriateViewFields: Width >= ', maxViewWidth);

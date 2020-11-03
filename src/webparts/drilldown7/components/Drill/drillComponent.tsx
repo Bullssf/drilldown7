@@ -32,7 +32,7 @@ import { createAdvancedContentChoices } from '../fields/choiceFieldBuilder';
 import { IContentsToggles, makeToggles } from '../fields/toggleFieldBuilder';
 
 import { IPickedList, IPickedWebBasic, IMyPivots, IPivot,  ILink, IUser, IMyProgress, IMyIcons, IMyFonts, IChartSeries, 
-    ICharNote, IRefinerRules, RefineRuleValues, ICustViewDef, IRefinerStat, ICSSChartSeries, ICSSChartTypes } from '../IReUsableInterfaces';
+    ICharNote, IRefinerRules, RefineRuleValues, ICustViewDef, IRefinerStat, ICSSChartSettings, ICSSChartData, ICSSChartTypes } from '../IReUsableInterfaces';
 
 import { createLink } from '../HelpInfo/AllLinks';
 
@@ -222,6 +222,7 @@ export interface IDrillDownProps {
         togCountChart: boolean;
         togStats: boolean;
         togOtherListview:  boolean;
+        togOtherChartpart:  boolean;
     };
 
     performance: {
@@ -419,7 +420,9 @@ export default class DrillDown extends React.Component<IDrillDownProps, IDrillDo
         resultSummary = 
         <Cssreactbarchart 
             chartData = { resultSummaryObject.chartData }
+            chartSettings = { resultSummaryObject.chartSettings }
             callBackID = { resultSummaryObject.callBackID }
+            WebpartWidth = { this.state.WebpartWidth }
             //onAltClick = { this.changeRefinerOrder.bind(this) }
         ></Cssreactbarchart>;
 
@@ -455,7 +458,9 @@ export default class DrillDown extends React.Component<IDrillDownProps, IDrillDo
                 statChart = 
                 <Cssreactbarchart 
                     chartData = { chartDataObject.chartData }
+                    chartSettings = { chartDataObject.chartSettings }
                     callBackID = { chartDataObject.callBackID }
+                    WebpartWidth = { this.state.WebpartWidth }
                     //onAltClick = { this.changeRefinerOrder.bind(this) }
                 ></Cssreactbarchart>;
 
@@ -573,10 +578,17 @@ export default class DrillDown extends React.Component<IDrillDownProps, IDrillDo
      *                                                                                                                                          
      */
 
-    private createDrillList(webURL: string, name: string, isLibrary: boolean, refiners: string[], rules: string, stats: string, viewDefs: ICustViewDef[], title: string = null) {
+    private createDrillList(webURL: string, name: string, isLibrary: boolean, refiners: string[], rules: string, stats: string, viewDefs: ICustViewDef[], togOtherChartpart: boolean, title: string = null) {
 
         let refinerRules = this.createEmptyRefinerRules( rules );
-        let refinerStats = this.createRefinerRuleCalcs( stats );
+        let refinerStats: IRefinerStat[] = this.createRefinerRuleCalcs( stats );
+
+        if ( togOtherChartpart === true && refinerStats && refinerStats.length > 0 ) {
+            //set consumer = 1 to all charts that are not explicitly defined.
+            refinerStats.map( s => {
+                if ( s.consumer === undefined || s.consumer === null ) { s.consumer = 1 ; }
+            });
+        }
 
         let list: IDrillList = {
             title: title,
@@ -632,7 +644,7 @@ export default class DrillDown extends React.Component<IDrillDownProps, IDrillDo
         /**
          * This is copied later in code when you have to call the data in case something changed.
          */
-        let drillList = this.createDrillList(this.props.webURL, this.props.listName, false, this.props.refiners, this.props.rules, this.props.stats, this.props.viewDefs, '');
+        let drillList = this.createDrillList(this.props.webURL, this.props.listName, false, this.props.refiners, this.props.rules, this.props.stats, this.props.viewDefs, this.props.toggles.togOtherChartpart, '');
         let errMessage = drillList.refinerRules === undefined ? 'Invalid Rule set: ' +  this.props.rules : '';
         if ( drillList.refinerRules === undefined ) { drillList.refinerRules = [[],[],[]] ; } 
 
@@ -999,6 +1011,7 @@ public componentDidUpdate(prevProps){
                 let buildStats = this.state.drillList.refinerStats && this.state.drillList.refinerStats.length > 0 ? true : false;
                 let buildCount = this.state.showCountChart;
 
+                let statsVisible = this.props.toggles.togOtherChartpart === true || this.props.toggles.togStats === true ? true : false;
                 let textMaxRefinersToShow = 0;
                 let childIndex0 = null;
                 let childIndex1 = null;
@@ -1016,7 +1029,7 @@ public componentDidUpdate(prevProps){
                     if ( buildStats ) {  statRefinerObject = this.state.refinerObj.childrenObjs[childIndex0].childrenObjs[childIndex1]; }
                 }
 
-                if ( this.state.showCountChart === true || this.props.toggles.togStats === true) {
+                if ( this.state.showCountChart === true || statsVisible === true ) {
                     if ( buildCount ) { countCharts.push( this.buildCountCharts( this.state.refiners[0], 'refiner0' , this.state.refinerObj, RefinerChartTypes ) ); }
                     if ( textMaxRefinersToShow >= 1 ) {
                         if ( buildCount ) {  countCharts.push( this.buildCountCharts( this.state.refiners[1], 'refiner1' , this.state.refinerObj.childrenObjs[childIndex0], RefinerChartTypes ) ); }
@@ -1026,7 +1039,7 @@ public componentDidUpdate(prevProps){
                     }
 
                     if ( countCharts.length === 0 ) { countCharts = null ; }
-                    if ( buildStats && this.props.toggles.togStats === true && statRefinerObject && statRefinerObject.childrenKeys.length > 0  ) {
+                    if ( buildStats && statsVisible === true && statRefinerObject && statRefinerObject.childrenKeys.length > 0  ) {
                         let statChartArray = buildStatChartsArray( this.state.drillList.refinerStats, 'summaries', statRefinerObject );
                         statCharts = this.buildStatCharts( statChartArray );
 
@@ -1170,7 +1183,7 @@ public componentDidUpdate(prevProps){
         /**
          * This is copied from constructor when you have to call the data in case something changed.
          */
-        let drillList = this.createDrillList(this.props.webURL, this.props.listName, false, this.props.refiners, this.state.rules, this.props.stats, this.props.viewDefs, '');
+        let drillList = this.createDrillList(this.props.webURL, this.props.listName, false, this.props.refiners, this.state.rules, this.props.stats, this.props.viewDefs, this.props.toggles.togOtherChartpart, '');
         let errMessage = drillList.refinerRules === undefined ? 'Invalid Rule set: ' +  this.state.rules : '';
         if ( drillList.refinerRules === undefined ) { drillList.refinerRules = [[],[],[]] ; } 
 
@@ -1535,7 +1548,7 @@ public componentDidUpdate(prevProps){
 
     }
 
-    let drillList = this.createDrillList(this.props.webURL, this.props.listName, false, refiners, JSON.stringify(refinerRulesNew), this.props.stats, this.props.viewDefs, '');
+    let drillList = this.createDrillList(this.props.webURL, this.props.listName, false, refiners, JSON.stringify(refinerRulesNew), this.props.stats, this.props.viewDefs, this.props.toggles.togOtherChartpart, '');
     let errMessage = drillList.refinerRules === undefined ? 'Invalid Rule set: ' +  this.state.rules : '';
     if ( drillList.refinerRules === undefined ) { drillList.refinerRules = [[],[],[]] ; }
 

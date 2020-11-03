@@ -84,6 +84,9 @@ export default class CssChartWebPart extends BaseClientSideWebPart<ICssChartWebP
           cssChartDD: pickedProps,
           stylesChartTitle: this.properties.stylesChartTitle,
 
+          WebpartHeight: this.domElement.getBoundingClientRect().height ,
+          WebpartWidth:  this.domElement.getBoundingClientRect().width - 50 ,
+
           //For Webpart Title component
           title: this.properties.title,
           displayMode: this.displayMode,

@@ -151,6 +151,40 @@
       }
     }
 
+    .titleBlock {
+      display: block;
+      //height: 100px;
+      //color: #fff;  //Sets color of text on bar ( like 55%)
+      //font-size: .75em;
+      //float: left;    //Makes bars stack to right, set to Inherrit makes bars vertial (like pareto)
+      background-color: #334D5C;  //Sets default bar color
+      position: relative;
+      overflow: hidden;
+      opacity: 1;
+      transition: opacity, .4s ease;
+      cursor: pointer;
+    }
+    .titleBlock:hover {
+      opacity: .65;
+    }
+
+    $themeWhite: '[theme:white, default:white]';
+
+    //https://stackoverflow.com/a/8331169
+    .chartHide {
+      max-height: 0;
+      opacity: 0;
+      transition: max-height 0.15s ease-out;
+      transition: opacity 0.3s ease-out;
+      overflow: hidden;
+    }
+
+    .chartShow {
+      opacity: 1;
+      max-height: 500px;
+      transition: opacity 0.15s ease-in;
+      transition: max-height 0.3s ease-in;
+    }
     //credit for box shadow:  https://css-tricks.com/snippets/css/css-box-shadow/#example
     .innerShadow {
       -moz-box-shadow:    inset 0 0 10px #000000cc;

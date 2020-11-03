@@ -1,7 +1,9 @@
-import { ICSSChartSeries, ICSSChartTypes } from '../IReUsableInterfaces';
+import { ICSSChartSettings, ICSSChartData, ICSSChartTypes } from '../IReUsableInterfaces';
 
 export interface ICssreactbarchartProps {
-  chartData?: ICSSChartSeries[];
+  chartData?: ICSSChartData[];
+  chartSettings?: ICSSChartSettings[];
+  WebpartWidth:   number;    //Size courtesy of https://www.netwoven.com/2018/11/13/resizing-of-spfx-react-web-parts-in-different-scenarios/
   callBackID: string;
   onCtrlClick?: any;
   onShftClick?: any;
@@ -10,7 +12,8 @@ export interface ICssreactbarchartProps {
 }
 
 export interface ICssreactbarchartState {
-  chartData?: ICSSChartSeries[];
+  chartData?: ICSSChartData[];
+  chartSettings?: ICSSChartSettings[];
   useProps: boolean;
   chartKeys: string;
 }
