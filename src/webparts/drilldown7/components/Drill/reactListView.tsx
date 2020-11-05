@@ -686,42 +686,52 @@ export default class ReactListItems extends React.Component<IReactListItemsProps
     private _onShowPanel = (item): void => {
   
         let e: any = event;
-//        console.log('_onShowPanel: e',e);
-//        console.log('_onShowPanel item clicked:',item);
+        console.log('_onShowPanel: e',e);
+        console.log('_onShowPanel item clicked:',item);
 
-        let clickedAttachIcon = e !== undefined && e != null && e.target.dataset && e.target.dataset.iconName === 'Attach' ? true : false;
+        let isLink = e.srcElement && e.srcElement.href && e.srcElement.href.length > 0 ? true : false;
 
-        if (clickedAttachIcon === true || item.length > 0 ) {
-            let thisID = clickedAttachIcon === true ? findParentElementPropLikeThis(e.target, 'id', 'ButtonID', 5, 'begins') : item[0].Id;
-            thisID = typeof thisID === 'string' ? thisID.replace('ButtonID','') : thisID;
+        if ( isLink === true ) {
+            window.open(e.srcElement.href, '_blank');
 
-            let panelItem  : IDrillItemInfo = this._getItemFromId(this.props.items, 'Id', thisID );
-            let lastPanelId = this.state.panelId;
-            
-            let clickedAttach = false;
-            if ( e.srcElement.dataset && e.srcElement.dataset.iconName === 'Attach' ) {
-                clickedAttach = true;
+        } else {
+
+            let clickedAttachIcon = e !== undefined && e != null && e.target.dataset && e.target.dataset.iconName === 'Attach' ? true : false;
+
+            if (clickedAttachIcon === true || item.length > 0 ) {
+                let thisID = clickedAttachIcon === true ? findParentElementPropLikeThis(e.target, 'id', 'ButtonID', 5, 'begins') : item[0].Id;
+                thisID = typeof thisID === 'string' ? thisID.replace('ButtonID','') : thisID;
+    
+                let panelItem  : IDrillItemInfo = this._getItemFromId(this.props.items, 'Id', thisID );
+                let lastPanelId = this.state.panelId;
+                
+                let clickedAttach = false;
+                if ( e.srcElement.dataset && e.srcElement.dataset.iconName === 'Attach' ) {
+                    clickedAttach = true;
+                }
+    
+                this.createPanelAttachments(thisID, panelItem );
+    
+                let canShowAPanel = thisID === null || thisID === undefined || panelItem === null ? false : true;
+                let showFullPanel = canShowAPanel === true && clickedAttach !== true ? true : false;
+                // 2020-10-13:  The last check in this row just didn't seem right... was && this.props.includeListLink === true ? true : false; 
+                let showAttachPanel = canShowAPanel === true && clickedAttach === true && this.props.includeAttach === true ? true : false; 
+    
+                this.setState({ 
+                    showPanel: showFullPanel,
+                    showAttach: showAttachPanel , 
+                    clickedAttach: clickedAttach,
+                    panelId: thisID,
+                    panelItem: panelItem,
+                    lastPanelId: lastPanelId,
+                    panelAttachments: this.state.lastAttachId === thisID ? this.state.panelAttachments : [],
+    
+                });
+    
             }
 
-            this.createPanelAttachments(thisID, panelItem );
+        } 
 
-            let canShowAPanel = thisID === null || thisID === undefined || panelItem === null ? false : true;
-            let showFullPanel = canShowAPanel === true && clickedAttach !== true ? true : false;
-            // 2020-10-13:  The last check in this row just didn't seem right... was && this.props.includeListLink === true ? true : false; 
-            let showAttachPanel = canShowAPanel === true && clickedAttach === true && this.props.includeAttach === true ? true : false; 
-
-            this.setState({ 
-                showPanel: showFullPanel,
-                showAttach: showAttachPanel , 
-                clickedAttach: clickedAttach,
-                panelId: thisID,
-                panelItem: panelItem,
-                lastPanelId: lastPanelId,
-                panelAttachments: this.state.lastAttachId === thisID ? this.state.panelAttachments : [],
-
-            });
-
-        }
     }
 
     private _getItemFromId( items: IDrillItemInfo[], key: string, val: any ) {

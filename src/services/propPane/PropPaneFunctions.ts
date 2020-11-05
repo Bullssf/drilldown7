@@ -96,7 +96,7 @@ export async function getAllItems( configWebURL: string, propsListName: string, 
     }
 
     if ( errMessage === '' && returnProps.length === 0 ) { 
-        errMessage = 'This site/web does not have any subsites that you can see.';
+        errMessage = 'This list or library does not have any items that you can see.';
      }
      console.log('Found returnProps: ' ,returnProps );
     return returnProps;

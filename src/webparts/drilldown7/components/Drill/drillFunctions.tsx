@@ -118,6 +118,21 @@ export function processAllItems( allItems : IDrillItemInfo[], errMessage: string
             });
         }
 
+        if ( drillList.isLibrary === true || allItems[i].ServerRedirectedEmbedUrl ) {
+            allItems[i].goToItemPreview = allItems[i].ServerRedirectedEmbedUrl;
+            allItems[i].goToItemLink = allItems[i].ServerRedirectedEmbedUrl ? allItems[i].ServerRedirectedEmbedUrl.replace('&action=interactivepreview','') : null ;
+            allItems[i].goToPropsLink = drillList.parentListURL + "/Forms/DispForm.aspx?ID=" + allItems[i].Id;
+            allItems[i].isFile = true;
+
+            drillList.isLibrary = true;
+
+        } else {
+            allItems[i].goToItemPreview = drillList.parentListURL + "/DispForm.aspx?ID=" + allItems[i].Id;
+            allItems[i].goToItemLink = drillList.parentListURL + "/DispForm.aspx?ID=" + allItems[i].Id;
+            allItems[i].goToPropsLink = drillList.parentListURL + "/DispForm.aspx?ID=" + allItems[i].Id;
+            allItems[i].isFile = false;
+        }
+
         allItems[i].refiners = getItemRefiners( drillList, allItems[i] );
 
         allItems[i].refiners.comments.map( c => {
@@ -129,7 +144,7 @@ export function processAllItems( allItems : IDrillItemInfo[], errMessage: string
     }
 
     if ( errMessage === '' && allItems.length === 0 ) { 
-        errMessage = 'This site/web does not have any subsites that you can see.';
+        errMessage = 'This list or library does not have any items that you can see.';
      }
 
      if ( itemRefinerErrors.length > 0 ) {
@@ -408,8 +423,8 @@ export function buildRefinersObject ( items: IDrillItemInfo[], drillList: IDrill
         refiners['stat' + i + 'Count'] = [];
     }
 
-    drillList.refinerStats.map( s => {
-    });
+//    drillList.refinerStats.map( s => {
+//    });
     //    refinerStats: IRefinerStat[];
 
     //Go through all items

@@ -165,6 +165,11 @@ export interface IDrillItemInfo extends Partial<any>{
     Editor: any;
     timeCreated : ITheTime;
 
+    goToItemPreview: string;
+    goToItemLink: string;
+    goToPropsLink: string;
+    isFile: boolean;
+
     timeModified : ITheTime;
     bestCreate: string;
     bestMod: string;
@@ -543,10 +548,14 @@ export default class DrillDown extends React.Component<IDrillDownProps, IDrillDo
         });
 
         //Add refinerStats to column list
-        list.refinerStats.map( rs => {
-            if ( rs.primaryField && rs.primaryField.length > 0 && allColumns.indexOf( rs.primaryField) < 0  && list.removeFromSelect.indexOf(rs.primaryField) < 0 ) { allColumns.push( rs.primaryField ); }
-            if ( rs.secondField && rs.secondField.length > 0  && allColumns.indexOf( rs.secondField) < 0  && list.removeFromSelect.indexOf(rs.secondField) < 0 ) { allColumns.push( rs.secondField ); }
-        });
+        //2020-11-04:  Fix testing error :  e.refinerStats.map is not a function 
+        if ( list.refinerStats && list.refinerStats.length > 0 ) {
+            list.refinerStats.map( rs => {
+                if ( rs.primaryField && rs.primaryField.length > 0 && allColumns.indexOf( rs.primaryField) < 0  && list.removeFromSelect.indexOf(rs.primaryField) < 0 ) { allColumns.push( rs.primaryField ); }
+                if ( rs.secondField && rs.secondField.length > 0  && allColumns.indexOf( rs.secondField) < 0  && list.removeFromSelect.indexOf(rs.secondField) < 0 ) { allColumns.push( rs.secondField ); }
+            });
+        }
+
 
         let expColumns = getExpandColumns(allColumns);
         let selColumns = getSelectColumns(allColumns);
