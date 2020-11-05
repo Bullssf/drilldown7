@@ -340,7 +340,7 @@ export interface IDrillDownState {
 
     allLoaded: boolean;
 
-    bannerMessage: any[];
+    bannerMessage: any;
 
     showTips: boolean;
 
@@ -682,7 +682,7 @@ export default class DrillDown extends React.Component<IDrillDownProps, IDrillDo
 
             drillList: drillList,
 
-            bannerMessage: [],
+            bannerMessage: null,
             showTips: false,
             showRefinerCounts: this.props.showRefinerCounts ? this.props.showRefinerCounts : false,
             showCountChart: this.props.showCountChart ? this.props.showCountChart : false,
@@ -1121,9 +1121,10 @@ public componentDidUpdate(prevProps){
                     ></EarlyAccess>
                 </div>;
 
-                let bannerMessage = this.state.bannerMessage && this.state.bannerMessage.length > 0 ? <div style={{ width: '100%'}} 
-                    className={ [ stylesD.bannerStyles,  this.state.bannerMessage === null ? stylesD.bannerHide : stylesD.bannerShow ].join(' ') }>
-                    { this.state.bannerMessage.map( m => { return <div> { m } </div>; }) }
+                let bannerMessage = this.state.bannerMessage ? 
+                    <div style={{ width: '100%'}}
+                    className={ this.state.bannerMessage === null ? stylesD.bannerHide : stylesD.bannerShow } >
+                        { this.state.bannerMessage }
                 </div> : null;
 
 
@@ -1870,7 +1871,7 @@ public componentDidUpdate(prevProps){
         this.getAllItemsCall();
 
         setTimeout(() => {
-            this.setState({ bannerMessage: [] });
+            this.setState({ bannerMessage: null });
         } , 3500);
 
     }

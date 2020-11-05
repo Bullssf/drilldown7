@@ -667,7 +667,14 @@ export default class ReactListItems extends React.Component<IReactListItemsProps
             let updates = Object.keys(thisButtonObject.updateItem).map( k => {
                 return k;
             });
-            this.props.quickCommands.refreshCallback(`Finished updating item [ ${itemId} ]  `, `--- updates include: ${ updates.join(', ')} ...Refreshing list now`);
+            let bannerMessage: any = <div> {[
+                `Finished updating item [ ${itemId} ]  `,
+                `--- updates include: ${ updates.join(', ')} ...Refreshing list now`
+            ].map( m => {
+                return <p> { m } </p>;
+            }) }</div>;
+
+            this.props.quickCommands.refreshCallback( 'Fuck CSS' );
         }
     }
     /**
