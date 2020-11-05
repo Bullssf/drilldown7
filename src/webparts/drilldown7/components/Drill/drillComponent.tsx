@@ -1121,10 +1121,10 @@ public componentDidUpdate(prevProps){
                     ></EarlyAccess>
                 </div>;
 
-                let bannerMessage = <div style={{ width: '100%'}} 
+                let bannerMessage = this.state.bannerMessage && this.state.bannerMessage.length > 0 ? <div style={{ width: '100%'}} 
                     className={ [ stylesD.bannerStyles,  this.state.bannerMessage === null ? stylesD.bannerHide : stylesD.bannerShow ].join(' ') }>
                     { this.state.bannerMessage.map( m => { return <div> { m } </div>; }) }
-                </div>;
+                </div> : null;
 
 
                 /***
