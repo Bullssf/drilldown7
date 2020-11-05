@@ -187,8 +187,9 @@ export const QuickCommandsTMT = {
 export interface IQuickCommands {
 
     buttons: IQuickButton[][];
-    onUpdateReload?: boolean; // If there is an update on button, then do callback
-    refreshCallback?: any;
+    onUpdateReload?: boolean; // If there is an update on button, then do callback... reload webpart data
+    successBanner?: number; //Show message banner on successful update for x Seconds.  0 to not show, default if empty = 3.5
+    refreshCallback?: any; //Internal callback function.... Do not put anything in this property in property pane
     callBack?: any;
     listWebUrl?: string;
     listName?: string;

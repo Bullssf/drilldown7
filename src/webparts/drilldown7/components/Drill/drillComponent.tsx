@@ -673,6 +673,11 @@ export default class DrillDown extends React.Component<IDrillDownProps, IDrillDo
         if ( quickCommands.onUpdateReload === true ) {
             quickCommands.refreshCallback = this._reloadOnUpdate.bind(this);
         }
+        if ( quickCommands.successBanner === undefined || quickCommands.successBanner === null ) {
+            quickCommands.successBanner = 3.5 * 1000;
+        } else { quickCommands.successBanner = quickCommands.successBanner * 1000; }
+
+        
 
         this.state = { 
 
@@ -1121,7 +1126,7 @@ public componentDidUpdate(prevProps){
                     ></EarlyAccess>
                 </div>;
 
-                let bannerMessage = <div style={{ width: '100%'}} 
+                let bannerMessage = this.state.quickCommands.successBanner === 0 ? null : <div style={{ width: '100%'}} 
                     className={ [ stylesD.bannerStyles,  this.state.bannerMessage === null ? stylesD.bannerHide : stylesD.bannerShow ].join(' ') }>
                     { this.state.bannerMessage }
                 </div>;
@@ -1863,15 +1868,19 @@ public componentDidUpdate(prevProps){
  *                                                                                                          
  */
 
-    private _reloadOnUpdate( message: string ) : void {
+    private _reloadOnUpdate( message: string, hasError: boolean ) : void {
+
+        
         this.setState({
             bannerMessage: message,
         });
         this.getAllItemsCall();
 
+        let delay = hasError === true ? 10000 : this.state.quickCommands.successBanner;
+
         setTimeout(() => {
             this.setState({ bannerMessage: null });
-        } , 3500);
+        } , delay);
 
     }
 
