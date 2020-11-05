@@ -1121,11 +1121,10 @@ public componentDidUpdate(prevProps){
                     ></EarlyAccess>
                 </div>;
 
-                let bannerMessage = this.state.bannerMessage ? 
-                    <div style={{ width: '100%'}}
-                    className={ this.state.bannerMessage === null ? stylesD.bannerHide : stylesD.bannerShow } >
-                        { this.state.bannerMessage }
-                </div> : null;
+                let bannerMessage = <div style={{ width: '100%'}} 
+                    className={ [ stylesD.bannerStyles,  this.state.bannerMessage === null ? stylesD.bannerHide : stylesD.bannerShow ].join(' ') }>
+                    { this.state.bannerMessage }
+                </div>;
 
 
                 /***
@@ -1864,7 +1863,7 @@ public componentDidUpdate(prevProps){
  *                                                                                                          
  */
 
-    private _reloadOnUpdate( message: any[] ) : void {
+    private _reloadOnUpdate( message: string ) : void {
         this.setState({
             bannerMessage: message,
         });

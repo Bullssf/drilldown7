@@ -674,7 +674,7 @@ export default class ReactListItems extends React.Component<IReactListItemsProps
                 return <p> { m } </p>;
             }) }</div>;
 
-            this.props.quickCommands.refreshCallback( 'Fuck CSS' );
+            this.props.quickCommands.refreshCallback( 'Test Message transitions' );
         }
     }
     /**
