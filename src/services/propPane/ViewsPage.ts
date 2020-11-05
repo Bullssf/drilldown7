@@ -167,8 +167,8 @@ import {
                   }),
                 PropertyPaneToggle('includeAttach', {
                   label: 'Include Attachments panel',
-                  offText: 'No',
-                  onText: 'Yes',
+                  offText: 'Never',
+                  onText: 'Auto detect',
                 }),
                 PropertyPaneToggle('includeListLink', {
                   label: 'Show link to List',

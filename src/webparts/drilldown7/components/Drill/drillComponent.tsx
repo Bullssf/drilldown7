@@ -97,6 +97,7 @@ export type IRefinerStyles = 'pivot' | 'commandBar' | 'other';
     fetchCountMobile: number;
     restFilter: string;
     isLibrary?: boolean;
+    hasAttach: boolean;
     webURL?: string;
     parentListURL?: string;
     contextUserInfo?: IUser;  //For site you are on ( aka current page context )
@@ -619,6 +620,8 @@ export default class DrillDown extends React.Component<IDrillDownProps, IDrillDo
             restFilter: !this.props.performance.restFilter ? ' ' : this.props.performance.restFilter,
 
             isLibrary: isLibrary,
+            hasAttach: false,
+
             webURL: webURL,
             parentListURL: this.props.parentListURL,
             refiners: refiners,
@@ -676,8 +679,6 @@ export default class DrillDown extends React.Component<IDrillDownProps, IDrillDo
         if ( quickCommands.successBanner === undefined || quickCommands.successBanner === null ) {
             quickCommands.successBanner = 3.5 * 1000;
         } else { quickCommands.successBanner = quickCommands.successBanner * 1000; }
-
-        
 
         this.state = { 
 
@@ -911,7 +912,6 @@ public componentDidUpdate(prevProps){
                 let drillPivots1 = showRefiner1 ? this.createPivotObject(this.state.searchMeta[1], '', 1) : null;
                 let drillPivots2 = showRefiner2 ?  this.createPivotObject(this.state.searchMeta[2], '', 2) : null;
 
-
                 if ( showRefiner0 ) { refinersObjects.push( drillPivots0 ) ; }
                 if ( showRefiner1 ) { refinersObjects.push( drillPivots1 ) ; }
                 if ( showRefiner2 ) { refinersObjects.push( drillPivots2 ) ; }
@@ -990,6 +990,7 @@ public componentDidUpdate(prevProps){
                 let includeAttach = getAppropriateViewProp( this.props.viewDefs, this.state.WebpartWidth, 'includeAttach' );
                 let includeListLink = getAppropriateViewProp( this.props.viewDefs, this.state.WebpartWidth, 'includeListLink' );
                 
+                if ( this.state.drillList.hasAttach !== true ) { includeAttach = false; }
                 let currentViewFields: any[] = [];
                 if ( this.props.viewDefs.length > 0 )  { currentViewFields = getAppropriateViewFields( this.props.viewDefs, this.state.WebpartWidth ); }
 
@@ -999,23 +1000,24 @@ public componentDidUpdate(prevProps){
 
                 if ( this.props.toggles.togOtherListview === false ) {
 
-                    reactListItems  = this.state.searchedItems.length === 0 ? <div>NO ITEMS FOUND</div> : <ReactListItems 
-                    parentListFieldTitles={ this.props.viewDefs.length > 0 ? null : this.props.parentListFieldTitles }
+                    reactListItems  = this.state.searchedItems.length === 0 ? <div>NO ITEMS FOUND</div> : 
+                    <ReactListItems 
+                        parentListFieldTitles={ this.props.viewDefs.length > 0 ? null : this.props.parentListFieldTitles }
 
-                    webURL = { this.state.drillList.webURL }
-                    parentListURL = { this.state.drillList.parentListURL }
-                    listName = { this.state.drillList.name }
+                        webURL = { this.state.drillList.webURL }
+                        parentListURL = { this.state.drillList.parentListURL }
+                        listName = { this.state.drillList.name }
 
-                    contextUserInfo = { this.state.drillList.contextUserInfo }
-                    sourceUserInfo = { this.state.drillList.sourceUserInfo }
+                        contextUserInfo = { this.state.drillList.contextUserInfo }
+                        sourceUserInfo = { this.state.drillList.sourceUserInfo }
 
-                    viewFields={ currentViewFields }
-                    groupByFields={ currentViewGroups }
-                    items={ this.state.searchedItems}
-                    includeDetails= { includeDetails }
-                    includeAttach= { includeAttach }
-                    includeListLink = { includeListLink }
-                    quickCommands={ this.state.quickCommands }
+                        viewFields={ currentViewFields }
+                        groupByFields={ currentViewGroups }
+                        items={ this.state.searchedItems }
+                        includeDetails= { includeDetails }
+                        includeAttach= { includeAttach }
+                        includeListLink = { includeListLink }
+                        quickCommands={ this.state.quickCommands }
                     
                      ></ReactListItems>;
                 }

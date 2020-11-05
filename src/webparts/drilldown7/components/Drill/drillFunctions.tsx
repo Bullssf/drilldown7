@@ -94,6 +94,8 @@ export function processAllItems( allItems : IDrillItemInfo[], errMessage: string
     let itemRefinerErrors: string[] = [];
     let thisIsNow = new Date().toLocaleString();
 
+    let itemsHaveAttachments = false;
+
     for (let i in allItems ) {
 
         if ( allItems[i].timeCreated === undefined ) {
@@ -133,6 +135,7 @@ export function processAllItems( allItems : IDrillItemInfo[], errMessage: string
             allItems[i].isFile = false;
         }
 
+        if ( allItems[i].Attachments === true ) { itemsHaveAttachments = true ; } 
         allItems[i].refiners = getItemRefiners( drillList, allItems[i] );
 
         allItems[i].refiners.comments.map( c => {
@@ -143,6 +146,8 @@ export function processAllItems( allItems : IDrillItemInfo[], errMessage: string
 
     }
 
+    drillList.hasAttach = itemsHaveAttachments;
+    
     if ( errMessage === '' && allItems.length === 0 ) { 
         errMessage = 'This list or library does not have any items that you can see.';
      }

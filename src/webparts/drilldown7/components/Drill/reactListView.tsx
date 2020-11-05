@@ -137,8 +137,8 @@ export default class ReactListItems extends React.Component<IReactListItemsProps
                     attachments.push( <h2>({ allItems.length}) Attachments</h2> );
                     attachments.push( <div style={{ paddingBottom: "10px"}}><b>CTRL-Click</b> to open in new window</div> );
                     allItems.map( a => {
-                    let attachmentItem = <div><Link target= { "_blank" } href= { a.ServerRelativeUrl }> { a.FileName }</Link></div>;
-                        attachments.push( attachmentItem );
+                        let attachmentItem = <div><Link target= { "_blank" } href= { a.ServerRelativeUrl }> { a.FileName }</Link></div>;
+                            attachments.push( attachmentItem );
         
                     });
                 }
@@ -151,7 +151,6 @@ export default class ReactListItems extends React.Component<IReactListItemsProps
             panelAttachments: attachments,
             lastAttachId: thisId,
         });
-
 
     }
 
@@ -673,6 +672,7 @@ export default class ReactListItems extends React.Component<IReactListItemsProps
             ] }</div>;
 
             this.props.quickCommands.refreshCallback( bannerMessage, false );
+
         } else if ( result !== null ) {
             this.props.quickCommands.refreshCallback( result, true );
         }
