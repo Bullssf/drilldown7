@@ -132,5 +132,29 @@
           
       } /**/
       
+      .bannerStyles {
+        text-align: center;
+        font-size: larger;
+        font-weight: 600;
+        line-height: 1.5;
 
+      }
+
+      .bannerShow {
+        height: 40px;
+        opacity: 1;
+        margin-top: 5px;
+        margin-bottom: 5px;
+        background: 'GreenYellow';
+        transition: all 0.5s ease;
+      }
+
+      .bannerHide {
+        height: 0px;
+        background: transparent;
+        margin-top: 0;
+        margin-bottom: 0;
+        opacity: 0;
+        transition:all 0.5s ease;
+      }
 }

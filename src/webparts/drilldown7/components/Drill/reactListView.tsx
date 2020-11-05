@@ -657,10 +657,18 @@ export default class ReactListItems extends React.Component<IReactListItemsProps
 
     }
 
-    private completeThisQuickUpdate( itemId: string, thisButtonObject : IQuickButton ) {
+    private async completeThisQuickUpdate( itemId: string, thisButtonObject : IQuickButton ) {
 
-        let result = updateReactListItem( this.props.webURL, this.props.listName, parseInt(itemId), thisButtonObject, this.props.sourceUserInfo, this.state.panelItem );
+        let result = await updateReactListItem( this.props.webURL, this.props.listName, parseInt(itemId), thisButtonObject, this.props.sourceUserInfo, this.state.panelItem );
 
+        //If success (result is error message and null by default )
+        if ( result === null && this.props.quickCommands.onUpdateReload === true ) {
+
+            let updates = Object.keys(thisButtonObject.updateItem).map( k => {
+                return k;
+            });
+            this.props.quickCommands.refreshCallback(`Finished updating item [ ${itemId} ]  `, `--- updates include: ${ updates.join(', ')} ...Refreshing list now`);
+        }
     }
     /**
      * Close the dialog

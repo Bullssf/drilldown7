@@ -32,7 +32,7 @@ import { createAdvancedContentChoices } from '../fields/choiceFieldBuilder';
 import { IContentsToggles, makeToggles } from '../fields/toggleFieldBuilder';
 
 import { IPickedList, IPickedWebBasic, IMyPivots, IPivot,  ILink, IUser, IMyProgress, IMyIcons, IMyFonts, IChartSeries, 
-    ICharNote, IRefinerRules, RefineRuleValues, ICustViewDef, IRefinerStat, ICSSChartSettings, ICSSChartData, ICSSChartTypes } from '../IReUsableInterfaces';
+    ICharNote, IRefinerRules, RefineRuleValues, ICustViewDef, IRefinerStat, ICSSChartSettings, ICSSChartData, ICSSChartTypes, QuickCommandsTMT } from '../IReUsableInterfaces';
 
 import { createLink } from '../HelpInfo/AllLinks';
 
@@ -72,6 +72,7 @@ import {buildCountChartsObject ,  buildStatChartsArray} from '../CssCharts/cssCh
 
 import { getAppropriateViewFields, getAppropriateViewGroups, getAppropriateViewProp } from './listFunctions';
 
+import { ProgressIndicator } from 'office-ui-fabric-react/lib/ProgressIndicator';
 
 import  EarlyAccess from '../HelpInfo/EarlyAccess';
 
@@ -339,6 +340,8 @@ export interface IDrillDownState {
 
     allLoaded: boolean;
 
+    bannerMessage: any[];
+
     showTips: boolean;
 
     showRefinerCounts: boolean;
@@ -356,6 +359,8 @@ export interface IDrillDownState {
     first20searchedItems: IDrillItemInfo[];
 
     progress: IMyProgress;
+
+    quickCommands: IQuickCommands;
 
     allItems: IDrillItemInfo[];
 
@@ -663,6 +668,12 @@ export default class DrillDown extends React.Component<IDrillDownProps, IDrillDo
             if ( this.props.refiners.length > 2 ) { maxRefinersToShow = 3; }
         }
 
+        let quickCommands : IQuickCommands = this.props.quickCommands ? JSON.parse( JSON.stringify(this.props.quickCommands )) : null ;
+        
+        if ( quickCommands.onUpdateReload === true ) {
+            quickCommands.refreshCallback = this._reloadOnUpdate.bind(this);
+        }
+
         this.state = { 
 
             //Size courtesy of https://www.netwoven.com/2018/11/13/resizing-of-spfx-react-web-parts-in-different-scenarios/
@@ -671,6 +682,7 @@ export default class DrillDown extends React.Component<IDrillDownProps, IDrillDo
 
             drillList: drillList,
 
+            bannerMessage: [],
             showTips: false,
             showRefinerCounts: this.props.showRefinerCounts ? this.props.showRefinerCounts : false,
             showCountChart: this.props.showCountChart ? this.props.showCountChart : false,
@@ -681,6 +693,8 @@ export default class DrillDown extends React.Component<IDrillDownProps, IDrillDo
             allowOtherSites: this.props.allowOtherSites === true ? true : false,
             currentPage: 'Click Button to start',
             allLoaded: false,
+
+            quickCommands: quickCommands,
 
             allItems: [],
             searchedItems: [],
@@ -996,7 +1010,7 @@ public componentDidUpdate(prevProps){
                     includeDetails= { includeDetails }
                     includeAttach= { includeAttach }
                     includeListLink = { includeListLink }
-                    quickCommands={ this.props.quickCommands }
+                    quickCommands={ this.state.quickCommands }
                     
                      ></ReactListItems>;
                 }
@@ -1107,6 +1121,12 @@ public componentDidUpdate(prevProps){
                     ></EarlyAccess>
                 </div>;
 
+                let bannerMessage = <div style={{ width: '100%'}} 
+                    className={ [ stylesD.bannerStyles,  this.state.bannerMessage === null ? stylesD.bannerHide : stylesD.bannerShow ].join(' ') }>
+                    { this.state.bannerMessage.map( m => { return <div> { m } </div>; }) }
+                </div>;
+
+
                 /***
                  *    d888888b db   db d888888b .d8888.      d8888b.  .d8b.   d888b  d88888b 
                  *    `~~88~~' 88   88   `88'   88'  YP      88  `8D d8' `8b 88' Y8b 88'     
@@ -1117,8 +1137,7 @@ public componentDidUpdate(prevProps){
                  *                                                                           
                  *                                                                           
                  */
-
-
+                    
                 thisPage = <div className={styles.contents}>
                     <div className={stylesD.drillDown}>
                         { earlyAccess }
@@ -1129,7 +1148,7 @@ public componentDidUpdate(prevProps){
                             { infoPage }
                         </div>
                         <Stack horizontal={true} wrap={true} horizontalAlign={"space-between"} verticalAlign= {"center"} tokens={stackPageTokens}>{/* Stack for Buttons and Webs */}
-                            { searchBox } { toggles }
+                            { searchBox } { toggles } 
                         </Stack>
 
                         <Stack horizontal={false} wrap={true} horizontalAlign={"stretch"} tokens={stackPageTokens} className={ stylesD.refiners }>{/* Stack for Buttons and Webs */}
@@ -1142,7 +1161,7 @@ public componentDidUpdate(prevProps){
                         <div>
 
                             <div className={ this.state.searchCount !== 0 ? styles.hideMe : styles.showErrorMessage  }>{ noInfo } </div>
-
+                            { bannerMessage }
                             <Stack horizontal={false} wrap={true} horizontalAlign={"stretch"} tokens={stackPageTokens}>{/* Stack for Buttons and Webs */}
                                 { this.state.viewType === 'React' ? reactListItems : drillItems }
                                 {   }
@@ -1244,7 +1263,7 @@ public componentDidUpdate(prevProps){
                 contextUserInfo: drillList.contextUserInfo,  //For site you are on ( aka current page context )
                 sourceUserInfo: drillList.sourceUserInfo,   //For site where the list is stored
 
-                quickCommands: this.props.quickCommands,
+                quickCommands: this.state.quickCommands,
         
                 items : allItems,
                 breadCrumb: [pivCats.all.title],
@@ -1707,7 +1726,7 @@ public componentDidUpdate(prevProps){
             contextUserInfo: this.state.drillList.contextUserInfo,  //For site you are on ( aka current page context )
             sourceUserInfo: this.state.drillList.sourceUserInfo,   //For site where the list is stored
 
-            quickCommands: this.props.quickCommands,
+            quickCommands: this.state.quickCommands,
     
             items : newFilteredItems,
             breadCrumb: newMeta,
@@ -1843,6 +1862,18 @@ public componentDidUpdate(prevProps){
  *                                                                                                          
  *                                                                                                          
  */
+
+    private _reloadOnUpdate( message: any[] ) : void {
+        this.setState({
+            bannerMessage: message,
+        });
+        this.getAllItemsCall();
+
+        setTimeout(() => {
+            this.setState({ bannerMessage: [] });
+        } , 3500);
+
+    }
 
     private _updateStateOnPropsChange(): void {
         this.getAllItemsCall();
