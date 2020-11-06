@@ -2,7 +2,6 @@ import { IDrillDownState } from '../Drill/drillComponent';
 
 import { IDrillDownProps } from '../Drill/drillComponent';
 
-
 export interface IFieldDef {
 
     name: string;
@@ -14,6 +13,7 @@ export interface IFieldDef {
     hidden: boolean;
     blinkOnProject: boolean;
     value?: any;
+    width?: number; //Added for Drilldown7 webpart
 
 }
 

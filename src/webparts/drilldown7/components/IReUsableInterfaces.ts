@@ -1,6 +1,9 @@
 import { ListView, IViewField, SelectionMode, GroupOrder, IGrouping } from "@pnp/spfx-controls-react/lib/ListView";
 
 import { IDrillItemInfo } from './Drill/drillComponent';
+
+import { IFieldDef } from './fields/fieldDefinitions';
+
 export interface IRefinerRules {
   rules: RefineRuleValues[];
 }
@@ -195,6 +198,23 @@ export interface IQuickCommands {
     listName?: string;
     styleRow?: any; //Valid react JSON object for style
     showWhenEvalTrue?: string;  //This is on all commands or individual buttons.  if eval resolves to true, button or commands are visible, else they are false.
+    fields: IQuickFields[][];
+}
+
+export interface IQuickFields extends Partial<IFieldDef> {
+
+  // name: string;
+  // title: string;
+  // column: string;
+  // type: string; //Smart, Text, Number, etc...
+
+  required: boolean;
+  disabled?: boolean;
+  hidden?: boolean;
+  blinkOnProject?: boolean;
+
+  value?: any;
+  width?: number; //Added for Drilldown7 webpart
 
 }
 
