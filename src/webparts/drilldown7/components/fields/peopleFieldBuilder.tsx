@@ -10,7 +10,23 @@ import { PeoplePicker, PrincipalType } from "@pnp/spfx-controls-react/lib/People
 
 import { IUser } from '../IReUsableInterfaces';
 
-export function createPeopleField(field: IFieldDef, maxCount: number, _onChange: any, addYouToField: any, getStyles : IStyleFunctionOrObject<ITextFieldStyleProps, ITextFieldStyles>) {
+import { createIconButton } from '../createButtons/IconButton';
+
+import stylesF from './Fields.module.scss';
+
+const fieldWidth = 200;
+
+
+/**
+ * 
+ * @param field 
+ * @param maxCount 
+ * @param _onChange 
+ * @param addYouToField 
+ * @param pageIDPref - Added to function instead of being constant in project so it's more reusable
+ * @param getStyles 
+ */
+export function createPeopleField(field: IFieldDef, maxCount: number, _onChange: any, addYouToField: any, pageIDPref: string , getStyles : IStyleFunctionOrObject<ITextFieldStyleProps, ITextFieldStyles>) {
 
     let users: IUser[] = maxCount === 1 ? [this.state.selectedProject[field.name]] : this.state.selectedProject[field.name];
 
@@ -46,8 +62,8 @@ export function createPeopleField(field: IFieldDef, maxCount: number, _onChange:
 
       return (
           // Uncontrolled
-          <div id={ pageIDPref + field.column } style={{ width: fieldWidth }} className={ styles.peopleBlock}>
-            <div className={styles.addMeButton}>{ addUserButton } </div>
+          <div id={ pageIDPref + field.column } style={{ width: fieldWidth }} className={ stylesF.peopleBlock}>
+            <div className={stylesF.addMeButton}>{ addUserButton } </div>
               <PeoplePicker
                   context={this.props.wpContext}
                   defaultSelectedUsers={ emails }
@@ -55,14 +71,14 @@ export function createPeopleField(field: IFieldDef, maxCount: number, _onChange:
                   personSelectionLimit={maxCount}
                   //groupName={"Team Site Owners"} // Leave this blank in case you want to filter from all users
                   showtooltip={false}
-                  isRequired={false}
+                  required={false} // isRequired in v1.16
                   disabled={false}
-                  selectedItems={_onChange}
+                  onChange={_onChange} // selectedItems in v1.16
                   showHiddenInUI={false}
                   principalTypes={[PrincipalType.User]}
                   resolveDelay={1000} 
                   ensureUser={true}
-                  peoplePickerWPclassName={styles.fieldWithIconButton}
+                  peoplePickerWPclassName={stylesF.fieldWithIconButton}
               /></div>
       );
 

@@ -673,12 +673,15 @@ export default class DrillDown extends React.Component<IDrillDownProps, IDrillDo
 
         let quickCommands : IQuickCommands = this.props.quickCommands ? JSON.parse( JSON.stringify(this.props.quickCommands )) : null ;
         
-        if ( quickCommands.onUpdateReload === true ) {
-            quickCommands.refreshCallback = this._reloadOnUpdate.bind(this);
+        if ( quickCommands !== null ) {
+            if ( quickCommands.onUpdateReload === true ) {
+                quickCommands.refreshCallback = this._reloadOnUpdate.bind(this);
+            }
+            if ( quickCommands.successBanner === undefined || quickCommands.successBanner === null ) {
+                quickCommands.successBanner = 3.5 * 1000;
+            } else { quickCommands.successBanner = quickCommands.successBanner * 1000; }
         }
-        if ( quickCommands.successBanner === undefined || quickCommands.successBanner === null ) {
-            quickCommands.successBanner = 3.5 * 1000;
-        } else { quickCommands.successBanner = quickCommands.successBanner * 1000; }
+
 
         this.state = { 
 
@@ -1128,7 +1131,8 @@ public componentDidUpdate(prevProps){
                     ></EarlyAccess>
                 </div>;
 
-                let bannerMessage = this.state.quickCommands.successBanner === 0 ? null : <div style={{ width: '100%'}} 
+                let createBanner = this.state.quickCommands !== null && this.state.quickCommands.successBanner > 0 ? true : false;
+                let bannerMessage = createBanner === false ? null : <div style={{ width: '100%'}} 
                     className={ [ stylesD.bannerStyles,  this.state.bannerMessage === null ? stylesD.bannerHide : stylesD.bannerShow ].join(' ') }>
                     { this.state.bannerMessage }
                 </div>;
