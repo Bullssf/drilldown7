@@ -5,6 +5,8 @@ import { Icon  } from 'office-ui-fabric-react/lib/Icon';
 import { Web, IList, IItem, } from "@pnp/sp/presets/all";
 import { Link, ILinkProps } from 'office-ui-fabric-react';
 
+import { Pivot, PivotItem, IPivotItemProps} from 'office-ui-fabric-react/lib/Pivot';
+
 import { IMyProgress, IQuickButton, IQuickCommands, IUser } from '../IReUsableInterfaces';
 import { IDrillItemInfo } from './drillComponent';
 
@@ -413,8 +415,9 @@ export default class ReactListItems extends React.Component<IReactListItemsProps
 
             let toggles = !this.state.showPanel ? null : <div style={{ float: 'right' }}> { makeToggles(this.getPageToggles( this.state.panelWidth )) } </div>;
 
-            let fullPanel = !this.state.showPanel ? null : 
-                <Panel
+            let fullPanel = null;
+            if ( this.state.showPanel === true && this.state.panelId ) {
+                fullPanel = <Panel
                     isOpen={this.state.showPanel}
                     type={ this.state.panelWidth }
                     onDismiss={this._onClosePanel}
@@ -425,24 +428,40 @@ export default class ReactListItems extends React.Component<IReactListItemsProps
                     isFooterAtBottom={ true }
                 >
                     { toggles }
-                    { attachments }
-                    { this.createPanelButtons( this.props.quickCommands, this.state.panelItem, this.props.sourceUserInfo ) }
-                    { autoDetailsList(this.state.panelItem, ["Title","refiners"],["search","meta","searchString"],true) }
-                </Panel>;
+                    <Pivot 
+                        aria-label="Basic Pivot Example"
+                        defaultSelectedIndex ={ 0 }
+                    >
+                        <PivotItem headerText="Commands" itemKey= "Commands">
+                            { attachments }
+                            { this.createPanelButtons( this.props.quickCommands, this.state.panelItem, this.props.sourceUserInfo ) }
+                        </PivotItem>
+                        <PivotItem headerText="Details" itemKey= "Details">
+                            { autoDetailsList(this.state.panelItem, ["Title","refiners"],["search","meta","searchString"],true) }
+                        </PivotItem>
+                        <PivotItem headerText="JSON" itemKey= "JSON">
+                                
+                        </PivotItem>
+                    </Pivot>
 
-            let attachPanel = !this.state.showAttach ? null : 
-            <Panel
-                isOpen={this.state.showAttach}
-                type={ this.state.panelWidth }
-                onDismiss={this._onClosePanel}
-                headerText={ this.state.panelId.toString() }
-                closeButtonAriaLabel="Close"
-                onRenderFooterContent={this._onRenderFooterContent}
-                isLightDismiss={ true }
-                isFooterAtBottom={ true }
-            >
-                { attachments }
-            </Panel>;
+                </Panel>;
+            }
+
+            let attachPanel = null;
+            if ( this.state.showAttach === true && this.state.panelId ) {
+                attachPanel = <Panel
+                    isOpen={this.state.showAttach}
+                    type={ this.state.panelWidth }
+                    onDismiss={this._onClosePanel}
+                    headerText={ this.state.panelId.toString() }
+                    closeButtonAriaLabel="Close"
+                    onRenderFooterContent={this._onRenderFooterContent}
+                    isLightDismiss={ true }
+                    isFooterAtBottom={ true }
+                >
+                    { attachments }
+                </Panel>;
+            }
 
             let viewFieldsBase = this.state.viewFields;
             let attachField = [];
