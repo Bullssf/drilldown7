@@ -15,12 +15,13 @@ import { IDrillDownProps } from './components/Drill/drillComponent';
 
 import { PageContext } from '@microsoft/sp-page-context';
 
-import { makeTheTimeObject } from '../../services/dateServices';
-import { saveTheTime, getTheCurrentTime, saveAnalytics } from '../../services/createAnalytics';
+import { makeTheTimeObject } from '@mikezimm/npmfunctions/dist/Services/Time/timeObject';
 
-import { doesObjectExistInArray } from '../../services/arrayServices';
+//Checks
+import { doesObjectExistInArrayInt, doesObjectExistInArray, compareArrays, getKeySummary, getKeyChanges
+} from '@mikezimm/npmfunctions/dist/Services/Arrays/checks';
 
-import { getHelpfullError, } from '../../services/ErrorHandler';
+import { getHelpfullError } from '@mikezimm/npmfunctions/dist/Logging/ErrorHandler';
 
 import { sp } from '@pnp/sp';
 

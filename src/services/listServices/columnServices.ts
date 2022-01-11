@@ -16,11 +16,11 @@ import { IMyFieldTypes, IBaseField , ITextField , IMultiLineTextField , INumberF
 import { MyFieldDef, changes, cBool, cCalcT, cCalcN, cChoice, cMChoice, cCurr, cDate, cLocal, cLook, cDLook,
     cMText, cText, cNumb, cURL, cUser, cMUser } from './columnTypes';
 
-import { doesObjectExistInArray } from '../arrayServices';
+import { doesObjectExistInArray } from '@mikezimm/npmfunctions/dist/Services/Arrays/checks';
 
 import { IListInfo, IMyListInfo, IServiceLog, notify } from './listTypes';
 
-import { getHelpfullError } from '../ErrorHandler';
+import { getHelpfullError } from '@mikezimm/npmfunctions/dist/Logging/ErrorHandler';
 
 import { IMyProgress } from '../../webparts/drilldown7/components/IReUsableInterfaces';
 

@@ -15,9 +15,9 @@ import { IMyProgress } from '../../webparts/drilldown7/components/IReUsableInter
 
 import { IListInfo, IMyListInfo, IServiceLog, notify, getXMLObjectFromString } from './listTypes';
 
-import { doesObjectExistInArray } from '../arrayServices';
+import { doesObjectExistInArray } from '@mikezimm/npmfunctions/dist/Services/Arrays/checks';
 
-import { getHelpfullError } from '../ErrorHandler';
+import { getHelpfullError } from '@mikezimm/npmfunctions/dist/Logging/ErrorHandler';
 
 import "@pnp/sp/webs";
 import "@pnp/sp/lists";

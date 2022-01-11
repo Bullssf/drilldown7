@@ -1,5 +1,5 @@
 
-import { isStringValidDate } from './dateServices';
+import { isStringValidDate } from '@mikezimm/npmfunctions/dist/Services/time/checks';
 
 export type ITypeStrings = 'unknown' | 'undefined' | 'null' | 'function' | 'numberstring' | 'datestring' | 'string' | 'date' | 'number' | 'boolean' | 'object' |  'array' ;
 

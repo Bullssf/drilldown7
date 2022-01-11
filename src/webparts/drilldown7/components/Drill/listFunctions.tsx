@@ -5,9 +5,12 @@ import { Web, IList, IItem } from "@pnp/sp/presets/all";
 
 import { ICustViewDef, IQuickButton, IUser } from '../../components/IReUsableInterfaces';
 
-import { getHelpfullError } from '../../../../services/ErrorHandler';
+import { getHelpfullError } from '@mikezimm/npmfunctions/dist/Logging/ErrorHandler';
 
-import { removeItemFromArrayOnce, removeItemFromArrayAll, addItemToArrayIfItDoesNotExist } from '../../../../services/arrayServices';
+//Manipulation
+import { expandArray, spliceCopyArray, addItemToArrayIfItDoesNotExist, convertNumberArrayToRelativePercents,
+  removeItemFromArrayOnce, removeItemFromArrayAll, updateNextOpenIndex 
+  } from '@mikezimm/npmfunctions/dist/Services/Arrays/manipulation';
 
 import { IDrillItemInfo } from './drillComponent';
 

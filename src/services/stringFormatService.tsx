@@ -1,5 +1,6 @@
 import * as React from 'react';
 
+// replace with import { buildMLineDiv, getArrayOfXMLElements } from '@mikezimm/npmfunctions/dist/Services/Strings/formatting';
     export function buildMLineDiv ( indent: number, element: string | JSX.Element ) {
         let spaces4 = indent > 0 ? '\u00a0' + '\u00a0' + '\u00a0' + '\u00a0' : null;
         let spaces = '';

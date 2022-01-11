@@ -8,8 +8,6 @@ import { Icon  } from 'office-ui-fabric-react/lib/Icon';
 
 import styles from '../webparts/drilldown7/components/Contents/listView.module.scss';
 
-import { ColoredLine, ProjectTitleElement, MyIcon } from './drawServices';
-
 import { mergeStyles } from 'office-ui-fabric-react/lib/Styling';
 import { Fabric, Stack, IStackTokens, initializeIcons } from 'office-ui-fabric-react';
 

@@ -14,9 +14,9 @@ import "@pnp/sp/webs";
 
 import { IContentsListInfo, IMyListInfo, IServiceLog, IContentsLists } from '../../../../services/listServices/listTypes'; //Import view arrays for Time list
 
-import { convertNumberArrayToRelativePercents, doesObjectExistInArray, addItemToArrayIfItDoesNotExist } from '../../../../services/arrayServices';
-
-import { ITheTime, weekday3, monthStr3 } from '../../../../services/dateServices';
+import { ITheTime, } from '@mikezimm/npmfunctions/dist/Services/Time/Interfaces';
+import { weekday3,  } from '@mikezimm/npmfunctions/dist/Services/Time/dayLabels';
+import { monthStr3 } from '@mikezimm/npmfunctions/dist/Services/Time/monthLabels';
 
 import styles from '../Contents/contents.module.scss';
 
@@ -46,7 +46,7 @@ import { getExpandColumns, getKeysLike, getSelectColumns } from '../../../../ser
 
 import * as links from '../HelpInfo/AllLinks';
 
-import { getHelpfullError, } from '../../../../services/ErrorHandler';
+import { getHelpfullError } from '@mikezimm/npmfunctions/dist/Logging/ErrorHandler';
 
 import MyDrillItems from './drillListView';
 

@@ -19,19 +19,23 @@ import { IMyView,  } from '../../../../services/listServices/viewTypes'; //Impor
 
 import { addTheseItemsToList, addTheseItemsToListInBatch } from '../../../../services/listServices/listServices';
 
-import { makeSmallTimeObject, makeTheTimeObject,ITheTime, getAge, getBestTimeDelta, isStringValidDate, monthStr3} from '../../../../services/dateServices';
+import { makeTheTimeObject } from '@mikezimm/npmfunctions/dist/Services/Time/timeObject';
+import { monthStr3 } from '@mikezimm/npmfunctions/dist/Services/Time/monthLabels';
+import { getBestTimeDelta, getAge } from '@mikezimm/npmfunctions/dist/Services/Time/deltas';
 
-import { doesObjectExistInArray, addItemToArrayIfItDoesNotExist, sortKeysByOtherKey } from '../../../../services/arrayServices';
+import { doesObjectExistInArray } from '@mikezimm/npmfunctions/dist/Services/Arrays/checks';
+import { addItemToArrayIfItDoesNotExist, } from '@mikezimm/npmfunctions/dist/Services/Arrays/manipulation';
+import { sortKeysByOtherKey, } from '@mikezimm/npmfunctions/dist/Services/Arrays/sorting';
 
-import { getHelpfullError } from '../../../../services/ErrorHandler';
+import { getHelpfullError } from '@mikezimm/npmfunctions/dist/Logging/ErrorHandler';
 
 import { IViewLog, addTheseViews } from '../../../../services/listServices/viewServices'; //Import view arrays for Time list
 
 import { IAnyArray } from  '../../../../services/listServices/listServices';
 
-import { getDetailValueType, ITypeStrings } from '../../../../services/typeServices';
+import { getDetailValueType, ITypeStrings } from '@mikezimm/npmfunctions/dist/Services/typeServices';
 
-import { ensureUserInfo } from '../../../../services/userServices';
+import { ensureUserInfo } from '@mikezimm/npmfunctions/dist/Services/Users/userServices';
 
 import { mergeAriaAttributeValues } from "office-ui-fabric-react";
 

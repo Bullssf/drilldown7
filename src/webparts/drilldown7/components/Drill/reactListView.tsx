@@ -12,13 +12,13 @@ import { IDrillItemInfo } from './drillComponent';
 
 import { autoDetailsList } from '../../../../services/hoverCardService';
 
-import { doesObjectExistInArray,  } from '../../../../services/arrayServices';
+import { doesObjectExistInArray } from '@mikezimm/npmfunctions/dist/Services/Arrays/checks';
 
-import { findParentElementPropLikeThis } from '../../../../services/basicElements';
+import { findParentElementPropLikeThis } from '@mikezimm/npmfunctions/dist/Elements/functions';
 
-import { getHelpfullError } from '../../../../services/ErrorHandler';
+import { getHelpfullError } from '@mikezimm/npmfunctions/dist/Logging/ErrorHandler';
 
-import { buildConfirmDialog, IMyDialogProps } from '../../../../services/dialogBoxService'; 
+import { buildConfirmDialog, IMyDialogProps } from '@mikezimm/npmfunctions/dist/Elements/dialogBox'; 
 
 import stylesL from '../ListView/listView.module.scss';
 import { ListView, IViewField, SelectionMode, GroupOrder, IGrouping, } from "@pnp/spfx-controls-react/lib/ListView";
