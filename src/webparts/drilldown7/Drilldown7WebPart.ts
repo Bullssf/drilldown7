@@ -17,6 +17,11 @@ import { PageContext } from '@microsoft/sp-page-context';
 
 import { makeTheTimeObject } from '@mikezimm/npmfunctions/dist/Services/Time/timeObject';
 
+import * as links from '@mikezimm/npmfunctions/dist/Links/LinksRepos';
+
+import { createStyleFromString, getReactCSSFromString, ICurleyBraceCheck } from '@mikezimm/npmfunctions/dist/Services/PropPane/StringToReactCSS';
+import { IWebpartBannerProps, IWebpartBannerState } from './components/HelpPanel/banner/onNpm/bannerProps';
+
 //Checks
 import { doesObjectExistInArrayInt, doesObjectExistInArray, compareArrays, getKeySummary, getKeyChanges
 } from '@mikezimm/npmfunctions/dist/Services/Arrays/checks';
@@ -56,6 +61,29 @@ export interface IDrilldown7WebPartProps {
   analyticsWeb?: string;
   analyticsList?: string;
   stressMultiplier?: number;
+
+  
+    
+  //General settings for Banner Options group
+  // export interface IWebpartBannerProps {
+    bannerTitle: string;
+    bannerStyle: string;
+    showBanner: boolean;
+    
+    showGoToHome: boolean;  //defaults to true
+    showGoToParent: boolean;  //defaults to true
+
+    bannerHoverEffect: boolean;
+    showTricks: boolean;
+  // }
+
+  //General settings for FPS Options group
+  searchShow: boolean;
+  fpsPageStyle: string;
+  fpsContainerMaxWidth: string;
+  quickLaunchHide: boolean;
+  showBannerGear: boolean;
+  uniqueId: string;
 
   // 2 - Source and destination list information
   createVerifyLists: boolean;
@@ -163,7 +191,15 @@ export default class Drilldown7WebPart extends BaseClientSideWebPart<IDrilldown7
   private _selectedRefiner0Value: string;
   private _filterBy: any;
 
+  //For FPS options
+  private fpsPageDone: boolean = false;
+  private fpsPageArray: any[] = null;
+  private minQuickLaunch: boolean = false;
 
+  //For FPS Banner
+  private forceBanner = true ;
+  private modifyBannerTitle = true ;
+  private modifyBannerStyle = true ;
 
 /***
 *          .d88b.  d8b   db d888888b d8b   db d888888b d888888b 
@@ -356,6 +392,59 @@ export default class Drilldown7WebPart extends BaseClientSideWebPart<IDrilldown7
 
   public render(): void {
 
+    
+    /***
+     *    d8888b.  .d8b.  d8b   db d8b   db d88888b d8888b. 
+     *    88  `8D d8' `8b 888o  88 888o  88 88'     88  `8D 
+     *    88oooY' 88ooo88 88V8o 88 88V8o 88 88ooooo 88oobY' 
+     *    88~~~b. 88~~~88 88 V8o88 88 V8o88 88~~~~~ 88`8b   
+     *    88   8D 88   88 88  V888 88  V888 88.     88 `88. 
+     *    Y8888P' YP   YP VP   V8P VP   V8P Y88888P 88   YD 
+     *                                                      
+     *                                                      
+     */
+
+    let showTricks = false;
+    links.trickyEmails.map( getsTricks => {
+      if ( this.context.pageContext.user.loginName && this.context.pageContext.user.loginName.toLowerCase().indexOf( getsTricks ) > -1 ) { showTricks = true ; }   } ); 
+
+    let bannerTitle = this.modifyBannerTitle === true && this.properties.bannerTitle && this.properties.bannerTitle.length > 0 ? this.properties.bannerTitle : `Pivot Tiles`;
+    let bannerStyle: ICurleyBraceCheck = getReactCSSFromString( 'bannerStyle', this.properties.bannerStyle, {background: "#7777",fontWeight:600, fontSize: 'larger', height: '43px'} );
+    let showBannerGear = this.properties.showBannerGear === false ? false : true;
+    
+    let anyContext: any = this.context;
+    console.log('_pageLayoutType:', anyContext._pageLayoutType );
+    console.log('pageLayoutType:', anyContext.pageLayoutType );
+
+
+
+    let bannerProps: IWebpartBannerProps = {
+    
+      pageContext: this.context.pageContext,
+      panelTitle: 'Pivot Tiles webpart - Automated links and tiles',
+      bannerWidth : this.domElement.clientWidth,
+      showBanner: this.forceBanner === true || this.properties.showBanner !== false ? true : false,
+      showTricks: showTricks,
+      showBannerGear: showBannerGear,
+      showGoToHome: this.properties.showGoToHome === false ? false : true,
+      showGoToParent: this.properties.showGoToParent === false ? false : true,
+      // onHomePage: anyContext._pageLayoutType === 'Home' ? true : false,
+      onHomePage: this.context.pageContext.legacyPageContext.isWebWelcomePage === true ? true : false,
+      hoverEffect: this.properties.bannerHoverEffect === false ? false : true,
+      title: bannerStyle.errMessage !== '' ? bannerStyle.errMessage : bannerTitle ,
+      bannerReactCSS: bannerStyle.errMessage === '' ? bannerStyle.parsed : { background: "yellow", color: "red", },
+      gitHubRepo: links.gitRepoPivotTiles,
+      farElements: [],
+      nearElements: [],
+      earyAccess: false,
+      wideToggle: true,
+    };
+    //close #129:  This makes the maxWidth added in fps options apply to banner as well.
+    if ( this.properties.fpsContainerMaxWidth && this.properties.fpsContainerMaxWidth.length > 0 ) {
+      bannerProps.bannerReactCSS.maxWidth = this.properties.fpsContainerMaxWidth;
+    }
+
+
     //Be sure to always pass down an actual URL if the webpart prop is empty at this point.
     //If it's undefined, null or '', get current page context value
     let parentWeb = this.properties.parentListWeb && this.properties.parentListWeb != '' ? this.properties.parentListWeb : this.context.pageContext.web.absoluteUrl;
@@ -411,6 +500,9 @@ export default class Drilldown7WebPart extends BaseClientSideWebPart<IDrilldown7
         // 0 - Context
         pageContext: this.context.pageContext,
         wpContext: this.context,
+        
+        bannerProps: bannerProps,
+
         tenant: this.context.pageContext.web.absoluteUrl.replace(this.context.pageContext.web.serverRelativeUrl,""),
         urlVars: this.getUrlVars(),
         today: makeTheTimeObject(''),

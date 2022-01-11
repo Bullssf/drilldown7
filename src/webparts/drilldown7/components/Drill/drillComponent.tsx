@@ -20,8 +20,6 @@ import { monthStr3 } from '@mikezimm/npmfunctions/dist/Services/Time/monthLabels
 
 import styles from '../Contents/contents.module.scss';
 
-import InfoPage from '../HelpInfo/infoPages';
-
 import ButtonCompound from '../createButtons/ICreateButtons';
 import { IButtonProps, ISingleButtonProps, IButtonState } from "../createButtons/ICreateButtons";
 
@@ -34,8 +32,6 @@ import { IContentsToggles, makeToggles } from '../fields/toggleFieldBuilder';
 import { IPickedList, IPickedWebBasic, IMyPivots, IPivot,  ILink, IUser, IMyProgress, IMyIcons, IMyFonts, IChartSeries, 
     ICharNote, IRefinerRules, RefineRuleValues, ICustViewDef, IRefinerStat, ICSSChartSettings, ICSSChartData, ICSSChartTypes, QuickCommandsTMT } from '../IReUsableInterfaces';
 
-import { createLink } from '../HelpInfo/AllLinks';
-
 import { IRefiners, IRefinerLayer, IItemRefiners, IQuickButton, IQuickCommands, IListViewDD } from '../IReUsableInterfaces';
 
 import { PageContext } from '@microsoft/sp-page-context';
@@ -43,8 +39,6 @@ import { PageContext } from '@microsoft/sp-page-context';
 import { pivotOptionsGroup, } from '../../../../services/propPane';
 
 import { getExpandColumns, getKeysLike, getSelectColumns } from '../../../../services/getFunctions';
-
-import * as links from '../HelpInfo/AllLinks';
 
 import { getHelpfullError } from '@mikezimm/npmfunctions/dist/Services/Logging/ErrorHandler';
 
@@ -74,7 +68,12 @@ import { getAppropriateViewFields, getAppropriateViewGroups, getAppropriateViewP
 
 import { ProgressIndicator } from 'office-ui-fabric-react/lib/ProgressIndicator';
 
-import  EarlyAccess from '../HelpInfo/EarlyAccess';
+/**
+ * 2021-08-25 MZ:  Added for Banner
+ */
+import WebpartBanner from "../HelpPanel/banner/component";
+import { IWebpartBannerProps, } from "../HelpPanel/banner/onNpm/bannerProps";
+import { defaultBannerCommandStyles, } from "../HelpPanel/banner/onNpm/defaults";
 
 export type IRefinerStyles = 'pivot' | 'commandBar' | 'other';
 
@@ -206,6 +205,8 @@ export interface IDrillDownProps {
     
     pageContext: PageContext;
     wpContext: WebPartContext;
+
+    bannerProps: IWebpartBannerProps;
 
     allowOtherSites?: boolean; //default is local only.  Set to false to allow provisioning parts on other sites.
 
@@ -407,7 +408,20 @@ export interface IDrillDownState {
 
 export default class DrillDown extends React.Component<IDrillDownProps, IDrillDownState> {
 
+    
+    /***
+     *    d8888b.  .d8b.  d8b   db d8b   db d88888b d8888b.      d88888b db      d88888b .88b  d88. d88888b d8b   db d888888b .d8888. 
+     *    88  `8D d8' `8b 888o  88 888o  88 88'     88  `8D      88'     88      88'     88'YbdP`88 88'     888o  88 `~~88~~' 88'  YP 
+     *    88oooY' 88ooo88 88V8o 88 88V8o 88 88ooooo 88oobY'      88ooooo 88      88ooooo 88  88  88 88ooooo 88V8o 88    88    `8bo.   
+     *    88~~~b. 88~~~88 88 V8o88 88 V8o88 88~~~~~ 88`8b        88~~~~~ 88      88~~~~~ 88  88  88 88~~~~~ 88 V8o88    88      `Y8b. 
+     *    88   8D 88   88 88  V888 88  V888 88.     88 `88.      88.     88booo. 88.     88  88  88 88.     88  V888    88    db   8D 
+     *    Y8888P' YP   YP VP   V8P VP   V8P Y88888P 88   YD      Y88888P Y88888P Y88888P YP  YP  YP Y88888P VP   V8P    YP    `8888Y' 
+     *                                                                                                                                
+     *                                                                                                                                
+     */
 
+    private nearBannerElements = this.buildNearBannerElements();
+    private farBannerElements = this.buildFarBannerElements();
 
     /***
      *    d8888b. db    db d888888b db      d8888b.      .d8888. db    db .88b  d88.       .o88b.  .d88b.  db    db d8b   db d888888b       .o88b. db   db  .d8b.  d8888b. d888888b .d8888. 
@@ -737,11 +751,39 @@ export default class DrillDown extends React.Component<IDrillDownProps, IDrillDo
 
         };
 
+        
+        this.nearBannerElements = this.buildNearBannerElements();
+        this.farBannerElements = this.buildFarBannerElements();
+
     // because our event handler needs access to the component, bind 
     //  the component to the function so it can get access to the
     //  components properties (this.props)... otherwise "this" is undefined
     // this.onLinkClick = this.onLinkClick.bind(this);
 
+    }
+
+    
+  private buildNearBannerElements() {
+    //See banner/NearAndFarSample.js for how to build this.
+    let elements = [];
+    // defaultBannerCommandStyles.fontWeight = 'bolder';
+    // elements.push(<div style={{ paddingRight: null }} className={ '' } title={ title}>
+    //   <Icon iconName='WindDirection' onClick={ this.jumpToParentSite.bind(this) } style={ defaultBannerCommandStyles }></Icon>
+    // </div>);
+    return elements;
+  }
+
+  private buildFarBannerElements() {
+      //See banner/NearAndFarSample.js for how to build this.
+      // minimizeTiles= { this.minimizeTiles.bind(this) }
+      // searchMe= { this.searchMe.bind(this) }
+      // showAll= { this.showAll.bind(this) }
+
+      return [
+        // <Icon iconName='Search' onClick={ this.searchMe.bind(this) } style={ defaultBannerCommandStyles }></Icon>,
+        // <Icon iconName='ChromeMinimize' onClick={ this.minimizeTiles.bind(this) } style={ defaultBannerCommandStyles }></Icon>,
+        // <Icon iconName='ClearFilter' onClick={ this.showAll.bind(this) } style={ defaultBannerCommandStyles }></Icon>,
+      ];
     }
 
   public componentDidMount() {
@@ -833,25 +875,62 @@ public componentDidUpdate(prevProps){
             let toggleTipsButton = <div style={{marginRight: "20px", background: 'white', opacity: '.7', borderRadius: '10px' }}>
                  { createIconButton('Help','Toggle Tips',this.toggleTips.bind(this), null, tipsStyles ) } </div>;
 
-            /***
-             *    d888888b d8b   db d88888b  .d88b.       d8888b.  .d8b.   d888b  d88888b 
-             *      `88'   888o  88 88'     .8P  Y8.      88  `8D d8' `8b 88' Y8b 88'     
-             *       88    88V8o 88 88ooo   88    88      88oodD' 88ooo88 88      88ooooo 
-             *       88    88 V8o88 88~~~   88    88      88~~~   88~~~88 88  ooo 88~~~~~ 
-             *      .88.   88  V888 88      `8b  d8'      88      88   88 88. ~8~ 88.     
-             *    Y888888P VP   V8P YP       `Y88P'       88      YP   YP  Y888P  Y88888P 
-             *                                                                            
-             *                                                                            
+
+    /***
+             *    d8888b.  .d8b.  d8b   db d8b   db d88888b d8888b. 
+             *    88  `8D d8' `8b 888o  88 888o  88 88'     88  `8D 
+             *    88oooY' 88ooo88 88V8o 88 88V8o 88 88ooooo 88oobY' 
+             *    88~~~b. 88~~~88 88 V8o88 88 V8o88 88~~~~~ 88`8b   
+             *    88   8D 88   88 88  V888 88  V888 88.     88 `88. 
+             *    Y8888P' YP   YP VP   V8P VP   V8P Y88888P 88   YD 
+             *                                                      
+             *                                                      
              */
 
-            const infoPage = <div>
-            <InfoPage 
-                allLoaded={ true }
-                showInfo={ true }
-                parentProps= { this.props }
-                parentState= { this.state }
-            ></InfoPage>
-            </div>;
+            //this.toggleLayout.bind(this)
+            // let layoutIcon = this.state.setLayout === "List" ? 'NumberedList' : this.state.setLayout === "Card" ? "Tiles" : this.state.setLayout === "Box" ? "CubeShape": "GridViewSmall";
+
+            // let farBannerElementsArray = [];
+            let farBannerElementsArray = [...this.farBannerElements,
+            // <Icon iconName={layoutIcon} onClick={ this.toggleLayout.bind(this) } style={ defaultBannerCommandStyles }></Icon>,
+            ];
+
+            // let bannerSuffix = '';
+            // if ( this.state.searchAbout.length > 0 ) {
+            // if ( this.state.searchAbout === strings.searchAboutShowAll || this.state.searchAbout === strings.searchAboutHideAll) {
+            // bannerSuffix = `${this.state.searchAbout}`;
+            // } else { 
+            // bannerSuffix = `${this.state.searchAbout}` ;
+            // //If the webpart is wider, add Filtering: label to searchAbout else exclude
+            // if ( this.props.bannerProps.bannerWidth > 600  ) { bannerSuffix = `Showing: ${bannerSuffix}`; }
+            // }
+            // }
+
+            //Exclude the props.bannerProps.title if the webpart is narrow to make more responsive
+            let bannerTitle = this.props.bannerProps.bannerWidth < 900 ? '' : `${this.props.bannerProps.title} - ${''}`;
+            if ( bannerTitle === '' ) { bannerTitle = 'Pivot Tiles' ; }
+
+            let Banner = <WebpartBanner 
+                showBanner={ this.props.bannerProps.showBanner }
+                bannerWidth={ this.props.bannerProps.bannerWidth }
+                pageContext={ this.props.bannerProps.pageContext }
+                title ={ bannerTitle }
+                panelTitle = { this.props.bannerProps.panelTitle }
+                bannerReactCSS={ this.props.bannerProps.bannerReactCSS }
+                bannerCommandStyles={ defaultBannerCommandStyles }
+                showTricks={ this.props.bannerProps.showTricks }
+                showGoToParent={ this.props.bannerProps.showGoToParent }
+                showGoToHome={ this.props.bannerProps.showGoToHome }
+                onHomePage={ this.props.bannerProps.onHomePage }
+                showBannerGear={ this.props.bannerProps.showBannerGear }
+                hoverEffect={ this.props.bannerProps.hoverEffect }
+                gitHubRepo={ this.props.bannerProps.gitHubRepo }
+                earyAccess={ this.props.bannerProps.earyAccess }
+                wideToggle={ this.props.bannerProps.wideToggle }
+                nearElements = { this.nearBannerElements }
+                farElements = { farBannerElementsArray }
+
+            ></WebpartBanner>;
 
             let errMessage = this.state.errMessage === '' ? null : <div>
                 { this.state.errMessage }
@@ -1120,22 +1199,53 @@ public componentDidUpdate(prevProps){
                     messages.push( <div><span><b>{ 'info ->' }</b></span></div> ) ;
                 }
 
-                let earlyAccess = 
-                <div style={{ marginBottom: '15px'}}><EarlyAccess 
-                        image = { "https://autoliv.sharepoint.com/sites/crs/PublishingImages/Early%20Access%20Image.png" }
-                        messages = { messages }
-                        links = { [ this.state.WebpartWidth > 450 ? links.gitRepoDrilldown7WebPart.wiki : null, 
-                            this.state.WebpartWidth > 600 ? links.gitRepoDrilldown7WebPart.issues : null ]}
-                        email = { 'mailto:General - WebPart Dev <0313a49d.Autoliv.onmicrosoft.com@amer.teams.ms>?subject=Drilldown Webpart Feedback&body=Enter your message here :)  \nScreenshots help!' }
-                        farRightIcons = { [ toggleTipsButton ] }
-                    ></EarlyAccess>
-                </div>;
-
                 let createBanner = this.state.quickCommands !== null && this.state.quickCommands.successBanner > 0 ? true : false;
                 let bannerMessage = createBanner === false ? null : <div style={{ width: '100%'}} 
                     className={ [ stylesD.bannerStyles,  this.state.bannerMessage === null ? stylesD.bannerHide : stylesD.bannerShow ].join(' ') }>
                     { this.state.bannerMessage }
                 </div>;
+
+                /***
+                 *    d8888b.  .d8b.  d8b   db d8b   db d88888b d8888b. 
+                 *    88  `8D d8' `8b 888o  88 888o  88 88'     88  `8D 
+                 *    88oooY' 88ooo88 88V8o 88 88V8o 88 88ooooo 88oobY' 
+                 *    88~~~b. 88~~~88 88 V8o88 88 V8o88 88~~~~~ 88`8b   
+                 *    88   8D 88   88 88  V888 88  V888 88.     88 `88. 
+                 *    Y8888P' YP   YP VP   V8P VP   V8P Y88888P 88   YD 
+                 *                                                      
+                 *                                                      
+                 */
+
+                // let farBannerElementsArray = [];
+                let farBannerElementsArray = [...this.farBannerElements,
+                    // <Icon iconName={layoutIcon} onClick={ this.toggleLayout.bind(this) } style={ defaultBannerCommandStyles }></Icon>,
+                ];
+
+                //Exclude the props.bannerProps.title if the webpart is narrow to make more responsive
+                let bannerTitle = this.props.bannerProps.bannerWidth < 900 ? '' : `${this.props.bannerProps.title} - ${''}`;
+                if ( bannerTitle === '' ) { bannerTitle = 'Pivot Tiles' ; }
+
+                let Banner = <WebpartBanner 
+                    showBanner={ this.props.bannerProps.showBanner }
+                    bannerWidth={ this.props.bannerProps.bannerWidth }
+                    pageContext={ this.props.bannerProps.pageContext }
+                    title ={ bannerTitle }
+                    panelTitle = { this.props.bannerProps.panelTitle }
+                    bannerReactCSS={ this.props.bannerProps.bannerReactCSS }
+                    bannerCommandStyles={ defaultBannerCommandStyles }
+                    showTricks={ this.props.bannerProps.showTricks }
+                    showGoToParent={ this.props.bannerProps.showGoToParent }
+                    showGoToHome={ this.props.bannerProps.showGoToHome }
+                    onHomePage={ this.props.bannerProps.onHomePage }
+                    showBannerGear={ this.props.bannerProps.showBannerGear }
+                    hoverEffect={ this.props.bannerProps.hoverEffect }
+                    gitHubRepo={ this.props.bannerProps.gitHubRepo }
+                    earyAccess={ this.props.bannerProps.earyAccess }
+                    wideToggle={ this.props.bannerProps.wideToggle }
+                    nearElements = { this.nearBannerElements }
+                    farElements = { farBannerElementsArray }
+
+                ></WebpartBanner>;
 
 
                 /***
@@ -1149,35 +1259,34 @@ public componentDidUpdate(prevProps){
                  *                                                                           
                  */
                     
-                thisPage = <div className={styles.contents}>
-                    <div className={stylesD.drillDown}>
-                        { earlyAccess }
-                        {  /* <div className={styles.floatRight}>{ toggleTipsButton }</div> */ }
-                        <div className={ this.state.errMessage === '' ? styles.hideMe : styles.showErrorMessage  }>{ this.state.errMessage } </div>
-                        {  /* <p><mark>Check why picking Assists does not show Help as a chapter even though it's the only chapter...</mark></p> */ }
-                        <div className={( this.state.showTips ? '' : styles.hideMe )}>
-                            { infoPage }
-                        </div>
-                        <Stack horizontal={true} wrap={true} horizontalAlign={"space-between"} verticalAlign= {"center"} tokens={stackPageTokens}>{/* Stack for Buttons and Webs */}
-                            { searchBox } { toggles } 
-                        </Stack>
-
-                        <Stack horizontal={false} wrap={true} horizontalAlign={"stretch"} tokens={stackPageTokens} className={ stylesD.refiners }>{/* Stack for Buttons and Webs */}
-                            { refinersObjects  }
-                        </Stack>
-
-                        <div> { this.state.showCountChart === true ? countCharts : null } </div>
-                        <div> { this.state.showStats === true ? statCharts : null } </div>
-
-                        <div>
-
-                            <div className={ this.state.searchCount !== 0 ? styles.hideMe : styles.showErrorMessage  }>{ noInfo } </div>
-                            { bannerMessage }
-                            <Stack horizontal={false} wrap={true} horizontalAlign={"stretch"} tokens={stackPageTokens}>{/* Stack for Buttons and Webs */}
-                                { this.state.viewType === 'React' ? reactListItems : drillItems }
-                                {   }
+                thisPage = <div>
+                    { Banner }
+                    <div className={styles.contents}>
+                        <div className={stylesD.drillDown}>
+                            {  /* <div className={styles.floatRight}>{ toggleTipsButton }</div> */ }
+                            <div className={ this.state.errMessage === '' ? styles.hideMe : styles.showErrorMessage  }>{ this.state.errMessage } </div>
+                            {  /* <p><mark>Check why picking Assists does not show Help as a chapter even though it's the only chapter...</mark></p> */ }
+                            <Stack horizontal={true} wrap={true} horizontalAlign={"space-between"} verticalAlign= {"center"} tokens={stackPageTokens}>{/* Stack for Buttons and Webs */}
+                                { searchBox } { toggles } 
                             </Stack>
-                        </div> { /* Close tag from above noInfo */}
+
+                            <Stack horizontal={false} wrap={true} horizontalAlign={"stretch"} tokens={stackPageTokens} className={ stylesD.refiners }>{/* Stack for Buttons and Webs */}
+                                { refinersObjects  }
+                            </Stack>
+
+                            <div> { this.state.showCountChart === true ? countCharts : null } </div>
+                            <div> { this.state.showStats === true ? statCharts : null } </div>
+
+                            <div>
+
+                                <div className={ this.state.searchCount !== 0 ? styles.hideMe : styles.showErrorMessage  }>{ noInfo } </div>
+                                { bannerMessage }
+                                <Stack horizontal={false} wrap={true} horizontalAlign={"stretch"} tokens={stackPageTokens}>{/* Stack for Buttons and Webs */}
+                                    { this.state.viewType === 'React' ? reactListItems : drillItems }
+                                    {   }
+                                </Stack>
+                            </div> { /* Close tag from above noInfo */}
+                        </div>
                     </div>
                 </div>;
 

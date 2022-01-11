@@ -4,6 +4,7 @@
 
 .infoPane {
 
+    padding-bottom: '50px';
     .earlyAccess {
       opacity: .25;
       transition: all, .3s ease;
@@ -128,7 +129,9 @@
     }    
 
     .infoTable {
-  
+      
+      width: 100%;
+      
       tr {
         padding-top: 0px;
       }
