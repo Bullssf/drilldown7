@@ -12,7 +12,7 @@ import { Fabric, Stack, IStackTokens, initializeIcons } from 'office-ui-fabric-r
 
 
 import styles from '../Contents/listView.module.scss';
-import stylesInfo from '../HelpInfo/InfoPane.module.scss';
+import stylesInfo from './InfoPane.module.scss';
 
 export interface IMyDrillItemsProps {
     title?: string;

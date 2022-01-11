@@ -17,7 +17,7 @@ import { ICSSChartSettings, ICSSChartData, ICSSChartTypes, CSSChartTypes, ISerie
 
 import stylesC from './cssChart.module.scss';
 
-import { ColorsBlue, ColorsBrown, ColorsGray, ColorsGreen, ColorsRed } from '../../../../services/colorServices';
+import { ColorsBlue, ColorsBrown, ColorsGray, ColorsGreen, ColorsRed } from '@mikezimm/npmfunctions/dist/CSSCharts/themes';
 
 /***
  *    d888888b d8b   db d888888b d88888b d8888b. d88888b  .d8b.   .o88b. d88888b .d8888. 
