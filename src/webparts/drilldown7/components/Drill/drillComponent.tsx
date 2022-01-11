@@ -875,63 +875,6 @@ public componentDidUpdate(prevProps){
             let toggleTipsButton = <div style={{marginRight: "20px", background: 'white', opacity: '.7', borderRadius: '10px' }}>
                  { createIconButton('Help','Toggle Tips',this.toggleTips.bind(this), null, tipsStyles ) } </div>;
 
-
-    /***
-             *    d8888b.  .d8b.  d8b   db d8b   db d88888b d8888b. 
-             *    88  `8D d8' `8b 888o  88 888o  88 88'     88  `8D 
-             *    88oooY' 88ooo88 88V8o 88 88V8o 88 88ooooo 88oobY' 
-             *    88~~~b. 88~~~88 88 V8o88 88 V8o88 88~~~~~ 88`8b   
-             *    88   8D 88   88 88  V888 88  V888 88.     88 `88. 
-             *    Y8888P' YP   YP VP   V8P VP   V8P Y88888P 88   YD 
-             *                                                      
-             *                                                      
-             */
-
-            //this.toggleLayout.bind(this)
-            // let layoutIcon = this.state.setLayout === "List" ? 'NumberedList' : this.state.setLayout === "Card" ? "Tiles" : this.state.setLayout === "Box" ? "CubeShape": "GridViewSmall";
-
-            // let farBannerElementsArray = [];
-            let farBannerElementsArray = [...this.farBannerElements,
-            // <Icon iconName={layoutIcon} onClick={ this.toggleLayout.bind(this) } style={ defaultBannerCommandStyles }></Icon>,
-            ];
-
-            // let bannerSuffix = '';
-            // if ( this.state.searchAbout.length > 0 ) {
-            // if ( this.state.searchAbout === strings.searchAboutShowAll || this.state.searchAbout === strings.searchAboutHideAll) {
-            // bannerSuffix = `${this.state.searchAbout}`;
-            // } else { 
-            // bannerSuffix = `${this.state.searchAbout}` ;
-            // //If the webpart is wider, add Filtering: label to searchAbout else exclude
-            // if ( this.props.bannerProps.bannerWidth > 600  ) { bannerSuffix = `Showing: ${bannerSuffix}`; }
-            // }
-            // }
-
-            //Exclude the props.bannerProps.title if the webpart is narrow to make more responsive
-            let bannerTitle = this.props.bannerProps.bannerWidth < 900 ? '' : `${this.props.bannerProps.title} - ${''}`;
-            if ( bannerTitle === '' ) { bannerTitle = 'Pivot Tiles' ; }
-
-            let Banner = <WebpartBanner 
-                showBanner={ this.props.bannerProps.showBanner }
-                bannerWidth={ this.props.bannerProps.bannerWidth }
-                pageContext={ this.props.bannerProps.pageContext }
-                title ={ bannerTitle }
-                panelTitle = { this.props.bannerProps.panelTitle }
-                bannerReactCSS={ this.props.bannerProps.bannerReactCSS }
-                bannerCommandStyles={ defaultBannerCommandStyles }
-                showTricks={ this.props.bannerProps.showTricks }
-                showGoToParent={ this.props.bannerProps.showGoToParent }
-                showGoToHome={ this.props.bannerProps.showGoToHome }
-                onHomePage={ this.props.bannerProps.onHomePage }
-                showBannerGear={ this.props.bannerProps.showBannerGear }
-                hoverEffect={ this.props.bannerProps.hoverEffect }
-                gitHubRepo={ this.props.bannerProps.gitHubRepo }
-                earyAccess={ this.props.bannerProps.earyAccess }
-                wideToggle={ this.props.bannerProps.wideToggle }
-                nearElements = { this.nearBannerElements }
-                farElements = { farBannerElementsArray }
-
-            ></WebpartBanner>;
-
             let errMessage = this.state.errMessage === '' ? null : <div>
                 { this.state.errMessage }
             </div>;

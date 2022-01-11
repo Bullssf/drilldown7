@@ -19,8 +19,14 @@ import { makeTheTimeObject } from '@mikezimm/npmfunctions/dist/Services/Time/tim
 
 import * as links from '@mikezimm/npmfunctions/dist/Links/LinksRepos';
 
+require('../../services/GrayPropPaneAccordions.css');
+
 import { createStyleFromString, getReactCSSFromString, ICurleyBraceCheck } from '@mikezimm/npmfunctions/dist/Services/PropPane/StringToReactCSS';
 import { IWebpartBannerProps, IWebpartBannerState } from './components/HelpPanel/banner/onNpm/bannerProps';
+
+import { setPageFormatting, IFPSPage } from '@mikezimm/npmfunctions/dist/Services/DOM/FPSFormatFunctions';
+
+import { minimizeQuickLaunch } from '@mikezimm/npmfunctions/dist/Services/DOM/quickLaunch';
 
 //Checks
 import { doesObjectExistInArrayInt, doesObjectExistInArray, compareArrays, getKeySummary, getKeyChanges
@@ -433,7 +439,7 @@ export default class Drilldown7WebPart extends BaseClientSideWebPart<IDrilldown7
       hoverEffect: this.properties.bannerHoverEffect === false ? false : true,
       title: bannerStyle.errMessage !== '' ? bannerStyle.errMessage : bannerTitle ,
       bannerReactCSS: bannerStyle.errMessage === '' ? bannerStyle.parsed : { background: "yellow", color: "red", },
-      gitHubRepo: links.gitRepoPivotTiles,
+      gitHubRepo: links.gitRepoDrillDownSmall,
       farElements: [],
       nearElements: [],
       earyAccess: false,
@@ -443,6 +449,11 @@ export default class Drilldown7WebPart extends BaseClientSideWebPart<IDrilldown7
     if ( this.properties.fpsContainerMaxWidth && this.properties.fpsContainerMaxWidth.length > 0 ) {
       bannerProps.bannerReactCSS.maxWidth = this.properties.fpsContainerMaxWidth;
     }
+
+
+    //Used with FPS Options Functions
+    this.setThisPageFormatting( this.properties.fpsPageStyle );
+    this.setQuickLaunch( this.properties.quickLaunchHide );
 
 
     //Be sure to always pass down an actual URL if the webpart prop is empty at this point.
@@ -656,6 +667,35 @@ export default class Drilldown7WebPart extends BaseClientSideWebPart<IDrilldown7
   }
 
 
+  /**
+   * Used with FPS Options Functions
+   * @param quickLaunchHide 
+   */
+  private setQuickLaunch( quickLaunchHide: boolean ) {
+
+    if ( quickLaunchHide === true && this.minQuickLaunch === false ) {
+      minimizeQuickLaunch( document , quickLaunchHide );
+      this.minQuickLaunch = true;
+    }
+
+  }
+
+  /**
+   * Used with FPS Options Functions
+   * @param fpsPageStyle 
+   */
+  private setThisPageFormatting( fpsPageStyle: string ) {
+    let fpsPage: IFPSPage = {
+      Done: this.fpsPageDone,
+      Style: fpsPageStyle,
+      Array: this.fpsPageArray,
+    };
+
+    fpsPage = setPageFormatting( this.domElement, fpsPage );
+    this.fpsPageArray = fpsPage.Array;
+    this.fpsPageDone = fpsPage.Done;
+  }
+
   private async UpdateTitles(): Promise<boolean> {
 
     let listName = this.properties.parentListTitle ? this.properties.parentListTitle : 'ParentListTitle';
@@ -702,6 +742,7 @@ export default class Drilldown7WebPart extends BaseClientSideWebPart<IDrilldown7
       this.properties,
       this.UpdateTitles.bind(this),
       this._getListDefintions.bind(this),
+      this.forceBanner, this.modifyBannerTitle, this.modifyBannerStyle
       );
   }
 

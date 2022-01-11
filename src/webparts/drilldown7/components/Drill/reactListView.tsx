@@ -39,7 +39,7 @@ import { updateReactListItem } from './listFunctions';
 import { IContentsToggles, makeToggles } from '../fields/toggleFieldBuilder';
 
 import styles from '../Contents/listView.module.scss';
-import stylesInfo from '../HelpInfo/InfoPane.module.scss';
+import stylesInfo from './InfoPane.module.scss';
 import { IView } from '@pnp/sp/views';
 
 export interface IReactListItemsProps {
