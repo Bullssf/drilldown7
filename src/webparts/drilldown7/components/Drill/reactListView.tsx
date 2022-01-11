@@ -16,7 +16,7 @@ import { doesObjectExistInArray } from '@mikezimm/npmfunctions/dist/Services/Arr
 
 import { findParentElementPropLikeThis } from '@mikezimm/npmfunctions/dist/Elements/functions';
 
-import { getHelpfullError } from '@mikezimm/npmfunctions/dist/Logging/ErrorHandler';
+import { getHelpfullError } from '@mikezimm/npmfunctions/dist/Services/Logging/ErrorHandler';
 
 import { buildConfirmDialog, IMyDialogProps } from '@mikezimm/npmfunctions/dist/Elements/dialogBox'; 
 

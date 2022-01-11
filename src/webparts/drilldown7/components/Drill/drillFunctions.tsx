@@ -27,7 +27,7 @@ import { doesObjectExistInArray } from '@mikezimm/npmfunctions/dist/Services/Arr
 import { addItemToArrayIfItDoesNotExist, } from '@mikezimm/npmfunctions/dist/Services/Arrays/manipulation';
 import { sortKeysByOtherKey, } from '@mikezimm/npmfunctions/dist/Services/Arrays/sorting';
 
-import { getHelpfullError } from '@mikezimm/npmfunctions/dist/Logging/ErrorHandler';
+import { getHelpfullError } from '@mikezimm/npmfunctions/dist/Services/Logging/ErrorHandler';
 
 import { IViewLog, addTheseViews } from '../../../../services/listServices/viewServices'; //Import view arrays for Time list
 

@@ -21,7 +21,7 @@ import { makeTheTimeObject } from '@mikezimm/npmfunctions/dist/Services/Time/tim
 import { doesObjectExistInArrayInt, doesObjectExistInArray, compareArrays, getKeySummary, getKeyChanges
 } from '@mikezimm/npmfunctions/dist/Services/Arrays/checks';
 
-import { getHelpfullError } from '@mikezimm/npmfunctions/dist/Logging/ErrorHandler';
+import { getHelpfullError } from '@mikezimm/npmfunctions/dist/Services/Logging/ErrorHandler';
 
 import { sp } from '@pnp/sp';
 

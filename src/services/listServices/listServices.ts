@@ -21,7 +21,7 @@ import {  stringifyKeyValue } from '@mikezimm/npmfunctions/dist/Services/Arrays/
 
 import { IListInfo, IMyListInfo, IServiceLog, notify } from './listTypes';
 
-import { getHelpfullError } from '@mikezimm/npmfunctions/dist/Logging/ErrorHandler';
+import { getHelpfullError } from '@mikezimm/npmfunctions/dist/Services/Logging/ErrorHandler';
 
 import "@pnp/sp/webs";
 import "@pnp/sp/lists";

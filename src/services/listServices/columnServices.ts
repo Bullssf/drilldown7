@@ -20,7 +20,7 @@ import { doesObjectExistInArray } from '@mikezimm/npmfunctions/dist/Services/Arr
 
 import { IListInfo, IMyListInfo, IServiceLog, notify } from './listTypes';
 
-import { getHelpfullError } from '@mikezimm/npmfunctions/dist/Logging/ErrorHandler';
+import { getHelpfullError } from '@mikezimm/npmfunctions/dist/Services/Logging/ErrorHandler';
 
 import { IMyProgress } from '../../webparts/drilldown7/components/IReUsableInterfaces';
 

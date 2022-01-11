@@ -46,7 +46,7 @@ import { getExpandColumns, getKeysLike, getSelectColumns } from '../../../../ser
 
 import * as links from '../HelpInfo/AllLinks';
 
-import { getHelpfullError } from '@mikezimm/npmfunctions/dist/Logging/ErrorHandler';
+import { getHelpfullError } from '@mikezimm/npmfunctions/dist/Services/Logging/ErrorHandler';
 
 import MyDrillItems from './drillListView';
 
