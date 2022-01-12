@@ -4,11 +4,13 @@ import * as React from 'react';
 
 import { TextField,  IStyleFunctionOrObject, ITextFieldStyleProps, ITextFieldStyles } from "office-ui-fabric-react";
 
-import { IFormFields, IProjectFormFields, IFieldDef } from '../fields/fieldDefinitions';
+import { IFormFields, IProjectFormFields, } from '../fields/fieldDefinitions';
 
 import { PeoplePicker, PrincipalType } from "@pnp/spfx-controls-react/lib/PeoplePicker";
 
-import { IUser } from '../IReUsableInterfaces';
+import { IFieldDef } from '@mikezimm/npmfunctions/dist/Fields/Interfaces';
+import { IQuickField } from '@mikezimm/npmfunctions/dist/QuickCommands/IQuickCommands';
+import { IUser } from '@mikezimm/npmfunctions/dist/Services/Users/IUserInterfaces';
 
 import { createIconButton } from '../createButtons/IconButton';
 

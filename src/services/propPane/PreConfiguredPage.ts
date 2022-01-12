@@ -22,7 +22,7 @@ import {
   
   import { IDrilldown7WebPartProps } from '../../webparts/drilldown7/Drilldown7WebPart';
   
-  import { refinerRuleItems } from '../../webparts/drilldown7/components/IReUsableInterfaces';
+  import { buildKeyText, refinerRuleItems } from '@mikezimm/npmfunctions/dist/Refiners/functions';
   /*
   
     // 1 - Analytics options

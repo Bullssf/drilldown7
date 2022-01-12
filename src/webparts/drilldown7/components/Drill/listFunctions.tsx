@@ -3,7 +3,9 @@ import { ListView, IViewField, SelectionMode, GroupOrder, IGrouping } from "@pnp
 
 import { Web, IList, IItem } from "@pnp/sp/presets/all";
 
-import { ICustViewDef, IQuickButton, IUser } from '../../components/IReUsableInterfaces';
+import { ICustViewDef,  } from '@mikezimm/npmfunctions/dist/Views/IODrillViews';
+import { IUser,  } from '@mikezimm/npmfunctions/dist/Services/Users/IUserInterfaces';
+import { IQuickButton, IQuickCommands, IQuickField } from '@mikezimm/npmfunctions/dist/QuickCommands/IQuickCommands';
 
 import { getHelpfullError } from '@mikezimm/npmfunctions/dist/Services/Logging/ErrorHandler';
 

@@ -7,7 +7,9 @@ import { Link, ILinkProps } from 'office-ui-fabric-react';
 
 import { Pivot, PivotItem, IPivotItemProps} from 'office-ui-fabric-react/lib/Pivot';
 
-import { IMyProgress, IQuickButton, IQuickCommands, IUser } from '../IReUsableInterfaces';
+import { IUser } from '@mikezimm/npmfunctions/dist/Services/Users/IUserInterfaces';
+import { IQuickButton, IQuickCommands } from '@mikezimm/npmfunctions/dist/QuickCommands/IQuickCommands';
+
 import { IDrillItemInfo } from './drillComponent';
 
 import { autoDetailsList } from '../../../../services/hoverCardService';

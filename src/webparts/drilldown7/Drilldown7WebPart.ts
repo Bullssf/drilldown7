@@ -39,17 +39,22 @@ import { sp } from '@pnp/sp';
 import { propertyPaneBuilder } from '../../services/propPane/PropPaneBuilder';
 import { getAllItems } from '../../services/propPane/PropPaneFunctions';
 
-import { IMyProgress, ICustViewDef, IRefinerLayer, IRefinerStat, ICSSChartDD, IListViewDD } from './components/IReUsableInterfaces';
+import { IMyProgress,  ICSSChartDD } from './components/IReUsableInterfaces';
+
+
+import { IListViewDDDrillDown } from '@mikezimm/npmfunctions/Views/IDrillViews';
+
+import { IQuickButton, IQuickCommands, IQuickField } from '@mikezimm/npmfunctions/dist/QuickCommands/IQuickCommands';
+
+import { IRefinerLayer, IRefiners, IItemRefiners, IRefinerStats, RefineRuleValues,
+  IRefinerRules, IRefinerStatType, RefinerStatTypes, IRefinerStat } from '@mikezimm/npmfunctions/dist/Refiners/IRefiners';
 
 /**
  * DD Provider: Step 1 - import from sp-dynamic-data
  */
 import { IDynamicDataCallables, IDynamicDataPropertyDefinition} from '@microsoft/sp-dynamic-data';
 
-import { RefineRuleValues } from './components/IReUsableInterfaces';
-
 import { IGrouping, IViewField } from "@pnp/spfx-controls-react/lib/ListView";
-import { IQuickButton, IQuickCommands } from './components/IReUsableInterfaces';
 
 import { ICssChartProps } from '../cssChart/components/ICssChartProps';
 
@@ -627,7 +632,7 @@ export default class Drilldown7WebPart extends BaseClientSideWebPart<IDrilldown7
    * 1) Set value of selected Switch on the internal property
    * 2) Tell anybody who subscribed, that property changed
    */
-  private handleListPost = ( listProps : IListViewDD ) : void => {
+  private handleListPost = ( listProps : IListViewDDDrillDown ) : void => {
 
     if ( this.properties.togOtherListview === true ) {
       let e = event;

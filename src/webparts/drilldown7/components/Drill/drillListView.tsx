@@ -2,7 +2,6 @@
 import * as React from 'react';
 import { Icon  } from 'office-ui-fabric-react/lib/Icon';
 
-import { IMyProgress } from '../IReUsableInterfaces';
 import { IDrillItemInfo } from './drillComponent';
 
 import { buildPropsHoverCard } from '../../../../services/hoverCardService';

@@ -30,11 +30,7 @@ import * as strings from 'ThelistWebPartStrings';
 import Thelist from './components/Thelist';
 import { IThelistProps } from './components/IThelistProps';
 
-
-import { IRefiners, IRefinerLayer, IRefinerStat,IItemRefiners, RefineRuleValues, 
-  RefinerStatTypes, IRefinerStats, IRefinerStatType, ICSSChartDD } from '../drilldown7/components/IReUsableInterfaces';
-
-  require('../../services/propPane/GrayPropPaneAccordions.css');
+require('../../services/propPane/GrayPropPaneAccordions.css');
 
 export interface IThelistWebPartProps {
   description: string;

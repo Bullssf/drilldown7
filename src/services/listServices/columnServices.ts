@@ -22,9 +22,6 @@ import { IListInfo, IMyListInfo, IServiceLog, notify } from './listTypes';
 
 import { getHelpfullError } from '@mikezimm/npmfunctions/dist/Services/Logging/ErrorHandler';
 
-import { IMyProgress } from '../../webparts/drilldown7/components/IReUsableInterfaces';
-
-
 import "@pnp/sp/webs";
 import "@pnp/sp/lists";
 import "@pnp/sp/fields";

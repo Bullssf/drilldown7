@@ -1,7 +1,7 @@
 
-import { IRefiners, IRefinerLayer, IRefinerStat,IItemRefiners, RefineRuleValues, 
-  RefinerStatTypes, IRefinerStats, IRefinerStatType, ICSSChartDD, IListViewDD } from '../../drilldown7/components/IReUsableInterfaces';
+import { ICSSChartDD,  } from '../../drilldown7/components/IReUsableInterfaces';
 
+import { IListViewDDDrillDown } from '@mikezimm/npmfunctions/Views/IDrillViews';
   
 import { WebPartContext } from '@microsoft/sp-webpart-base';
 
@@ -18,7 +18,7 @@ export interface IThelistProps {
   WebpartWidth?:   number;    //Size courtesy of https://www.netwoven.com/2018/11/13/resizing-of-spfx-react-web-parts-in-different-scenarios/
 
   callBackID: string;
-  listPropsDD: IListViewDD;
+  listPropsDD: IListViewDDDrillDown ;
 
 /**
  *  TITLE:  For Webpart Title component

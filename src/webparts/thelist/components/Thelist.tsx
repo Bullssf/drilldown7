@@ -12,9 +12,6 @@ import { WebPartTitle } from "@pnp/spfx-controls-react/lib/WebPartTitle";
 
 import { IGrouping, IViewField } from "@pnp/spfx-controls-react/lib/ListView";
 
-import { IRefiners, IRefinerLayer, IRefinerStat,IItemRefiners, RefineRuleValues, 
-  RefinerStatTypes, IRefinerStats, IRefinerStatType, ICSSChartDD, IListViewDD } from '../../drilldown7/components/IReUsableInterfaces';
-
 import { getAppropriateViewFields, getAppropriateViewGroups, getAppropriateViewProp 
   } from '../../drilldown7/components/Drill/listFunctions';
 

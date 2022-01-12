@@ -23,8 +23,8 @@ import {
   import * as links from '@mikezimm/npmfunctions/dist/Links/LinksRepos';   //              { links.gitRepoDrilldown7WebPart.issues }
   
   import { IDrilldown7WebPartProps } from '../../webparts/drilldown7/Drilldown7WebPart';
-  
-  import { refinerRuleItems } from '../../webparts/drilldown7/components/IReUsableInterfaces';
+
+  import { buildKeyText, refinerRuleItems } from '@mikezimm/npmfunctions/dist/Refiners/functions';
   
   export class ViewsPage {
     public getPropertyPanePage(webPartProps: IDrilldown7WebPartProps ): IPropertyPanePage {

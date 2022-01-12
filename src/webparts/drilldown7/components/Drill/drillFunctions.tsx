@@ -39,9 +39,11 @@ import { ensureUserInfo } from '@mikezimm/npmfunctions/dist/Services/Users/userS
 
 import { mergeAriaAttributeValues } from "office-ui-fabric-react";
 
-import { IRefiners, IRefinerLayer, IItemRefiners, RefineRuleValues, RefinerStatTypes, IRefinerStats, IRefinerStatType, IUser } from '../IReUsableInterfaces';
+import { IRefinerLayer, IRefiners, IItemRefiners, IRefinerStats, RefineRuleValues,
+    IRefinerRules, IRefinerStatType, RefinerStatTypes, IRefinerStat } from '@mikezimm/npmfunctions/dist/Refiners/IRefiners';
 
-import { IRefinerStat } from '../../components/IReUsableInterfaces';
+import { IUser } from '@mikezimm/npmfunctions/dist/Services/Users/IUserInterfaces';
+import { IQuickButton } from '@mikezimm/npmfunctions/dist/QuickCommands/IQuickCommands';
 
 //   d888b  d88888b d888888b  .d8b.  db      db      d888888b d888888b d88888b .88b  d88. .d8888. 
 //  88' Y8b 88'     `~~88~~' d8' `8b 88      88        `88'   `~~88~~' 88'     88'YbdP`88 88'  YP 

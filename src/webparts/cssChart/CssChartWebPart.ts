@@ -28,9 +28,6 @@ import CssChart from './components/CssChart';
 import { ICssChartProps } from './components/ICssChartProps';
 import { description } from '../drilldown7/components/ListView/ViewFields';
 
-import { IRefiners, IRefinerLayer, IRefinerStat,IItemRefiners, RefineRuleValues, 
-  RefinerStatTypes, IRefinerStats, IRefinerStatType, ICSSChartDD } from '../drilldown7/components/IReUsableInterfaces';
-
 import { JSON_Edit_Link } from '../../services/propPane/zReusablePropPane';
 
 require('../../services/propPane/GrayPropPaneAccordions.css');
