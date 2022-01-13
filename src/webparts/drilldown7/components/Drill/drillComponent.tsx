@@ -32,7 +32,7 @@ import { IContentsToggles, makeToggles } from '../fields/toggleFieldBuilder';
 import { IPickedList, IPickedWebBasic, IMyPivots, IPivot,  ILink, IMyProgress, IMyIcons, IMyFonts, IChartSeries, 
     ICharNote, ICSSChartSettings, ICSSChartData, ICSSChartTypes, } from '../IReUsableInterfaces';
 
-import { ICustViewDef } from '@mikezimm/npmfunctions/dist/Views/IListVIews';
+import { ICustViewDef } from '@mikezimm/npmfunctions/dist/Views/IListViews';
 
 import { IUser } from '@mikezimm/npmfunctions/dist/Services/Users/IUserInterfaces';
 import { IQuickButton, IQuickCommands } from '@mikezimm/npmfunctions/dist/QuickCommands/IQuickCommands';

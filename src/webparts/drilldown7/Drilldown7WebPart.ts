@@ -43,7 +43,7 @@ import { IMyProgress,  ICSSChartDD } from './components/IReUsableInterfaces';
 
 
 import { IListViewDDDrillDown } from '@mikezimm/npmfunctions/dist/Views/IDrillViews';
-import { ICustViewDef, } from '@mikezimm/npmfunctions/dist/Views/IListVIews';
+import { ICustViewDef, } from '@mikezimm/npmfunctions/dist/Views/IListViews';
 
 import { IQuickButton, IQuickCommands, IQuickField } from '@mikezimm/npmfunctions/dist/QuickCommands/IQuickCommands';
 
