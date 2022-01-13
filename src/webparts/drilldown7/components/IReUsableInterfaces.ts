@@ -1,6 +1,6 @@
 import { ListView, IViewField, SelectionMode, GroupOrder, IGrouping } from "@pnp/spfx-controls-react/lib/ListView";
 
-import { IDrillItemInfo } from './Drill/drillComponent';
+import { IDrillItemInfo } from '@mikezimm/npmfunctions/dist/WebPartInterfaces/DrillDown/IDrillItem';
 
 import { IFieldDef } from '@mikezimm/npmfunctions/dist/Fields/Interfaces';
 import { IUser } from '@mikezimm/npmfunctions/dist/Services/Users/IUserInterfaces';
@@ -9,8 +9,6 @@ import { IQuickField, IQuickButton, IQuickCommands } from '@mikezimm/npmfunction
 
 import { IRefinerLayer, IRefiners, IItemRefiners, IRefinerStats, RefineRuleValues,
   IRefinerRules, IRefinerStatType, RefinerStatTypes, IRefinerStat } from '@mikezimm/npmfunctions/dist/Refiners/IRefiners';
-
-import { ICustViewDef } from '@mikezimm/npmfunctions/dist/Views/IDrillViews';
 
 export interface IPickedWebBasic {
   title: string;

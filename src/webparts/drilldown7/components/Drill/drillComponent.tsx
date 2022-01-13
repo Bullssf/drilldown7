@@ -32,12 +32,12 @@ import { IContentsToggles, makeToggles } from '../fields/toggleFieldBuilder';
 import { IPickedList, IPickedWebBasic, IMyPivots, IPivot,  ILink, IMyProgress, IMyIcons, IMyFonts, IChartSeries, 
     ICharNote, ICSSChartSettings, ICSSChartData, ICSSChartTypes, } from '../IReUsableInterfaces';
 
-import { ICustViewDef } from '@mikezimm/npmfunctions/dist/Views/IDrillViews';
+import { ICustViewDef } from '@mikezimm/npmfunctions/dist/Views/IListVIews';
 
 import { IUser } from '@mikezimm/npmfunctions/dist/Services/Users/IUserInterfaces';
 import { IQuickButton, IQuickCommands } from '@mikezimm/npmfunctions/dist/QuickCommands/IQuickCommands';
 
-import { ListViewDD } from '../IReUsableInterfaces';
+import { IListViewDDDrillDown } from '@mikezimm/npmfunctions/dist/Views/IDrillViews';
 
 import { IRefinerLayer, IRefiners, IItemRefiners, IRefinerStats, RefineRuleValues,
     IRefinerRules, IRefinerStatType, RefinerStatTypes, IRefinerStat } from '@mikezimm/npmfunctions/dist/Refiners/IRefiners';
@@ -1279,7 +1279,7 @@ public componentDidUpdate(prevProps){
             if ( this.props.refiners.length > 2 ) { maxRefinersToShow = 3; }
         }
         if ( this.props.toggles.togOtherListview === true ) {
-            let listViewDD : IListViewDD = {
+            let listViewDD : IListViewDDDrillDown = {
 
                 parentListFieldTitles: this.props.viewDefs.length > 0 ? null : this.props.parentListFieldTitles,
                 togOtherListview: this.props.toggles.togOtherListview,
@@ -1304,7 +1304,7 @@ public componentDidUpdate(prevProps){
             this.props.handleListPost( listViewDD );
         } else {
 
-            let listViewDD : IListViewDD = {
+            let listViewDD : IListViewDDDrillDown = {
 
                 parentListFieldTitles: null,
                 webURL :null,
@@ -1742,7 +1742,7 @@ public componentDidUpdate(prevProps){
     }
 
     if ( this.props.toggles.togOtherListview === true ) {
-        let listViewDD : IListViewDD = {
+        let listViewDD : IListViewDDDrillDown = {
 
             parentListFieldTitles: this.props.viewDefs.length > 0 ? null : this.props.parentListFieldTitles,
             webURL :this.state.drillList.webURL,
@@ -1767,7 +1767,7 @@ public componentDidUpdate(prevProps){
         this.props.handleListPost( listViewDD );
         searchCount = newFilteredItems.length;
     } else {
-        let listViewDD : IListViewDD = {
+        let listViewDD : IListViewDDDrillDown = {
 
             parentListFieldTitles: null,
             webURL :null,

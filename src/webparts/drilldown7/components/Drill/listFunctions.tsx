@@ -3,7 +3,7 @@ import { ListView, IViewField, SelectionMode, GroupOrder, IGrouping } from "@pnp
 
 import { Web, IList, IItem } from "@pnp/sp/presets/all";
 
-import { ICustViewDef,  } from '@mikezimm/npmfunctions/dist/Views/IODrillViews';
+import { ICustViewDef,  } from '@mikezimm/npmfunctions/dist/Views/IListVIews';
 import { IUser,  } from '@mikezimm/npmfunctions/dist/Services/Users/IUserInterfaces';
 import { IQuickButton, IQuickCommands, IQuickField } from '@mikezimm/npmfunctions/dist/QuickCommands/IQuickCommands';
 
@@ -14,7 +14,7 @@ import { expandArray, spliceCopyArray, addItemToArrayIfItDoesNotExist, convertNu
   removeItemFromArrayOnce, removeItemFromArrayAll, updateNextOpenIndex 
   } from '@mikezimm/npmfunctions/dist/Services/Arrays/manipulation';
 
-import { IDrillItemInfo } from './drillComponent';
+import { IDrillItemInfo } from '@mikezimm/npmfunctions/dist/WebPartInterfaces/DrillDown/IDrillItem';
 
  /***
  *     d888b  d88888b d888888b      db    db d888888b d88888b db   d8b   db      d88888b db    db d8b   db  .o88b. d888888b d888888b  .d88b.  d8b   db .d8888. 

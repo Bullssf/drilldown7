@@ -11,7 +11,10 @@ import { CreateClientsidePage, PromotedState, ClientsidePageLayoutType, Clientsi
 
 import { IContentsListInfo, IMyListInfo, IServiceLog, IContentsLists } from '../../../../services/listServices/listTypes'; //Import view arrays for Time list
 
-import { IDrillItemInfo, IDrillList, pivCats } from  './drillComponent';
+import { IDrillItemInfo } from '@mikezimm/npmfunctions/dist/WebPartInterfaces/DrillDown/IDrillItem';
+
+import { IDrillList, pivCats } from  './drillComponent';
+
 
 import { changes, IMyFieldTypes } from '../../../../services/listServices/columnTypes'; //Import view arrays for Time list
 

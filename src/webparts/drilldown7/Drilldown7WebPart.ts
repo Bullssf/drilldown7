@@ -42,7 +42,8 @@ import { getAllItems } from '../../services/propPane/PropPaneFunctions';
 import { IMyProgress,  ICSSChartDD } from './components/IReUsableInterfaces';
 
 
-import { IListViewDDDrillDown } from '@mikezimm/npmfunctions/Views/IDrillViews';
+import { IListViewDDDrillDown } from '@mikezimm/npmfunctions/dist/Views/IDrillViews';
+import { ICustViewDef, } from '@mikezimm/npmfunctions/dist/Views/IListVIews';
 
 import { IQuickButton, IQuickCommands, IQuickField } from '@mikezimm/npmfunctions/dist/QuickCommands/IQuickCommands';
 
