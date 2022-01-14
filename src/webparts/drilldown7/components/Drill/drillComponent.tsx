@@ -656,6 +656,7 @@ export default class DrillDown extends React.Component<IDrillDownProps, IDrillDo
         let quickCommands : IQuickCommands = this.props.quickCommands ? JSON.parse( JSON.stringify(this.props.quickCommands )) : null ;
         
         if ( quickCommands !== null ) {
+            this.testViewDefs('constructor');
             if ( quickCommands.onUpdateReload === true ) {
                 quickCommands.refreshCallback = this._reloadOnUpdate.bind(this);
             }
@@ -1077,17 +1078,19 @@ public componentDidUpdate(prevProps){
     
                 }
                 if ( statRefinerObject && statRefinerObject.childrenKeys.length > 0  ) {
-
+                    console.log('this.props.viewDefs ~ 1080 - render', this.props.viewDefs );
                     //Update Dynamic Data cssChartData  cssChartProps : ICssChartProps
                     if ( this.props.handleSwitch ) {
                         this.props.handleSwitch ( this.state.drillList.refinerStats, 'summaries', statRefinerObject, this.state.searchMeta ) ; //resultSummaryArray  ); //: //  { chartData : ICSSChartSeries[], callBackID: string }[]  
                     }
-
+                    console.log('this.props.viewDefs ~ 1085 - render', this.props.viewDefs );
                 } else {
                     //Update Dynamic Data cssChartData
+                    console.log('this.props.viewDefs ~ 1088 - render', this.props.viewDefs );
                     if ( this.props.handleSwitch ) {
                         this.props.handleSwitch ( null, null, null ); //: ICssChartProps
                     }
+                    console.log('this.props.viewDefs ~ 1092 - render', this.props.viewDefs );
                 }
 
                 /***
@@ -1247,7 +1250,15 @@ public componentDidUpdate(prevProps){
 
     }   //End Public Render
 
-
+    private testViewDefs(message: string) {
+        let temp : any = this.props.viewDefs;
+        let testTemp = temp[0].viewFields[1].name;
+        if ( testTemp === 'Order0Title') {
+            console.log(`temp[0]['viewFields'][1] ==== :${message}`, testTemp );
+        } else {
+            console.log(`temp[0]['viewFields'][1] !!==:${message}`, testTemp );
+        }
+    }
     private getAllItemsCall() {
 
         /**
@@ -1255,6 +1266,9 @@ public componentDidUpdate(prevProps){
          */
         
         console.log('this.props.viewDefs ~ 1251 - getAllItems', this.props.viewDefs );
+
+        this.testViewDefs('getAllItemsCall');
+
         let drillList = this.createDrillList(this.props.webURL, this.props.listName, false, this.props.refiners, this.state.rules, this.props.stats, this.props.viewDefs, this.props.toggles.togOtherChartpart, '');
         let errMessage = drillList.refinerRules === undefined ? 'Invalid Rule set: ' +  this.state.rules : '';
         if ( drillList.refinerRules === undefined ) { drillList.refinerRules = [[],[],[]] ; } 
@@ -1919,6 +1933,7 @@ public componentDidUpdate(prevProps){
         this.setState({
             bannerMessage: message,
         });
+        this.testViewDefs('_reloadOnUpdate');
         this.getAllItemsCall();
 
         let delay = hasError === true ? 10000 : this.state.quickCommands.successBanner;
@@ -1930,6 +1945,7 @@ public componentDidUpdate(prevProps){
     }
 
     private _updateStateOnPropsChange(): void {
+        this.testViewDefs('_updateStateOnPropsChange');
         this.getAllItemsCall();
     }
 
