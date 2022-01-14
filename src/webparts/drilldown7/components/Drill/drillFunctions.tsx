@@ -83,6 +83,15 @@ export async function getAllItems( drillList: IDrillList, addTheseItemsToState: 
 
     try {
         let fetchCount = drillList.fetchCount > 0 ? drillList.fetchCount : 200;
+        console.log('Fetch Items Properties:');
+        console.log('drillList:',drillList);
+        console.log('drillList.staticColumns:',drillList.staticColumns);
+        console.log('drillList.staticColumnsStr:',drillList.staticColumnsStr);
+        console.log('selectCols:', selectCols);
+        console.log('expandThese:', expandThese);
+        console.log('fetchCount:', fetchCount);
+        console.log('drillList.restFilter:', drillList.restFilter);
+
         if ( drillList.restFilter.length > 1 ) {
             allItems = await thisListObject.items.select(selectCols).expand(expandThese).orderBy('ID',false).top(fetchCount).filter(drillList.restFilter).get();
         } else {

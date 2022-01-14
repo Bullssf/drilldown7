@@ -664,6 +664,7 @@ export default class DrillDown extends React.Component<IDrillDownProps, IDrillDo
             } else { quickCommands.successBanner = quickCommands.successBanner * 1000; }
         }
 
+        console.log('this.props.viewDefs ~ 667', this.props.viewDefs );
 
         this.state = { 
 
@@ -773,6 +774,7 @@ export default class DrillDown extends React.Component<IDrillDownProps, IDrillDo
 
 public componentDidUpdate(prevProps){
 
+    console.log('this.props.viewDefs ~ 777 CDU1', this.props.viewDefs );
     let rebuildPart = false;
 //   console.log('DIDUPDATE setting Progress:', this.props.progress);
     if (this.props.progress !== prevProps.progress) {  rebuildPart = true ; }
@@ -803,6 +805,7 @@ public componentDidUpdate(prevProps){
       if ( prevProps.showDisabled !== this.props.showDisabled ) {
         rebuildPart = true ;
       }
+    console.log('this.props.viewDefs ~ 808 CDU2', this.props.viewDefs );
     if (rebuildPart === true) {
       this._updateStateOnPropsChange();
     }
@@ -823,6 +826,8 @@ public componentDidUpdate(prevProps){
 
         let x = 1;
         if ( x === 1 ) {
+
+        console.log('this.props.viewDefs ~ 828 - render', this.props.viewDefs );
 
 /***
  *              d888888b db   db d888888b .d8888.      d8888b.  .d8b.   d888b  d88888b 
@@ -1074,11 +1079,15 @@ public componentDidUpdate(prevProps){
                 if ( statRefinerObject && statRefinerObject.childrenKeys.length > 0  ) {
 
                     //Update Dynamic Data cssChartData  cssChartProps : ICssChartProps
-                    this.props.handleSwitch ( this.state.drillList.refinerStats, 'summaries', statRefinerObject, this.state.searchMeta ) ; //resultSummaryArray  ); //: //  { chartData : ICSSChartSeries[], callBackID: string }[]  
+                    if ( this.props.handleSwitch ) {
+                        this.props.handleSwitch ( this.state.drillList.refinerStats, 'summaries', statRefinerObject, this.state.searchMeta ) ; //resultSummaryArray  ); //: //  { chartData : ICSSChartSeries[], callBackID: string }[]  
+                    }
 
                 } else {
                     //Update Dynamic Data cssChartData
-                    this.props.handleSwitch ( null, null, null ); //: ICssChartProps
+                    if ( this.props.handleSwitch ) {
+                        this.props.handleSwitch ( null, null, null ); //: ICssChartProps
+                    }
                 }
 
                 /***
@@ -1219,6 +1228,8 @@ public componentDidUpdate(prevProps){
  *                                                                 
  */
 
+            console.log('this.props.viewDefs ~ 1225 - return', this.props.viewDefs );
+
             return (
                 <div className={ styles.contents }>
                 <div className={ styles.container }>
@@ -1242,6 +1253,8 @@ public componentDidUpdate(prevProps){
         /**
          * This is copied from constructor when you have to call the data in case something changed.
          */
+        
+        console.log('this.props.viewDefs ~ 1251 - getAllItems', this.props.viewDefs );
         let drillList = this.createDrillList(this.props.webURL, this.props.listName, false, this.props.refiners, this.state.rules, this.props.stats, this.props.viewDefs, this.props.toggles.togOtherChartpart, '');
         let errMessage = drillList.refinerRules === undefined ? 'Invalid Rule set: ' +  this.state.rules : '';
         if ( drillList.refinerRules === undefined ) { drillList.refinerRules = [[],[],[]] ; } 
@@ -1252,6 +1265,7 @@ public componentDidUpdate(prevProps){
 
     private addTheseItemsToState( drillList: IDrillList, allItems , errMessage : string, refinerObj: IRefinerLayer ) {
 
+        console.log('this.props.viewDefs ~ 1262 - addTheseItemsToState', this.props.viewDefs );
         //let newFilteredItems : IDrillItemInfo[] = this.getNewFilteredItems( '', this.state.searchMeta, allItems, 0 );
         let pivotCats : any = [];
         let cmdCats : any = [];
@@ -1300,8 +1314,11 @@ public componentDidUpdate(prevProps){
                 breadCrumb: [pivCats.all.title],
 
             };
-        
-            this.props.handleListPost( listViewDD );
+            console.log('this.props.viewDefs ~ 1313 - addTheseItemsToState2', this.props.viewDefs );
+            console.log('listViewDD ~ 1314 - addTheseItemsToState2', listViewDD );
+            if ( this.props.handleListPost ) { this.props.handleListPost( listViewDD ); }
+            console.log('this.props.viewDefs ~ 1316 - addTheseItemsToState3', this.props.viewDefs );
+            console.log('listViewDD ~ 1317 - addTheseItemsToState2', listViewDD );
         } else {
 
             let listViewDD : IListViewDDDrillDown = {
@@ -1325,9 +1342,11 @@ public componentDidUpdate(prevProps){
                 breadCrumb: null,
         
             };
-        
-            this.props.handleListPost( listViewDD );
-
+            console.log('this.props.viewDefs ~ 1341 - addTheseItemsToState3', this.props.viewDefs );
+            console.log('listViewDD ~ 1342 - addTheseItemsToState', listViewDD );
+            if ( this.props.handleListPost ) { this.props.handleListPost( listViewDD ); }
+            console.log('this.props.viewDefs ~ 1344 - addTheseItemsToState4', this.props.viewDefs );
+            console.log('listViewDD ~ 1345 - addTheseItemsToState2', listViewDD );
         }
 
         this.setState({
@@ -1764,7 +1783,7 @@ public componentDidUpdate(prevProps){
     
         };
     
-        this.props.handleListPost( listViewDD );
+        if ( this.props.handleListPost ) { this.props.handleListPost( listViewDD ); }
         searchCount = newFilteredItems.length;
     } else {
         let listViewDD : IListViewDDDrillDown = {
@@ -1789,7 +1808,7 @@ public componentDidUpdate(prevProps){
     
         };
     
-        this.props.handleListPost( listViewDD );
+        if ( this.props.handleListPost ) { this.props.handleListPost( listViewDD ); }
         searchCount = newFilteredItems.length;
     }
 

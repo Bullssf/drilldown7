@@ -495,11 +495,11 @@ export default class Drilldown7WebPart extends BaseClientSideWebPart<IDrilldown7
     let viewWidth3 = this.properties.viewWidth3;
 
     let includeListLink = this.properties.includeListLink;
-
+    console.log('viewFields1 ~ 498 - wp Render', viewFields1 );
     if (viewFields1 !== undefined ) { viewDefs.push( { minWidth: viewWidth1, viewFields: viewFields1, groupByFields: groupByFields, includeDetails: includeDetails, includeAttach: includeAttach, includeListLink: includeListLink }); }
     if (viewFields2 !== undefined ) { viewDefs.push( { minWidth: viewWidth2, viewFields: viewFields2, groupByFields: groupByFields, includeDetails: includeDetails, includeAttach: includeAttach, includeListLink: includeListLink }); }
     if (viewFields3 !== undefined ) { viewDefs.push( { minWidth: viewWidth3, viewFields: viewFields3, groupByFields: groupByFields, includeDetails: includeDetails, includeAttach: includeAttach, includeListLink: includeListLink }); }
-
+    console.log('viewFields1 ~ 502 - wp Render', viewFields1 );
     let quickCommands : IQuickCommands = this.getQuickCommandsObject( 'Group Quick Commands', this.properties.quickCommands);
 
     console.log('Here are view Defs:', viewDefs );
@@ -598,8 +598,10 @@ export default class Drilldown7WebPart extends BaseClientSideWebPart<IDrilldown7
         /**
          * DD Provider: Step 0 - add props to React Component to receive the switches and the handler.
          */
-        handleSwitch: this.handleSwitch,
-        handleListPost: this.handleListPost,
+        handleSwitch: this.handleSwitch,  //Commented out due to something causing viewFields names to get messed up (removed the / for expanded columns )
+        // handleSwitch: null,
+        handleListPost: this.handleListPost,  //Commented out due to something causing viewFields names to get messed up (removed the / for expanded columns )
+        // handleListPost: null,
 
       }
     );
@@ -635,6 +637,7 @@ export default class Drilldown7WebPart extends BaseClientSideWebPart<IDrilldown7
    */
   private handleListPost = ( listProps : IListViewDDDrillDown ) : void => {
 
+    console.log('this.props.viewDefs ~ 638 - handleListPost', listProps );
     if ( this.properties.togOtherListview === true ) {
       let e = event;
 
