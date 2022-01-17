@@ -160,6 +160,7 @@ public componentDidUpdate(prevProps){
               includeAttach= { includeAttach }
               includeListLink = { includeListLink }
               quickCommands={ quickCommands }
+              refreshCallback= { null }
               
           ></ReactListItems>;
         }

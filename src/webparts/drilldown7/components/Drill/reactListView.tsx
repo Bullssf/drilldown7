@@ -74,6 +74,8 @@ export interface IReactListItemsProps {
 
     quickCommands?: IQuickCommands;
 
+    refreshCallback: any;
+
 }
 
 export interface IReactListItemsState {
@@ -692,10 +694,10 @@ export default class ReactListItems extends React.Component<IReactListItemsProps
                 <div>Including: { updates.join(', ')} </div>
             ] }</div>;
 
-            this.props.quickCommands.refreshCallback( bannerMessage, false );
+            this.props.refreshCallback( bannerMessage, false );
 
         } else if ( result !== null ) {
-            this.props.quickCommands.refreshCallback( result, true );
+            this.props.refreshCallback( result, true );
         }
     }
     /**

@@ -1017,6 +1017,7 @@ public componentDidUpdate(prevProps){
                         includeAttach= { includeAttach }
                         includeListLink = { includeListLink }
                         quickCommands={ this.state.quickCommands }
+                        refreshCallback={ this._reloadOnUpdate.bind(this) }
                     
                      ></ReactListItems>;
                 }
