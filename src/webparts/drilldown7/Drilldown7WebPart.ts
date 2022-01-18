@@ -420,7 +420,7 @@ export default class Drilldown7WebPart extends BaseClientSideWebPart<IDrilldown7
     links.trickyEmails.map( getsTricks => {
       if ( this.context.pageContext.user.loginName && this.context.pageContext.user.loginName.toLowerCase().indexOf( getsTricks ) > -1 ) { showTricks = true ; }   } ); 
 
-    let bannerTitle = this.modifyBannerTitle === true && this.properties.bannerTitle && this.properties.bannerTitle.length > 0 ? this.properties.bannerTitle : `Pivot Tiles`;
+    let bannerTitle = this.modifyBannerTitle === true && this.properties.bannerTitle && this.properties.bannerTitle.length > 0 ? this.properties.bannerTitle : `Drilldown`;
     let bannerStyle: ICurleyBraceCheck = getReactCSSFromString( 'bannerStyle', this.properties.bannerStyle, {background: "#7777",fontWeight:600, fontSize: 'larger', height: '43px'} );
     let showBannerGear = this.properties.showBannerGear === false ? false : true;
     
@@ -429,11 +429,10 @@ export default class Drilldown7WebPart extends BaseClientSideWebPart<IDrilldown7
     console.log('pageLayoutType:', anyContext.pageLayoutType );
 
 
-
     let bannerProps: IWebpartBannerProps = {
     
       pageContext: this.context.pageContext,
-      panelTitle: 'Pivot Tiles webpart - Automated links and tiles',
+      panelTitle: `Drilldown webpart - ${this.properties.parentListTitle}`,
       bannerWidth : this.domElement.clientWidth,
       showBanner: this.forceBanner === true || this.properties.showBanner !== false ? true : false,
       showTricks: showTricks,
@@ -495,14 +494,12 @@ export default class Drilldown7WebPart extends BaseClientSideWebPart<IDrilldown7
     let viewWidth3 = this.properties.viewWidth3;
 
     let includeListLink = this.properties.includeListLink;
-    console.log('viewFields1 ~ 498 - wp Render', viewFields1 );
+
     if (viewFields1 !== undefined ) { viewDefs.push( { minWidth: viewWidth1, viewFields: viewFields1, groupByFields: groupByFields, includeDetails: includeDetails, includeAttach: includeAttach, includeListLink: includeListLink }); }
     if (viewFields2 !== undefined ) { viewDefs.push( { minWidth: viewWidth2, viewFields: viewFields2, groupByFields: groupByFields, includeDetails: includeDetails, includeAttach: includeAttach, includeListLink: includeListLink }); }
     if (viewFields3 !== undefined ) { viewDefs.push( { minWidth: viewWidth3, viewFields: viewFields3, groupByFields: groupByFields, includeDetails: includeDetails, includeAttach: includeAttach, includeListLink: includeListLink }); }
-    console.log('viewFields1 ~ 502 - wp Render', viewFields1 );
-    let quickCommands : IQuickCommands = this.getQuickCommandsObject( 'Group Quick Commands', this.properties.quickCommands);
 
-    console.log('Here are view Defs:', viewDefs );
+    let quickCommands : IQuickCommands = this.getQuickCommandsObject( 'Group Quick Commands', this.properties.quickCommands);
 
     let stringRules: string = JSON.stringify( rules );
 

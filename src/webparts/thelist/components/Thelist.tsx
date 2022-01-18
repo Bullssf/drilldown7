@@ -15,6 +15,8 @@ import { IGrouping, IViewField } from "@pnp/spfx-controls-react/lib/ListView";
 import { getAppropriateViewFields, getAppropriateViewGroups, getAppropriateViewProp 
   } from '../../drilldown7/components/Drill/listFunctions';
 
+import { ICustViewDef,  } from '@mikezimm/npmfunctions/dist/Views/IListViews';
+
 import ReactListItems from '../../drilldown7/components/Drill/reactListView';
 
 import { Placeholder } from "@pnp/spfx-controls-react/lib/Placeholder";
@@ -91,11 +93,16 @@ public componentDidUpdate(prevProps){
     public render(): React.ReactElement<IThelistProps> {
 
       let { listPropsDD } = this.props;
-      let viewDefs, searchedItems, parentListFieldTitles, quickCommands, breadCrumb = null;
-      
+      let searchedItems, parentListFieldTitles, quickCommands, breadCrumb = null;
+
       let togOtherListview = listPropsDD.togOtherListview;
 
-      viewDefs = listPropsDD.viewDefs;
+      /**
+       * 2022-01-17:  Added this to see if this gets mutated and breaks on refresh items.  
+       * After deeper testing, adding this to getBestFitView solved it but that was getting called a lot so I'm just doing it once in the render
+       */
+      let viewDefs: ICustViewDef[] = JSON.parse(JSON.stringify(listPropsDD.viewDefs));
+
       if ( viewDefs ) {
         
         searchedItems = listPropsDD.items;

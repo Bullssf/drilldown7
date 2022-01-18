@@ -493,8 +493,11 @@ export default class DrillDown extends React.Component<IDrillDownProps, IDrillDo
     private createRefinerRuleCalcs( calcs: string ) {
         let theCalcs : any = null;
         try {
-            calcs = calcs.replace(/\\\"/g,'"').replace(/\\'"/g,"'"); //Replace any cases where I copied the hashed characters from JSON file directly.
-            theCalcs = JSON.parse(calcs);
+            //2022-01-17:  replace does not modify the original value.
+            //But I created a new value here because it did modify "itself" which I don't think I wanted to do.
+
+            let newcalcs = calcs.replace(/\\\"/g,'"').replace(/\\'"/g,"'"); //Replace any cases where I copied the hashed characters from JSON file directly.
+            theCalcs = JSON.parse(newcalcs);
         } catch(e) {
             alert('createRefinerRuleCalcs: ' + e);
             theCalcs = [];
@@ -575,8 +578,9 @@ export default class DrillDown extends React.Component<IDrillDownProps, IDrillDo
      *                                                                                                                                          
      */
 
-    private createDrillList(webURL: string, name: string, isLibrary: boolean, refiners: string[], rules: string, stats: string, viewDefs: ICustViewDef[], togOtherChartpart: boolean, title: string = null) {
+    private createDrillList(webURL: string, name: string, isLibrary: boolean, refiners: string[], rules: string, stats: string, OrigViewDefs: ICustViewDef[], togOtherChartpart: boolean, title: string = null) {
 
+        let viewDefs = JSON.parse(JSON.stringify(OrigViewDefs)) ;
         let refinerRules = this.createEmptyRefinerRules( rules );
         let refinerStats: IRefinerStat[] = this.createRefinerRuleCalcs( stats );
 
@@ -643,6 +647,7 @@ export default class DrillDown extends React.Component<IDrillDownProps, IDrillDo
         /**
          * This is copied later in code when you have to call the data in case something changed.
          */
+
         let drillList = this.createDrillList(this.props.webURL, this.props.listName, false, this.props.refiners, this.props.rules, this.props.stats, this.props.viewDefs, this.props.toggles.togOtherChartpart, '');
         let errMessage = drillList.refinerRules === undefined ? 'Invalid Rule set: ' +  this.props.rules : '';
         if ( drillList.refinerRules === undefined ) { drillList.refinerRules = [[],[],[]] ; } 
@@ -656,7 +661,6 @@ export default class DrillDown extends React.Component<IDrillDownProps, IDrillDo
         let quickCommands : IQuickCommands = this.props.quickCommands ? JSON.parse( JSON.stringify(this.props.quickCommands )) : null ;
         
         if ( quickCommands !== null ) {
-            this.testViewDefs('constructor');
             if ( quickCommands.onUpdateReload === true ) {
                 quickCommands.refreshCallback = this._reloadOnUpdate.bind(this);
             }
@@ -664,8 +668,6 @@ export default class DrillDown extends React.Component<IDrillDownProps, IDrillDo
                 quickCommands.successBanner = 3.5 * 1000;
             } else { quickCommands.successBanner = quickCommands.successBanner * 1000; }
         }
-
-        console.log('this.props.viewDefs ~ 667', this.props.viewDefs );
 
         this.state = { 
 
@@ -758,7 +760,7 @@ export default class DrillDown extends React.Component<IDrillDownProps, IDrillDo
 
   public componentDidMount() {
     this._updateStateOnPropsChange();
-    console.log('Mounted!');
+    console.log('DrillComponent Mounted!');
   }
 
 
@@ -775,9 +777,7 @@ export default class DrillDown extends React.Component<IDrillDownProps, IDrillDo
 
 public componentDidUpdate(prevProps){
 
-    console.log('this.props.viewDefs ~ 777 CDU1', this.props.viewDefs );
     let rebuildPart = false;
-//   console.log('DIDUPDATE setting Progress:', this.props.progress);
     if (this.props.progress !== prevProps.progress) {  rebuildPart = true ; }
 
     if ( JSON.stringify(prevProps.refiners) !== JSON.stringify(this.props.refiners )) {
@@ -806,7 +806,7 @@ public componentDidUpdate(prevProps){
       if ( prevProps.showDisabled !== this.props.showDisabled ) {
         rebuildPart = true ;
       }
-    console.log('this.props.viewDefs ~ 808 CDU2', this.props.viewDefs );
+
     if (rebuildPart === true) {
       this._updateStateOnPropsChange();
     }
@@ -825,10 +825,15 @@ public componentDidUpdate(prevProps){
 
     public render(): React.ReactElement<IDrillDownProps> {
 
+
         let x = 1;
         if ( x === 1 ) {
 
-        console.log('this.props.viewDefs ~ 828 - render', this.props.viewDefs );
+        /**
+         * 2022-01-17:  Added this to see if this gets mutated and breaks on refresh items.  
+         * After deeper testing, adding this to getBestFitView solved it but that was getting called a lot so I'm just doing it once in the render
+         */
+        let viewDefs: ICustViewDef[] = JSON.parse(JSON.stringify(this.props.viewDefs));
 
 /***
  *              d888888b db   db d888888b .d8888.      d8888b.  .d8b.   d888b  d88888b 
@@ -840,8 +845,6 @@ public componentDidUpdate(prevProps){
  *                                                                                     
  *                                                                                     
  */
-
-            //console.log('renderStateWebs', this.state.allItems );
 
             let thisPage = null;
             let tipsStyles = defCommandIconStyles;
@@ -872,7 +875,7 @@ public componentDidUpdate(prevProps){
                 styles={{ root: { maxWidth: this.props.allowRailsOff === true ? 200 : 300 } }}
                 placeholder="Search"
                 onSearch={ this._searchForText.bind(this) }
-                onFocus={ () => console.log('this.state',  this.state) }
+                onFocus={ null } // () => console.log('this.state',  this.state)
                 onBlur={ () => console.log('onBlur called') }
                 onChange={ this._searchForText.bind(this) }
               />
@@ -985,15 +988,16 @@ public componentDidUpdate(prevProps){
                     ></MyDrillItems>
                     </div>;
 
-                let includeDetails = getAppropriateViewProp( this.props.viewDefs, this.state.WebpartWidth, 'includeDetails' );
-                let includeAttach = getAppropriateViewProp( this.props.viewDefs, this.state.WebpartWidth, 'includeAttach' );
-                let includeListLink = getAppropriateViewProp( this.props.viewDefs, this.state.WebpartWidth, 'includeListLink' );
+                let includeDetails = getAppropriateViewProp( viewDefs, this.state.WebpartWidth, 'includeDetails' );
+                let includeAttach = getAppropriateViewProp( viewDefs, this.state.WebpartWidth, 'includeAttach' );
+                let includeListLink = getAppropriateViewProp( viewDefs, this.state.WebpartWidth, 'includeListLink' );
                 
                 if ( this.state.drillList.hasAttach !== true ) { includeAttach = false; }
                 let currentViewFields: any[] = [];
-                if ( this.props.viewDefs.length > 0 )  { currentViewFields = getAppropriateViewFields( this.props.viewDefs, this.state.WebpartWidth ); }
 
-                let currentViewGroups : IGrouping[] =  getAppropriateViewGroups( this.props.viewDefs , this.state.WebpartWidth );
+                if ( viewDefs.length > 0 )  { currentViewFields = getAppropriateViewFields( viewDefs, this.state.WebpartWidth ); }
+
+                let currentViewGroups : IGrouping[] =  getAppropriateViewGroups( viewDefs , this.state.WebpartWidth );
 
                 let reactListItems  = null;
 
@@ -1001,7 +1005,7 @@ public componentDidUpdate(prevProps){
 
                     reactListItems  = this.state.searchedItems.length === 0 ? <div>NO ITEMS FOUND</div> : 
                     <ReactListItems 
-                        parentListFieldTitles={ this.props.viewDefs.length > 0 ? null : this.props.parentListFieldTitles }
+                        parentListFieldTitles={ viewDefs.length > 0 ? null : this.props.parentListFieldTitles }
 
                         webURL = { this.state.drillList.webURL }
                         parentListURL = { this.state.drillList.parentListURL }
@@ -1078,19 +1082,15 @@ public componentDidUpdate(prevProps){
     
                 }
                 if ( statRefinerObject && statRefinerObject.childrenKeys.length > 0  ) {
-                    console.log('this.props.viewDefs ~ 1080 - render', this.props.viewDefs );
                     //Update Dynamic Data cssChartData  cssChartProps : ICssChartProps
                     if ( this.props.handleSwitch ) {
                         this.props.handleSwitch ( this.state.drillList.refinerStats, 'summaries', statRefinerObject, this.state.searchMeta ) ; //resultSummaryArray  ); //: //  { chartData : ICSSChartSeries[], callBackID: string }[]  
                     }
-                    console.log('this.props.viewDefs ~ 1085 - render', this.props.viewDefs );
                 } else {
                     //Update Dynamic Data cssChartData
-                    console.log('this.props.viewDefs ~ 1088 - render', this.props.viewDefs );
                     if ( this.props.handleSwitch ) {
                         this.props.handleSwitch ( null, null, null ); //: ICssChartProps
                     }
-                    console.log('this.props.viewDefs ~ 1092 - render', this.props.viewDefs );
                 }
 
                 /***
@@ -1231,8 +1231,6 @@ public componentDidUpdate(prevProps){
  *                                                                 
  */
 
-            console.log('this.props.viewDefs ~ 1225 - return', this.props.viewDefs );
-
             return (
                 <div className={ styles.contents }>
                 <div className={ styles.container }>
@@ -1250,26 +1248,13 @@ public componentDidUpdate(prevProps){
 
     }   //End Public Render
 
-    private testViewDefs(message: string) {
-        let temp : any = this.props.viewDefs;
-        let testTemp = temp[0].viewFields[1].name;
-        if ( testTemp === 'Order0Title') {
-            console.log(`temp[0]['viewFields'][1] ==== :${message}`, testTemp );
-        } else {
-            console.log(`temp[0]['viewFields'][1] !!==:${message}`, testTemp );
-        }
-    }
-    private getAllItemsCall() {
+    private getAllItemsCall( viewDefs: ICustViewDef[] ) {
 
         /**
          * This is copied from constructor when you have to call the data in case something changed.
          */
-        
-        console.log('this.props.viewDefs ~ 1251 - getAllItems', this.props.viewDefs );
 
-        this.testViewDefs('getAllItemsCall');
-
-        let drillList = this.createDrillList(this.props.webURL, this.props.listName, false, this.props.refiners, this.state.rules, this.props.stats, this.props.viewDefs, this.props.toggles.togOtherChartpart, '');
+        let drillList = this.createDrillList(this.props.webURL, this.props.listName, false, this.props.refiners, this.state.rules, this.props.stats, viewDefs, this.props.toggles.togOtherChartpart, '');
         let errMessage = drillList.refinerRules === undefined ? 'Invalid Rule set: ' +  this.state.rules : '';
         if ( drillList.refinerRules === undefined ) { drillList.refinerRules = [[],[],[]] ; } 
 
@@ -1279,7 +1264,6 @@ public componentDidUpdate(prevProps){
 
     private addTheseItemsToState( drillList: IDrillList, allItems , errMessage : string, refinerObj: IRefinerLayer ) {
 
-        console.log('this.props.viewDefs ~ 1262 - addTheseItemsToState', this.props.viewDefs );
         //let newFilteredItems : IDrillItemInfo[] = this.getNewFilteredItems( '', this.state.searchMeta, allItems, 0 );
         let pivotCats : any = [];
         let cmdCats : any = [];
@@ -1290,9 +1274,6 @@ public componentDidUpdate(prevProps){
 
         console.log('addTheseItemsToState: refinerObj',refinerObj );
         console.log('drillList.refinerStats: ', drillList.refinerStats );
-//        console.log('addTheseItemsToState: childrenKeys',refinerObj.childrenKeys );
-//        console.log('addTheseItemsToState: childrenCounts',refinerObj.childrenCounts );
-//        console.log('addTheseItemsToState: childrenMultiCounts',refinerObj.childrenMultiCounts );
 
         if ( allItems.length < 300 ) {
             console.log('addTheseItemsToState allItems: ', allItems);
@@ -1306,6 +1287,13 @@ public componentDidUpdate(prevProps){
             if ( this.props.refiners.length > 1 ) { maxRefinersToShow = 2; }
             if ( this.props.refiners.length > 2 ) { maxRefinersToShow = 3; }
         }
+
+        /**
+         * 2022-01-17:  Added this to see if this gets mutated and breaks on refresh items.  
+         * After deeper testing, adding this to getBestFitView solved it but that was getting called a lot so I'm just doing it once in the render
+         */
+        let viewDefs: ICustViewDef[] = JSON.parse(JSON.stringify(this.props.viewDefs));
+
         if ( this.props.toggles.togOtherListview === true ) {
             let listViewDD : IListViewDDDrillDown = {
 
@@ -1315,7 +1303,7 @@ public componentDidUpdate(prevProps){
                 parentListURL : drillList.parentListURL,
                 listName : drillList.name,
         
-                viewDefs: this.props.viewDefs,
+                viewDefs: viewDefs,
                 viewFields: null, // This is derived from viewDefs
                 groupByFields: null, // This is derived from viewDefs
         
@@ -1328,11 +1316,9 @@ public componentDidUpdate(prevProps){
                 breadCrumb: [pivCats.all.title],
 
             };
-            console.log('this.props.viewDefs ~ 1313 - addTheseItemsToState2', this.props.viewDefs );
-            console.log('listViewDD ~ 1314 - addTheseItemsToState2', listViewDD );
+
             if ( this.props.handleListPost ) { this.props.handleListPost( listViewDD ); }
-            console.log('this.props.viewDefs ~ 1316 - addTheseItemsToState3', this.props.viewDefs );
-            console.log('listViewDD ~ 1317 - addTheseItemsToState2', listViewDD );
+
         } else {
 
             let listViewDD : IListViewDDDrillDown = {
@@ -1356,11 +1342,9 @@ public componentDidUpdate(prevProps){
                 breadCrumb: null,
         
             };
-            console.log('this.props.viewDefs ~ 1341 - addTheseItemsToState3', this.props.viewDefs );
-            console.log('listViewDD ~ 1342 - addTheseItemsToState', listViewDD );
+
             if ( this.props.handleListPost ) { this.props.handleListPost( listViewDD ); }
-            console.log('this.props.viewDefs ~ 1344 - addTheseItemsToState4', this.props.viewDefs );
-            console.log('listViewDD ~ 1345 - addTheseItemsToState2', listViewDD );
+
         }
 
         this.setState({
@@ -1520,8 +1504,6 @@ public componentDidUpdate(prevProps){
             validText : validText,
         };
 
-//        console.log('clickInfo:  ' , clickInfo );
-
         return clickInfo;
 
     }
@@ -1640,7 +1622,13 @@ public componentDidUpdate(prevProps){
 
     }
 
-    let drillList = this.createDrillList(this.props.webURL, this.props.listName, false, refiners, JSON.stringify(refinerRulesNew), this.props.stats, this.props.viewDefs, this.props.toggles.togOtherChartpart, '');
+    /**
+     * 2022-01-17:  Added this to see if this gets mutated and breaks on refresh items.  
+     * After deeper testing, adding this to getBestFitView solved it but that was getting called a lot so I'm just doing it once in the render
+     */
+    let viewDefs: ICustViewDef[] = JSON.parse(JSON.stringify(this.props.viewDefs));
+
+    let drillList = this.createDrillList(this.props.webURL, this.props.listName, false, refiners, JSON.stringify(refinerRulesNew), this.props.stats, viewDefs, this.props.toggles.togOtherChartpart, '');
     let errMessage = drillList.refinerRules === undefined ? 'Invalid Rule set: ' +  this.state.rules : '';
     if ( drillList.refinerRules === undefined ) { drillList.refinerRules = [[],[],[]] ; }
 
@@ -1696,7 +1684,6 @@ public componentDidUpdate(prevProps){
         multiTree: multiTree,
     };
 
-    //console.log('getCurrentRefinerTree: ', result);
     return result;
 
   }
@@ -1866,9 +1853,6 @@ public componentDidUpdate(prevProps){
             }
         }
 
-//        console.log('checking item.refiners: ' , thisSearchItem.refiners );
-//        console.log('For searchMeta: ' , meta );
-//        console.log('Results: showItem, searchFails' ,showItem , searchFails );        
         if ( showItem === true && searchFails === 0 ) {
             newFilteredItems.push(thisSearchItem);
         }
@@ -1908,8 +1892,6 @@ public componentDidUpdate(prevProps){
         icon: icon,
       };
 
-    //console.log('setting Progress:', progress);
-
     this.setState({
         progress: progress,
     });
@@ -1929,12 +1911,17 @@ public componentDidUpdate(prevProps){
 
     private _reloadOnUpdate( message: string, hasError: boolean ) : void {
 
-        
+        /**
+         * 2022-01-17:  Added this to see if this gets mutated and breaks on refresh items.  
+         * After deeper testing, adding this to getBestFitView solved it but that was getting called a lot so I'm just doing it once in the render
+         */
+        let viewDefs: ICustViewDef[] = JSON.parse(JSON.stringify(this.props.viewDefs));
+
         this.setState({
             bannerMessage: message,
         });
-        this.testViewDefs('_reloadOnUpdate');
-        this.getAllItemsCall();
+
+        this.getAllItemsCall( viewDefs );
 
         let delay = hasError === true ? 10000 : this.state.quickCommands.successBanner;
 
@@ -1945,8 +1932,12 @@ public componentDidUpdate(prevProps){
     }
 
     private _updateStateOnPropsChange(): void {
-        this.testViewDefs('_updateStateOnPropsChange');
-        this.getAllItemsCall();
+        /**
+         * 2022-01-17:  Added this to see if this gets mutated and breaks on refresh items.  
+         * After deeper testing, adding this to getBestFitView solved it but that was getting called a lot so I'm just doing it once in the render
+         */
+        let viewDefs: ICustViewDef[] = JSON.parse(JSON.stringify(this.props.viewDefs));
+        this.getAllItemsCall( viewDefs );
     }
 
     /**
