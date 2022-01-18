@@ -1249,13 +1249,13 @@ public componentDidUpdate(prevProps){
 
     }   //End Public Render
 
-    private getAllItemsCall( viewDefs: ICustViewDef[] ) {
+    private getAllItemsCall( viewDefs: ICustViewDef[], refiners: string[] ) {
 
         /**
          * This is copied from constructor when you have to call the data in case something changed.
          */
 
-        let drillList = this.createDrillList(this.props.webURL, this.props.listName, false, this.props.refiners, this.state.rules, this.props.stats, viewDefs, this.props.toggles.togOtherChartpart, '', false);
+        let drillList = this.createDrillList(this.props.webURL, this.props.listName, false, refiners, this.state.rules, this.props.stats, viewDefs, this.props.toggles.togOtherChartpart, '', false);
         let errMessage = drillList.refinerRules === undefined ? 'Invalid Rule set: ' +  this.state.rules : '';
         if ( drillList.refinerRules === undefined ) { drillList.refinerRules = [[],[],[]] ; } 
 
@@ -1922,7 +1922,7 @@ public componentDidUpdate(prevProps){
             bannerMessage: message,
         });
 
-        this.getAllItemsCall( viewDefs );
+        this.getAllItemsCall( viewDefs, this.state.refiners );
 
         let delay = hasError === true ? 10000 : this.state.quickCommands.successBanner;
 
@@ -1938,7 +1938,7 @@ public componentDidUpdate(prevProps){
          * After deeper testing, adding this to getBestFitView solved it but that was getting called a lot so I'm just doing it once in the render
          */
         let viewDefs: ICustViewDef[] = JSON.parse(JSON.stringify(this.props.viewDefs));
-        this.getAllItemsCall( viewDefs );
+        this.getAllItemsCall( viewDefs, this.props.refiners );
     }
 
     /**
