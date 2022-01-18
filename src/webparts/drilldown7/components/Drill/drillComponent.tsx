@@ -578,7 +578,8 @@ export default class DrillDown extends React.Component<IDrillDownProps, IDrillDo
      *                                                                                                                                          
      */
 
-    private createDrillList(webURL: string, name: string, isLibrary: boolean, refiners: string[], rules: string, stats: string, OrigViewDefs: ICustViewDef[], togOtherChartpart: boolean, title: string = null) {
+    private createDrillList(webURL: string, name: string, isLibrary: boolean, refiners: string[], rules: string, stats: string, 
+        OrigViewDefs: ICustViewDef[], togOtherChartpart: boolean, title: string = null, stateSourceUserInfo: boolean) {
 
         let viewDefs = JSON.parse(JSON.stringify(OrigViewDefs)) ;
         let refinerRules = this.createEmptyRefinerRules( rules );
@@ -600,7 +601,7 @@ export default class DrillDown extends React.Component<IDrillDownProps, IDrillDo
                 Title: this.props.pageContext.user.displayName,
                 email: this.props.pageContext.user.email,
             },
-            sourceUserInfo: null,
+            sourceUserInfo: stateSourceUserInfo === true ? this.state.drillList.sourceUserInfo : null,
             fetchCount: this.props.performance.fetchCount,
             fetchCountMobile: this.props.performance.fetchCountMobile,
             restFilter: !this.props.performance.restFilter ? ' ' : this.props.performance.restFilter,
@@ -648,7 +649,7 @@ export default class DrillDown extends React.Component<IDrillDownProps, IDrillDo
          * This is copied later in code when you have to call the data in case something changed.
          */
 
-        let drillList = this.createDrillList(this.props.webURL, this.props.listName, false, this.props.refiners, this.props.rules, this.props.stats, this.props.viewDefs, this.props.toggles.togOtherChartpart, '');
+        let drillList = this.createDrillList(this.props.webURL, this.props.listName, false, this.props.refiners, this.props.rules, this.props.stats, this.props.viewDefs, this.props.toggles.togOtherChartpart, '', false);
         let errMessage = drillList.refinerRules === undefined ? 'Invalid Rule set: ' +  this.props.rules : '';
         if ( drillList.refinerRules === undefined ) { drillList.refinerRules = [[],[],[]] ; } 
 
@@ -1254,7 +1255,7 @@ public componentDidUpdate(prevProps){
          * This is copied from constructor when you have to call the data in case something changed.
          */
 
-        let drillList = this.createDrillList(this.props.webURL, this.props.listName, false, this.props.refiners, this.state.rules, this.props.stats, viewDefs, this.props.toggles.togOtherChartpart, '');
+        let drillList = this.createDrillList(this.props.webURL, this.props.listName, false, this.props.refiners, this.state.rules, this.props.stats, viewDefs, this.props.toggles.togOtherChartpart, '', false);
         let errMessage = drillList.refinerRules === undefined ? 'Invalid Rule set: ' +  this.state.rules : '';
         if ( drillList.refinerRules === undefined ) { drillList.refinerRules = [[],[],[]] ; } 
 
@@ -1625,10 +1626,10 @@ public componentDidUpdate(prevProps){
     /**
      * 2022-01-17:  Added this to see if this gets mutated and breaks on refresh items.  
      * After deeper testing, adding this to getBestFitView solved it but that was getting called a lot so I'm just doing it once in the render
-     */
+     */ 
     let viewDefs: ICustViewDef[] = JSON.parse(JSON.stringify(this.props.viewDefs));
 
-    let drillList = this.createDrillList(this.props.webURL, this.props.listName, false, refiners, JSON.stringify(refinerRulesNew), this.props.stats, viewDefs, this.props.toggles.togOtherChartpart, '');
+    let drillList = this.createDrillList(this.props.webURL, this.props.listName, false, refiners, JSON.stringify(refinerRulesNew), this.props.stats, viewDefs, this.props.toggles.togOtherChartpart, '', true );
     let errMessage = drillList.refinerRules === undefined ? 'Invalid Rule set: ' +  this.state.rules : '';
     if ( drillList.refinerRules === undefined ) { drillList.refinerRules = [[],[],[]] ; }
 
@@ -1799,8 +1800,8 @@ public componentDidUpdate(prevProps){
             viewFields: null, // This is derived from viewDefs
             groupByFields: null, // This is derived from viewDefs
     
-            contextUserInfo: null,  //For site you are on ( aka current page context )
-            sourceUserInfo: null,   //For site where the list is stored
+            contextUserInfo: this.state.drillList.contextUserInfo,  //For site you are on ( aka current page context )
+            sourceUserInfo: this.state.drillList.sourceUserInfo,   //For site where the list is stored
 
             quickCommands: null,
     

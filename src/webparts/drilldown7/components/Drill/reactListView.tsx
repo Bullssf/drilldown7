@@ -184,8 +184,8 @@ export default class ReactListItems extends React.Component<IReactListItemsProps
                     } else { buildAllButtonsTest = false; }
                 } catch (e) {
                     let errMessage = getHelpfullError(e, false, false);
-                    console.log(`createPanelButtons: quickCommands.showWhenEvalTrue error !!!`, quickCommands.showWhenEvalTrue);
-                    console.log(`createPanelButtons: quickCommands.showWhenEvalTrue Error Details`, errMessage);
+                    console.log(`ERROR:  createPanelButtons: quickCommands.showWhenEvalTrue !!!`, quickCommands.showWhenEvalTrue);
+                    console.log(`ERROR:  createPanelButtons: quickCommands.showWhenEvalTrue Error Details`, errMessage);
                     alert(`createPanelButtons: quickCommands.showWhenEvalTrue error !!! Check the console for details:   ${quickCommands.showWhenEvalTrue}`);
                 }
 
