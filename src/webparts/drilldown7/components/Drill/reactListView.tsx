@@ -174,10 +174,21 @@ export default class ReactListItems extends React.Component<IReactListItemsProps
 
             let buildAllButtonsTest = true;
             if ( quickCommands.showWhenEvalTrue && quickCommands.showWhenEvalTrue.length > 0 ) {
-                buildAllButtonsTest = eval( quickCommands.showWhenEvalTrue );
-                if ( buildAllButtonsTest === true ) {
-                    //build all the buttons ( subject to individual button checks )
-                } else { buildAllButtonsTest = false; }
+
+                //2022-01-18:  Added Try catch when testing and found my typed in quick command had error.
+                try {
+                    buildAllButtonsTest = eval( quickCommands.showWhenEvalTrue );
+                
+                    if ( buildAllButtonsTest === true ) {
+                        //build all the buttons ( subject to individual button checks )
+                    } else { buildAllButtonsTest = false; }
+                } catch (e) {
+                    let errMessage = getHelpfullError(e, false, false);
+                    console.log(`createPanelButtons: quickCommands.showWhenEvalTrue error !!!`, quickCommands.showWhenEvalTrue);
+                    console.log(`createPanelButtons: quickCommands.showWhenEvalTrue Error Details`, errMessage);
+                    alert(`createPanelButtons: quickCommands.showWhenEvalTrue error !!! Check the console for details:   ${quickCommands.showWhenEvalTrue}`);
+                }
+
             }
 
             if ( buildAllButtonsTest === true ) {
@@ -196,11 +207,23 @@ export default class ReactListItems extends React.Component<IReactListItemsProps
                              */
     
                             if ( b.showWhenEvalTrue && b.showWhenEvalTrue.length > 0 ) {
-                                let buildButtonTest = eval( b.showWhenEvalTrue );
-                                if ( buildButtonTest === true ) {
-                                    //build all the buttons
-                                } else { buildThisButton = false; }
+
+                                //2022-01-18:  Added Try catch when testing and found my typed in quick command had error.
+                                try {
+                                    let buildButtonTest = eval( b.showWhenEvalTrue );
+                                    if ( buildButtonTest === true ) {
+                                        //build all the buttons
+                                    } else { buildThisButton = false; }
+                                } catch (e) {
+                                    let errMessage = getHelpfullError(e, false, false);
+                                    console.log(`createPanelButtons: b[${i}].showWhenEvalTrue error !!!`, b.showWhenEvalTrue);
+                                    console.log(`createPanelButtons: b[${i}].showWhenEvalTrue Error Details`, errMessage);
+
+                                    alert(`createPanelButtons: quickCommands.showWhenEvalTrue error !!! Check the console for details:   ${quickCommands.showWhenEvalTrue}`);
+                                }
+                                
                             }
+                            
                             if ( buildThisButton === true ) {
                                 let icon = b.icon ? { iconName: b.icon } : null;
                                 let buttonID = ['ButtonID', r, i , item.Id].join(this.delim);
