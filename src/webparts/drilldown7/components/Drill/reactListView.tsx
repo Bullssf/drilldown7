@@ -7,6 +7,8 @@ import { Link, ILinkProps } from 'office-ui-fabric-react';
 
 import { Pivot, PivotItem, IPivotItemProps} from 'office-ui-fabric-react/lib/Pivot';
 
+import ReactJson from "react-json-view";
+
 import { IUser } from '@mikezimm/npmfunctions/dist/Services/Users/IUserInterfaces';
 import { IQuickButton, IQuickCommands } from '@mikezimm/npmfunctions/dist/QuickCommands/IQuickCommands';
 
@@ -457,15 +459,17 @@ export default class ReactListItems extends React.Component<IReactListItemsProps
                         aria-label="Basic Pivot Example"
                         defaultSelectedIndex ={ 0 }
                     >
-                        <PivotItem headerText="Commands" itemKey= "Commands">
-                            { attachments }
-                            { this.createPanelButtons( this.props.quickCommands, this.state.panelItem, this.props.sourceUserInfo ) }
+                        <PivotItem headerText="Commands" itemKey= "Commands"><div>
+                                { attachments }
+                                { this.createPanelButtons( this.props.quickCommands, this.state.panelItem, this.props.sourceUserInfo ) }
+                            </div>
                         </PivotItem>
                         <PivotItem headerText="Details" itemKey= "Details">
                             { autoDetailsList(this.state.panelItem, ["Title","refiners"],["search","meta","searchString"],true) }
                         </PivotItem>
-                        <PivotItem headerText="JSON" itemKey= "JSON">
-                                
+                        <PivotItem headerText="JSON" itemKey= "JSON"><div>
+                                <ReactJson src={ this.state.panelItem } name={ 'Users' } collapsed={ true } displayDataTypes={ true } displayObjectSize={ true } enableClipboard={ true } style={{ padding: '20px 0px' }}/>
+                            </div>
                         </PivotItem>
                     </Pivot>
 
