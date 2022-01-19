@@ -467,8 +467,8 @@ export default class ReactListItems extends React.Component<IReactListItemsProps
                         <PivotItem headerText="Details" itemKey= "Details">
                             { autoDetailsList(this.state.panelItem, ["Title","refiners"],["search","meta","searchString"],true) }
                         </PivotItem>
-                        <PivotItem headerText="JSON" itemKey= "JSON"><div>
-                                <ReactJson src={ this.state.panelItem } name={ 'Users' } collapsed={ true } displayDataTypes={ true } displayObjectSize={ true } enableClipboard={ true } style={{ padding: '20px 0px' }}/>
+                        <PivotItem headerText="JSON" itemKey= "JSON"><div style={{paddingTop: '20px'}}>
+                                <ReactJson src={ this.state.panelItem } name={ 'panelItem' } collapsed={ true } displayDataTypes={ true } displayObjectSize={ true } enableClipboard={ true } style={{ padding: '20px 0px' }}/>
                             </div>
                         </PivotItem>
                     </Pivot>
