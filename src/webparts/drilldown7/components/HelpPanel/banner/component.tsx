@@ -17,6 +17,7 @@ import WebPartLinks from './WebPartLinks';
 import SinglePage from './SinglePage/SinglePage';
 import { aboutTable } from '../Content/About';
 import { devTable } from '@mikezimm/npmfunctions/dist/Links/Developer';
+
 import { gettingStartedContent } from '../Content/GettingStarted';
 
 import { errorsContent } from '../Content/Errors';
@@ -64,7 +65,7 @@ export default class WebpartBanner extends React.Component<IWebpartBannerProps, 
     private dev= devTable();
 		private errors= errorsContent();
 		private tricks= tricksTable();
-		private about= aboutTable();
+		private about= aboutTable( this.props.gitHubRepo );
 
 		private wideToggle = this.props.wideToggle === null || this.props.wideToggle === undefined ? true : this.props.wideToggle ;
 
