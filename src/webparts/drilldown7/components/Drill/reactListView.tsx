@@ -460,6 +460,7 @@ export default class ReactListItems extends React.Component<IReactListItemsProps
                         defaultSelectedIndex ={ 0 }
                     >
                         <PivotItem headerText="Commands" itemKey= "Commands"><div>
+                                <div id='20pxSpacer' style={{ height: '20px'}}></div>
                                 { attachments }
                                 { this.createPanelButtons( this.props.quickCommands, this.state.panelItem, this.props.sourceUserInfo ) }
                             </div>
@@ -467,7 +468,7 @@ export default class ReactListItems extends React.Component<IReactListItemsProps
                         <PivotItem headerText="Details" itemKey= "Details">
                             { autoDetailsList(this.state.panelItem, ["Title","refiners"],["search","meta","searchString"],true) }
                         </PivotItem>
-                        <PivotItem headerText="JSON" itemKey= "JSON"><div style={{paddingTop: '20px'}}>
+                        <PivotItem headerText="JSON" itemKey= "JSON"><div id="CommandsJSONPanel" style={{paddingTop: '20px'}}>
                                 <ReactJson src={ this.state.panelItem } name={ 'panelItem' } collapsed={ true } displayDataTypes={ true } displayObjectSize={ true } enableClipboard={ true } style={{ padding: '20px 0px' }}/>
                             </div>
                         </PivotItem>
