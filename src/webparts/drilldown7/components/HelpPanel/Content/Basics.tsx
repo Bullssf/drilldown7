@@ -6,10 +6,14 @@ import { Icon } from 'office-ui-fabric-react';
 
 import * as links from '@mikezimm/npmfunctions/dist/Links/LinksRepos';
 
+import { IRepoLinks } from '@mikezimm/npmfunctions/dist/Links/CreateLinks';
+
+import { convertIssuesMarkdownStringToSpan } from '@mikezimm/npmfunctions/dist/Elements/Markdown';
+
 //import { IHelpTableRow, IHelpTable, IPageContent, ISinglePageProps } from '../Component/ISinglePageProps';
 import { IHelpTableRow, IHelpTable, IPageContent, ISinglePageProps } from '../banner/SinglePage/ISinglePageProps';
 
-export function basicsContent() {
+export function basicsContent( repoLinks: IRepoLinks ) {
 
     return null;
 
@@ -46,7 +50,6 @@ export function basicsContent() {
             { messageRows }
         </table>
     </div>;
-
 
     let thisPage = null;
     thisPage = <div className={styles.infoPane}>

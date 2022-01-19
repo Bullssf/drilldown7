@@ -4,7 +4,11 @@ import styles from '../banner/SinglePage/InfoPane.module.scss';
 
 import * as devLinks from '@mikezimm/npmfunctions/dist/Links/LinksDevDocs';
 
-export function advancedContent() {
+import { IRepoLinks } from '@mikezimm/npmfunctions/dist/Links/CreateLinks';
+
+import { convertIssuesMarkdownStringToSpan } from '@mikezimm/npmfunctions/dist/Elements/Markdown';
+
+export function advancedContent( repoLinks: IRepoLinks ) {
 
 
 

@@ -36,7 +36,7 @@ import { getHelpfullErrorV2 } from "@mikezimm/npmfunctions/dist/Services/Logging
 import { createStyleFromString, getReactCSSFromString } from "@mikezimm/npmfunctions/dist/Services/PropPane/StringToReactCSS";
 import { noWrap, divProperties } from "office-ui-fabric-react";
 
-import { bannerSettingsContent } from './onNpm/bannerFunctions';
+import { bannerSettingsContent } from './onNpm/bannerGearFunctions';
 
 import { IReturnErrorType, checkDeepProperty } from "@mikezimm/npmfunctions/dist/Services/Objects/properties"; 
 import { goToParentSite, goToHomePage } from "@mikezimm/npmfunctions/dist/Services/Navigation/site"; 
@@ -58,13 +58,13 @@ const pivotHeading8 = 'About';  //Templates
 
 export default class WebpartBanner extends React.Component<IWebpartBannerProps, IWebpartBannerState > {
 		private hoverEffect = this.props.hoverEffect === false ? false : true;
-    private gettingStarted= gettingStartedContent();
-    private basics= basicsContent();
-    private advanced= advancedContent();
-    private futurePlans= futureContent();
-    private dev= devTable();
-		private errors= errorsContent();
-		private tricks= tricksTable();
+    private gettingStarted= gettingStartedContent( this.props.gitHubRepo );
+    private basics= basicsContent( this.props.gitHubRepo );
+    private advanced= advancedContent( this.props.gitHubRepo );
+    private futurePlans= futureContent( this.props.gitHubRepo );
+    private dev= devTable( );
+		private errors= errorsContent( this.props.gitHubRepo );
+		private tricks= tricksTable( this.props.gitHubRepo );
 		private about= aboutTable( this.props.gitHubRepo );
 
 		private wideToggle = this.props.wideToggle === null || this.props.wideToggle === undefined ? true : this.props.wideToggle ;
@@ -293,7 +293,7 @@ export default class WebpartBanner extends React.Component<IWebpartBannerProps, 
 				let tips = webParTips.length === 0 ? null :
 					<MessageBar messageBarType={MessageBarType.warning } >
 						<div style={{fontWeight: 600, fontSize: 'large', marginBottom: '12px'}} >Pro TIP:</div> 
-						<div style={{minHeight: '30px'}} >{ getRandomTip() }</div>
+						<div style={{minHeight: '30px'}} >{ getRandomTip( this.props.gitHubRepo ) }</div>
 					</MessageBar>;
 
 				let wideIcon = this.wideToggle !== true ? null : <Icon iconName= { this.state.panelType === PanelType.medium ? 'MaximumValue' : 'MinimumValue' } style={{ fontSize: 'xx-large', cursor: 'pointer' }} 

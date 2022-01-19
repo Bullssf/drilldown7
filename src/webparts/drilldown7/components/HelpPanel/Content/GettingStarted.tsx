@@ -5,7 +5,11 @@ import styles from '../banner/SinglePage/InfoPane.module.scss';
 //import { IHelpTableRow, IHelpTable, IPageContent, ISinglePageProps } from '../Component/ISinglePageProps';
 import { IHelpTableRow, IHelpTable, IPageContent, ISinglePageProps } from '../banner/SinglePage/ISinglePageProps';
 
-export function gettingStartedContent() {
+import { IRepoLinks } from '@mikezimm/npmfunctions/dist/Links/CreateLinks';
+
+import { convertIssuesMarkdownStringToSpan } from '@mikezimm/npmfunctions/dist/Elements/Markdown';
+
+export function gettingStartedContent( repoLinks: IRepoLinks ) {
 
   let html1 = <div>
     <h2>First:  Create a Parent List or Library in your site</h2>

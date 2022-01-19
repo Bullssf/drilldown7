@@ -3,7 +3,11 @@ import * as React from 'react';
 //import { IHelpTableRow, IHelpTable, IPageContent, ISinglePageProps } from '../Component/ISinglePageProps';
 import { IHelpTableRow, IHelpTable, IPageContent, ISinglePageProps } from '../banner/SinglePage/ISinglePageProps';
 
-export function tricksTable() {
+import { IRepoLinks } from '@mikezimm/npmfunctions/dist/Links/CreateLinks';
+
+import { convertIssuesMarkdownStringToSpan } from '@mikezimm/npmfunctions/dist/Elements/Markdown';
+
+export function tricksTable( repoLinks: IRepoLinks ) {
 
     let table : IHelpTable  = {
         heading: 'Undocumented and dangerous url parameters',
