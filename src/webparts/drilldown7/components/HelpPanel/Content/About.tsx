@@ -82,7 +82,8 @@ export function replaceHashNumbWithRepoIssues( testString: string, repoLinks: IR
         let spans: any[] = [];
         createSpans.map( thisSpan => {
             if (matches.indexOf( thisSpan ) > - 1) {  //Then replace text with  link
-                spans.push( `<<${thisSpan}>>` );
+                // spans.push( `<<${thisSpan}>>` );
+                spans.push( <a href={`${repoLinks.href}/issues/${ thisSpan.substr(1)}`} target="_blank">{thisSpan}</a> );
             } else { //Just push text
                 spans.push( `${thisSpan}` );
             }
