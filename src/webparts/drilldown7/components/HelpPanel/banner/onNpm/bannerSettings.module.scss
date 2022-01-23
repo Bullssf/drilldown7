@@ -1,0 +1,170 @@
+@import '~office-ui-fabric-react/dist/sass/References.scss';
+
+.settingsComponent { 
+
+  .boxErrors {
+    background: yellow;
+    font-size: larger;
+    text-align: center;
+    padding: 70px 0px;
+  }
+
+  .boxTiles {
+    // background: 'GreenYellow';
+    height: 100%;
+  }
+
+  .flexBoxes {
+    display: flex;
+    flex-wrap: wrap;
+    background:#f2f2f2f2;
+  }
+  //
+
+  .tileBox {
+    // height: 100%;
+    min-height: 100px;
+    min-width: 150px;
+    max-width: 285px;
+    overflow: hidden;
+
+    // white-space: nowrap; //Do not seem to do anything
+    padding-right: 15px;
+    // overflow: 'hidden'; //Do not seem to do anything 
+    text-overflow: 'ellipsis';
+
+    // color: white;
+    // background: #999999;
+    padding: 0px 25px 25px 25px;
+    margin: 20px;
+    color: black;
+    background: white;
+
+    box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.2), 0 25px 50px 0 rgba(0, 0, 0, 0.1);
+
+    .boxLinks {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+
+      .heading {
+        display: inline-block;
+        padding-bottom: 8px;
+        div {
+          font-weight: bold;
+        }
+      }
+    }
+
+    ul {
+      list-style-type: none;
+      margin: 0;
+      padding: 0;
+    }
+
+    li {
+      cursor: pointer;
+      transition:all 0.4s ease;
+      text-decoration: none;
+      white-space: nowrap;
+      padding-right: 15px;
+      overflow: 'hidden';
+      text-overflow: 'ellipsis';
+      width: 100%;
+      
+      vertical-align: center;
+      display: inline-flex;
+      align-items: center;
+      justify-content: flex-start;
+
+      span {
+        white-space: nowrap;
+        padding-right: 15px;
+        overflow: 'hidden';
+        text-overflow: 'ellipsis';
+  
+      }
+
+    }
+
+    .justLabel {
+      padding-left: 13px;
+      line-height: 2em;
+      cursor: default;
+    }
+
+    .redLabel {
+      padding-left: 13px;
+      line-height: 2em;
+      cursor: default;
+      color: 'red';
+      font-weight: 600;
+    }
+
+    .redLabelNoLeftPad {
+      line-height: 2em;
+      cursor: default;
+      color: 'red';
+      font-weight: 600;
+    }
+
+    .compressedLabel {
+      padding: 13px;
+      line-height: 1.5em;
+      cursor: default;
+    }
+
+    li:hover {
+      transition:all 0.4s ease;
+      background: #c7c7c7;
+      i {
+        background: #c7c7c7;
+        transition:all 0.4s ease;
+      }
+    }
+
+    .grayHover:hover {
+      transition:all 0.4s ease;
+      background: #c7c7c7;
+      i {
+        background: #c7c7c7;
+        transition:all 0.4s ease;
+      }
+    }
+
+    .red:hover {
+      transition:all 0.4s ease;
+      background: #ffcccc;
+      i {
+        background: #ffcccc;
+        transition:all 0.4s ease;
+      }
+    }
+
+    .green:hover {
+      transition:all 0.4s ease;
+      background: #ccff99;
+      i {
+        background: #ccff99;
+        transition:all 0.4s ease;
+      }
+    }
+
+    .yellow:hover {
+      transition:all 0.4s ease;
+      background: #ffff66;
+      i {
+        background: #ffff66;
+        transition:all 0.4s ease;
+      }
+    }
+  }
+
+  // This will just remove the extra left indent from Summary box which is not needed.
+  .summaryBox .justLabel,.summaryBox .redLabel,.summaryBox  .compressedLabel {
+    padding-left: 0px !important;
+    padding-top: 0px !important;
+    padding-bottom: 0px !important;
+  }
+
+}

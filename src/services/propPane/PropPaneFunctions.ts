@@ -7,25 +7,12 @@ import "@pnp/sp/clientside-pages/web";
 import { ClientsideWebpart } from "@pnp/sp/clientside-pages";
 import { CreateClientsidePage, PromotedState, ClientsidePageLayoutType, ClientsideText,  } from "@pnp/sp/clientside-pages";
 
-import { IContentsListInfo, IMyListInfo, IServiceLog, IContentsLists } from '../../services/listServices/listTypes'; //Import view arrays for Time list
-
-import { changes, IMyFieldTypes } from '../../services/listServices/columnTypes'; //Import view arrays for Time list
-
-import { IMyView,  } from '../../services/listServices/viewTypes'; //Import view arrays for Time list
-
-import { addTheseItemsToList, addTheseItemsToListInBatch } from '../../services/listServices/listServices';
-
-import { makeSmallTimeObject, makeTheTimeObject,ITheTime, getAge, getBestTimeDelta, isStringValidDate, monthStr3} from '../../services/dateServices';
-
-import { doesObjectExistInArray, addItemToArrayIfItDoesNotExist } from '../../services/arrayServices';
-
-import { getHelpfullError } from '../../services/ErrorHandler';
+import { getHelpfullError } from '@mikezimm/npmfunctions/dist/Services/Logging/ErrorHandler';
 
 import { IViewLog, addTheseViews } from '../../services/listServices/viewServices'; //Import view arrays for Time list
 
 import { IAnyArray } from  '../../services/listServices/listServices';
 import { mergeAriaAttributeValues } from "office-ui-fabric-react";
-import { cleanURL } from '../stringServices';
 
 //runAsync is an idea that is not currently being used.
 export async function getAllItems( configWebURL: string, propsListName: string, thisProps: string[], restFilter: string, runAsync: boolean ): Promise<any[]>{

@@ -3,13 +3,18 @@ import { ListView, IViewField, SelectionMode, GroupOrder, IGrouping } from "@pnp
 
 import { Web, IList, IItem } from "@pnp/sp/presets/all";
 
-import { ICustViewDef, IQuickButton, IUser } from '../../components/IReUsableInterfaces';
+import { ICustViewDef,  } from '@mikezimm/npmfunctions/dist/Views/IListViews';
+import { IUser,  } from '@mikezimm/npmfunctions/dist/Services/Users/IUserInterfaces';
+import { IQuickButton, IQuickCommands, IQuickField } from '@mikezimm/npmfunctions/dist/QuickCommands/IQuickCommands';
 
-import { getHelpfullError } from '../../../../services/ErrorHandler';
+import { getHelpfullError } from '@mikezimm/npmfunctions/dist/Services/Logging/ErrorHandler';
 
-import { removeItemFromArrayOnce, removeItemFromArrayAll, addItemToArrayIfItDoesNotExist } from '../../../../services/arrayServices';
+//Manipulation
+import { expandArray, spliceCopyArray, addItemToArrayIfItDoesNotExist, convertNumberArrayToRelativePercents,
+  removeItemFromArrayOnce, removeItemFromArrayAll, updateNextOpenIndex 
+  } from '@mikezimm/npmfunctions/dist/Services/Arrays/manipulation';
 
-import { IDrillItemInfo } from './drillComponent';
+import { IDrillItemInfo } from '@mikezimm/npmfunctions/dist/WebPartInterfaces/DrillDown/IDrillItem';
 
  /***
  *     d888b  d88888b d888888b      db    db d888888b d88888b db   d8b   db      d88888b db    db d8b   db  .o88b. d888888b d888888b  .d88b.  d8b   db .d8888. 
@@ -22,7 +27,13 @@ import { IDrillItemInfo } from './drillComponent';
  *                                                                                                                                                             
  */
 
-function getBestFitView (  viewDefs: ICustViewDef[], currentWidth: number ) {
+function getBestFitView (  OrigViewDefs: ICustViewDef[], currentWidth: number ) {
+
+    /**
+     * 2022-01-18:  Something in this function mutates the viewDefs which caused the webpart to crash after 
+     */
+    //2022-01-17:  Added this to see if this gets mutated and breaks on refresh items.  getBestFitView  (One of these fixed it!)
+    let viewDefs: ICustViewDef[] = JSON.parse(JSON.stringify(OrigViewDefs));
     let result : ICustViewDef = null;
     let minResult : ICustViewDef = null;
 
@@ -59,7 +70,12 @@ function getBestFitView (  viewDefs: ICustViewDef[], currentWidth: number ) {
 }
 
 
-export function getAppropriateViewFields ( viewDefs: ICustViewDef[], currentWidth: number ) {
+export function getAppropriateViewFields ( OrigViewDefs: ICustViewDef[], currentWidth: number ) {
+
+    //2022-01-17:  Added this to see if this gets mutated and breaks on refresh items.  (One of these fixed it!)
+    //2022-01-18:  Skipped the parse/stringify for performance after determining it was not causing the crash.
+    let viewDefs: ICustViewDef[] = OrigViewDefs; //JSON.parse(JSON.stringify(OrigViewDefs));
+
     let result : IViewField[] = [];
 
     if ( viewDefs ) {
@@ -91,7 +107,12 @@ export function getAppropriateViewFields ( viewDefs: ICustViewDef[], currentWidt
 
 }
 
-export function getAppropriateViewGroups ( viewDefs: ICustViewDef[], currentWidth: number ) {
+export function getAppropriateViewGroups ( OrigViewDefs: ICustViewDef[], currentWidth: number ) {
+
+    //2022-01-17:  Added this to see if this gets mutated and breaks on refresh items.  (One of these fixed it!)
+    //2022-01-18:  Skipped the parse/stringify for performance after determining it was not causing the crash.
+    let viewDefs: ICustViewDef[] = OrigViewDefs; //JSON.parse(JSON.stringify(OrigViewDefs));
+
     let result : IGrouping[] = [];
 
     if ( viewDefs ) {
@@ -107,7 +128,12 @@ export function getAppropriateViewGroups ( viewDefs: ICustViewDef[], currentWidt
 
 }
 
-export function getAppropriateViewProp ( viewDefs: ICustViewDef[], currentWidth: number, prop: 'includeDetails' | 'includeAttach' | 'includeListLink' ) {
+export function getAppropriateViewProp ( OrigViewDefs: ICustViewDef[], currentWidth: number, prop: 'includeDetails' | 'includeAttach' | 'includeListLink' ) {
+
+    //2022-01-17:  Added this to see if this gets mutated and breaks on refresh items.  (One of these fixed it!)
+    //2022-01-18:  Skipped the parse/stringify for performance after determining it was not causing the crash.
+    let viewDefs: ICustViewDef[] = OrigViewDefs; // JSON.parse(JSON.stringify(OrigViewDefs));
+
     let result : boolean = false;
 
     if ( viewDefs ) {

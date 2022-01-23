@@ -12,11 +12,10 @@ import { WebPartTitle } from "@pnp/spfx-controls-react/lib/WebPartTitle";
 
 import { IGrouping, IViewField } from "@pnp/spfx-controls-react/lib/ListView";
 
-import { IRefiners, IRefinerLayer, IRefinerStat,IItemRefiners, RefineRuleValues, 
-  RefinerStatTypes, IRefinerStats, IRefinerStatType, ICSSChartDD, IListViewDD } from '../../drilldown7/components/IReUsableInterfaces';
-
 import { getAppropriateViewFields, getAppropriateViewGroups, getAppropriateViewProp 
   } from '../../drilldown7/components/Drill/listFunctions';
+
+import { ICustViewDef,  } from '@mikezimm/npmfunctions/dist/Views/IListViews';
 
 import ReactListItems from '../../drilldown7/components/Drill/reactListView';
 
@@ -94,11 +93,16 @@ public componentDidUpdate(prevProps){
     public render(): React.ReactElement<IThelistProps> {
 
       let { listPropsDD } = this.props;
-      let viewDefs, searchedItems, parentListFieldTitles, quickCommands, breadCrumb = null;
-      
+      let searchedItems, parentListFieldTitles, quickCommands, breadCrumb = null;
+
       let togOtherListview = listPropsDD.togOtherListview;
 
-      viewDefs = listPropsDD.viewDefs;
+      /**
+       * 2022-01-17:  Added this to see if this gets mutated and breaks on refresh items.  
+       * After deeper testing, adding this to getBestFitView solved it but that was getting called a lot so I'm just doing it once in the render
+       */
+      let viewDefs: ICustViewDef[] = JSON.parse(JSON.stringify(listPropsDD.viewDefs));
+
       if ( viewDefs ) {
         
         searchedItems = listPropsDD.items;

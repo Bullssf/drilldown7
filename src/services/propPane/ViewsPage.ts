@@ -20,11 +20,11 @@ import {
   import * as strings from 'Drilldown7WebPartStrings';
   import { pivotOptionsGroup} from './index';
   
-  import * as links from '../../webparts/drilldown7/components/HelpInfo/AllLinks';   //              { links.gitRepoDrilldown7WebPart.issues }
+  import * as links from '@mikezimm/npmfunctions/dist/Links/LinksRepos';   //              { links.gitRepoDrilldown7WebPart.issues }
   
   import { IDrilldown7WebPartProps } from '../../webparts/drilldown7/Drilldown7WebPart';
-  
-  import { refinerRuleItems } from '../../webparts/drilldown7/components/IReUsableInterfaces';
+
+  import { buildKeyText, refinerRuleItems } from '@mikezimm/npmfunctions/dist/Refiners/functions';
   
   export class ViewsPage {
     public getPropertyPanePage(webPartProps: IDrilldown7WebPartProps ): IPropertyPanePage {
@@ -167,8 +167,8 @@ import {
                   }),
                 PropertyPaneToggle('includeAttach', {
                   label: 'Include Attachments panel',
-                  offText: 'No',
-                  onText: 'Yes',
+                  offText: 'Never',
+                  onText: 'Auto detect',
                 }),
                 PropertyPaneToggle('includeListLink', {
                   label: 'Show link to List',

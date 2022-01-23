@@ -2,20 +2,7 @@ import { IDrillDownState } from '../Drill/drillComponent';
 
 import { IDrillDownProps } from '../Drill/drillComponent';
 
-
-export interface IFieldDef {
-
-    name: string;
-    title: string;
-    column: string;
-    type: string; //Smart, Text, Number, etc...
-    required: boolean;
-    disabled: boolean;
-    hidden: boolean;
-    blinkOnProject: boolean;
-    value?: any;
-
-}
+import { IFieldDef } from '@mikezimm/npmfunctions/dist/Fields/Interfaces';
 
 export interface IFormFields {
     Title: IFieldDef;
@@ -31,7 +18,6 @@ export interface IFormFields {
     End: IFieldDef;
 
 }
-
 
 export interface IProjectFormFields {
     Title: IFieldDef;

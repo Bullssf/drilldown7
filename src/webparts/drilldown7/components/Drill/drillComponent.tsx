@@ -14,13 +14,11 @@ import "@pnp/sp/webs";
 
 import { IContentsListInfo, IMyListInfo, IServiceLog, IContentsLists } from '../../../../services/listServices/listTypes'; //Import view arrays for Time list
 
-import { convertNumberArrayToRelativePercents, doesObjectExistInArray, addItemToArrayIfItDoesNotExist } from '../../../../services/arrayServices';
-
-import { ITheTime, weekday3, monthStr3 } from '../../../../services/dateServices';
+import { ITheTime, } from '@mikezimm/npmfunctions/dist/Services/Time/Interfaces';
+import { weekday3,  } from '@mikezimm/npmfunctions/dist/Services/Time/dayLabels';
+import { monthStr3 } from '@mikezimm/npmfunctions/dist/Services/Time/monthLabels';
 
 import styles from '../Contents/contents.module.scss';
-
-import InfoPage from '../HelpInfo/infoPages';
 
 import ButtonCompound from '../createButtons/ICreateButtons';
 import { IButtonProps, ISingleButtonProps, IButtonState } from "../createButtons/ICreateButtons";
@@ -31,12 +29,18 @@ import { createAdvancedContentChoices } from '../fields/choiceFieldBuilder';
 
 import { IContentsToggles, makeToggles } from '../fields/toggleFieldBuilder';
 
-import { IPickedList, IPickedWebBasic, IMyPivots, IPivot,  ILink, IUser, IMyProgress, IMyIcons, IMyFonts, IChartSeries, 
-    ICharNote, IRefinerRules, RefineRuleValues, ICustViewDef, IRefinerStat, ICSSChartSettings, ICSSChartData, ICSSChartTypes, QuickCommandsTMT } from '../IReUsableInterfaces';
+import { IPickedList, IPickedWebBasic, IMyPivots, IPivot,  ILink, IMyProgress, IMyIcons, IMyFonts, IChartSeries, 
+    ICharNote, ICSSChartSettings, ICSSChartData, ICSSChartTypes, } from '../IReUsableInterfaces';
 
-import { createLink } from '../HelpInfo/AllLinks';
+import { ICustViewDef } from '@mikezimm/npmfunctions/dist/Views/IListViews';
 
-import { IRefiners, IRefinerLayer, IItemRefiners, IQuickButton, IQuickCommands, IListViewDD } from '../IReUsableInterfaces';
+import { IUser } from '@mikezimm/npmfunctions/dist/Services/Users/IUserInterfaces';
+import { IQuickButton, IQuickCommands } from '@mikezimm/npmfunctions/dist/QuickCommands/IQuickCommands';
+
+import { IListViewDDDrillDown } from '@mikezimm/npmfunctions/dist/Views/IDrillViews';
+
+import { IRefinerLayer, IRefiners, IItemRefiners, IRefinerStats, RefineRuleValues,
+    IRefinerRules, IRefinerStatType, RefinerStatTypes, IRefinerStat } from '@mikezimm/npmfunctions/dist/Refiners/IRefiners';
 
 import { PageContext } from '@microsoft/sp-page-context';
 
@@ -44,9 +48,7 @@ import { pivotOptionsGroup, } from '../../../../services/propPane';
 
 import { getExpandColumns, getKeysLike, getSelectColumns } from '../../../../services/getFunctions';
 
-import * as links from '../HelpInfo/AllLinks';
-
-import { getHelpfullError, } from '../../../../services/ErrorHandler';
+import { getHelpfullError } from '@mikezimm/npmfunctions/dist/Services/Logging/ErrorHandler';
 
 import MyDrillItems from './drillListView';
 
@@ -74,7 +76,14 @@ import { getAppropriateViewFields, getAppropriateViewGroups, getAppropriateViewP
 
 import { ProgressIndicator } from 'office-ui-fabric-react/lib/ProgressIndicator';
 
-import  EarlyAccess from '../HelpInfo/EarlyAccess';
+/**
+ * 2021-08-25 MZ:  Added for Banner
+ */
+import WebpartBanner from "../HelpPanel/banner/component";
+import { IWebpartBannerProps, } from "../HelpPanel/banner/onNpm/bannerProps";
+import { defaultBannerCommandStyles, } from "../HelpPanel/banner/onNpm/defaults";
+
+import { IDrillItemInfo } from '@mikezimm/npmfunctions/dist/WebPartInterfaces/DrillDown/IDrillItem';
 
 export type IRefinerStyles = 'pivot' | 'commandBar' | 'other';
 
@@ -97,6 +106,7 @@ export type IRefinerStyles = 'pivot' | 'commandBar' | 'other';
     fetchCountMobile: number;
     restFilter: string;
     isLibrary?: boolean;
+    hasAttach: boolean;
     webURL?: string;
     parentListURL?: string;
     contextUserInfo?: IUser;  //For site you are on ( aka current page context )
@@ -144,48 +154,6 @@ export const pivCats = {
 };
 
 /***
- *    d888888b      d8888b. d8888b. d888888b db      db           d888888b d888888b d88888b .88b  d88.      d888888b d8b   db d88888b  .d88b.  
- *      `88'        88  `8D 88  `8D   `88'   88      88             `88'   `~~88~~' 88'     88'YbdP`88        `88'   888o  88 88'     .8P  Y8. 
- *       88         88   88 88oobY'    88    88      88              88       88    88ooooo 88  88  88         88    88V8o 88 88ooo   88    88 
- *       88         88   88 88`8b      88    88      88              88       88    88~~~~~ 88  88  88         88    88 V8o88 88~~~   88    88 
- *      .88.        88  .8D 88 `88.   .88.   88booo. 88booo.        .88.      88    88.     88  88  88        .88.   88  V888 88      `8b  d8' 
- *    Y888888P      Y8888D' 88   YD Y888888P Y88888P Y88888P      Y888888P    YP    Y88888P YP  YP  YP      Y888888P VP   V8P YP       `Y88P'  
- *                                                                                                                                             
- *                                                                                                                                             
- */
-
-export interface IDrillItemInfo extends Partial<any>{
-
-    sort: string;
-    searchString: string;
-    meta: string[];
-
-    Created: any;
-    Modified: any;
-    Author: any;
-    Editor: any;
-    timeCreated : ITheTime;
-
-    goToItemPreview: string;
-    goToItemLink: string;
-    goToPropsLink: string;
-    isFile: boolean;
-
-    timeModified : ITheTime;
-    bestCreate: string;
-    bestMod: string;
-
-    author: IUser;
-    editor: IUser;
-
-    refiners: IItemRefiners; //String of Keys representing the static name of the column used for drill downs
-
-    Id: any;
-
-}
-
-
-/***
  *    d888888b      d8888b. d8888b. d888888b db      db      d8888b.  .d88b.  db   d8b   db d8b   db      d8888b. d8888b.  .d88b.  d8888b. .d8888. 
  *      `88'        88  `8D 88  `8D   `88'   88      88      88  `8D .8P  Y8. 88   I8I   88 888o  88      88  `8D 88  `8D .8P  Y8. 88  `8D 88'  YP 
  *       88         88   88 88oobY'    88    88      88      88   88 88    88 88   I8I   88 88V8o 88      88oodD' 88oobY' 88    88 88oodD' `8bo.   
@@ -205,6 +173,8 @@ export interface IDrillDownProps {
     
     pageContext: PageContext;
     wpContext: WebPartContext;
+
+    bannerProps: IWebpartBannerProps;
 
     allowOtherSites?: boolean; //default is local only.  Set to false to allow provisioning parts on other sites.
 
@@ -406,7 +376,20 @@ export interface IDrillDownState {
 
 export default class DrillDown extends React.Component<IDrillDownProps, IDrillDownState> {
 
+    
+    /***
+     *    d8888b.  .d8b.  d8b   db d8b   db d88888b d8888b.      d88888b db      d88888b .88b  d88. d88888b d8b   db d888888b .d8888. 
+     *    88  `8D d8' `8b 888o  88 888o  88 88'     88  `8D      88'     88      88'     88'YbdP`88 88'     888o  88 `~~88~~' 88'  YP 
+     *    88oooY' 88ooo88 88V8o 88 88V8o 88 88ooooo 88oobY'      88ooooo 88      88ooooo 88  88  88 88ooooo 88V8o 88    88    `8bo.   
+     *    88~~~b. 88~~~88 88 V8o88 88 V8o88 88~~~~~ 88`8b        88~~~~~ 88      88~~~~~ 88  88  88 88~~~~~ 88 V8o88    88      `Y8b. 
+     *    88   8D 88   88 88  V888 88  V888 88.     88 `88.      88.     88booo. 88.     88  88  88 88.     88  V888    88    db   8D 
+     *    Y8888P' YP   YP VP   V8P VP   V8P Y88888P 88   YD      Y88888P Y88888P Y88888P YP  YP  YP Y88888P VP   V8P    YP    `8888Y' 
+     *                                                                                                                                
+     *                                                                                                                                
+     */
 
+    private nearBannerElements = this.buildNearBannerElements();
+    private farBannerElements = this.buildFarBannerElements();
 
     /***
      *    d8888b. db    db d888888b db      d8888b.      .d8888. db    db .88b  d88.       .o88b.  .d88b.  db    db d8b   db d888888b       .o88b. db   db  .d8b.  d8888b. d888888b .d8888. 
@@ -510,8 +493,11 @@ export default class DrillDown extends React.Component<IDrillDownProps, IDrillDo
     private createRefinerRuleCalcs( calcs: string ) {
         let theCalcs : any = null;
         try {
-            calcs = calcs.replace(/\\\"/g,'"').replace(/\\'"/g,"'"); //Replace any cases where I copied the hashed characters from JSON file directly.
-            theCalcs = JSON.parse(calcs);
+            //2022-01-17:  replace does not modify the original value.
+            //But I created a new value here because it did modify "itself" which I don't think I wanted to do.
+
+            let newcalcs = calcs.replace(/\\\"/g,'"').replace(/\\'"/g,"'"); //Replace any cases where I copied the hashed characters from JSON file directly.
+            theCalcs = JSON.parse(newcalcs);
         } catch(e) {
             alert('createRefinerRuleCalcs: ' + e);
             theCalcs = [];
@@ -592,8 +578,10 @@ export default class DrillDown extends React.Component<IDrillDownProps, IDrillDo
      *                                                                                                                                          
      */
 
-    private createDrillList(webURL: string, name: string, isLibrary: boolean, refiners: string[], rules: string, stats: string, viewDefs: ICustViewDef[], togOtherChartpart: boolean, title: string = null) {
+    private createDrillList(webURL: string, name: string, isLibrary: boolean, refiners: string[], rules: string, stats: string, 
+        OrigViewDefs: ICustViewDef[], togOtherChartpart: boolean, title: string = null, stateSourceUserInfo: boolean) {
 
+        let viewDefs = JSON.parse(JSON.stringify(OrigViewDefs)) ;
         let refinerRules = this.createEmptyRefinerRules( rules );
         let refinerStats: IRefinerStat[] = this.createRefinerRuleCalcs( stats );
 
@@ -613,12 +601,14 @@ export default class DrillDown extends React.Component<IDrillDownProps, IDrillDo
                 Title: this.props.pageContext.user.displayName,
                 email: this.props.pageContext.user.email,
             },
-            sourceUserInfo: null,
+            sourceUserInfo: stateSourceUserInfo === true ? this.state.drillList.sourceUserInfo : null,
             fetchCount: this.props.performance.fetchCount,
             fetchCountMobile: this.props.performance.fetchCountMobile,
             restFilter: !this.props.performance.restFilter ? ' ' : this.props.performance.restFilter,
 
             isLibrary: isLibrary,
+            hasAttach: false,
+
             webURL: webURL,
             parentListURL: this.props.parentListURL,
             refiners: refiners,
@@ -658,7 +648,8 @@ export default class DrillDown extends React.Component<IDrillDownProps, IDrillDo
         /**
          * This is copied later in code when you have to call the data in case something changed.
          */
-        let drillList = this.createDrillList(this.props.webURL, this.props.listName, false, this.props.refiners, this.props.rules, this.props.stats, this.props.viewDefs, this.props.toggles.togOtherChartpart, '');
+
+        let drillList = this.createDrillList(this.props.webURL, this.props.listName, false, this.props.refiners, this.props.rules, this.props.stats, this.props.viewDefs, this.props.toggles.togOtherChartpart, '', false);
         let errMessage = drillList.refinerRules === undefined ? 'Invalid Rule set: ' +  this.props.rules : '';
         if ( drillList.refinerRules === undefined ) { drillList.refinerRules = [[],[],[]] ; } 
 
@@ -670,8 +661,13 @@ export default class DrillDown extends React.Component<IDrillDownProps, IDrillDo
 
         let quickCommands : IQuickCommands = this.props.quickCommands ? JSON.parse( JSON.stringify(this.props.quickCommands )) : null ;
         
-        if ( quickCommands.onUpdateReload === true ) {
-            quickCommands.refreshCallback = this._reloadOnUpdate.bind(this);
+        if ( quickCommands !== null ) {
+            if ( quickCommands.onUpdateReload === true ) {
+                quickCommands.refreshCallback = this._reloadOnUpdate.bind(this);
+            }
+            if ( quickCommands.successBanner === undefined || quickCommands.successBanner === null ) {
+                quickCommands.successBanner = 3.5 * 1000;
+            } else { quickCommands.successBanner = quickCommands.successBanner * 1000; }
         }
 
         this.state = { 
@@ -728,6 +724,10 @@ export default class DrillDown extends React.Component<IDrillDownProps, IDrillDo
 
         };
 
+        
+        this.nearBannerElements = this.buildNearBannerElements();
+        this.farBannerElements = this.buildFarBannerElements();
+
     // because our event handler needs access to the component, bind 
     //  the component to the function so it can get access to the
     //  components properties (this.props)... otherwise "this" is undefined
@@ -735,9 +735,33 @@ export default class DrillDown extends React.Component<IDrillDownProps, IDrillDo
 
     }
 
+    
+  private buildNearBannerElements() {
+    //See banner/NearAndFarSample.js for how to build this.
+    let elements = [];
+    // defaultBannerCommandStyles.fontWeight = 'bolder';
+    // elements.push(<div style={{ paddingRight: null }} className={ '' } title={ title}>
+    //   <Icon iconName='WindDirection' onClick={ this.jumpToParentSite.bind(this) } style={ defaultBannerCommandStyles }></Icon>
+    // </div>);
+    return elements;
+  }
+
+  private buildFarBannerElements() {
+      //See banner/NearAndFarSample.js for how to build this.
+      // minimizeTiles= { this.minimizeTiles.bind(this) }
+      // searchMe= { this.searchMe.bind(this) }
+      // showAll= { this.showAll.bind(this) }
+
+      return [
+        // <Icon iconName='Search' onClick={ this.searchMe.bind(this) } style={ defaultBannerCommandStyles }></Icon>,
+        // <Icon iconName='ChromeMinimize' onClick={ this.minimizeTiles.bind(this) } style={ defaultBannerCommandStyles }></Icon>,
+        // <Icon iconName='ClearFilter' onClick={ this.showAll.bind(this) } style={ defaultBannerCommandStyles }></Icon>,
+      ];
+    }
+
   public componentDidMount() {
     this._updateStateOnPropsChange();
-    console.log('Mounted!');
+    console.log('DrillComponent Mounted!');
   }
 
 
@@ -755,7 +779,6 @@ export default class DrillDown extends React.Component<IDrillDownProps, IDrillDo
 public componentDidUpdate(prevProps){
 
     let rebuildPart = false;
-//   console.log('DIDUPDATE setting Progress:', this.props.progress);
     if (this.props.progress !== prevProps.progress) {  rebuildPart = true ; }
 
     if ( JSON.stringify(prevProps.refiners) !== JSON.stringify(this.props.refiners )) {
@@ -784,6 +807,7 @@ public componentDidUpdate(prevProps){
       if ( prevProps.showDisabled !== this.props.showDisabled ) {
         rebuildPart = true ;
       }
+
     if (rebuildPart === true) {
       this._updateStateOnPropsChange();
     }
@@ -802,8 +826,15 @@ public componentDidUpdate(prevProps){
 
     public render(): React.ReactElement<IDrillDownProps> {
 
+
         let x = 1;
         if ( x === 1 ) {
+
+        /**
+         * 2022-01-17:  Added this to see if this gets mutated and breaks on refresh items.  
+         * After deeper testing, adding this to getBestFitView solved it but that was getting called a lot so I'm just doing it once in the render
+         */
+        let viewDefs: ICustViewDef[] = JSON.parse(JSON.stringify(this.props.viewDefs));
 
 /***
  *              d888888b db   db d888888b .d8888.      d8888b.  .d8b.   d888b  d88888b 
@@ -816,33 +847,11 @@ public componentDidUpdate(prevProps){
  *                                                                                     
  */
 
-            //console.log('renderStateWebs', this.state.allItems );
-
             let thisPage = null;
             let tipsStyles = defCommandIconStyles;
 
             let toggleTipsButton = <div style={{marginRight: "20px", background: 'white', opacity: '.7', borderRadius: '10px' }}>
                  { createIconButton('Help','Toggle Tips',this.toggleTips.bind(this), null, tipsStyles ) } </div>;
-
-            /***
-             *    d888888b d8b   db d88888b  .d88b.       d8888b.  .d8b.   d888b  d88888b 
-             *      `88'   888o  88 88'     .8P  Y8.      88  `8D d8' `8b 88' Y8b 88'     
-             *       88    88V8o 88 88ooo   88    88      88oodD' 88ooo88 88      88ooooo 
-             *       88    88 V8o88 88~~~   88    88      88~~~   88~~~88 88  ooo 88~~~~~ 
-             *      .88.   88  V888 88      `8b  d8'      88      88   88 88. ~8~ 88.     
-             *    Y888888P VP   V8P YP       `Y88P'       88      YP   YP  Y888P  Y88888P 
-             *                                                                            
-             *                                                                            
-             */
-
-            const infoPage = <div>
-            <InfoPage 
-                allLoaded={ true }
-                showInfo={ true }
-                parentProps= { this.props }
-                parentState= { this.state }
-            ></InfoPage>
-            </div>;
 
             let errMessage = this.state.errMessage === '' ? null : <div>
                 { this.state.errMessage }
@@ -867,7 +876,7 @@ public componentDidUpdate(prevProps){
                 styles={{ root: { maxWidth: this.props.allowRailsOff === true ? 200 : 300 } }}
                 placeholder="Search"
                 onSearch={ this._searchForText.bind(this) }
-                onFocus={ () => console.log('this.state',  this.state) }
+                onFocus={ null } // () => console.log('this.state',  this.state)
                 onBlur={ () => console.log('onBlur called') }
                 onChange={ this._searchForText.bind(this) }
               />
@@ -905,7 +914,6 @@ public componentDidUpdate(prevProps){
                 let drillPivots0 = this.createPivotObject(this.state.searchMeta[0], '', 0);
                 let drillPivots1 = showRefiner1 ? this.createPivotObject(this.state.searchMeta[1], '', 1) : null;
                 let drillPivots2 = showRefiner2 ?  this.createPivotObject(this.state.searchMeta[2], '', 2) : null;
-
 
                 if ( showRefiner0 ) { refinersObjects.push( drillPivots0 ) ; }
                 if ( showRefiner1 ) { refinersObjects.push( drillPivots1 ) ; }
@@ -981,36 +989,39 @@ public componentDidUpdate(prevProps){
                     ></MyDrillItems>
                     </div>;
 
-                let includeDetails = getAppropriateViewProp( this.props.viewDefs, this.state.WebpartWidth, 'includeDetails' );
-                let includeAttach = getAppropriateViewProp( this.props.viewDefs, this.state.WebpartWidth, 'includeAttach' );
-                let includeListLink = getAppropriateViewProp( this.props.viewDefs, this.state.WebpartWidth, 'includeListLink' );
+                let includeDetails = getAppropriateViewProp( viewDefs, this.state.WebpartWidth, 'includeDetails' );
+                let includeAttach = getAppropriateViewProp( viewDefs, this.state.WebpartWidth, 'includeAttach' );
+                let includeListLink = getAppropriateViewProp( viewDefs, this.state.WebpartWidth, 'includeListLink' );
                 
+                if ( this.state.drillList.hasAttach !== true ) { includeAttach = false; }
                 let currentViewFields: any[] = [];
-                if ( this.props.viewDefs.length > 0 )  { currentViewFields = getAppropriateViewFields( this.props.viewDefs, this.state.WebpartWidth ); }
 
-                let currentViewGroups : IGrouping[] =  getAppropriateViewGroups( this.props.viewDefs , this.state.WebpartWidth );
+                if ( viewDefs.length > 0 )  { currentViewFields = getAppropriateViewFields( viewDefs, this.state.WebpartWidth ); }
+
+                let currentViewGroups : IGrouping[] =  getAppropriateViewGroups( viewDefs , this.state.WebpartWidth );
 
                 let reactListItems  = null;
 
                 if ( this.props.toggles.togOtherListview === false ) {
 
-                    reactListItems  = this.state.searchedItems.length === 0 ? <div>NO ITEMS FOUND</div> : <ReactListItems 
-                    parentListFieldTitles={ this.props.viewDefs.length > 0 ? null : this.props.parentListFieldTitles }
+                    reactListItems  = this.state.searchedItems.length === 0 ? <div>NO ITEMS FOUND</div> : 
+                    <ReactListItems 
+                        parentListFieldTitles={ viewDefs.length > 0 ? null : this.props.parentListFieldTitles }
 
-                    webURL = { this.state.drillList.webURL }
-                    parentListURL = { this.state.drillList.parentListURL }
-                    listName = { this.state.drillList.name }
+                        webURL = { this.state.drillList.webURL }
+                        parentListURL = { this.state.drillList.parentListURL }
+                        listName = { this.state.drillList.name }
 
-                    contextUserInfo = { this.state.drillList.contextUserInfo }
-                    sourceUserInfo = { this.state.drillList.sourceUserInfo }
+                        contextUserInfo = { this.state.drillList.contextUserInfo }
+                        sourceUserInfo = { this.state.drillList.sourceUserInfo }
 
-                    viewFields={ currentViewFields }
-                    groupByFields={ currentViewGroups }
-                    items={ this.state.searchedItems}
-                    includeDetails= { includeDetails }
-                    includeAttach= { includeAttach }
-                    includeListLink = { includeListLink }
-                    quickCommands={ this.state.quickCommands }
+                        viewFields={ currentViewFields }
+                        groupByFields={ currentViewGroups }
+                        items={ this.state.searchedItems }
+                        includeDetails= { includeDetails }
+                        includeAttach= { includeAttach }
+                        includeListLink = { includeListLink }
+                        quickCommands={ this.state.quickCommands }
                     
                      ></ReactListItems>;
                 }
@@ -1072,13 +1083,15 @@ public componentDidUpdate(prevProps){
     
                 }
                 if ( statRefinerObject && statRefinerObject.childrenKeys.length > 0  ) {
-
                     //Update Dynamic Data cssChartData  cssChartProps : ICssChartProps
-                    this.props.handleSwitch ( this.state.drillList.refinerStats, 'summaries', statRefinerObject, this.state.searchMeta ) ; //resultSummaryArray  ); //: //  { chartData : ICSSChartSeries[], callBackID: string }[]  
-
+                    if ( this.props.handleSwitch ) {
+                        this.props.handleSwitch ( this.state.drillList.refinerStats, 'summaries', statRefinerObject, this.state.searchMeta ) ; //resultSummaryArray  ); //: //  { chartData : ICSSChartSeries[], callBackID: string }[]  
+                    }
                 } else {
                     //Update Dynamic Data cssChartData
-                    this.props.handleSwitch ( null, null, null ); //: ICssChartProps
+                    if ( this.props.handleSwitch ) {
+                        this.props.handleSwitch ( null, null, null ); //: ICssChartProps
+                    }
                 }
 
                 /***
@@ -1110,21 +1123,53 @@ public componentDidUpdate(prevProps){
                     messages.push( <div><span><b>{ 'info ->' }</b></span></div> ) ;
                 }
 
-                let earlyAccess = 
-                <div style={{ marginBottom: '15px'}}><EarlyAccess 
-                        image = { "https://autoliv.sharepoint.com/sites/crs/PublishingImages/Early%20Access%20Image.png" }
-                        messages = { messages }
-                        links = { [ this.state.WebpartWidth > 450 ? links.gitRepoDrilldown7WebPart.wiki : null, 
-                            this.state.WebpartWidth > 600 ? links.gitRepoDrilldown7WebPart.issues : null ]}
-                        email = { 'mailto:General - WebPart Dev <0313a49d.Autoliv.onmicrosoft.com@amer.teams.ms>?subject=Drilldown Webpart Feedback&body=Enter your message here :)  \nScreenshots help!' }
-                        farRightIcons = { [ toggleTipsButton ] }
-                    ></EarlyAccess>
-                </div>;
-
-                let bannerMessage = <div style={{ width: '100%'}} 
+                let createBanner = this.state.quickCommands !== null && this.state.quickCommands.successBanner > 0 ? true : false;
+                let bannerMessage = createBanner === false ? null : <div style={{ width: '100%'}} 
                     className={ [ stylesD.bannerStyles,  this.state.bannerMessage === null ? stylesD.bannerHide : stylesD.bannerShow ].join(' ') }>
                     { this.state.bannerMessage }
                 </div>;
+
+                /***
+                 *    d8888b.  .d8b.  d8b   db d8b   db d88888b d8888b. 
+                 *    88  `8D d8' `8b 888o  88 888o  88 88'     88  `8D 
+                 *    88oooY' 88ooo88 88V8o 88 88V8o 88 88ooooo 88oobY' 
+                 *    88~~~b. 88~~~88 88 V8o88 88 V8o88 88~~~~~ 88`8b   
+                 *    88   8D 88   88 88  V888 88  V888 88.     88 `88. 
+                 *    Y8888P' YP   YP VP   V8P VP   V8P Y88888P 88   YD 
+                 *                                                      
+                 *                                                      
+                 */
+
+                // let farBannerElementsArray = [];
+                let farBannerElementsArray = [...this.farBannerElements,
+                    // <Icon iconName={layoutIcon} onClick={ this.toggleLayout.bind(this) } style={ defaultBannerCommandStyles }></Icon>,
+                ];
+
+                //Exclude the props.bannerProps.title if the webpart is narrow to make more responsive
+                let bannerTitle = this.props.bannerProps.bannerWidth < 900 ? '' : `${this.props.bannerProps.title} - ${''}`;
+                if ( bannerTitle === '' ) { bannerTitle = 'Pivot Tiles' ; }
+
+                let Banner = <WebpartBanner 
+                    showBanner={ this.props.bannerProps.showBanner }
+                    bannerWidth={ this.props.bannerProps.bannerWidth }
+                    pageContext={ this.props.bannerProps.pageContext }
+                    title ={ bannerTitle }
+                    panelTitle = { this.props.bannerProps.panelTitle }
+                    bannerReactCSS={ this.props.bannerProps.bannerReactCSS }
+                    bannerCommandStyles={ defaultBannerCommandStyles }
+                    showTricks={ this.props.bannerProps.showTricks }
+                    showGoToParent={ this.props.bannerProps.showGoToParent }
+                    showGoToHome={ this.props.bannerProps.showGoToHome }
+                    onHomePage={ this.props.bannerProps.onHomePage }
+                    showBannerGear={ this.props.bannerProps.showBannerGear }
+                    hoverEffect={ this.props.bannerProps.hoverEffect }
+                    gitHubRepo={ this.props.bannerProps.gitHubRepo }
+                    earyAccess={ this.props.bannerProps.earyAccess }
+                    wideToggle={ this.props.bannerProps.wideToggle }
+                    nearElements = { this.nearBannerElements }
+                    farElements = { farBannerElementsArray }
+
+                ></WebpartBanner>;
 
 
                 /***
@@ -1138,35 +1183,34 @@ public componentDidUpdate(prevProps){
                  *                                                                           
                  */
                     
-                thisPage = <div className={styles.contents}>
-                    <div className={stylesD.drillDown}>
-                        { earlyAccess }
-                        {  /* <div className={styles.floatRight}>{ toggleTipsButton }</div> */ }
-                        <div className={ this.state.errMessage === '' ? styles.hideMe : styles.showErrorMessage  }>{ this.state.errMessage } </div>
-                        {  /* <p><mark>Check why picking Assists does not show Help as a chapter even though it's the only chapter...</mark></p> */ }
-                        <div className={( this.state.showTips ? '' : styles.hideMe )}>
-                            { infoPage }
-                        </div>
-                        <Stack horizontal={true} wrap={true} horizontalAlign={"space-between"} verticalAlign= {"center"} tokens={stackPageTokens}>{/* Stack for Buttons and Webs */}
-                            { searchBox } { toggles } 
-                        </Stack>
-
-                        <Stack horizontal={false} wrap={true} horizontalAlign={"stretch"} tokens={stackPageTokens} className={ stylesD.refiners }>{/* Stack for Buttons and Webs */}
-                            { refinersObjects  }
-                        </Stack>
-
-                        <div> { this.state.showCountChart === true ? countCharts : null } </div>
-                        <div> { this.state.showStats === true ? statCharts : null } </div>
-
-                        <div>
-
-                            <div className={ this.state.searchCount !== 0 ? styles.hideMe : styles.showErrorMessage  }>{ noInfo } </div>
-                            { bannerMessage }
-                            <Stack horizontal={false} wrap={true} horizontalAlign={"stretch"} tokens={stackPageTokens}>{/* Stack for Buttons and Webs */}
-                                { this.state.viewType === 'React' ? reactListItems : drillItems }
-                                {   }
+                thisPage = <div>
+                    { Banner }
+                    <div className={styles.contents}>
+                        <div className={stylesD.drillDown}>
+                            {  /* <div className={styles.floatRight}>{ toggleTipsButton }</div> */ }
+                            <div className={ this.state.errMessage === '' ? styles.hideMe : styles.showErrorMessage  }>{ this.state.errMessage } </div>
+                            {  /* <p><mark>Check why picking Assists does not show Help as a chapter even though it's the only chapter...</mark></p> */ }
+                            <Stack horizontal={true} wrap={true} horizontalAlign={"space-between"} verticalAlign= {"center"} tokens={stackPageTokens}>{/* Stack for Buttons and Webs */}
+                                { searchBox } { toggles } 
                             </Stack>
-                        </div> { /* Close tag from above noInfo */}
+
+                            <Stack horizontal={false} wrap={true} horizontalAlign={"stretch"} tokens={stackPageTokens} className={ stylesD.refiners }>{/* Stack for Buttons and Webs */}
+                                { refinersObjects  }
+                            </Stack>
+
+                            <div> { this.state.showCountChart === true ? countCharts : null } </div>
+                            <div> { this.state.showStats === true ? statCharts : null } </div>
+
+                            <div>
+
+                                <div className={ this.state.searchCount !== 0 ? styles.hideMe : styles.showErrorMessage  }>{ noInfo } </div>
+                                { bannerMessage }
+                                <Stack horizontal={false} wrap={true} horizontalAlign={"stretch"} tokens={stackPageTokens}>{/* Stack for Buttons and Webs */}
+                                    { this.state.viewType === 'React' ? reactListItems : drillItems }
+                                    {   }
+                                </Stack>
+                            </div> { /* Close tag from above noInfo */}
+                        </div>
                     </div>
                 </div>;
 
@@ -1205,13 +1249,13 @@ public componentDidUpdate(prevProps){
 
     }   //End Public Render
 
-
-    private getAllItemsCall() {
+    private getAllItemsCall( viewDefs: ICustViewDef[], refiners: string[] ) {
 
         /**
          * This is copied from constructor when you have to call the data in case something changed.
          */
-        let drillList = this.createDrillList(this.props.webURL, this.props.listName, false, this.props.refiners, this.state.rules, this.props.stats, this.props.viewDefs, this.props.toggles.togOtherChartpart, '');
+
+        let drillList = this.createDrillList(this.props.webURL, this.props.listName, false, refiners, this.state.rules, this.props.stats, viewDefs, this.props.toggles.togOtherChartpart, '', false);
         let errMessage = drillList.refinerRules === undefined ? 'Invalid Rule set: ' +  this.state.rules : '';
         if ( drillList.refinerRules === undefined ) { drillList.refinerRules = [[],[],[]] ; } 
 
@@ -1231,9 +1275,6 @@ public componentDidUpdate(prevProps){
 
         console.log('addTheseItemsToState: refinerObj',refinerObj );
         console.log('drillList.refinerStats: ', drillList.refinerStats );
-//        console.log('addTheseItemsToState: childrenKeys',refinerObj.childrenKeys );
-//        console.log('addTheseItemsToState: childrenCounts',refinerObj.childrenCounts );
-//        console.log('addTheseItemsToState: childrenMultiCounts',refinerObj.childrenMultiCounts );
 
         if ( allItems.length < 300 ) {
             console.log('addTheseItemsToState allItems: ', allItems);
@@ -1247,8 +1288,15 @@ public componentDidUpdate(prevProps){
             if ( this.props.refiners.length > 1 ) { maxRefinersToShow = 2; }
             if ( this.props.refiners.length > 2 ) { maxRefinersToShow = 3; }
         }
+
+        /**
+         * 2022-01-17:  Added this to see if this gets mutated and breaks on refresh items.  
+         * After deeper testing, adding this to getBestFitView solved it but that was getting called a lot so I'm just doing it once in the render
+         */
+        let viewDefs: ICustViewDef[] = JSON.parse(JSON.stringify(this.props.viewDefs));
+
         if ( this.props.toggles.togOtherListview === true ) {
-            let listViewDD : IListViewDD = {
+            let listViewDD : IListViewDDDrillDown = {
 
                 parentListFieldTitles: this.props.viewDefs.length > 0 ? null : this.props.parentListFieldTitles,
                 togOtherListview: this.props.toggles.togOtherListview,
@@ -1256,7 +1304,7 @@ public componentDidUpdate(prevProps){
                 parentListURL : drillList.parentListURL,
                 listName : drillList.name,
         
-                viewDefs: this.props.viewDefs,
+                viewDefs: viewDefs,
                 viewFields: null, // This is derived from viewDefs
                 groupByFields: null, // This is derived from viewDefs
         
@@ -1269,11 +1317,12 @@ public componentDidUpdate(prevProps){
                 breadCrumb: [pivCats.all.title],
 
             };
-        
-            this.props.handleListPost( listViewDD );
+
+            if ( this.props.handleListPost ) { this.props.handleListPost( listViewDD ); }
+
         } else {
 
-            let listViewDD : IListViewDD = {
+            let listViewDD : IListViewDDDrillDown = {
 
                 parentListFieldTitles: null,
                 webURL :null,
@@ -1294,8 +1343,8 @@ public componentDidUpdate(prevProps){
                 breadCrumb: null,
         
             };
-        
-            this.props.handleListPost( listViewDD );
+
+            if ( this.props.handleListPost ) { this.props.handleListPost( listViewDD ); }
 
         }
 
@@ -1456,8 +1505,6 @@ public componentDidUpdate(prevProps){
             validText : validText,
         };
 
-//        console.log('clickInfo:  ' , clickInfo );
-
         return clickInfo;
 
     }
@@ -1576,7 +1623,13 @@ public componentDidUpdate(prevProps){
 
     }
 
-    let drillList = this.createDrillList(this.props.webURL, this.props.listName, false, refiners, JSON.stringify(refinerRulesNew), this.props.stats, this.props.viewDefs, this.props.toggles.togOtherChartpart, '');
+    /**
+     * 2022-01-17:  Added this to see if this gets mutated and breaks on refresh items.  
+     * After deeper testing, adding this to getBestFitView solved it but that was getting called a lot so I'm just doing it once in the render
+     */ 
+    let viewDefs: ICustViewDef[] = JSON.parse(JSON.stringify(this.props.viewDefs));
+
+    let drillList = this.createDrillList(this.props.webURL, this.props.listName, false, refiners, JSON.stringify(refinerRulesNew), this.props.stats, viewDefs, this.props.toggles.togOtherChartpart, '', true );
     let errMessage = drillList.refinerRules === undefined ? 'Invalid Rule set: ' +  this.state.rules : '';
     if ( drillList.refinerRules === undefined ) { drillList.refinerRules = [[],[],[]] ; }
 
@@ -1632,7 +1685,6 @@ public componentDidUpdate(prevProps){
         multiTree: multiTree,
     };
 
-    //console.log('getCurrentRefinerTree: ', result);
     return result;
 
   }
@@ -1711,7 +1763,7 @@ public componentDidUpdate(prevProps){
     }
 
     if ( this.props.toggles.togOtherListview === true ) {
-        let listViewDD : IListViewDD = {
+        let listViewDD : IListViewDDDrillDown = {
 
             parentListFieldTitles: this.props.viewDefs.length > 0 ? null : this.props.parentListFieldTitles,
             webURL :this.state.drillList.webURL,
@@ -1733,10 +1785,10 @@ public componentDidUpdate(prevProps){
     
         };
     
-        this.props.handleListPost( listViewDD );
+        if ( this.props.handleListPost ) { this.props.handleListPost( listViewDD ); }
         searchCount = newFilteredItems.length;
     } else {
-        let listViewDD : IListViewDD = {
+        let listViewDD : IListViewDDDrillDown = {
 
             parentListFieldTitles: null,
             webURL :null,
@@ -1748,8 +1800,8 @@ public componentDidUpdate(prevProps){
             viewFields: null, // This is derived from viewDefs
             groupByFields: null, // This is derived from viewDefs
     
-            contextUserInfo: null,  //For site you are on ( aka current page context )
-            sourceUserInfo: null,   //For site where the list is stored
+            contextUserInfo: this.state.drillList.contextUserInfo,  //For site you are on ( aka current page context )
+            sourceUserInfo: this.state.drillList.sourceUserInfo,   //For site where the list is stored
 
             quickCommands: null,
     
@@ -1758,7 +1810,7 @@ public componentDidUpdate(prevProps){
     
         };
     
-        this.props.handleListPost( listViewDD );
+        if ( this.props.handleListPost ) { this.props.handleListPost( listViewDD ); }
         searchCount = newFilteredItems.length;
     }
 
@@ -1802,9 +1854,6 @@ public componentDidUpdate(prevProps){
             }
         }
 
-//        console.log('checking item.refiners: ' , thisSearchItem.refiners );
-//        console.log('For searchMeta: ' , meta );
-//        console.log('Results: showItem, searchFails' ,showItem , searchFails );        
         if ( showItem === true && searchFails === 0 ) {
             newFilteredItems.push(thisSearchItem);
         }
@@ -1844,8 +1893,6 @@ public componentDidUpdate(prevProps){
         icon: icon,
       };
 
-    //console.log('setting Progress:', progress);
-
     this.setState({
         progress: progress,
     });
@@ -1863,20 +1910,35 @@ public componentDidUpdate(prevProps){
  *                                                                                                          
  */
 
-    private _reloadOnUpdate( message: string ) : void {
+    private _reloadOnUpdate( message: string, hasError: boolean ) : void {
+
+        /**
+         * 2022-01-17:  Added this to see if this gets mutated and breaks on refresh items.  
+         * After deeper testing, adding this to getBestFitView solved it but that was getting called a lot so I'm just doing it once in the render
+         */
+        let viewDefs: ICustViewDef[] = JSON.parse(JSON.stringify(this.props.viewDefs));
+
         this.setState({
             bannerMessage: message,
         });
-        this.getAllItemsCall();
+
+        this.getAllItemsCall( viewDefs, this.state.refiners );
+
+        let delay = hasError === true ? 10000 : this.state.quickCommands.successBanner;
 
         setTimeout(() => {
             this.setState({ bannerMessage: null });
-        } , 3500);
+        } , delay);
 
     }
 
     private _updateStateOnPropsChange(): void {
-        this.getAllItemsCall();
+        /**
+         * 2022-01-17:  Added this to see if this gets mutated and breaks on refresh items.  
+         * After deeper testing, adding this to getBestFitView solved it but that was getting called a lot so I'm just doing it once in the render
+         */
+        let viewDefs: ICustViewDef[] = JSON.parse(JSON.stringify(this.props.viewDefs));
+        this.getAllItemsCall( viewDefs, this.props.refiners );
     }
 
     /**

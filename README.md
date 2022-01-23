@@ -53,7 +53,16 @@ npm install @pnp/spfx-controls-react --save --save-exact
 npm install @pnp/spfx-property-controls
 npm install --save office-ui-fabric-react
 npm install webpack-bundle-analyzer --save-dev
+npm install react-json-view
 ```
+
+
+## Reran 2022-01-09
+```
+npm install @pnp/logging @pnp/common @pnp/odata @pnp/sp --save
+npm install @pnp/sp
+npm install @pnp/spfx-controls-react --save --save-exact
+npm install webpack-bundle-analyzer --save-dev
 
 After installing webpack analyzer, be sure to update the gulpfile.js so it actually builds the map.
 

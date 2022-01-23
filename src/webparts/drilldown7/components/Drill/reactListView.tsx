@@ -5,18 +5,24 @@ import { Icon  } from 'office-ui-fabric-react/lib/Icon';
 import { Web, IList, IItem, } from "@pnp/sp/presets/all";
 import { Link, ILinkProps } from 'office-ui-fabric-react';
 
-import { IMyProgress, IQuickButton, IQuickCommands, IUser } from '../IReUsableInterfaces';
-import { IDrillItemInfo } from './drillComponent';
+import { Pivot, PivotItem, IPivotItemProps} from 'office-ui-fabric-react/lib/Pivot';
+
+import ReactJson from "react-json-view";
+
+import { IUser } from '@mikezimm/npmfunctions/dist/Services/Users/IUserInterfaces';
+import { IQuickButton, IQuickCommands } from '@mikezimm/npmfunctions/dist/QuickCommands/IQuickCommands';
+
+import { IDrillItemInfo } from '@mikezimm/npmfunctions/dist/WebPartInterfaces/DrillDown/IDrillItem';
 
 import { autoDetailsList } from '../../../../services/hoverCardService';
 
-import { doesObjectExistInArray,  } from '../../../../services/arrayServices';
+import { doesObjectExistInArray } from '@mikezimm/npmfunctions/dist/Services/Arrays/checks';
 
-import { findParentElementPropLikeThis } from '../../../../services/basicElements';
+import { findParentElementPropLikeThis } from '@mikezimm/npmfunctions/dist/Elements/functions';
 
-import { getHelpfullError } from '../../../../services/ErrorHandler';
+import { getHelpfullError } from '@mikezimm/npmfunctions/dist/Services/Logging/ErrorHandler';
 
-import { buildConfirmDialog, IMyDialogProps } from '../../../../services/dialogBoxService'; 
+import { buildConfirmDialog, IMyDialogProps } from '@mikezimm/npmfunctions/dist/Elements/dialogBox'; 
 
 import stylesL from '../ListView/listView.module.scss';
 import { ListView, IViewField, SelectionMode, GroupOrder, IGrouping, } from "@pnp/spfx-controls-react/lib/ListView";
@@ -37,7 +43,7 @@ import { updateReactListItem } from './listFunctions';
 import { IContentsToggles, makeToggles } from '../fields/toggleFieldBuilder';
 
 import styles from '../Contents/listView.module.scss';
-import stylesInfo from '../HelpInfo/InfoPane.module.scss';
+import stylesInfo from './InfoPane.module.scss';
 import { IView } from '@pnp/sp/views';
 
 export interface IReactListItemsProps {
@@ -137,8 +143,8 @@ export default class ReactListItems extends React.Component<IReactListItemsProps
                     attachments.push( <h2>({ allItems.length}) Attachments</h2> );
                     attachments.push( <div style={{ paddingBottom: "10px"}}><b>CTRL-Click</b> to open in new window</div> );
                     allItems.map( a => {
-                    let attachmentItem = <div><Link target= { "_blank" } href= { a.ServerRelativeUrl }> { a.FileName }</Link></div>;
-                        attachments.push( attachmentItem );
+                        let attachmentItem = <div><Link target= { "_blank" } href= { a.ServerRelativeUrl }> { a.FileName }</Link></div>;
+                            attachments.push( attachmentItem );
         
                     });
                 }
@@ -151,7 +157,6 @@ export default class ReactListItems extends React.Component<IReactListItemsProps
             panelAttachments: attachments,
             lastAttachId: thisId,
         });
-
 
     }
 
@@ -171,10 +176,21 @@ export default class ReactListItems extends React.Component<IReactListItemsProps
 
             let buildAllButtonsTest = true;
             if ( quickCommands.showWhenEvalTrue && quickCommands.showWhenEvalTrue.length > 0 ) {
-                buildAllButtonsTest = eval( quickCommands.showWhenEvalTrue );
-                if ( buildAllButtonsTest === true ) {
-                    //build all the buttons ( subject to individual button checks )
-                } else { buildAllButtonsTest = false; }
+
+                //2022-01-18:  Added Try catch when testing and found my typed in quick command had error.
+                try {
+                    buildAllButtonsTest = eval( quickCommands.showWhenEvalTrue );
+                
+                    if ( buildAllButtonsTest === true ) {
+                        //build all the buttons ( subject to individual button checks )
+                    } else { buildAllButtonsTest = false; }
+                } catch (e) {
+                    let errMessage = getHelpfullError(e, false, false);
+                    console.log(`ERROR:  createPanelButtons: quickCommands.showWhenEvalTrue !!!`, quickCommands.showWhenEvalTrue);
+                    console.log(`ERROR:  createPanelButtons: quickCommands.showWhenEvalTrue Error Details`, errMessage);
+                    alert(`createPanelButtons: quickCommands.showWhenEvalTrue error !!! Check the console for details:   ${quickCommands.showWhenEvalTrue}`);
+                }
+
             }
 
             if ( buildAllButtonsTest === true ) {
@@ -193,11 +209,23 @@ export default class ReactListItems extends React.Component<IReactListItemsProps
                              */
     
                             if ( b.showWhenEvalTrue && b.showWhenEvalTrue.length > 0 ) {
-                                let buildButtonTest = eval( b.showWhenEvalTrue );
-                                if ( buildButtonTest === true ) {
-                                    //build all the buttons
-                                } else { buildThisButton = false; }
+
+                                //2022-01-18:  Added Try catch when testing and found my typed in quick command had error.
+                                try {
+                                    let buildButtonTest = eval( b.showWhenEvalTrue );
+                                    if ( buildButtonTest === true ) {
+                                        //build all the buttons
+                                    } else { buildThisButton = false; }
+                                } catch (e) {
+                                    let errMessage = getHelpfullError(e, false, false);
+                                    console.log(`createPanelButtons: b[${i}].showWhenEvalTrue error !!!`, b.showWhenEvalTrue);
+                                    console.log(`createPanelButtons: b[${i}].showWhenEvalTrue Error Details`, errMessage);
+
+                                    alert(`createPanelButtons: quickCommands.showWhenEvalTrue error !!! Check the console for details:   ${quickCommands.showWhenEvalTrue}`);
+                                }
+                                
                             }
+                            
                             if ( buildThisButton === true ) {
                                 let icon = b.icon ? { iconName: b.icon } : null;
                                 let buttonID = ['ButtonID', r, i , item.Id].join(this.delim);
@@ -414,8 +442,9 @@ export default class ReactListItems extends React.Component<IReactListItemsProps
 
             let toggles = !this.state.showPanel ? null : <div style={{ float: 'right' }}> { makeToggles(this.getPageToggles( this.state.panelWidth )) } </div>;
 
-            let fullPanel = !this.state.showPanel ? null : 
-                <Panel
+            let fullPanel = null;
+            if ( this.state.showPanel === true && this.state.panelId ) {
+                fullPanel = <Panel
                     isOpen={this.state.showPanel}
                     type={ this.state.panelWidth }
                     onDismiss={this._onClosePanel}
@@ -426,24 +455,43 @@ export default class ReactListItems extends React.Component<IReactListItemsProps
                     isFooterAtBottom={ true }
                 >
                     { toggles }
-                    { attachments }
-                    { this.createPanelButtons( this.props.quickCommands, this.state.panelItem, this.props.sourceUserInfo ) }
-                    { autoDetailsList(this.state.panelItem, ["Title","refiners"],["search","meta","searchString"],true) }
-                </Panel>;
+                    <Pivot 
+                        aria-label="Basic Pivot Example"
+                        defaultSelectedIndex ={ 0 }
+                    >
+                        <PivotItem headerText="Commands" itemKey= "Commands"><div>
+                                <div id='20pxSpacer' style={{ height: '20px'}}></div>
+                                { attachments }
+                                { this.createPanelButtons( this.props.quickCommands, this.state.panelItem, this.props.sourceUserInfo ) }
+                            </div>
+                        </PivotItem>
+                        <PivotItem headerText="Details" itemKey= "Details">
+                            { autoDetailsList(this.state.panelItem, ["Title","refiners"],["search","meta","searchString"],true) }
+                        </PivotItem>
+                        <PivotItem headerText="JSON" itemKey= "JSON"><div id="CommandsJSONPanel" style={{paddingTop: '20px'}}>
+                                <ReactJson src={ this.state.panelItem } name={ 'panelItem' } collapsed={ true } displayDataTypes={ true } displayObjectSize={ true } enableClipboard={ true } style={{ padding: '20px 0px' }}/>
+                            </div>
+                        </PivotItem>
+                    </Pivot>
 
-            let attachPanel = !this.state.showAttach ? null : 
-            <Panel
-                isOpen={this.state.showAttach}
-                type={ this.state.panelWidth }
-                onDismiss={this._onClosePanel}
-                headerText={ this.state.panelId.toString() }
-                closeButtonAriaLabel="Close"
-                onRenderFooterContent={this._onRenderFooterContent}
-                isLightDismiss={ true }
-                isFooterAtBottom={ true }
-            >
-                { attachments }
-            </Panel>;
+                </Panel>;
+            }
+
+            let attachPanel = null;
+            if ( this.state.showAttach === true && this.state.panelId ) {
+                attachPanel = <Panel
+                    isOpen={this.state.showAttach}
+                    type={ this.state.panelWidth }
+                    onDismiss={this._onClosePanel}
+                    headerText={ this.state.panelId.toString() }
+                    closeButtonAriaLabel="Close"
+                    onRenderFooterContent={this._onRenderFooterContent}
+                    isLightDismiss={ true }
+                    isFooterAtBottom={ true }
+                >
+                    { attachments }
+                </Panel>;
+            }
 
             let viewFieldsBase = this.state.viewFields;
             let attachField = [];
@@ -667,12 +715,15 @@ export default class ReactListItems extends React.Component<IReactListItemsProps
             let updates = Object.keys(thisButtonObject.updateItem).map( k => {
                 return k;
             });
-            let bannerMessage: any = <div> { [
-                <h3>Finished updating item [ ${itemId} ]</h3>,
-                <div>updates include: ${ updates.join(', ')} ...Refreshing list now</div>
+            let bannerMessage: any = <div style={{ marginTop: '5px'}}> { [
+                <h3 style={{paddingTop: '10px'}}>Finished updating item [ {itemId} ]</h3>,
+                <div>Including: { updates.join(', ')} </div>
             ] }</div>;
 
-            this.props.quickCommands.refreshCallback( bannerMessage );
+            this.props.quickCommands.refreshCallback( bannerMessage, false );
+
+        } else if ( result !== null ) {
+            this.props.quickCommands.refreshCallback( result, true );
         }
     }
     /**

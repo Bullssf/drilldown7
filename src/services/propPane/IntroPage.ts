@@ -20,11 +20,13 @@ import { PropertyFieldMultiSelect } from '@pnp/spfx-property-controls/lib/Proper
 import * as strings from 'Drilldown7WebPartStrings';
 import { pivotOptionsGroup} from './index';
 
-import * as links from '../../webparts/drilldown7/components/HelpInfo/AllLinks';   //              { links.gitRepoDrilldown7WebPart.issues }
+import { FPSOptionsGroup, FPSBanner2Group } from '@mikezimm/npmfunctions/dist/Services/PropPane/FPSOptionsGroup';
+import * as links from '@mikezimm/npmfunctions/dist/Links/LinksRepos';   //              { links.gitRepoDrilldown7WebPart.issues }
 
 import { IDrilldown7WebPartProps } from '../../webparts/drilldown7/Drilldown7WebPart';
 
-import { refinerRuleItems } from '../../webparts/drilldown7/components/IReUsableInterfaces';
+import { buildKeyText, refinerRuleItems } from '@mikezimm/npmfunctions/dist/Refiners/functions';
+
 /*
 
   // 1 - Analytics options
@@ -77,7 +79,7 @@ import { refinerRuleItems } from '../../webparts/drilldown7/components/IReUsable
     */
 
 export class IntroPage {
-  public getPropertyPanePage(webPartProps: IDrilldown7WebPartProps, _onClickUpdateTitles, _getListDefintions ): IPropertyPanePage {
+  public getPropertyPanePage(webPartProps: IDrilldown7WebPartProps, _onClickUpdateTitles, _getListDefintions, forceBanner: boolean, modifyBannerTitle: boolean, modifyBannerStyle: boolean ): IPropertyPanePage {
 
     let ruleChoices = refinerRuleItems();
     let showDisabled = false;
@@ -112,9 +114,9 @@ export class IntroPage {
             }),
 
             PropertyPaneLink('About Link' , {
-              text: 'Github Repo:  ' + links.gitRepoDrilldown7WebPart.desc ,
-              href: links.gitRepoDrilldown7WebPart.href,
-              target: links.gitRepoDrilldown7WebPart.target,
+              text: 'Github Repo:  ' + links.gitRepoDrillDown.desc ,
+              href: links.gitRepoDrillDown.href,
+              target: links.gitRepoDrillDown.target,
             }),
           ]
         },
@@ -361,7 +363,10 @@ export class IntroPage {
 
 
 
-        ]}, // this group
+        ]},  // this group
+
+        FPSBanner2Group( forceBanner , modifyBannerTitle, modifyBannerStyle, webPartProps.showBanner, null, true ),
+        FPSOptionsGroup( true, true, true, true ), // this group
 
         ]}; // Groups
   } // getPropertyPanePage()

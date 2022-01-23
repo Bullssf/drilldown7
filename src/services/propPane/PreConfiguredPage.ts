@@ -18,11 +18,11 @@ import {
   import { pivotOptionsGroup} from './index';
   
   
-  import * as links from '../../webparts/drilldown7/components/HelpInfo/AllLinks';   //              { links.gitRepoDrilldown7WebPart.issues }
+  import * as links from '@mikezimm/npmfunctions/dist/Links/LinksRepos';   //              { links.gitRepoDrilldown7WebPart.issues }
   
   import { IDrilldown7WebPartProps } from '../../webparts/drilldown7/Drilldown7WebPart';
   
-  import { refinerRuleItems } from '../../webparts/drilldown7/components/IReUsableInterfaces';
+  import { buildKeyText, refinerRuleItems } from '@mikezimm/npmfunctions/dist/Refiners/functions';
   /*
   
     // 1 - Analytics options
@@ -97,9 +97,9 @@ import {
               }),
   
               PropertyPaneLink('About Link' , {
-                text: 'Github Repo:  ' + links.gitRepoDrilldown7WebPart.desc ,
-                href: links.gitRepoDrilldown7WebPart.href,
-                target: links.gitRepoDrilldown7WebPart.target,
+                text: 'Github Repo:  ' + links.gitRepoDrillDown.desc ,
+                href: links.gitRepoDrillDown.href,
+                target: links.gitRepoDrillDown.target,
               }),
             ]
           },

@@ -2,14 +2,22 @@ import * as React from 'react';
 import styles from './Cssreactbarchart.module.scss';
 import { ICssreactbarchartProps, ICssreactbarchartState } from './ICssreactbarchartProps';
 
-import { getRandomInt, getRandomFromArray, generateVals, generateTitles, randomDate, getRandomChance } from '../../../../services/randomServices';
-import { sortKeysByOtherKey, convertNumberArrayToRelativePercents } from '../../../../services/arrayServices';
+import { getRandomInt, getRandomChance, getRandomFromArray, randomDate, generateVals, generateTitles }
+    from '@mikezimm/npmfunctions/dist/Services/randomServices';
+
+import { sortStringArray, sortObjectArrayByStringKey, sortNumberArray, sortObjectArrayByNumberKey, sortKeysByOtherKey 
+} from '@mikezimm/npmfunctions/dist/Services/Arrays/sorting';
+
+//Manipulation
+import { expandArray, spliceCopyArray, addItemToArrayIfItDoesNotExist, convertNumberArrayToRelativePercents,
+  removeItemFromArrayOnce, removeItemFromArrayAll, updateNextOpenIndex 
+  } from '@mikezimm/npmfunctions/dist/Services/Arrays/manipulation';
 
 import { ICSSChartSettings, ICSSChartData, ICSSChartTypes, CSSChartTypes, ISeriesSort } from '../IReUsableInterfaces';
 
 import stylesC from './cssChart.module.scss';
 
-import { ColorsBlue, ColorsBrown, ColorsGray, ColorsGreen, ColorsRed } from '../../../../services/colorServices';
+import { ColorsBlue, ColorsBrown, ColorsGray, ColorsGreen, ColorsRed } from '@mikezimm/npmfunctions/dist/CSSCharts/themes';
 
 /***
  *    d888888b d8b   db d888888b d88888b d8888b. d88888b  .d8b.   .o88b. d88888b .d8888. 

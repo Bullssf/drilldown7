@@ -1,5 +1,8 @@
 import { toAbsoluteUrl } from '@pnp/sp';
-import { ICSSChartSettings, ICSSChartData, ICSSChartTypes, CSSChartTypes, ISeriesSort, IRefinerLayer, IRefinerStat } from '../IReUsableInterfaces';
+import { ICSSChartSettings, ICSSChartData, ICSSChartTypes, CSSChartTypes, ISeriesSort } from '../IReUsableInterfaces';
+
+import { IRefinerLayer, IRefiners, IItemRefiners, IRefinerStats, RefineRuleValues,
+    IRefinerRules, IRefinerStatType, RefinerStatTypes, IRefinerStat } from '@mikezimm/npmfunctions/dist/Refiners/IRefiners';
 
 export function buildCountChartsObject( title: string, callBackID: string, refinerObj: IRefinerLayer , chartTypes: ICSSChartTypes[] ) {
     let resultSummaryObject = null;

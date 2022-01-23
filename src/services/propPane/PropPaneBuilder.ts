@@ -15,10 +15,10 @@ import {
 */
 
 export class PropertyPaneBuilder {
-  public getPropertyPaneConfiguration(webPartProps,  _onClickUpdateTitles, _getListDefintions ): IPropertyPaneConfiguration {
+  public getPropertyPaneConfiguration(webPartProps,  _onClickUpdateTitles, _getListDefintions,  forceBanner: boolean, modifyBannerTitle: boolean, modifyBannerStyle: boolean ): IPropertyPaneConfiguration {
     return <IPropertyPaneConfiguration>{
       pages: [
-        introPage.getPropertyPanePage(webPartProps,  _onClickUpdateTitles, _getListDefintions),
+        introPage.getPropertyPanePage(webPartProps,  _onClickUpdateTitles, _getListDefintions, forceBanner, modifyBannerTitle, modifyBannerStyle),
         viewsPage.getPropertyPanePage(webPartProps, ),
 //        webPartSettingsPage.getPropertyPanePage(webPartProps),
 

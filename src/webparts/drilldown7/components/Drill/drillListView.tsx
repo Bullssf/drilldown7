@@ -2,8 +2,8 @@
 import * as React from 'react';
 import { Icon  } from 'office-ui-fabric-react/lib/Icon';
 
-import { IMyProgress } from '../IReUsableInterfaces';
-import { IDrillItemInfo } from './drillComponent';
+//import { IDrillItemInfo } from '@mikezimm/npmfunctions/dist/WebPartInterfaces/DrillDown/IDrillItem';
+import { IDrillItemInfo } from '@mikezimm/npmfunctions/dist/WebPartInterfaces/DrillDown/IDrillItem';
 
 import { buildPropsHoverCard } from '../../../../services/hoverCardService';
 
@@ -12,7 +12,7 @@ import { Fabric, Stack, IStackTokens, initializeIcons } from 'office-ui-fabric-r
 
 
 import styles from '../Contents/listView.module.scss';
-import stylesInfo from '../HelpInfo/InfoPane.module.scss';
+import stylesInfo from './InfoPane.module.scss';
 
 export interface IMyDrillItemsProps {
     title?: string;

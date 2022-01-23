@@ -1,33 +1,14 @@
 import * as React from 'react';
 
-import { Link, ILinkProps } from 'office-ui-fabric-react';
-
-import * as links from './AllLinks';
-
-import { CompoundButton, Stack, IStackTokens, elementContains } from 'office-ui-fabric-react';
-import { IChoiceGroupOption } from 'office-ui-fabric-react/lib/ChoiceGroup';
-
-import { IDrillDownProps } from '../Drill/drillComponent';
-import { IDrillDownState } from '../Drill/drillComponent';
-
-import WebPartLinks from './WebPartLinks';
-
 import styles from './InfoPane.module.scss';
 
-export interface IGettingStartedProps {
-    showInfo: boolean;
-    allLoaded: boolean;
-    parentProps: IDrillDownProps;
-    parentState: IDrillDownState;
+import { IHelpTableRow, IHelpTable, IPageContent, ISinglePageProps } from './ISinglePageProps';
+//Moved these to npmFunctions 
 
+export interface ISinglePageState {
 }
 
-export interface IGettingStartedState {
-    selectedChoice: string;
-    lastChoice: string;
-}
-
-export default class GettingStarted extends React.Component<IGettingStartedProps, IGettingStartedState> {
+export default class SinglePage extends React.Component<ISinglePageProps, ISinglePageState> {
 
 
 /***
@@ -41,25 +22,14 @@ export default class GettingStarted extends React.Component<IGettingStartedProps
  *                                                                                                       
  */
 
-public constructor(props:IGettingStartedProps){
+public constructor(props:ISinglePageProps){
     super(props);
     this.state = { 
-        selectedChoice: 'parentList',
-        lastChoice: '',
-
     };
-
-    // because our event handler needs access to the component, bind 
-    //  the component to the function so it can get access to the
-    //  components properties (this.props)... otherwise "this" is undefined
-    // this.onLinkClick = this.onLinkClick.bind(this);
-
-    
   }
 
 
   public componentDidMount() {
-    
   }
 
 
@@ -75,14 +45,6 @@ public constructor(props:IGettingStartedProps){
  */
 
   public componentDidUpdate(prevProps){
-
-    let rebuildTiles = false;
-    /*
-    if (rebuildTiles === true) {
-      this._updateStateOnPropsChange({});
-    }
-    */
-
   }
 
 /***
@@ -96,10 +58,10 @@ public constructor(props:IGettingStartedProps){
  *                                                          
  */
 
-    public render(): React.ReactElement<IGettingStartedProps> {
+    public render(): React.ReactElement<ISinglePageProps> {
 
         if ( this.props.allLoaded && this.props.showInfo ) {
-            //console.log('infoPages.tsx', this.props, this.state);
+            console.log('SinglePage.tsx', this.props, this.state);
 
 /***
  *              d888888b db   db d888888b .d8888.      d8888b.  .d8b.   d888b  d88888b 
@@ -108,36 +70,38 @@ public constructor(props:IGettingStartedProps){
  *                 88    88~~~88    88      `Y8b.      88~~~   88~~~88 88  ooo 88~~~~~ 
  *                 88    88   88   .88.   db   8D      88      88   88 88. ~8~ 88.     
  *                 YP    YP   YP Y888888P `8888Y'      88      YP   YP  Y888P  Y88888P 
- *                                                                                     
- *                                                                                     
+ *
+ *
  */
 
-            let thisPage = null;
-            thisPage =     <div className={styles.infoPane}>
+            let thisTable = null;
+            let propsTable = this.props.content.table;
+            if ( propsTable && propsTable.rows.length > 0 ) {
 
-            <h3>Please submit any issues or suggestions on github (requires free account)</h3>
-            <WebPartLinks
-                    parentListURL={ this.props.parentState.webURL }
-                    parentListName={ this.props.parentState.drillList.name }
-            ></WebPartLinks>
+                let heading = propsTable.heading ? <h2> { propsTable.heading } </h2> : null;
 
-            <h2>First:  Create a Parent List or Library in your site</h2>
-                <ol>
-                    <li>Go to <b>WebPart Properties</b> - Edit Page, Edit Webpart.</li>
-                    <li>Expand <b>Create-Verify Lists</b> section.</li>
-                    <li>Press <b>Create-Verify List</b> button.</li>
-                    <li>Fill in your Refiner Fields</li>
-                    <li>Fill in your Rules - optional settings telling us how to handle certain field types</li>
-                    <li>Choose your refiner style</li>
+                let tableHeaders = propsTable.headers.map( header => {
+                    return <th>{ header }</th>;
+                });
 
-                    <li>Exit <b>WebPart Properties</b></li>
-                    <li><b>Save</b> this page.</li>
-                    <li><b>Refresh</b> this page.</li>
-                </ol>
+                let tableRows = propsTable.rows.map( row => {
+                    let cells = row.map( cell => {
+                        let style = null;
+                        if ( cell['style'] ) { style = cell['style'];}
+                        return <td style={ style }>{ cell['style'] ? cell['info'] : cell } </td>;
+                    });
+                    return <tr>{ cells }</tr>;
+                });
 
+                thisTable = <div>
+                    { heading }
+                    <table className={styles.infoTable}>
+                        { tableHeaders }
+                        { tableRows }
+                    </table>
+                </div>;
 
-          </div>;
-
+            }
 
 /***
  *              d8888b. d88888b d888888b db    db d8888b. d8b   db 
@@ -146,23 +110,22 @@ public constructor(props:IGettingStartedProps){
  *              88`8b   88~~~~~    88    88    88 88`8b   88 V8o88 
  *              88 `88. 88.        88    88b  d88 88 `88. 88  V888 
  *              88   YD Y88888P    YP    ~Y8888P' 88   YD VP   V8P 
- *                                                                 
- *                                                                 
+ *
+ *
  */
 
             return (
-                <div className={ styles.infoPane }>
-                    { thisPage }
+                <div className={ styles.infoPane } style={{ paddingTop: '10px'}}>
+                    { this.props.content.header }
+                    { this.props.content.html1 }
+                    { thisTable }
+                    { this.props.content.html2 }
+                    { this.props.content.footer }
                 </div>
-            );
-            
+            ); 
         } else {
             console.log('infoPages.tsx return null');
             return ( null );
         }
-
     }   //End Public Render
-
-
-
 }

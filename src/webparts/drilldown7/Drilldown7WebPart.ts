@@ -15,29 +15,47 @@ import { IDrillDownProps } from './components/Drill/drillComponent';
 
 import { PageContext } from '@microsoft/sp-page-context';
 
-import { makeTheTimeObject } from '../../services/dateServices';
-import { saveTheTime, getTheCurrentTime, saveAnalytics } from '../../services/createAnalytics';
+import { makeTheTimeObject } from '@mikezimm/npmfunctions/dist/Services/Time/timeObject';
 
-import { doesObjectExistInArray } from '../../services/arrayServices';
+import * as links from '@mikezimm/npmfunctions/dist/Links/LinksRepos';
 
-import { getHelpfullError, } from '../../services/ErrorHandler';
+require('../../services/GrayPropPaneAccordions.css');
+
+import { createStyleFromString, getReactCSSFromString, ICurleyBraceCheck } from '@mikezimm/npmfunctions/dist/Services/PropPane/StringToReactCSS';
+import { IWebpartBannerProps, IWebpartBannerState } from './components/HelpPanel/banner/onNpm/bannerProps';
+
+import { setPageFormatting, IFPSPage } from '@mikezimm/npmfunctions/dist/Services/DOM/FPSFormatFunctions';
+
+import { minimizeQuickLaunch } from '@mikezimm/npmfunctions/dist/Services/DOM/quickLaunch';
+
+//Checks
+import { doesObjectExistInArrayInt, doesObjectExistInArray, compareArrays, getKeySummary, getKeyChanges
+} from '@mikezimm/npmfunctions/dist/Services/Arrays/checks';
+
+import { getHelpfullError } from '@mikezimm/npmfunctions/dist/Services/Logging/ErrorHandler';
 
 import { sp } from '@pnp/sp';
 
 import { propertyPaneBuilder } from '../../services/propPane/PropPaneBuilder';
 import { getAllItems } from '../../services/propPane/PropPaneFunctions';
 
-import { IMyProgress, ICustViewDef, IRefinerLayer, IRefinerStat, ICSSChartDD, IListViewDD } from './components/IReUsableInterfaces';
+import { IMyProgress,  ICSSChartDD } from './components/IReUsableInterfaces';
+
+
+import { IListViewDDDrillDown } from '@mikezimm/npmfunctions/dist/Views/IDrillViews';
+import { ICustViewDef, } from '@mikezimm/npmfunctions/dist/Views/IListViews';
+
+import { IQuickButton, IQuickCommands, IQuickField } from '@mikezimm/npmfunctions/dist/QuickCommands/IQuickCommands';
+
+import { IRefinerLayer, IRefiners, IItemRefiners, IRefinerStats, RefineRuleValues,
+  IRefinerRules, IRefinerStatType, RefinerStatTypes, IRefinerStat } from '@mikezimm/npmfunctions/dist/Refiners/IRefiners';
 
 /**
  * DD Provider: Step 1 - import from sp-dynamic-data
  */
 import { IDynamicDataCallables, IDynamicDataPropertyDefinition} from '@microsoft/sp-dynamic-data';
 
-import { RefineRuleValues } from './components/IReUsableInterfaces';
-
 import { IGrouping, IViewField } from "@pnp/spfx-controls-react/lib/ListView";
-import { IQuickButton, IQuickCommands } from './components/IReUsableInterfaces';
 
 import { ICssChartProps } from '../cssChart/components/ICssChartProps';
 
@@ -55,6 +73,29 @@ export interface IDrilldown7WebPartProps {
   analyticsWeb?: string;
   analyticsList?: string;
   stressMultiplier?: number;
+
+  
+    
+  //General settings for Banner Options group
+  // export interface IWebpartBannerProps {
+    bannerTitle: string;
+    bannerStyle: string;
+    showBanner: boolean;
+    
+    showGoToHome: boolean;  //defaults to true
+    showGoToParent: boolean;  //defaults to true
+
+    bannerHoverEffect: boolean;
+    showTricks: boolean;
+  // }
+
+  //General settings for FPS Options group
+  searchShow: boolean;
+  fpsPageStyle: string;
+  fpsContainerMaxWidth: string;
+  quickLaunchHide: boolean;
+  showBannerGear: boolean;
+  uniqueId: string;
 
   // 2 - Source and destination list information
   createVerifyLists: boolean;
@@ -162,7 +203,15 @@ export default class Drilldown7WebPart extends BaseClientSideWebPart<IDrilldown7
   private _selectedRefiner0Value: string;
   private _filterBy: any;
 
+  //For FPS options
+  private fpsPageDone: boolean = false;
+  private fpsPageArray: any[] = null;
+  private minQuickLaunch: boolean = false;
 
+  //For FPS Banner
+  private forceBanner = true ;
+  private modifyBannerTitle = true ;
+  private modifyBannerStyle = true ;
 
 /***
 *          .d88b.  d8b   db d888888b d8b   db d888888b d888888b 
@@ -355,6 +404,63 @@ export default class Drilldown7WebPart extends BaseClientSideWebPart<IDrilldown7
 
   public render(): void {
 
+    
+    /***
+     *    d8888b.  .d8b.  d8b   db d8b   db d88888b d8888b. 
+     *    88  `8D d8' `8b 888o  88 888o  88 88'     88  `8D 
+     *    88oooY' 88ooo88 88V8o 88 88V8o 88 88ooooo 88oobY' 
+     *    88~~~b. 88~~~88 88 V8o88 88 V8o88 88~~~~~ 88`8b   
+     *    88   8D 88   88 88  V888 88  V888 88.     88 `88. 
+     *    Y8888P' YP   YP VP   V8P VP   V8P Y88888P 88   YD 
+     *                                                      
+     *                                                      
+     */
+
+    let showTricks = false;
+    links.trickyEmails.map( getsTricks => {
+      if ( this.context.pageContext.user.loginName && this.context.pageContext.user.loginName.toLowerCase().indexOf( getsTricks ) > -1 ) { showTricks = true ; }   } ); 
+
+    let bannerTitle = this.modifyBannerTitle === true && this.properties.bannerTitle && this.properties.bannerTitle.length > 0 ? this.properties.bannerTitle : `Drilldown`;
+    let bannerStyle: ICurleyBraceCheck = getReactCSSFromString( 'bannerStyle', this.properties.bannerStyle, {background: "#7777",fontWeight:600, fontSize: 'larger', height: '43px'} );
+    let showBannerGear = this.properties.showBannerGear === false ? false : true;
+    
+    let anyContext: any = this.context;
+    console.log('_pageLayoutType:', anyContext._pageLayoutType );
+    console.log('pageLayoutType:', anyContext.pageLayoutType );
+
+
+    let bannerProps: IWebpartBannerProps = {
+    
+      pageContext: this.context.pageContext,
+      panelTitle: `Drilldown webpart - ${this.properties.parentListTitle}`,
+      bannerWidth : this.domElement.clientWidth,
+      showBanner: this.forceBanner === true || this.properties.showBanner !== false ? true : false,
+      showTricks: showTricks,
+      showBannerGear: showBannerGear,
+      showGoToHome: this.properties.showGoToHome === false ? false : true,
+      showGoToParent: this.properties.showGoToParent === false ? false : true,
+      // onHomePage: anyContext._pageLayoutType === 'Home' ? true : false,
+      onHomePage: this.context.pageContext.legacyPageContext.isWebWelcomePage === true ? true : false,
+      hoverEffect: this.properties.bannerHoverEffect === false ? false : true,
+      title: bannerStyle.errMessage !== '' ? bannerStyle.errMessage : bannerTitle ,
+      bannerReactCSS: bannerStyle.errMessage === '' ? bannerStyle.parsed : { background: "yellow", color: "red", },
+      gitHubRepo: links.gitRepoDrillDownSmall,
+      farElements: [],
+      nearElements: [],
+      earyAccess: false,
+      wideToggle: true,
+    };
+    //close #129:  This makes the maxWidth added in fps options apply to banner as well.
+    if ( this.properties.fpsContainerMaxWidth && this.properties.fpsContainerMaxWidth.length > 0 ) {
+      bannerProps.bannerReactCSS.maxWidth = this.properties.fpsContainerMaxWidth;
+    }
+
+
+    //Used with FPS Options Functions
+    this.setThisPageFormatting( this.properties.fpsPageStyle );
+    this.setQuickLaunch( this.properties.quickLaunchHide );
+
+
     //Be sure to always pass down an actual URL if the webpart prop is empty at this point.
     //If it's undefined, null or '', get current page context value
     let parentWeb = this.properties.parentListWeb && this.properties.parentListWeb != '' ? this.properties.parentListWeb : this.context.pageContext.web.absoluteUrl;
@@ -395,8 +501,6 @@ export default class Drilldown7WebPart extends BaseClientSideWebPart<IDrilldown7
 
     let quickCommands : IQuickCommands = this.getQuickCommandsObject( 'Group Quick Commands', this.properties.quickCommands);
 
-    console.log('Here are view Defs:', viewDefs );
-
     let stringRules: string = JSON.stringify( rules );
 
     //Just for test purposes
@@ -410,6 +514,9 @@ export default class Drilldown7WebPart extends BaseClientSideWebPart<IDrilldown7
         // 0 - Context
         pageContext: this.context.pageContext,
         wpContext: this.context,
+        
+        bannerProps: bannerProps,
+
         tenant: this.context.pageContext.web.absoluteUrl.replace(this.context.pageContext.web.serverRelativeUrl,""),
         urlVars: this.getUrlVars(),
         today: makeTheTimeObject(''),
@@ -488,8 +595,10 @@ export default class Drilldown7WebPart extends BaseClientSideWebPart<IDrilldown7
         /**
          * DD Provider: Step 0 - add props to React Component to receive the switches and the handler.
          */
-        handleSwitch: this.handleSwitch,
-        handleListPost: this.handleListPost,
+        handleSwitch: this.handleSwitch,  //Commented out due to something causing viewFields names to get messed up (removed the / for expanded columns )
+        // handleSwitch: null,
+        handleListPost: this.handleListPost,  //Commented out due to something causing viewFields names to get messed up (removed the / for expanded columns )
+        // handleListPost: null,
 
       }
     );
@@ -523,8 +632,9 @@ export default class Drilldown7WebPart extends BaseClientSideWebPart<IDrilldown7
    * 1) Set value of selected Switch on the internal property
    * 2) Tell anybody who subscribed, that property changed
    */
-  private handleListPost = ( listProps : IListViewDD ) : void => {
+  private handleListPost = ( listProps : IListViewDDDrillDown ) : void => {
 
+    console.log('this.props.viewDefs ~ 638 - handleListPost', listProps );
     if ( this.properties.togOtherListview === true ) {
       let e = event;
 
@@ -562,6 +672,35 @@ export default class Drilldown7WebPart extends BaseClientSideWebPart<IDrilldown7
     return Version.parse('1.0');
   }
 
+
+  /**
+   * Used with FPS Options Functions
+   * @param quickLaunchHide 
+   */
+  private setQuickLaunch( quickLaunchHide: boolean ) {
+
+    if ( quickLaunchHide === true && this.minQuickLaunch === false ) {
+      minimizeQuickLaunch( document , quickLaunchHide );
+      this.minQuickLaunch = true;
+    }
+
+  }
+
+  /**
+   * Used with FPS Options Functions
+   * @param fpsPageStyle 
+   */
+  private setThisPageFormatting( fpsPageStyle: string ) {
+    let fpsPage: IFPSPage = {
+      Done: this.fpsPageDone,
+      Style: fpsPageStyle,
+      Array: this.fpsPageArray,
+    };
+
+    fpsPage = setPageFormatting( this.domElement, fpsPage );
+    this.fpsPageArray = fpsPage.Array;
+    this.fpsPageDone = fpsPage.Done;
+  }
 
   private async UpdateTitles(): Promise<boolean> {
 
@@ -609,6 +748,7 @@ export default class Drilldown7WebPart extends BaseClientSideWebPart<IDrilldown7
       this.properties,
       this.UpdateTitles.bind(this),
       this._getListDefintions.bind(this),
+      this.forceBanner, this.modifyBannerTitle, this.modifyBannerStyle
       );
   }
 

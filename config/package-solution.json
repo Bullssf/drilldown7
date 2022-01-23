@@ -1,9 +1,9 @@
 {
   "$schema": "https://developer.microsoft.com/json-schemas/spfx-build/package-solution.schema.json",
   "solution": {
-    "name": "drilldown-7-client-side-solution",
+    "name": "Drilldown7 Unique functionality to drill down on data",
     "id": "bdcf72e6-9215-4cba-9b02-892e5eab42f8",
-    "version": "1.1.0.3",
+    "version": "1.2.0.1",
     "includeClientSideAssets": true,
     "isDomainIsolated": false,
     "developer": {

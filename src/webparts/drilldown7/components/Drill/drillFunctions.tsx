@@ -11,7 +11,10 @@ import { CreateClientsidePage, PromotedState, ClientsidePageLayoutType, Clientsi
 
 import { IContentsListInfo, IMyListInfo, IServiceLog, IContentsLists } from '../../../../services/listServices/listTypes'; //Import view arrays for Time list
 
-import { IDrillItemInfo, IDrillList, pivCats } from  './drillComponent';
+import { IDrillItemInfo } from '@mikezimm/npmfunctions/dist/WebPartInterfaces/DrillDown/IDrillItem';
+
+import { IDrillList, pivCats } from  './drillComponent';
+
 
 import { changes, IMyFieldTypes } from '../../../../services/listServices/columnTypes'; //Import view arrays for Time list
 
@@ -19,25 +22,31 @@ import { IMyView,  } from '../../../../services/listServices/viewTypes'; //Impor
 
 import { addTheseItemsToList, addTheseItemsToListInBatch } from '../../../../services/listServices/listServices';
 
-import { makeSmallTimeObject, makeTheTimeObject,ITheTime, getAge, getBestTimeDelta, isStringValidDate, monthStr3} from '../../../../services/dateServices';
+import { makeTheTimeObject } from '@mikezimm/npmfunctions/dist/Services/Time/timeObject';
+import { monthStr3 } from '@mikezimm/npmfunctions/dist/Services/Time/monthLabels';
+import { getBestTimeDelta, getAge } from '@mikezimm/npmfunctions/dist/Services/Time/deltas';
 
-import { doesObjectExistInArray, addItemToArrayIfItDoesNotExist, sortKeysByOtherKey } from '../../../../services/arrayServices';
+import { doesObjectExistInArray } from '@mikezimm/npmfunctions/dist/Services/Arrays/checks';
+import { addItemToArrayIfItDoesNotExist, } from '@mikezimm/npmfunctions/dist/Services/Arrays/manipulation';
+import { sortKeysByOtherKey, } from '@mikezimm/npmfunctions/dist/Services/Arrays/sorting';
 
-import { getHelpfullError } from '../../../../services/ErrorHandler';
+import { getHelpfullError } from '@mikezimm/npmfunctions/dist/Services/Logging/ErrorHandler';
 
 import { IViewLog, addTheseViews } from '../../../../services/listServices/viewServices'; //Import view arrays for Time list
 
 import { IAnyArray } from  '../../../../services/listServices/listServices';
 
-import { getDetailValueType, ITypeStrings } from '../../../../services/typeServices';
+import { getDetailValueType, ITypeStrings } from '@mikezimm/npmfunctions/dist/Services/typeServices';
 
-import { ensureUserInfo } from '../../../../services/userServices';
+import { ensureUserInfo } from '@mikezimm/npmfunctions/dist/Services/Users/userServices';
 
 import { mergeAriaAttributeValues } from "office-ui-fabric-react";
 
-import { IRefiners, IRefinerLayer, IItemRefiners, RefineRuleValues, RefinerStatTypes, IRefinerStats, IRefinerStatType, IUser } from '../IReUsableInterfaces';
+import { IRefinerLayer, IRefiners, IItemRefiners, IRefinerStats, RefineRuleValues,
+    IRefinerRules, IRefinerStatType, RefinerStatTypes, IRefinerStat } from '@mikezimm/npmfunctions/dist/Refiners/IRefiners';
 
-import { IRefinerStat } from '../../components/IReUsableInterfaces';
+import { IUser } from '@mikezimm/npmfunctions/dist/Services/Users/IUserInterfaces';
+import { IQuickButton } from '@mikezimm/npmfunctions/dist/QuickCommands/IQuickCommands';
 
 //   d888b  d88888b d888888b  .d8b.  db      db      d888888b d888888b d88888b .88b  d88. .d8888. 
 //  88' Y8b 88'     `~~88~~' d8' `8b 88      88        `88'   `~~88~~' 88'     88'YbdP`88 88'  YP 
@@ -74,6 +83,7 @@ export async function getAllItems( drillList: IDrillList, addTheseItemsToState: 
 
     try {
         let fetchCount = drillList.fetchCount > 0 ? drillList.fetchCount : 200;
+
         if ( drillList.restFilter.length > 1 ) {
             allItems = await thisListObject.items.select(selectCols).expand(expandThese).orderBy('ID',false).top(fetchCount).filter(drillList.restFilter).get();
         } else {
@@ -93,6 +103,8 @@ export function processAllItems( allItems : IDrillItemInfo[], errMessage: string
     let allRefiners : IRefinerLayer = null;
     let itemRefinerErrors: string[] = [];
     let thisIsNow = new Date().toLocaleString();
+
+    let itemsHaveAttachments = false;
 
     for (let i in allItems ) {
 
@@ -133,6 +145,7 @@ export function processAllItems( allItems : IDrillItemInfo[], errMessage: string
             allItems[i].isFile = false;
         }
 
+        if ( allItems[i].Attachments === true ) { itemsHaveAttachments = true ; } 
         allItems[i].refiners = getItemRefiners( drillList, allItems[i] );
 
         allItems[i].refiners.comments.map( c => {
@@ -143,6 +156,8 @@ export function processAllItems( allItems : IDrillItemInfo[], errMessage: string
 
     }
 
+    drillList.hasAttach = itemsHaveAttachments;
+    
     if ( errMessage === '' && allItems.length === 0 ) { 
         errMessage = 'This list or library does not have any items that you can see.';
      }
