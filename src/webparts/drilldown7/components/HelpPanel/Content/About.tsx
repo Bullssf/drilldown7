@@ -19,7 +19,7 @@ export function aboutTable( repoLinks: IRepoLinks ) {
         rows: [],
     };
 
-    table.rows.push( createAboutRow('2022-01-18','1.2.0.0',<span>HelpPanel, npmFunctions v1.0.138</span>, repoLinks ) );
+    table.rows.push( createAboutRow('2022-01-23','1.2.0.1',<span>HelpPanel, npmFunctions v1.0.133</span>, repoLinks ) );
     table.rows.push( createAboutRow('"'         ,'"'      ,'Fix #64, #65, #66', repoLinks ) );
 
     table.rows.push( createAboutRow('2020-11-03','1.1.0.3','Prod Testing bugs, collapsable charts, displays in narrow section', repoLinks ) );
