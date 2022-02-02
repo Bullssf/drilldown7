@@ -126,6 +126,12 @@ export default class ReactListItems extends React.Component<IReactListItemsProps
         return null;
     }
 
+    /**
+     * createPanelAttachments is identical on ActionNews and Drilldown7 except panelItem interface
+     * @param thisId 
+     * @param panelItem 
+     */
+
     private async createPanelAttachments( thisId: any, panelItem: IDrillItemInfo ): Promise<void>{
 
         let thisListWeb = Web(this.props.webURL);
@@ -422,6 +428,7 @@ export default class ReactListItems extends React.Component<IReactListItemsProps
 
         let thisLog = null;
 
+        //2022-02-01:  Updated this from drilldown7
         if ( this.props.items != null && this.props.items.length > 0 ) { 
 
             let attachments = this.state.panelAttachments.length > 0 ? this.state.panelAttachments : null ;
@@ -477,6 +484,9 @@ export default class ReactListItems extends React.Component<IReactListItemsProps
                 </Panel>;
             }
 
+            /**
+             * 2022-02-01:  This was copied/updated from drilldown7 to actionnews
+             */
             let attachPanel = null;
             if ( this.state.showAttach === true && this.state.panelId ) {
                 attachPanel = <Panel
