@@ -105,6 +105,7 @@ export type IRefinerStyles = 'pivot' | 'commandBar' | 'other';
     fetchCount: number;
     fetchCountMobile: number;
     restFilter: string;
+    hideFolders: boolean;
     isLibrary?: boolean;
     hasAttach: boolean;
     webURL?: string;
@@ -188,6 +189,7 @@ export interface IDrillDownProps {
 
     webURL?: string;
     parentListURL?: string;
+    hideFolders: boolean;
 
     listName : string;
     
@@ -607,7 +609,7 @@ export default class DrillDown extends React.Component<IDrillDownProps, IDrillDo
             fetchCount: this.props.performance.fetchCount,
             fetchCountMobile: this.props.performance.fetchCountMobile,
             restFilter: !this.props.performance.restFilter ? ' ' : this.props.performance.restFilter,
-
+            hideFolders: this.props.hideFolders,
             isLibrary: isLibrary,
             hasAttach: false,
 

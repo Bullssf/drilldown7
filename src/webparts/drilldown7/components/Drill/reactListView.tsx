@@ -312,6 +312,7 @@ export default class ReactListItems extends React.Component<IReactListItemsProps
     private handleExpandedFieldInfoToIViewFields( viewFields?: IViewField[] ) {
         
         viewFields.map( vf => {
+            //2022-03-18:  MEMO TO SELF... SOMETHING SEEMS OFF about this replace...
             vf.name = vf.name.replace('/','');
         });
 

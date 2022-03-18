@@ -204,6 +204,11 @@ export class IntroPage {
           PropertyPaneTextField('parentListTitle', {
             label: strings.FieldLabel_ParentListTitle
           }),
+          PropertyPaneToggle('hideFolders', {
+            label: 'Hide Folders',
+            offText: 'Show Folders',
+            onText: 'Hide Folders',
+          }),
         ]}, // this group
 
         { groupName: 'Performance Properties',

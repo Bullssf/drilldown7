@@ -105,63 +105,81 @@ export function processAllItems( allItems : IDrillItemInfo[], errMessage: string
     let thisIsNow = new Date().toLocaleString();
 
     let itemsHaveAttachments = false;
+    let finalItems : IDrillItemInfo[] = [];
+    let skippedItems : IDrillItemInfo[] = [];
 
-    for (let i in allItems ) {
 
-        if ( allItems[i].timeCreated === undefined ) {
-            allItems[i].timeCreated = makeTheTimeObject(allItems[i].Created);
-            allItems[i].timeModified = makeTheTimeObject(allItems[i].Modified);
+    allItems.map( ( item, i ) => {
 
-            allItems[i].bestCreate = getBestTimeDelta(allItems[i].Created, thisIsNow);
-            allItems[i].bestMod = getBestTimeDelta(allItems[i].Modified, thisIsNow);
+        let skipItem = false;
+        if ( drillList.hideFolders === true ) {
+            if ( item.FileSystemObjectType === 1 ) { 
+                skipItem = true;
+            }
         }
-
-        /**
-         * This loop flattens expanded column objects
-         */
-        if ( drillList.selectColumns.length > 0 ) {
-            drillList.selectColumns.map( expCol => {
-                if (expCol.indexOf('/') > -1 ) {
-                    let oldCol = expCol.split('/');
-                    let newProp = oldCol.join('');
-
-                    allItems[i][newProp] = allItems[i][oldCol[0]] ? allItems[i][oldCol[0]][oldCol[1]] : null;
-                }
-            });
-        }
-
-        if ( drillList.isLibrary === true || allItems[i].ServerRedirectedEmbedUrl ) {
-            allItems[i].goToItemPreview = allItems[i].ServerRedirectedEmbedUrl;
-            allItems[i].goToItemLink = allItems[i].ServerRedirectedEmbedUrl ? allItems[i].ServerRedirectedEmbedUrl.replace('&action=interactivepreview','') : null ;
-            allItems[i].goToPropsLink = drillList.parentListURL + "/Forms/DispForm.aspx?ID=" + allItems[i].Id;
-            allItems[i].isFile = true;
-
-            drillList.isLibrary = true;
+        if ( skipItem === true ) {
+            skippedItems.push( item );
 
         } else {
-            allItems[i].goToItemPreview = drillList.parentListURL + "/DispForm.aspx?ID=" + allItems[i].Id;
-            allItems[i].goToItemLink = drillList.parentListURL + "/DispForm.aspx?ID=" + allItems[i].Id;
-            allItems[i].goToPropsLink = drillList.parentListURL + "/DispForm.aspx?ID=" + allItems[i].Id;
-            allItems[i].isFile = false;
+            if ( item.timeCreated === undefined ) {
+                item.timeCreated = makeTheTimeObject(item.Created);
+                item.timeModified = makeTheTimeObject(item.Modified);
+    
+                item.bestCreate = getBestTimeDelta(item.Created, thisIsNow);
+                item.bestMod = getBestTimeDelta(item.Modified, thisIsNow);
+            }
+    
+            /**
+             * This loop flattens expanded column objects
+             */
+            if ( drillList.selectColumns.length > 0 ) {
+                drillList.selectColumns.map( expCol => {
+                    if (expCol.indexOf('/') > -1 ) {
+                        let oldCol = expCol.split('/');
+                        let newProp = oldCol.join('');
+    
+                        item[newProp] = item[oldCol[0]] ? item[oldCol[0]][oldCol[1]] : null;
+                    }
+                });
+            }
+    
+            if ( drillList.isLibrary === true || item.ServerRedirectedEmbedUrl ) {
+                item.goToItemPreview = item.ServerRedirectedEmbedUrl;
+                item.goToItemLink = item.ServerRedirectedEmbedUrl ? item.ServerRedirectedEmbedUrl.replace('&action=interactivepreview','') : null ;
+                item.goToPropsLink = drillList.parentListURL + "/Forms/DispForm.aspx?ID=" + item.Id;
+                item.isFile = true;
+    
+                drillList.isLibrary = true;
+    
+            } else {
+                item.goToItemPreview = drillList.parentListURL + "/DispForm.aspx?ID=" + item.Id;
+                item.goToItemLink = drillList.parentListURL + "/DispForm.aspx?ID=" + item.Id;
+                item.goToPropsLink = drillList.parentListURL + "/DispForm.aspx?ID=" + item.Id;
+                item.isFile = false;
+            }
+    
+            if ( item.Attachments === true ) { itemsHaveAttachments = true ; } 
+            item.refiners = getItemRefiners( drillList, item );
+    
+            item.refiners.comments.map( c => {
+                itemRefinerErrors.push( c );
+            });
+            item.meta = buildMetaFromItem(item);
+            item.searchString = buildSearchStringFromItem(item, drillList.staticColumns );
+
+            finalItems.push( item );
         }
 
-        if ( allItems[i].Attachments === true ) { itemsHaveAttachments = true ; } 
-        allItems[i].refiners = getItemRefiners( drillList, allItems[i] );
+    });
 
-        allItems[i].refiners.comments.map( c => {
-            itemRefinerErrors.push( c );
-        });
-        allItems[i].meta = buildMetaFromItem(allItems[i]);
-        allItems[i].searchString = buildSearchStringFromItem(allItems[i], drillList.staticColumns );
-
-    }
 
     drillList.hasAttach = itemsHaveAttachments;
     
-    if ( errMessage === '' && allItems.length === 0 ) { 
+    if ( errMessage === '' && finalItems.length === 0 ) { 
         errMessage = 'This list or library does not have any items that you can see.';
      }
 
+     console.log('skippedDrillItems', skippedItems );
      if ( itemRefinerErrors.length > 0 ) {
 //        console.log('HEY!  Had some problems with your item refiners:', itemRefinerErrors);
         console.log('HEY!  Had some problems with your item refiners:', itemRefinerErrors.length);
@@ -171,7 +189,7 @@ export function processAllItems( allItems : IDrillItemInfo[], errMessage: string
 
     console.log('drillList.refiners =', drillList.refiners );
     //for ( let i = 0 ; i < 5000 ; i++ ) {
-        allRefiners = buildRefinersObject( allItems, drillList );
+        allRefiners = buildRefinersObject( finalItems, drillList );
         //console.log(i);
     //}
 
@@ -181,12 +199,10 @@ export function processAllItems( allItems : IDrillItemInfo[], errMessage: string
 
 //    console.log('Post-Sort: getAllItems', allRefiners);
 
-    addTheseItemsToState(drillList, allItems, errMessage, allRefiners );
-    return allItems;
+    addTheseItemsToState(drillList, finalItems, errMessage, allRefiners );
+    return finalItems;
 
 }
-
-
 
 //    88.    .d88b.  d8888b. d888888b      d8888b. d88888b d88888b d888888b d8b   db d88888b d8888b. 
 //  88'  YP .8P  Y8. 88  `8D `~~88~~'      88  `8D 88'     88'       `88'   888o  88 88'     88  `8D 
@@ -852,6 +868,7 @@ function buildMetaFromItem( theItem: IDrillItemInfo ) {
     }
 
     meta = theItem.timeModified.daysAgo < 180 ? addItemToArrayIfItDoesNotExist(meta, 'RecentlyUpdated') : addItemToArrayIfItDoesNotExist(meta, 'Stale');
+    meta = theItem.FileSystemObjectType === 1 ? addItemToArrayIfItDoesNotExist(meta, 'IsFolder') : addItemToArrayIfItDoesNotExist(meta, 'IsItem');
 
     for ( let L of Object.keys(theItem.refiners) ) {
         //Gets rid of the 'undefined' meta key found at the end of the keys

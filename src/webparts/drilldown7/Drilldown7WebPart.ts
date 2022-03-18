@@ -102,6 +102,7 @@ export interface IDrilldown7WebPartProps {
   parentListTitle: string;
   parentListWeb: string;
   parentListURL?: string;
+  hideFolders: boolean;
 
   refiner0: string;
   refiner1: string;
@@ -550,6 +551,7 @@ export default class Drilldown7WebPart extends BaseClientSideWebPart<IDrilldown7
         listName: this.properties.parentListTitle,
         webURL: parentWeb,
         parentListURL: this.properties.parentListURL,
+        hideFolders: this.properties.hideFolders,
 
         refiners: refiners,
         showDisabled: this.properties.showDisabled,
