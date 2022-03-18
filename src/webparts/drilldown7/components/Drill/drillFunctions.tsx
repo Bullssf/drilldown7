@@ -669,7 +669,7 @@ function getRefinerFromField ( fieldValue : any, ruleSet: RefineRuleValues[], em
     } else if ( detailType === 'object' ){
         result = [ JSON.stringify(fieldValue) ];
 
-    } else if ( detailType === 'datestring' ) {
+    } else if ( detailType === 'datestring' && ruleSet.indexOf('groupByString') < 0 ) {
         let tempDate = makeTheTimeObject( fieldValue );
         let reFormattedDate = null;
         // 'groupByDays' | 'groupByWeeks' |  'groupByMonths' |  'groupByYears' | 'groupByDayOfWeek' | 
@@ -719,7 +719,7 @@ function getRefinerFromField ( fieldValue : any, ruleSet: RefineRuleValues[], em
          */
         result = [  getGroupByNumber(fieldValue, detailType, ruleSet ) ];
 
-    } else if ( detailType === 'string' ){
+    } else if ( detailType === 'string' || ruleSet.indexOf('groupByString') > -1 ){
 
         //If it's a string, then test if it's a date, return the best date in an array.   Object.prototype.toString.call(date) === '[object Date]'  //https://stackoverflow.com/a/643827
         //As of 2020-09-01:  This does not accurately detect dates.
