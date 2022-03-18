@@ -19,6 +19,9 @@ export function aboutTable( repoLinks: IRepoLinks ) {
         rows: [],
     };
 
+    table.rows.push( createAboutRow('2022-03-18','1.2.0.2',<span>Espanol language update, remove settings alerts!</span>, repoLinks ) );
+
+
     table.rows.push( createAboutRow('2022-01-23','1.2.0.1',<span>HelpPanel, npmFunctions v1.0.133</span>, repoLinks ) );
     table.rows.push( createAboutRow('"'         ,'"'      ,'Fix #64, #65, #66', repoLinks ) );
 
