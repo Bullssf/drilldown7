@@ -90,7 +90,7 @@ export async function getAllItems( drillList: IDrillList, addTheseItemsToState: 
             allItems = await thisListObject.items.select(selectCols).expand(expandThese).orderBy('ID',false).top(fetchCount).get();
         }
     } catch (e) {
-        errMessage = getHelpfullError(e, true, true);
+        errMessage = getHelpfullError(e, false, true);
 
     }
 
@@ -208,7 +208,7 @@ function sortRefinerObject ( allRefiners: IRefinerLayer, drillList: IDrillList )
         statsToSort.push('stat' + i);
         statsToSort.push('stat' + i + 'Count');
     }
-    allRefiners = sortKeysByOtherKey ( allRefiners, 'childrenKeys', 'asc', 'string', statsToSort);
+    allRefiners = sortKeysByOtherKey ( allRefiners, 'childrenKeys', 'asc', 'string', statsToSort );
     allRefiners.childrenObjs = sortRefinerLayer( allRefiners.childrenObjs, drillList );
 
     return allRefiners;
