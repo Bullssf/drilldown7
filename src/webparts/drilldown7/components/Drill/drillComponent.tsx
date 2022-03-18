@@ -492,6 +492,8 @@ export default class DrillDown extends React.Component<IDrillDownProps, IDrillDo
 
     private createRefinerRuleCalcs( calcs: string ) {
         let theCalcs : any = null;
+        //Close https://github.com/mikezimm/drilldown7/issues/78
+        if ( calcs === '' ) { return []; }
         try {
             //2022-01-17:  replace does not modify the original value.
             //But I created a new value here because it did modify "itself" which I don't think I wanted to do.
