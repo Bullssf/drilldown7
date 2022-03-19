@@ -461,7 +461,9 @@ export function buildRefinersObject ( items: IDrillItemInfo[], drillList: IDrill
     //Go through all items
     for ( let i of items ) { //Go through all list items
         if ( i.refiners ) { //If Item has refiners (all should)
-
+            if ( i.Id === 333 ) {
+                console.log( 'item 333:', i );
+            }
             //Do just level 1
             let thisRefinerValuesLev0 = i.refiners['lev' + 0];
             //Go through each array of refiners... 
@@ -528,6 +530,9 @@ export function getItemRefiners( drillList: IDrillList, item: IDrillItemInfo ) {
         comments: [],
     };
 
+    if ( item.Id === 333 ) {
+        console.log('Checking Id: 333 refiners' );
+    }
     for ( let i in drillList.refinerStats ) {
         itemRefiners['stat' + i] = [];
     }
@@ -660,7 +665,7 @@ function getRefinerFromField ( fieldValue : any, ruleSet: RefineRuleValues[], em
     } else if ( detailType === 'boolean'  ){
         result = [ fieldValue === true ? 'true' : 'false' ];
 
-    } else if ( detailType === 'number'  ){
+    } else if ( detailType === 'number' ){
         result = [ getGroupByNumber(fieldValue, detailType, ruleSet ) ];
 
     } else if ( detailType === 'array' ){
@@ -709,7 +714,7 @@ function getRefinerFromField ( fieldValue : any, ruleSet: RefineRuleValues[], em
         } 
         result = [ reFormattedDate ];
     
-    } else if ( detailType === 'numberstring' ) {
+    } else if ( detailType === 'numberstring' && ruleSet.indexOf('groupByString') < 0   ) {
 
         /**
             options.push( buildKeyText( 'groupBy10s' ) );
@@ -730,6 +735,10 @@ function getRefinerFromField ( fieldValue : any, ruleSet: RefineRuleValues[], em
 
         } else if (ruleSet.indexOf('parseByCommas')  > -1 && fieldValue.indexOf(',') > -1 ) {
             fieldValue = getRefinerFromField ( fieldValue.split(',') , ruleSet, emptyRefiner );
+
+        //This loop closes https://github.com/mikezimm/drilldown7/issues/83
+        } else if (ruleSet.indexOf('groupByString')  > -1 && fieldValue === '' ) {
+            result = [ emptyRefiner ];
 
         } else { // This should be a string
             result = [ fieldValue ];

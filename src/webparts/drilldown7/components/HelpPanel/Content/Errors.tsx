@@ -15,13 +15,17 @@ export function errorsContent( repoLinks: IRepoLinks ) {
     let messageRows = [];
 
     messageRows.push( <tr><td>Refiner just shows "All"</td><td>  </td><td>Refiner Rule must be compatible with the refiner.  For instance, you can't have a date rule for a person field.</td></tr> );
+    messageRows.push( <tr><td>Dates formatted as <b>YYYY-MM</b></td><td>  </td><td><b>Any Calc or Choice column values</b> that could be interpreted as a Date, should use <b>Refiner Rule: groupByString</b>.</td></tr> );
     messageRows.push( <tr><td>List says x Items but is empty</td><td>  </td><td>Make sure List Views are set up with fields</td></tr> );
     messageRows.push( <tr><td>Refiner Summary Stack order</td><td>  </td><td>When you have refiner in date format MMM or DDD (like Jan Feb Mar), refiners are sorted in logical order but stacked bar chart is sorted alphabetically.  Given this is not used as much, adds a lot of complexity, it is not on the roadmap to correct.</td></tr> );
 
 
     messageRows.push( <tr><td>Separate Charts webpart empty</td><td>  </td><td>1.) Be sure your <b>Summary Stats</b> object (in main webpart) contains <b>"consumer": 1, -- this tells the webpart to publish chart to other webpart.</b>.</td></tr> );
     messageRows.push( <tr><td></td><td>  </td><td>2.) Be sure <b>Consumer webpart (chart)</b> is <b>connected</b> to main webpart.</td></tr> );
-    
+   
+
+
+
     thisPage = <div>
         <h2></h2>
         <table className={styles.infoTable} style={{ width: '100%' }}>

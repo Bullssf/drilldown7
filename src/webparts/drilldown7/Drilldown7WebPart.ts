@@ -405,7 +405,7 @@ export default class Drilldown7WebPart extends BaseClientSideWebPart<IDrilldown7
 
   public render(): void {
 
-    
+    let errMessage = '';    
     /***
      *    d8888b.  .d8b.  d8b   db d8b   db d88888b d8888b. 
      *    88  `8D d8' `8b 888o  88 888o  88 88'     88  `8D 
@@ -450,6 +450,7 @@ export default class Drilldown7WebPart extends BaseClientSideWebPart<IDrilldown7
       nearElements: [],
       earyAccess: false,
       wideToggle: true,
+
     };
     //close #129:  This makes the maxWidth added in fps options apply to banner as well.
     if ( this.properties.fpsContainerMaxWidth && this.properties.fpsContainerMaxWidth.length > 0 ) {
@@ -486,7 +487,15 @@ export default class Drilldown7WebPart extends BaseClientSideWebPart<IDrilldown7
     let viewFields2 : IViewField[] = this.getViewFieldsObject('Med Size view', this.properties.viewJSON2, this.properties.groupByFields );
     let viewFields3 : IViewField[] = this.getViewFieldsObject('Small Size view', this.properties.viewJSON3, this.properties.groupByFields );
 
+    if ( !viewFields1 ) { errMessage += 'viewFields1 has an error; '; viewFields1 = [] ; }
+    if ( !viewFields2 ) { errMessage += 'viewFields2 has an error; '; viewFields2 = [] ; }
+    if ( !viewFields3 ) { errMessage += 'viewFields3 has an error; '; viewFields3 = [] ; }
+
+    if ( errMessage.indexOf('viewFields') > -1 ) { errMessage += 'Tip:  Extra commas after last object can cause this!'; }
+
     let groupByFields: IGrouping[] = this.getViewGroupFields( 'Group View Fields', this.properties.groupByFields);
+
+    if ( !groupByFields ) { errMessage += 'groupByFields has an error; '; groupByFields = []; }
 
     let includeDetails = this.properties.includeDetails;
     let includeAttach = this.properties.includeAttach;
@@ -517,6 +526,8 @@ export default class Drilldown7WebPart extends BaseClientSideWebPart<IDrilldown7
         wpContext: this.context,
         
         bannerProps: bannerProps,
+
+        errMessage: errMessage,
 
         tenant: this.context.pageContext.web.absoluteUrl.replace(this.context.pageContext.web.serverRelativeUrl,""),
         urlVars: this.getUrlVars(),

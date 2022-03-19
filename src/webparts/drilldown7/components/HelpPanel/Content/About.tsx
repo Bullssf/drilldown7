@@ -19,7 +19,8 @@ export function aboutTable( repoLinks: IRepoLinks ) {
         rows: [],
     };
 
-    table.rows.push( createAboutRow('2022-03-1?','1.2.0.3',<span>#82 - YY-MM Refiners, #76 - Hide Folders option</span>, repoLinks ) );
+    table.rows.push( createAboutRow('2022-03-1?','1.2.0.3',<span>#85, #86 - Add Banner with Error Messages</span>, repoLinks ) );
+    table.rows.push( createAboutRow('2022-03-1?','1.2.0.3',<span>#82, #83 - YY-MM Refiners, #76 - Hide Folders option</span>, repoLinks ) );
 
     table.rows.push( createAboutRow('2022-03-18','1.2.0.2',<span>Espanol language update, remove settings alerts!</span>, repoLinks ) );
 
