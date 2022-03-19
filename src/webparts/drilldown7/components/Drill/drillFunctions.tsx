@@ -584,10 +584,11 @@ export function getItemRefiners( drillList: IDrillList, item: IDrillItemInfo ) {
  */
 export function getRefinerStatsForItem( drillList: IDrillList, item: IDrillItemInfo, itemRefiners: IItemRefiners ) {
 
+    //Added for performance:  https://github.com/mikezimm/drilldown7/issues/88
     if ( drillList.togStats !== true ) {
         return itemRefiners;
     }
-    
+
     for ( let i in drillList.refinerStats ) {
 
         let primaryField = drillList.refinerStats[i].primaryField;
