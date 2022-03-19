@@ -109,6 +109,7 @@ export type IRefinerStyles = 'pivot' | 'commandBar' | 'other';
     isLibrary?: boolean;
     hasAttach: boolean;
     webURL?: string;
+    togStats: boolean;
     parentListURL?: string;
     contextUserInfo?: IUser;  //For site you are on ( aka current page context )
     sourceUserInfo?: IUser;   //For site where the list is stored
@@ -614,6 +615,7 @@ export default class DrillDown extends React.Component<IDrillDownProps, IDrillDo
             hideFolders: this.props.hideFolders,
             isLibrary: isLibrary,
             hasAttach: false,
+            togStats: this.props.toggles.togStats,
 
             webURL: webURL,
             parentListURL: this.props.parentListURL,
@@ -905,8 +907,29 @@ public componentDidUpdate(prevProps){
             let thisPage = null;
             let tipsStyles = defCommandIconStyles;
 
+            let performanceMessage = false;
+
+            if ( typeof this.state.errMessage === 'string' && this.state.errMessage.indexOf('Performance') === 0 ) {
+                performanceMessage = true;
+            }
+
             if ( this.props.errMessage ) {
                 let issues = this.props.errMessage.split(';');
+                let issueElements = issues.map( issue => {
+                    return <li>{ issue } </li>;
+                });
+                thisPage = <div>
+                    { Banner }
+                    <h2>The webpart props have some issues</h2>
+                    { issueElements }
+                </div>;
+
+            } else if ( this.state.errMessage && performanceMessage !== true  ) {
+                let issues = [];
+                if ( typeof this.state.errMessage === 'string' ) {
+                    issues = this.state.errMessage.split('--');
+                } else { issues = [this.state.errMessage] ; }
+
                 let issueElements = issues.map( issue => {
                     return <li>{ issue } </li>;
                 });
@@ -924,6 +947,16 @@ public componentDidUpdate(prevProps){
                 let errMessage = this.state.errMessage === '' ? null : <div>
                     { this.state.errMessage }
                 </div>;
+                if ( performanceMessage === true && typeof this.state.errMessage === 'string' ) {
+                    let issues = this.state.errMessage.split('--');
+                    let issueElements = issues.map( issue => {
+                        return <li>{ issue } </li>;
+                    });
+                    errMessage = this.state.errMessage === '' ? null : <div>
+                    <h2>Detected potential performance issues... :(</h2>
+                    { issueElements }
+                    </div>;
+                }
 
                 /***
                     *    .d8888. d88888b  .d8b.  d8888b.  .o88b. db   db      d8888b.  .d88b.  db    db 
@@ -1209,7 +1242,7 @@ public componentDidUpdate(prevProps){
                         <div className={styles.contents}>
                             <div className={stylesD.drillDown}>
                                 {  /* <div className={styles.floatRight}>{ toggleTipsButton }</div> */ }
-                                <div className={ this.state.errMessage === '' ? styles.hideMe : styles.showErrorMessage  }>{ this.state.errMessage } </div>
+                                <div className={ this.state.errMessage === '' ? styles.hideMe : styles.showErrorMessage  }>{ errMessage } </div>
                                 {  /* <p><mark>Check why picking Assists does not show Help as a chapter even though it's the only chapter...</mark></p> */ }
                                 <Stack horizontal={true} wrap={true} horizontalAlign={"space-between"} verticalAlign= {"center"} tokens={stackPageTokens}>{/* Stack for Buttons and Webs */}
                                     { searchBox } { toggles } 

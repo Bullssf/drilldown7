@@ -60,41 +60,51 @@ import { IQuickButton } from '@mikezimm/npmfunctions/dist/QuickCommands/IQuickCo
 // This is what it was before I split off the other part
 export async function getAllItems( drillList: IDrillList, addTheseItemsToState: any, setProgress: any, markComplete: any ): Promise<void>{
 
-    let sourceUserInfo: any = await ensureUserInfo( drillList.webURL, drillList.contextUserInfo.email );
-
-    drillList.sourceUserInfo = sourceUserInfo;
-    //lists.getById(listGUID).webs.orderBy("Title", true).get().then(function(result) {
-    //let allItems : IDrillItemInfo[] = await sp.web.webs.get();
-
+    let errMessage = '';        
     let allItems : IDrillItemInfo[] = [];
-    let errMessage = '';
-
-    let thisListWeb = Web(drillList.webURL);
-    let selColumns = drillList.selectColumnsStr;
-    let expandThese = drillList.expandColumnsStr;
-    let staticCols = drillList.staticColumns.length > 0 ? drillList.staticColumns.join(',') : '';
-    let selectCols = '*,' + staticCols;
-
-    let thisListObject = thisListWeb.lists.getByTitle(drillList.name);
-
-    /**
-     * IN FUTURE, ALWAYS BE SURE TO PUT SELECT AND EXPAND AFTER .ITEMS !!!!!!
-     */
-
+    let sourceUserInfo: IUser = null;
     try {
-        let fetchCount = drillList.fetchCount > 0 ? drillList.fetchCount : 200;
-
-        if ( drillList.restFilter.length > 1 ) {
-            allItems = await thisListObject.items.select(selectCols).expand(expandThese).orderBy('ID',false).top(fetchCount).filter(drillList.restFilter).get();
-        } else {
-            allItems = await thisListObject.items.select(selectCols).expand(expandThese).orderBy('ID',false).top(fetchCount).get();
-        }
+        sourceUserInfo = await ensureUserInfo( drillList.webURL, drillList.contextUserInfo.email );
     } catch (e) {
         errMessage = getHelpfullError(e, false, true);
-
     }
 
-    allItems = processAllItems( allItems, errMessage, drillList, addTheseItemsToState, setProgress, markComplete );
+    if ( errMessage !== '' ) {
+        allItems = processAllItems( allItems, errMessage, drillList, addTheseItemsToState, setProgress, markComplete );
+
+    } else {
+        drillList.sourceUserInfo = sourceUserInfo;
+        //lists.getById(listGUID).webs.orderBy("Title", true).get().then(function(result) {
+        //let allItems : IDrillItemInfo[] = await sp.web.webs.get();
+
+        let thisListWeb = Web(drillList.webURL);
+        let selColumns = drillList.selectColumnsStr;
+        let expandThese = drillList.expandColumnsStr;
+        let staticCols = drillList.staticColumns.length > 0 ? drillList.staticColumns.join(',') : '';
+        let selectCols = '*,' + staticCols;
+    
+        let thisListObject = thisListWeb.lists.getByTitle(drillList.name);
+    
+        /**
+         * IN FUTURE, ALWAYS BE SURE TO PUT SELECT AND EXPAND AFTER .ITEMS !!!!!!
+         */
+    
+        try {
+            let fetchCount = drillList.fetchCount > 0 ? drillList.fetchCount : 200;
+    
+            if ( drillList.restFilter.length > 1 ) {
+                allItems = await thisListObject.items.select(selectCols).expand(expandThese).orderBy('ID',false).top(fetchCount).filter(drillList.restFilter).get();
+            } else {
+                allItems = await thisListObject.items.select(selectCols).expand(expandThese).orderBy('ID',false).top(fetchCount).get();
+            }
+        } catch (e) {
+            errMessage = getHelpfullError(e, false, true);
+    
+        }
+    
+        allItems = processAllItems( allItems, errMessage, drillList, addTheseItemsToState, setProgress, markComplete );
+    }
+
 
 }
 
@@ -184,6 +194,15 @@ export function processAllItems( allItems : IDrillItemInfo[], errMessage: string
 //        console.log('HEY!  Had some problems with your item refiners:', itemRefinerErrors);
         console.log('HEY!  Had some problems with your item refiners:', itemRefinerErrors.length);
         console.log('First error:', itemRefinerErrors[0]);
+
+        if ( finalItems.length > 0 && itemRefinerErrors.length > 20 && itemRefinerErrors.length/finalItems.length > .1 ) {
+            errMessage += [
+                'Performance Warning:',
+                `Detected ${itemRefinerErrors.length} Refiner Errors on ${finalItems.length} total items.`,
+                `Here's the first warning.  Check them all in the console.`,
+                `${itemRefinerErrors[0]}`,
+            ].join('--');
+        }
 
      }
 
@@ -531,7 +550,7 @@ export function getItemRefiners( drillList: IDrillList, item: IDrillItemInfo ) {
     };
 
     if ( item.Id === 333 ) {
-        console.log('Checking Id: 333 refiners' );
+        // console.log('Checking Id: 333 refiners' );
     }
     for ( let i in drillList.refinerStats ) {
         itemRefiners['stat' + i] = [];
@@ -565,6 +584,10 @@ export function getItemRefiners( drillList: IDrillList, item: IDrillItemInfo ) {
  */
 export function getRefinerStatsForItem( drillList: IDrillList, item: IDrillItemInfo, itemRefiners: IItemRefiners ) {
 
+    if ( drillList.togStats !== true ) {
+        return itemRefiners;
+    }
+    
     for ( let i in drillList.refinerStats ) {
 
         let primaryField = drillList.refinerStats[i].primaryField;
@@ -606,7 +629,7 @@ export function getRefinerStatsForItem( drillList: IDrillList, item: IDrillItemI
                 itemRefiners['stat' + i] = 0 ;
 
             } else {
-                itemRefiners.comments.push( 'Sum Err: ' + 'Unable to do ' + stat + ' on ' + primaryType + ' Value...: ' + item[primaryField] + '.  assuming it\s null' ) ;
+                itemRefiners.comments.push( 'Sum Err: ' + 'Unable to do ' + stat + ' on ' + primaryField + ' (' + primaryType + ') Value...: ' + item[primaryField] + '.  assuming it\s null' ) ;
                 itemRefiners['stat' + i] = null ;
 
             }
