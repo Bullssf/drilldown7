@@ -125,6 +125,7 @@ export type IRefinerStyles = 'pivot' | 'commandBar' | 'other';
     staticColumnsStr: string;
     selectColumnsStr: string;
     expandColumnsStr: string;
+    multiSelectColumns: string[];
     removeFromSelect: string[];
   }
 
@@ -627,6 +628,7 @@ export default class DrillDown extends React.Component<IDrillDownProps, IDrillDo
             staticColumns: [],
             selectColumns: [],
             expandColumns: [],
+            multiSelectColumns: [],
             staticColumnsStr: '',
             selectColumnsStr: '',
             expandColumnsStr: '',
@@ -842,7 +844,11 @@ public componentDidUpdate(prevProps){
          * 2022-01-17:  Added this to see if this gets mutated and breaks on refresh items.  
          * After deeper testing, adding this to getBestFitView solved it but that was getting called a lot so I'm just doing it once in the render
          */
-        let viewDefs: ICustViewDef[] = JSON.parse(JSON.stringify(this.props.viewDefs));
+        let viewDefsString = JSON.stringify(this.props.viewDefs);
+        this.state.drillList.multiSelectColumns.map( msColumn => {
+            viewDefsString = viewDefsString.replace( msColumn , msColumn.replace('/','') + 'MultiString' );
+        });
+        let viewDefs: ICustViewDef[] = JSON.parse(viewDefsString);
 
         
         let createBanner = this.state.quickCommands !== null && this.state.quickCommands.successBanner > 0 ? true : false;

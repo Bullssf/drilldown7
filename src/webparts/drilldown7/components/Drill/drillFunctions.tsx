@@ -147,11 +147,29 @@ export function processAllItems( allItems : IDrillItemInfo[], errMessage: string
                     if (expCol.indexOf('/') > -1 ) {
                         let oldCol = expCol.split('/');
                         let newProp = oldCol.join('');
-    
-                        item[newProp] = item[oldCol[0]] ? item[oldCol[0]][oldCol[1]] : null;
+                        let thisColumn = item[oldCol[0]] ? item[oldCol[0]] : null;
+                        if ( Array.isArray( thisColumn ) === true ) {
+                            if ( drillList.multiSelectColumns.indexOf( expCol ) < 0 ) { drillList.multiSelectColumns.push( expCol ) ; }
+                            item[newProp] = [];
+                            thisColumn.map( oneItem => {
+                                if ( oneItem[oldCol[1]] ) { item[ newProp ] = addItemToArrayIfItDoesNotExist( item[newProp], oneItem[oldCol[1]] ) ; }
+                            });
+                        } else {
+                            item[newProp] = item[oldCol[0]] ? item[oldCol[0]][oldCol[1]] : null;
+                        }
                     }
                 });
             }
+
+            //This section will look for any other multi-select columns 
+            drillList.staticColumns.map( staticColumn => {
+                if ( drillList.selectColumns.indexOf( staticColumn ) < 0 
+                && drillList.multiSelectColumns.indexOf( staticColumn ) < 0 ) {
+                    if ( Array.isArray( item[staticColumn] ) === true ) {
+                        drillList.multiSelectColumns.push( staticColumn );
+                    }
+                }
+            });
     
             if ( drillList.isLibrary === true || item.ServerRedirectedEmbedUrl ) {
                 item.goToItemPreview = item.ServerRedirectedEmbedUrl;
@@ -176,6 +194,18 @@ export function processAllItems( allItems : IDrillItemInfo[], errMessage: string
             });
             item.meta = buildMetaFromItem(item);
             item.searchString = buildSearchStringFromItem(item, drillList.staticColumns );
+
+            drillList.multiSelectColumns.map( msColumn => {
+                let msColumnNoSlash = msColumn.replace('/','');
+                let msColumnStr = `${msColumnNoSlash}MultiString`;
+                if ( item[msColumnNoSlash] === null && item[msColumnNoSlash] == undefined ) {
+                    item[msColumnStr] = '';
+                } else if ( item[msColumnNoSlash].length === 1 ) {
+                    item[msColumnStr] = item[msColumnNoSlash];
+                } else {
+                    item [msColumnStr ] = typeof item[msColumnNoSlash][0] === 'string' ? item[msColumnNoSlash].join('; ') : 'Must be string' ;
+                }
+            });
 
             finalItems.push( item );
         }
@@ -480,8 +510,8 @@ export function buildRefinersObject ( items: IDrillItemInfo[], drillList: IDrill
     //Go through all items
     for ( let i of items ) { //Go through all list items
         if ( i.refiners ) { //If Item has refiners (all should)
-            if ( i.Id === 333 ) {
-                console.log( 'item 333:', i );
+            if ( i.Id === 358 ) {
+                console.log( 'item 358:', i );
             }
             //Do just level 1
             let thisRefinerValuesLev0 = i.refiners['lev' + 0];
@@ -549,8 +579,8 @@ export function getItemRefiners( drillList: IDrillList, item: IDrillItemInfo ) {
         comments: [],
     };
 
-    if ( item.Id === 333 ) {
-        // console.log('Checking Id: 333 refiners' );
+    if ( item.Id === 358 ) {
+        console.log('Checking Id: 358 refiners' );
     }
     for ( let i in drillList.refinerStats ) {
         itemRefiners['stat' + i] = [];
