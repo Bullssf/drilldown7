@@ -105,7 +105,7 @@ import {
 
             PropertyPaneTextField('instructionIntro', {
               label: 'Instructions heading',
-              description: 'Please click the filters to see items :)',
+              description: 'Please click filters (above) to see items :)',
               disabled: webPartProps.whenToShowItems < 3 ? true : false,
               // multiline: true,
             }),

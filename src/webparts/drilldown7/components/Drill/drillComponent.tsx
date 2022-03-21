@@ -166,7 +166,7 @@ export const pivCats = {
  *                                                                                                                                                 
  *                                                                                                                                                 
  */
-
+export type IWhenToShowItems = 0 | 1 | 2 | 3;
 
 export type IViewType = 'React' | 'MZ' | 'Other' ;
 
@@ -214,7 +214,7 @@ export interface IDrillDownProps {
     };
 
     showItems: {
-        whenToShowItems: 0 | 1 | 2 | 3;
+        whenToShowItems: IWhenToShowItems;
         minItemsForHide: number;
         instructionIntro: string;
         refinerInstruction1: string;
@@ -338,6 +338,8 @@ export interface IDrillDownState {
 
     searchText: string;
     searchMeta: string[];
+    whenToShowItems: IWhenToShowItems;
+    instructionsHidden: 'force' | 'hide' | 'dynamic';
 
     searchedItems: IDrillItemInfo[];
     stats: IStat[];
@@ -523,11 +525,28 @@ export default class DrillDown extends React.Component<IDrillDownProps, IDrillDo
         return theCalcs;
     }
 
+    private buildInstructionIcons() {
+        //See banner/NearAndFarSample.js for how to build this.
+        let elements = [];
+        defaultBannerCommandStyles.fontWeight = 'bolder';
+        defaultBannerCommandStyles.fontSize = 'normal';
+        
+        elements.push(<span style={{ paddingLeft: '20px' }} className={ '' } title={ 'Hide instructions based on webpart settings' }>
+          <Icon iconName='Hide3' onClick={ this.hideInstructions.bind(this) } style={ defaultBannerCommandStyles }></Icon> </span>);
+
+        return elements;
+      }
+
     private createInstructionRow( row : 0 | 1 | 2 ){
         let isDone = this.state.searchMeta.length > row && this.state.searchMeta[row] !== 'All' ? true : false;
         let itemStyle = isDone ? stylesD.complete : stylesD.incomplete;
         const liIcon = <Icon iconName={ isDone === true ? 'CheckboxComposite' : 'Checkbox' } styles={{ root: { } }}></Icon>;
-        let itemText = `${this.props.showItems['refinerInstruction' +( row +1 ) ] } ${ isDone ? this.state.searchMeta[row] : ''}`;
+        const itemTextEnd = isDone ? <span style={{paddingLeft: '10px'}}><b>{this.state.searchMeta[row]}</b>  is selected</span> : null;
+        let itemText = <span>
+            { this.props.showItems['refinerInstruction' +( row +1 ) ] }
+            { itemTextEnd }
+        </span>;
+
         return <li className={ itemStyle }>{liIcon}{ itemText }</li>;
 
     }
@@ -725,6 +744,9 @@ export default class DrillDown extends React.Component<IDrillDownProps, IDrillDo
             first20searchedItems: [],
             searchCount: 0,
 
+            whenToShowItems: this.props.showItems.whenToShowItems,
+            instructionsHidden: 'dynamic',
+
             meta: [],
 
             webURL: this.props.webURL,
@@ -780,7 +802,7 @@ export default class DrillDown extends React.Component<IDrillDownProps, IDrillDo
       // showAll= { this.showAll.bind(this) }
 
       return [
-        // <Icon iconName='Search' onClick={ this.searchMe.bind(this) } style={ defaultBannerCommandStyles }></Icon>,
+        // <Icon iconName='BookAnswers' onClick={ this.toggleInstructions.bind(this) } style={ defaultBannerCommandStyles }></Icon>,
         // <Icon iconName='ChromeMinimize' onClick={ this.minimizeTiles.bind(this) } style={ defaultBannerCommandStyles }></Icon>,
         // <Icon iconName='ClearFilter' onClick={ this.showAll.bind(this) } style={ defaultBannerCommandStyles }></Icon>,
       ];
@@ -888,6 +910,7 @@ public componentDidUpdate(prevProps){
         // let farBannerElementsArray = [];
         let farBannerElementsArray = [...this.farBannerElements,
             // <Icon iconName={layoutIcon} onClick={ this.toggleLayout.bind(this) } style={ defaultBannerCommandStyles }></Icon>,
+            <Icon iconName='BookAnswers' onClick={ this.forceInstructions.bind(this) } style={ defaultBannerCommandStyles }></Icon>,
         ];
 
         //Exclude the props.bannerProps.title if the webpart is narrow to make more responsive
@@ -1124,65 +1147,47 @@ public componentDidUpdate(prevProps){
 
                     let currentViewGroups : IGrouping[] =  getAppropriateViewGroups( viewDefs , this.state.WebpartWidth );
 
+                    let instructionBlock  = null;
                     let reactListItems  = null;
 
                     if ( this.props.toggles.togOtherListview === false ) {
 
-                                            
-                        // showItems: {
-                        //     whenToShowItems: 0 | 1 | 2 | 3;
-                        //     refinerInstruction1: string;
-                        //     refinerInstruction2: string;
-                        //     refinerInstruction3: string;
-                        // };
-
-                        //Finish up adding showItems here
-                        // let showItems = {
                         const showItems = this.props.showItems;
 
                         let showListItems = true;
 
                         //This loop just checks props vs items to see if the instructions or items list should show.
-                        if ( showItems.whenToShowItems > 0 ) {
+                        if ( this.state.whenToShowItems > 0 ) {
                             if ( this.state.searchedItems.length > showItems.minItemsForHide ) {
                                 //Here we see if the refiner level clicked matches the whenToShowItems... if not, then show instructions
-                                if (showItems.whenToShowItems > this.state.searchMeta.length ) {
+                                if ( this.state.whenToShowItems > this.state.searchMeta.length ) {
                                     showListItems = false;
                                 }
                             }
                         }
 
-                        if ( showListItems === false ) {
-                            let instructions = [];
-                            if ( showItems.refinerInstruction1.length > 0 ) {
-                                let isDone = this.state.searchMeta.length > 0 && this.state.searchMeta[0] !== 'All' ? true : false;
-                                let itemStyle = isDone ? stylesD.complete : stylesD.incomplete;
-                                const liIcon = <Icon iconName={ isDone === true ? 'CheckboxComposite' : 'Checkbox' } styles={{ root: { } }}></Icon>;
-                                let itemText = `${showItems.refinerInstruction1} ${ isDone ? this.state.searchMeta[0] : ''}`;
-                                instructions.push( <li className={ itemStyle }>{liIcon}{ itemText }</li>);
-                            } 
-                            if ( showItems.refinerInstruction2.length > 0 ) {
-                                let isDone = this.state.searchMeta.length > 1 && this.state.searchMeta[1] !== 'All' ? true : false;
-                                let itemStyle = isDone ? stylesD.complete : stylesD.incomplete;
-                                const liIcon = <Icon iconName={ isDone === true ? 'CheckboxComposite' : 'Checkbox' } styles={{ root: { } }}></Icon>;
-                                let itemText = `${showItems.refinerInstruction2} ${ isDone ? this.state.searchMeta[1] : ''}`;
-                                instructions.push( <li className={ itemStyle }>{liIcon}{ itemText }</li>);
-                            } 
-                            if ( showItems.refinerInstruction3.length > 0 ) {
-                                let isDone = this.state.searchMeta.length > 2 && this.state.searchMeta[2] !== 'All' ? true : false;
-                                let itemStyle = isDone ? stylesD.complete : stylesD.incomplete;
-                                const liIcon = <Icon iconName={ isDone === true ? 'CheckboxComposite' : 'Checkbox' } styles={{ root: { } }}></Icon>;
-                                let itemText = `${showItems.refinerInstruction3} ${ isDone ? this.state.searchMeta[2] : ''}`;
-                                instructions.push( <li className={ itemStyle }>{liIcon}{ itemText }</li>);
-                            } 
-                            reactListItems = <div className={ stylesD.instructions }>
-                                <div className={ stylesD.instHeading } style={{ fontSize: 'larger', fontWeight: 600 }}>{ showItems.instructionIntro }</div>
-                                <ul style={{ listStyleType: 'decimal' }}>
-                                    { instructions }
-                                </ul>
-                            </div>;
+                        let instructions = [];
+                        if ( showItems.refinerInstruction1.length > 0 ) {
+                            instructions.push( this.createInstructionRow(0));
+                        } 
+                        if ( showItems.refinerInstruction2.length > 0 ) {
+                            instructions.push( this.createInstructionRow(1));
+                        } 
+                        if ( showItems.refinerInstruction3.length > 0 ) {
+                            instructions.push( this.createInstructionRow(2));
+                        } 
+                        let instructionContent = <div className={ [stylesD.instructions, null ].join(' ') }>
+                            <div className={ stylesD.instHeading } style={{ }}>{ showItems.instructionIntro } { this.buildInstructionIcons() }</div>
+                            <ul style={{ listStyleType: 'decimal' }}>
+                                { instructions }
+                            </ul>
+                        </div>;
+
+                        if ( showListItems === false || this.state.instructionsHidden === 'force' ) {
+                            instructionBlock = instructionContent;
 
                         } else {
+                            instructionBlock = null;
                             reactListItems  = this.state.searchedItems.length === 0 ? <div>NO ITEMS FOUND</div> : 
                             <ReactListItems 
                                 parentListFieldTitles={ viewDefs.length > 0 ? null : this.props.parentListFieldTitles }
@@ -1340,6 +1345,7 @@ public componentDidUpdate(prevProps){
                                     { bannerMessage }
                                     <Stack horizontal={false} wrap={true} horizontalAlign={"stretch"} tokens={stackPageTokens}>{/* Stack for Buttons and Webs */}
                                         {/* { this.state.viewType === 'React' ? reactListItems : drillItems } */}
+                                        { instructionBlock }
                                         { reactListItems }
                                         {   }
                                     </Stack>
@@ -1498,6 +1504,7 @@ public componentDidUpdate(prevProps){
             refiners: drillList.refiners,
             maxRefinersToShow: maxRefinersToShow,
             rules: JSON.stringify(drillList.refinerRules),
+            instructionsHidden: 'dynamic',
         });
 
         //This is required so that the old list items are removed and it's re-rendered.
@@ -1959,7 +1966,7 @@ public componentDidUpdate(prevProps){
       pivotCats: pivotCats,
       cmdCats: cmdCats,
       refinerObj: refinerObj,
-
+      instructionsHidden: 'dynamic',
     });
 
 
@@ -2230,6 +2237,20 @@ public componentDidUpdate(prevProps){
  *                                                                   
  *                                                                   
  */
+
+    private hideInstructions(){
+        let newState = this.state.whenToShowItems === 0 ? this.props.showItems.whenToShowItems : 0;
+        
+        this.setState( { whenToShowItems: newState, instructionsHidden: 'hide' });
+
+    }
+
+    private forceInstructions(){
+        let newState = this.state.whenToShowItems === 0 ? this.props.showItems.whenToShowItems : 0;
+        
+        this.setState( { whenToShowItems: newState, instructionsHidden: 'force' });
+
+    }
 
     private getPageToggles( showStats ) {
 

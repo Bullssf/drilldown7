@@ -187,19 +187,22 @@
 
       .instructions {
         padding: 20px 20px 20px 30px;
+        transition:all 0.4s ease;
+        opacity: 1;
+        overflow: hidden;
 
         li {
           padding-bottom: 7px;
+          [role="presentation"] {
+            padding: 0px 10px;
+          }
         }
-        // https://github.com/login?return_to=https%3A%2F%2Fgithub.com%2Fsearch%3Fq%3Duser%253Amikezimm%2Bdata-attribute%26type%3Dcode
-        [role="presentation"] {
-          padding: '0px 10px';
-        }
-        
+
         .instHeading {
           font-size: large;
           font-weight: bolder;
           text-decoration: underline;
+          display: inline-block;
         }
         .complete {
           color: green;
@@ -211,7 +214,18 @@
 
       }
 
-
+    //Copied from Pivot Tiles showSearch
+    .hideInstructions {
+      padding: 0px;
+      height: 0px;
+      overflow: hidden;
+      background: transparent;
+      opacity: 0;
+      margin-top: 0px;
+      margin-bottom: 0px;
+      transition:all 0.3s ease;
+    }
+  
 
 
 }

@@ -11,7 +11,7 @@ import { Web, IList, IItem } from "@pnp/sp/presets/all";
 
 import * as strings from 'Drilldown7WebPartStrings';
 import DrillDown from './components/Drill/drillComponent';
-import { IDrillDownProps } from './components/Drill/drillComponent';
+import { IDrillDownProps, IWhenToShowItems } from './components/Drill/drillComponent';
 
 import { PageContext } from '@microsoft/sp-page-context';
 
@@ -164,7 +164,7 @@ export interface IDrilldown7WebPartProps {
   // 6 - User Feedback:
   progress: IMyProgress;
 
-  whenToShowItems: 0 | 1 | 2 | 3;
+  whenToShowItems: IWhenToShowItems;
   minItemsForHide: number;
   instructionIntro: string;
   refinerInstruction1: string;
@@ -253,7 +253,7 @@ export default class Drilldown7WebPart extends BaseClientSideWebPart<IDrilldown7
         this.properties.rules2 = [] ; 
       }
 
-      if ( !this.properties.instructionIntro ) { this.properties.instructionIntro = `Please click the filters to see items :)`; }
+      if ( !this.properties.instructionIntro ) { this.properties.instructionIntro = `Please click filters (above) to see items :)`; }
       if ( !this.properties.refinerInstruction1 ) { this.properties.refinerInstruction1 = `First select a {{refiner0}}`; }
       if ( !this.properties.refinerInstruction2 ) { this.properties.refinerInstruction2 = `Then select a {{refiner1}}`; }
       if ( !this.properties.refinerInstruction3 ) { this.properties.refinerInstruction3 = `Then select a {{refiner2}}`; }
