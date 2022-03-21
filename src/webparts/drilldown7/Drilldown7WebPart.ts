@@ -164,6 +164,12 @@ export interface IDrilldown7WebPartProps {
   // 6 - User Feedback:
   progress: IMyProgress;
 
+  whenToShowItems: 0 | 1 | 2 | 3;
+  refinerInstruction1: string;
+  refinerInstruction2: string;
+  refinerInstruction3: string;
+
+
   // 7 - TBD
 
   // 9 - Other web part options
@@ -554,6 +560,13 @@ export default class Drilldown7WebPart extends BaseClientSideWebPart<IDrilldown7
             fetchCount: this.properties.fetchCount,
             fetchCountMobile: this.properties.fetchCountMobile,
             restFilter: !this.properties.restFilter ? '' : this.properties.restFilter,
+        },
+
+        showItems: {
+            whenToShowItems: this.properties.whenToShowItems,
+            refinerInstruction1: this.properties.refinerInstruction1.replace(`{{refiner0}}`, this.properties.refiner0 ),
+            refinerInstruction2: this.properties.refinerInstruction2.replace(`{{refiner1}}`, this.properties.refiner1 ),
+            refinerInstruction3: this.properties.refinerInstruction3.replace(`{{refiner2}}`, this.properties.refiner2 ),
         },
 
         quickCommands: quickCommands,

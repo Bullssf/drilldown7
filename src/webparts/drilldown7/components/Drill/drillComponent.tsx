@@ -213,6 +213,13 @@ export interface IDrillDownProps {
         restFilter: string;
     };
 
+    showItems: {
+        whenToShowItems: 0 | 1 | 2 | 3;
+        refinerInstruction1: string;
+        refinerInstruction2: string;
+        refinerInstruction3: string;
+    };
+
     quickCommands?: IQuickCommands;
 
     viewType?: IViewType;
@@ -1086,15 +1093,15 @@ public componentDidUpdate(prevProps){
                         *                                                                                        
                         */
 
-                    let blueBar = this.state.searchMeta.map( m => { return <span><span style={{ paddingLeft: 0 }}> {'>'} </span><span style={{ paddingLeft: 10, paddingRight: 20 }}> { m } </span></span>; });
+                    // let blueBar = this.state.searchMeta.map( m => { return <span><span style={{ paddingLeft: 0 }}> {'>'} </span><span style={{ paddingLeft: 10, paddingRight: 20 }}> { m } </span></span>; });
 
 
-                    let drillItems = this.state.searchedItems.length === 0 ? <div>NO ITEMS FOUND</div> : <div>
-                        <MyDrillItems 
-                            items={ this.state.searchedItems }
-                            blueBar={ blueBar }
-                        ></MyDrillItems>
-                        </div>;
+                    // let drillItems = this.state.searchedItems.length === 0 ? <div>NO ITEMS FOUND</div> : <div>
+                    //     <MyDrillItems 
+                    //         items={ this.state.searchedItems }
+                    //         blueBar={ blueBar }
+                    //     ></MyDrillItems>
+                    //     </div>;
 
                     let includeDetails = getAppropriateViewProp( viewDefs, this.state.WebpartWidth, 'includeDetails' );
                     let includeAttach = getAppropriateViewProp( viewDefs, this.state.WebpartWidth, 'includeAttach' );
@@ -1111,6 +1118,7 @@ public componentDidUpdate(prevProps){
 
                     if ( this.props.toggles.togOtherListview === false ) {
 
+                        
                         reactListItems  = this.state.searchedItems.length === 0 ? <div>NO ITEMS FOUND</div> : 
                         <ReactListItems 
                             parentListFieldTitles={ viewDefs.length > 0 ? null : this.props.parentListFieldTitles }
@@ -1131,6 +1139,8 @@ public componentDidUpdate(prevProps){
                             quickCommands={ this.state.quickCommands }
                         
                             ></ReactListItems>;
+
+
                     }
 
 
@@ -1266,7 +1276,8 @@ public componentDidUpdate(prevProps){
                                     <div className={ this.state.searchCount !== 0 ? styles.hideMe : styles.showErrorMessage  }>{ noInfo } </div>
                                     { bannerMessage }
                                     <Stack horizontal={false} wrap={true} horizontalAlign={"stretch"} tokens={stackPageTokens}>{/* Stack for Buttons and Webs */}
-                                        { this.state.viewType === 'React' ? reactListItems : drillItems }
+                                        {/* { this.state.viewType === 'React' ? reactListItems : drillItems } */}
+                                        { reactListItems }
                                         {   }
                                     </Stack>
                                 </div> { /* Close tag from above noInfo */}
