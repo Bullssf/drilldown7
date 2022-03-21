@@ -4,7 +4,7 @@ import {
     IPropertyPaneLabelProps,
     PropertyPaneHorizontalRule,
     PropertyPaneTextField, IPropertyPaneTextFieldProps,
-    PropertyPaneLink, IPropertyPaneLinkProps,PropertyPaneSlider,
+    PropertyPaneLink, IPropertyPaneLinkProps,PropertyPaneSlider,IPropertyPaneSliderProps,
     PropertyPaneDropdown, IPropertyPaneDropdownProps,
     IPropertyPaneDropdownOption,PropertyPaneToggle,
     IPropertyPaneConfiguration,
@@ -100,7 +100,7 @@ import {
                 min: 0,
                 max: 500,
                 step: 10,
-                value: 100,
+                // value: 100,
             }),
 
             PropertyPaneTextField('instructionIntro', {
