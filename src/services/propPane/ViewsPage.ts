@@ -112,21 +112,21 @@ import {
 
             PropertyPaneTextField('refinerInstruction1', {
               label: 'Instructions to pick first refiner',
-              description: 'Example:  First select a {{refiner0}}',
+              description: 'Example:  select a {{refiner0}}',
               disabled: webPartProps.whenToShowItems < 1 ? true : false,
               // multiline: true,
             }),
             
             PropertyPaneTextField('refinerInstruction2', {
               label: 'Instructions to pick second refiner',
-              description: 'Example:  First select a {{refiner1}}',
+              description: 'Example:  select a {{refiner1}}',
               disabled: webPartProps.whenToShowItems < 2 ? true : false,
               // multiline: true,
             }),
             
             PropertyPaneTextField('refinerInstruction3', {
               label: 'Instructions to pick third refiner',
-              description: 'Example:  First select a {{refiner2}}',
+              description: 'Example:  select a {{refiner2}}',
               disabled: webPartProps.whenToShowItems < 3 ? true : false,
               // multiline: true,
             }),

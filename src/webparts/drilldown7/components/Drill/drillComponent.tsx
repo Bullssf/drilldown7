@@ -114,6 +114,8 @@ export type IRefinerStyles = 'pivot' | 'commandBar' | 'other';
     contextUserInfo?: IUser;  //For site you are on ( aka current page context )
     sourceUserInfo?: IUser;   //For site where the list is stored
 
+    refinerInstructions: string[];
+
     refiners: string[]; //String of Keys representing the static name of the column used for drill downs
     emptyRefiner: string;
     refinerRules: IRefinerRules[][];
@@ -170,6 +172,52 @@ export type IWhenToShowItems = 0 | 1 | 2 | 3;
 
 export type IViewType = 'React' | 'MZ' | 'Other' ;
 
+/**
+ * ## Property Pane updates:
+Page owner can set:
+- min Refiner level required to hide instructions: whenToShowItems
+- minItemsForHide to avoid instructions ( in case count is below this hide instructions )
+- First line of instruction text
+- Instruction text for each refiner to be clicked
+- If nothing is touched, it will  do it's best to tell the user what to do.
+
+## Logic should be:
+
+- If the item count is greater than minItemsForHide && user has not clicked enough refiners, ONLY instructions are shown.
+- If instructions are shown, user can always 'Hide' them via button in instructions div.
+- This setting sticks unless the user clicks on certain things that trigger a reload of the data.
+- At any time the user can press the "Instructions" button in the right side of banner element to show instructions.
+
+## Properties Added this the code
+
+```js
+//Added to webpart props and property pane:
+  whenToShowItems: IWhenToShowItems;
+  minItemsForHide: number;
+  instructionIntro: string;
+  refinerInstruction1: string;
+  refinerInstruction2: string;
+  refinerInstruction3: string;
+
+//Added to IDrillDownProps
+    showItems: {
+        whenToShowItems: IWhenToShowItems;
+        minItemsForHide: number;
+        instructionIntro: string;
+        refinerInstruction1: string;
+        refinerInstruction2: string;
+        refinerInstruction3: string;
+    };
+
+//Added to IDrillDownSTATE
+    whenToShowItems: IWhenToShowItems;
+    instructionsHidden: 'force' | 'hide' | 'dynamic';
+```
+
+
+![image](https://user-images.githubusercontent.com/49648086/159371801-c2977995-6abe-4ade-8cd8-2932b538ab58.png)
+
+ */
 export interface IDrillDownProps {
     // 0 - Context
     description: string;
@@ -217,9 +265,7 @@ export interface IDrillDownProps {
         whenToShowItems: IWhenToShowItems;
         minItemsForHide: number;
         instructionIntro: string;
-        refinerInstruction1: string;
-        refinerInstruction2: string;
-        refinerInstruction3: string;
+        refinerInstructions: string[];
     };
 
     quickCommands?: IQuickCommands;
@@ -338,8 +384,11 @@ export interface IDrillDownState {
 
     searchText: string;
     searchMeta: string[];
+
     whenToShowItems: IWhenToShowItems;
     instructionsHidden: 'force' | 'hide' | 'dynamic';
+
+    // refinerInstructions: string[];
 
     searchedItems: IDrillItemInfo[];
     stats: IStat[];
@@ -542,8 +591,10 @@ export default class DrillDown extends React.Component<IDrillDownProps, IDrillDo
         let itemStyle = isDone ? stylesD.complete : stylesD.incomplete;
         const liIcon = <Icon iconName={ isDone === true ? 'CheckboxComposite' : 'Checkbox' } styles={{ root: { } }}></Icon>;
         const itemTextEnd = isDone ? <span style={{paddingLeft: '10px'}}><b>{this.state.searchMeta[row]}</b>  is selected</span> : null;
+        let rowText = row === 0 ? 'First: ' : 'Then: ';
+        rowText += this.state.drillList.refinerInstructions[ row ];
         let itemText = <span>
-            { this.props.showItems['refinerInstruction' +( row +1 ) ] }
+            { rowText }
             { itemTextEnd }
         </span>;
 
@@ -659,6 +710,13 @@ export default class DrillDown extends React.Component<IDrillDownProps, IDrillDo
             refiners: refiners,
             emptyRefiner: 'Unknown',
             refinerRules: refinerRules,
+
+            refinerInstructions: [ 
+                this.props.showItems.refinerInstructions[0],
+                this.props.showItems.refinerInstructions[1],
+                this.props.showItems.refinerInstructions[2],
+            ],
+
             refinerStats: refinerStats,
             viewDefs: viewDefs,
             staticColumns: [],
@@ -746,7 +804,7 @@ export default class DrillDown extends React.Component<IDrillDownProps, IDrillDo
 
             whenToShowItems: this.props.showItems.whenToShowItems,
             instructionsHidden: 'dynamic',
-
+            
             meta: [],
 
             webURL: this.props.webURL,
@@ -1152,13 +1210,11 @@ public componentDidUpdate(prevProps){
 
                     if ( this.props.toggles.togOtherListview === false ) {
 
-                        const showItems = this.props.showItems;
-
                         let showListItems = true;
 
                         //This loop just checks props vs items to see if the instructions or items list should show.
                         if ( this.state.whenToShowItems > 0 ) {
-                            if ( this.state.searchedItems.length > showItems.minItemsForHide ) {
+                            if ( this.state.searchedItems.length > this.props.showItems.minItemsForHide ) {
                                 //Here we see if the refiner level clicked matches the whenToShowItems... if not, then show instructions
                                 if ( this.state.whenToShowItems > this.state.searchMeta.length ) {
                                     showListItems = false;
@@ -1167,17 +1223,17 @@ public componentDidUpdate(prevProps){
                         }
 
                         let instructions = [];
-                        if ( showItems.refinerInstruction1.length > 0 ) {
+                        if ( this.state.drillList.refinerInstructions[0].length > 0 ) {
                             instructions.push( this.createInstructionRow(0));
                         } 
-                        if ( showItems.refinerInstruction2.length > 0 ) {
+                        if ( this.state.drillList.refinerInstructions[1].length > 0 ) {
                             instructions.push( this.createInstructionRow(1));
                         } 
-                        if ( showItems.refinerInstruction3.length > 0 ) {
+                        if ( this.state.drillList.refinerInstructions[2].length > 0 ) {
                             instructions.push( this.createInstructionRow(2));
                         } 
                         let instructionContent = <div className={ [stylesD.instructions, null ].join(' ') }>
-                            <div className={ stylesD.instHeading } style={{ }}>{ showItems.instructionIntro } { this.buildInstructionIcons() }</div>
+                            <div className={ stylesD.instHeading } style={{ }}>{ this.props.showItems.instructionIntro } { this.buildInstructionIcons() }</div>
                             <ul style={{ listStyleType: 'decimal' }}>
                                 { instructions }
                             </ul>
@@ -1749,22 +1805,28 @@ public componentDidUpdate(prevProps){
     let refinerRulesNew: IRefinerRules[][] = [];
     let refinerRulesOrig: IRefinerRules[][] = JSON.parse(JSON.stringify( this.state.drillList.refinerRules ));
 
+    let newOrder = [];
     if ( newLeadRefiner === 'refiner0' ) {
-        let newOrder = clickInfo.isAltClick !== true ? [0,1,2] : [1,0,2];
-        newOrder.map( i => { refiners.push( refinersOrig[i] ); refinerRulesNew.push( refinerRulesOrig[i] ); });
-
+        newOrder = clickInfo.isAltClick !== true ? [0,1,2] : [1,0,2];
+        
     } else if ( newLeadRefiner === 'refiner1' ) {
-        let newOrder = clickInfo.isAltClick !== true ? [1,0,2] : [0,2,1];
-        newOrder.map( i => { refiners.push( refinersOrig[i] ); refinerRulesNew.push( refinerRulesOrig[i] ); });
+        newOrder = clickInfo.isAltClick !== true ? [1,0,2] : [0,2,1];
 
     } else if ( newLeadRefiner === 'refiner2' ) {
-        let newOrder = clickInfo.isAltClick !== true ? [2,0,1] : [0,2,1];
-        newOrder.map( i => { refiners.push( refinersOrig[i] ); refinerRulesNew.push( refinerRulesOrig[i] ); });
+        newOrder = clickInfo.isAltClick !== true ? [2,0,1] : [0,2,1];
 
     } else {
         alert ("I think there is a problem with changeRefinerOrder, " + newLeadRefiner + " was not expected." );
 
     }
+
+    let stateRefinerInstructions: string[] = [];
+
+    newOrder.map( i => { 
+        refiners.push( refinersOrig[i] );
+        refinerRulesNew.push( refinerRulesOrig[i] );
+        stateRefinerInstructions.push( `${this.state.drillList.refinerInstructions[i]}` ); // Put this in quotes to insure it is not a direct pointer to the current drillList instructions
+    });
 
     /**
      * 2022-01-17:  Added this to see if this gets mutated and breaks on refresh items.  
@@ -1773,6 +1835,8 @@ public componentDidUpdate(prevProps){
     let viewDefs: ICustViewDef[] = JSON.parse(JSON.stringify(this.props.viewDefs));
 
     let drillList = this.createDrillList(this.props.webURL, this.props.listName, false, refiners, JSON.stringify(refinerRulesNew), this.props.stats, viewDefs, this.props.toggles.togOtherChartpart, '', true );
+    drillList.refinerInstructions = stateRefinerInstructions;
+    
     let errMessage = drillList.refinerRules === undefined ? 'Invalid Rule set: ' +  this.state.rules : '';
     if ( drillList.refinerRules === undefined ) { drillList.refinerRules = [[],[],[]] ; }
 
