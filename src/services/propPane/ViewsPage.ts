@@ -95,6 +95,21 @@ import {
               options: whenToShowChoices,
             }),
 
+            PropertyPaneSlider('minItemsForHide', {
+              label: 'Require drill down if number of items exceeds',
+                min: 0,
+                max: 500,
+                step: 10,
+                value: 100,
+            }),
+
+            PropertyPaneTextField('instructionIntro', {
+              label: 'Instructions heading',
+              description: 'Please click the filters to see items :)',
+              disabled: webPartProps.whenToShowItems < 3 ? true : false,
+              // multiline: true,
+            }),
+
             PropertyPaneTextField('refinerInstruction1', {
               label: 'Instructions to pick first refiner',
               description: 'Example:  First select a {{refiner0}}',

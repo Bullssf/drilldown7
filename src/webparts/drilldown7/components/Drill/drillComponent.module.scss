@@ -6,6 +6,7 @@
 
 //Copied to chartsPage.module.scss so it can be more stand alone.
 
+
 .drillDown {
 
       //https://www.w3.org/TR/CSS21/selector.html%23id-selectors#type-selectors
@@ -183,4 +184,34 @@
         transition:all 0.5s ease;
       }
       */
+
+      .instructions {
+        padding: 20px 20px 20px 30px;
+
+        li {
+          padding-bottom: 7px;
+        }
+        // https://github.com/login?return_to=https%3A%2F%2Fgithub.com%2Fsearch%3Fq%3Duser%253Amikezimm%2Bdata-attribute%26type%3Dcode
+        [role="presentation"] {
+          padding: '0px 10px';
+        }
+        
+        .instHeading {
+          font-size: large;
+          font-weight: bolder;
+          text-decoration: underline;
+        }
+        .complete {
+          color: green;
+        }
+
+        .incomplete {
+          color: red;
+        }
+
+      }
+
+
+
+
 }

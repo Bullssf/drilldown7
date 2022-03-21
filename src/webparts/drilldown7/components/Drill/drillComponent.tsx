@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { WebPartContext } from '@microsoft/sp-webpart-base';
 
-import { CompoundButton, Stack, IStackTokens, elementContains, initializeIcons } from 'office-ui-fabric-react';
+import { CompoundButton, Stack, IStackTokens, elementContains, initializeIcons, Icon, IIconStyles } from 'office-ui-fabric-react';
 import { SearchBox } from 'office-ui-fabric-react/lib/SearchBox';
 import { Pivot, PivotItem, IPivotItemProps} from 'office-ui-fabric-react/lib/Pivot';
 
@@ -215,6 +215,8 @@ export interface IDrillDownProps {
 
     showItems: {
         whenToShowItems: 0 | 1 | 2 | 3;
+        minItemsForHide: number;
+        instructionIntro: string;
         refinerInstruction1: string;
         refinerInstruction2: string;
         refinerInstruction3: string;
@@ -521,6 +523,14 @@ export default class DrillDown extends React.Component<IDrillDownProps, IDrillDo
         return theCalcs;
     }
 
+    private createInstructionRow( row : 0 | 1 | 2 ){
+        let isDone = this.state.searchMeta.length > row && this.state.searchMeta[row] !== 'All' ? true : false;
+        let itemStyle = isDone ? stylesD.complete : stylesD.incomplete;
+        const liIcon = <Icon iconName={ isDone === true ? 'CheckboxComposite' : 'Checkbox' } styles={{ root: { } }}></Icon>;
+        let itemText = `${this.props.showItems['refinerInstruction' +( row +1 ) ] } ${ isDone ? this.state.searchMeta[row] : ''}`;
+        return <li className={ itemStyle }>{liIcon}{ itemText }</li>;
+
+    }
 
 /***
  *    db    db d8888b. d8888b.  .d8b.  d888888b d88888b      d8888b. d8888b. d888888b db      db      db      d888888b .d8888. d888888b       .o88b.  .d88b.  db      db    db .88b  d88. d8b   db .d8888. 
@@ -1128,29 +1138,72 @@ public componentDidUpdate(prevProps){
 
                         //Finish up adding showItems here
                         // let showItems = {
+                        const showItems = this.props.showItems;
 
+                        let showListItems = true;
 
-                        reactListItems  = this.state.searchedItems.length === 0 ? <div>NO ITEMS FOUND</div> : 
-                        <ReactListItems 
-                            parentListFieldTitles={ viewDefs.length > 0 ? null : this.props.parentListFieldTitles }
+                        //This loop just checks props vs items to see if the instructions or items list should show.
+                        if ( showItems.whenToShowItems > 0 ) {
+                            if ( this.state.searchedItems.length > showItems.minItemsForHide ) {
+                                //Here we see if the refiner level clicked matches the whenToShowItems... if not, then show instructions
+                                if (showItems.whenToShowItems > this.state.searchMeta.length ) {
+                                    showListItems = false;
+                                }
+                            }
+                        }
 
-                            webURL = { this.state.drillList.webURL }
-                            parentListURL = { this.state.drillList.parentListURL }
-                            listName = { this.state.drillList.name }
+                        if ( showListItems === false ) {
+                            let instructions = [];
+                            if ( showItems.refinerInstruction1.length > 0 ) {
+                                let isDone = this.state.searchMeta.length > 0 && this.state.searchMeta[0] !== 'All' ? true : false;
+                                let itemStyle = isDone ? stylesD.complete : stylesD.incomplete;
+                                const liIcon = <Icon iconName={ isDone === true ? 'CheckboxComposite' : 'Checkbox' } styles={{ root: { } }}></Icon>;
+                                let itemText = `${showItems.refinerInstruction1} ${ isDone ? this.state.searchMeta[0] : ''}`;
+                                instructions.push( <li className={ itemStyle }>{liIcon}{ itemText }</li>);
+                            } 
+                            if ( showItems.refinerInstruction2.length > 0 ) {
+                                let isDone = this.state.searchMeta.length > 1 && this.state.searchMeta[1] !== 'All' ? true : false;
+                                let itemStyle = isDone ? stylesD.complete : stylesD.incomplete;
+                                const liIcon = <Icon iconName={ isDone === true ? 'CheckboxComposite' : 'Checkbox' } styles={{ root: { } }}></Icon>;
+                                let itemText = `${showItems.refinerInstruction2} ${ isDone ? this.state.searchMeta[1] : ''}`;
+                                instructions.push( <li className={ itemStyle }>{liIcon}{ itemText }</li>);
+                            } 
+                            if ( showItems.refinerInstruction3.length > 0 ) {
+                                let isDone = this.state.searchMeta.length > 2 && this.state.searchMeta[2] !== 'All' ? true : false;
+                                let itemStyle = isDone ? stylesD.complete : stylesD.incomplete;
+                                const liIcon = <Icon iconName={ isDone === true ? 'CheckboxComposite' : 'Checkbox' } styles={{ root: { } }}></Icon>;
+                                let itemText = `${showItems.refinerInstruction3} ${ isDone ? this.state.searchMeta[2] : ''}`;
+                                instructions.push( <li className={ itemStyle }>{liIcon}{ itemText }</li>);
+                            } 
+                            reactListItems = <div className={ stylesD.instructions }>
+                                <div className={ stylesD.instHeading } style={{ fontSize: 'larger', fontWeight: 600 }}>{ showItems.instructionIntro }</div>
+                                <ul style={{ listStyleType: 'decimal' }}>
+                                    { instructions }
+                                </ul>
+                            </div>;
 
-                            contextUserInfo = { this.state.drillList.contextUserInfo }
-                            sourceUserInfo = { this.state.drillList.sourceUserInfo }
-
-                            viewFields={ currentViewFields }
-                            groupByFields={ currentViewGroups }
-                            items={ this.state.searchedItems }
-                            includeDetails= { includeDetails }
-                            includeAttach= { includeAttach }
-                            includeListLink = { includeListLink }
-                            quickCommands={ this.state.quickCommands }
-                        
-                        ></ReactListItems>;
-
+                        } else {
+                            reactListItems  = this.state.searchedItems.length === 0 ? <div>NO ITEMS FOUND</div> : 
+                            <ReactListItems 
+                                parentListFieldTitles={ viewDefs.length > 0 ? null : this.props.parentListFieldTitles }
+    
+                                webURL = { this.state.drillList.webURL }
+                                parentListURL = { this.state.drillList.parentListURL }
+                                listName = { this.state.drillList.name }
+    
+                                contextUserInfo = { this.state.drillList.contextUserInfo }
+                                sourceUserInfo = { this.state.drillList.sourceUserInfo }
+    
+                                viewFields={ currentViewFields }
+                                groupByFields={ currentViewGroups }
+                                items={ this.state.searchedItems }
+                                includeDetails= { includeDetails }
+                                includeAttach= { includeAttach }
+                                includeListLink = { includeListLink }
+                                quickCommands={ this.state.quickCommands }
+                            
+                            ></ReactListItems>;
+                        }
                     }
 
 

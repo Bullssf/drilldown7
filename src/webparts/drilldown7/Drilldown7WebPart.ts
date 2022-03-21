@@ -165,6 +165,8 @@ export interface IDrilldown7WebPartProps {
   progress: IMyProgress;
 
   whenToShowItems: 0 | 1 | 2 | 3;
+  minItemsForHide: number;
+  instructionIntro: string;
   refinerInstruction1: string;
   refinerInstruction2: string;
   refinerInstruction3: string;
@@ -251,9 +253,10 @@ export default class Drilldown7WebPart extends BaseClientSideWebPart<IDrilldown7
         this.properties.rules2 = [] ; 
       }
 
+      if ( !this.properties.instructionIntro ) { this.properties.instructionIntro = `Please click the filters to see items :)`; }
       if ( !this.properties.refinerInstruction1 ) { this.properties.refinerInstruction1 = `First select a {{refiner0}}`; }
-      if ( !this.properties.refinerInstruction2 ) { this.properties.refinerInstruction2 = `First select a {{refiner1}}`; }
-      if ( !this.properties.refinerInstruction3 ) { this.properties.refinerInstruction3 = `First select a {{refiner2}}`; }
+      if ( !this.properties.refinerInstruction2 ) { this.properties.refinerInstruction2 = `Then select a {{refiner1}}`; }
+      if ( !this.properties.refinerInstruction3 ) { this.properties.refinerInstruction3 = `Then select a {{refiner2}}`; }
 
       // other init code may be present
 
@@ -568,6 +571,8 @@ export default class Drilldown7WebPart extends BaseClientSideWebPart<IDrilldown7
 
         showItems: {
             whenToShowItems: this.properties.whenToShowItems,
+            minItemsForHide: !this.properties.minItemsForHide ? 0 : this.properties.minItemsForHide ,
+            instructionIntro: this.properties.instructionIntro,
             refinerInstruction1: this.properties.refinerInstruction1.replace(`{{refiner0}}`, this.properties.refiner0 ),
             refinerInstruction2: this.properties.refinerInstruction2.replace(`{{refiner1}}`, this.properties.refiner1 ),
             refinerInstruction3: this.properties.refinerInstruction3.replace(`{{refiner2}}`, this.properties.refiner2 ),
