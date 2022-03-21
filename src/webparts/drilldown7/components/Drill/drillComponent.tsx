@@ -1118,7 +1118,18 @@ public componentDidUpdate(prevProps){
 
                     if ( this.props.toggles.togOtherListview === false ) {
 
-                        
+                                            
+                        // showItems: {
+                        //     whenToShowItems: 0 | 1 | 2 | 3;
+                        //     refinerInstruction1: string;
+                        //     refinerInstruction2: string;
+                        //     refinerInstruction3: string;
+                        // };
+
+                        //Finish up adding showItems here
+                        // let showItems = {
+
+
                         reactListItems  = this.state.searchedItems.length === 0 ? <div>NO ITEMS FOUND</div> : 
                         <ReactListItems 
                             parentListFieldTitles={ viewDefs.length > 0 ? null : this.props.parentListFieldTitles }
@@ -1138,8 +1149,7 @@ public componentDidUpdate(prevProps){
                             includeListLink = { includeListLink }
                             quickCommands={ this.state.quickCommands }
                         
-                            ></ReactListItems>;
-
+                        ></ReactListItems>;
 
                     }
 

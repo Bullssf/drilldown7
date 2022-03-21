@@ -201,7 +201,7 @@ export function processAllItems( allItems : IDrillItemInfo[], errMessage: string
                 if ( item[msColumnNoSlash] === null && item[msColumnNoSlash] == undefined ) {
                     item[msColumnStr] = '';
                 } else if ( item[msColumnNoSlash].length === 1 ) {
-                    item[msColumnStr] = item[msColumnNoSlash];
+                    item[msColumnStr] = item[msColumnNoSlash][0];
                 } else {
                     item [msColumnStr ] = typeof item[msColumnNoSlash][0] === 'string' ? item[msColumnNoSlash].join('; ') : 'Must be string' ;
                 }

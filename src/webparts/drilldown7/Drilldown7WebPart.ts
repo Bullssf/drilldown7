@@ -251,6 +251,10 @@ export default class Drilldown7WebPart extends BaseClientSideWebPart<IDrilldown7
         this.properties.rules2 = [] ; 
       }
 
+      if ( !this.properties.refinerInstruction1 ) { this.properties.refinerInstruction1 = `First select a {{refiner0}}`; }
+      if ( !this.properties.refinerInstruction2 ) { this.properties.refinerInstruction2 = `First select a {{refiner1}}`; }
+      if ( !this.properties.refinerInstruction3 ) { this.properties.refinerInstruction3 = `First select a {{refiner2}}`; }
+
       // other init code may be present
 
       let mess = 'onInit - ONINIT: ' + new Date().toLocaleTimeString();
