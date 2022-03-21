@@ -591,7 +591,7 @@ export default class DrillDown extends React.Component<IDrillDownProps, IDrillDo
         let itemStyle = isDone ? stylesD.complete : stylesD.incomplete;
         const liIcon = <Icon iconName={ isDone === true ? 'CheckboxComposite' : 'Checkbox' } styles={{ root: { } }}></Icon>;
         const itemTextEnd = isDone ? <span style={{paddingLeft: '10px'}}><b>{this.state.searchMeta[row]}</b>  is selected</span> : null;
-        let rowText = row === 0 ? 'First: ' : 'Then: ';
+        let rowText = row === 0 ? 'First... ' : 'Then... ';
         rowText += this.state.drillList.refinerInstructions[ row ];
         let itemText = <span>
             { rowText }

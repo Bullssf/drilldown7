@@ -571,7 +571,7 @@ export default class Drilldown7WebPart extends BaseClientSideWebPart<IDrilldown7
 
         showItems: {
             whenToShowItems: this.properties.whenToShowItems,
-            minItemsForHide: !this.properties.minItemsForHide ? 0 : this.properties.minItemsForHide ,
+            minItemsForHide: this.properties.minItemsForHide === undefined || this.properties.minItemsForHide === null ? 0 : this.properties.minItemsForHide ,
             instructionIntro: this.properties.instructionIntro,
             refinerInstructions: [ 
               this.properties.refinerInstruction1.replace(`{{refiner0}}`, this.properties.refiner0 ),
