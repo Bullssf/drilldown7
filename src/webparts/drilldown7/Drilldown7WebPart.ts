@@ -255,11 +255,12 @@ export default class Drilldown7WebPart extends BaseClientSideWebPart<IDrilldown7
       }
 
       //Added for https://github.com/mikezimm/drilldown7/issues/95
-      if ( this.properties.whenToShowItems === undefined || this.properties.whenToShowItems === null ) { this.properties.whenToShowItems = 0; }
+      if ( this.properties.whenToShowItems === undefined || this.properties.whenToShowItems === null ) { this.properties.whenToShowItems = 2; }
+      if ( this.properties.minItemsForHide === undefined || this.properties.minItemsForHide === null ) { this.properties.minItemsForHide = 30; }
       if ( !this.properties.instructionIntro ) { this.properties.instructionIntro = `Please click filters (above) to see items :)`; }
-      if ( !this.properties.refinerInstruction1 ) { this.properties.refinerInstruction1 = `First select a {{refiner0}}`; }
-      if ( !this.properties.refinerInstruction2 ) { this.properties.refinerInstruction2 = `Then select a {{refiner1}}`; }
-      if ( !this.properties.refinerInstruction3 ) { this.properties.refinerInstruction3 = `Then select a {{refiner2}}`; }
+      if ( !this.properties.refinerInstruction1 ) { this.properties.refinerInstruction1 = `Select a {{refiner0}}`; }
+      if ( !this.properties.refinerInstruction2 ) { this.properties.refinerInstruction2 = `Select a {{refiner1}}`; }
+      if ( !this.properties.refinerInstruction3 ) { this.properties.refinerInstruction3 = `Select a {{refiner2}}`; }
 
       // other init code may be present
 
@@ -580,7 +581,7 @@ export default class Drilldown7WebPart extends BaseClientSideWebPart<IDrilldown7
         showItems: {
             //Modified for https://github.com/mikezimm/drilldown7/issues/95
             whenToShowItems: whenToShowItems,
-            minItemsForHide: this.properties.minItemsForHide === undefined || this.properties.minItemsForHide === null ? 0 : this.properties.minItemsForHide ,
+            minItemsForHide: this.properties.minItemsForHide,
             instructionIntro: this.properties.instructionIntro,
             refinerInstructions: [ 
               this.properties.refinerInstruction1.replace(`{{refiner0}}`, this.properties.refiner0 ),
