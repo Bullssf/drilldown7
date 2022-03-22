@@ -93,6 +93,7 @@ import {
             PropertyPaneDropdown('whenToShowItems', <IPropertyPaneDropdownProps>{
               label: 'When to show items',
               options: whenToShowChoices,
+              selectedKey: webPartProps.whenToShowItems,
             }),
 
             PropertyPaneSlider('minItemsForHide', {

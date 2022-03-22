@@ -1229,13 +1229,13 @@ public componentDidUpdate(prevProps){
                         }
 
                         let instructions = [];
-                        if ( this.state.drillList.refinerInstructions[0].length > 0 ) {
+                        if ( this.state.drillList.refinerInstructions[0].length > 0 && this.props.refiners.length > 0 ) { //Updated to solve #95
                             instructions.push( this.createInstructionRow(0));
                         } 
-                        if ( this.state.drillList.refinerInstructions[1].length > 0 ) {
+                        if ( this.state.drillList.refinerInstructions[1].length > 0 && this.props.refiners.length > 1 ) { //Updated to solve #95
                             instructions.push( this.createInstructionRow(1));
                         } 
-                        if ( this.state.drillList.refinerInstructions[2].length > 0 ) {
+                        if ( this.state.drillList.refinerInstructions[2].length > 0 && this.props.refiners.length > 2 ) { //Updated to solve #95
                             instructions.push( this.createInstructionRow(2));
                         } 
                         let instructionContent = <div className={ [stylesD.instructions, null ].join(' ') }>
@@ -1481,15 +1481,11 @@ public componentDidUpdate(prevProps){
 
         cmdCats.push ( this.convertRefinersToCMDs( ['All'],  refinerObj.childrenKeys, countTree, 0 , 0, refinerObj) );
 
-        console.log('addTheseItemsToState: refinerObj',refinerObj );
-        console.log('drillList.refinerStats: ', drillList.refinerStats );
-
         if ( allItems.length < 300 ) {
             console.log('addTheseItemsToState allItems: ', allItems);
         } {
             console.log('addTheseItemsToState allItems: QTY: ', allItems.length );
         }
-
 
         let maxRefinersToShow = 1;
         if ( this.props.refiners ) {
@@ -1504,6 +1500,8 @@ public componentDidUpdate(prevProps){
         let viewDefs: ICustViewDef[] = JSON.parse(JSON.stringify(this.props.viewDefs));
 
         if ( this.props.toggles.togOtherListview === true ) {
+
+            //2022-03-22:  This will update the listViewDD for other parts if it's turned on in main webpart props.
             let listViewDD : IListViewDDDrillDown = {
 
                 parentListFieldTitles: this.props.viewDefs.length > 0 ? null : this.props.parentListFieldTitles,
@@ -1530,6 +1528,7 @@ public componentDidUpdate(prevProps){
 
         } else {
 
+            //2022-03-22:  This will just clear the listViewDD for other parts if it's turned off in main webpart props.
             let listViewDD : IListViewDDDrillDown = {
 
                 parentListFieldTitles: null,
@@ -1557,6 +1556,11 @@ public componentDidUpdate(prevProps){
         }
         consoleRef( 'addTheseItems2REF', refinerObj );
         consoleMe( 'addTheseItems2' , allItems, drillList );
+
+        console.log('addTheseItemsToState: props',this.props );
+        console.log('addTheseItemsToState: refinerObj',refinerObj );
+        console.log('addTheseItemsToState: drillList',drillList );
+        console.log('addTheseItemsToState: refinerStats', drillList.refinerStats );
 
         this.setState({
             allItems: allItems,
@@ -2473,6 +2477,9 @@ public componentDidUpdate(prevProps){
 
       
     private consoleClick( location: string, info: any ) {
+
+        return; //Not needed for now.
+
         let info2 = JSON.parse(JSON.stringify(info));
 
         console.log('Error#94: - Click', location, info2 );

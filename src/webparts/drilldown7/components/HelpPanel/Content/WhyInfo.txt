@@ -1,0 +1,4 @@
+These are some of the things Drilldown does for you automatically:
+
+#94 - automatically trim any string values so that if you change some of values but not others (as in the case of 'SecureScript ' with a space), it will consider them the same.
+You can have a refiner (group) that is a multi-select value including choice or even lookup value.

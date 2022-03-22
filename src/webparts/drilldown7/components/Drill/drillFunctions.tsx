@@ -515,7 +515,7 @@ export function buildRefinersObject ( items: IDrillItemInfo[], drillList: IDrill
     for ( let i of items ) { //Go through all list items
         if ( i.refiners ) { //If Item has refiners (all should)
             if ( i.Id === 2626 || i.Id === 2618 ) {
-                console.log( 'item:', i );
+                // console.log( 'item:', i );
             }
             //Do just level 1
             let thisRefinerValuesLev0 = i.refiners['lev' + 0];
@@ -585,7 +585,7 @@ export function getItemRefiners( drillList: IDrillList, item: IDrillItemInfo ) {
     };
 
     if ( item.Id === 2626 ) {
-        console.log('Checking Id: 2626 refiners' );
+        // console.log('Checking Id: 2626 refiners' );
     }
     for ( let i in drillList.refinerStats ) {
         itemRefiners['stat' + i] = [];
@@ -989,6 +989,9 @@ function buildSearchStringFromItem (newItem : IDrillItemInfo, staticColumns: str
 
 
 export function consoleRef( location: string, refiners: IRefinerLayer ) {
+
+    return; //Not needed for now.
+
     let refiners2 = JSON.parse(JSON.stringify(refiners));
 
     console.log('Error#94: - Refiners', refiners2 );
@@ -996,6 +999,9 @@ export function consoleRef( location: string, refiners: IRefinerLayer ) {
 }
 
 export function consoleMe( location: string, obj: any, drillList: IDrillList ) {
+
+    return; //Not needed for now.
+
     let testId = 179;
     let testItem = obj && obj[testId] ? true : false;
     let testRef = testItem && obj[testId].refiners ? true : false;

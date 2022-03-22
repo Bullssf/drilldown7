@@ -254,6 +254,8 @@ export default class Drilldown7WebPart extends BaseClientSideWebPart<IDrilldown7
         this.properties.rules2 = [] ; 
       }
 
+      //Added for https://github.com/mikezimm/drilldown7/issues/95
+      if ( this.properties.whenToShowItems === undefined || this.properties.whenToShowItems === null ) { this.properties.whenToShowItems = 0; }
       if ( !this.properties.instructionIntro ) { this.properties.instructionIntro = `Please click filters (above) to see items :)`; }
       if ( !this.properties.refinerInstruction1 ) { this.properties.refinerInstruction1 = `First select a {{refiner0}}`; }
       if ( !this.properties.refinerInstruction2 ) { this.properties.refinerInstruction2 = `Then select a {{refiner1}}`; }
@@ -487,6 +489,10 @@ export default class Drilldown7WebPart extends BaseClientSideWebPart<IDrilldown7
     if ( this.properties.refiner1 && this.properties.refiner1.length > 0 ) { refiners.push( this.properties.refiner1 ) ;}
     if ( this.properties.refiner2 && this.properties.refiner2.length > 0 ) { refiners.push( this.properties.refiner2 ) ;}
 
+    //Added for https://github.com/mikezimm/drilldown7/issues/95
+    let whenToShowItems: IWhenToShowItems = this.properties.whenToShowItems;
+    if ( whenToShowItems > refiners.length ) { whenToShowItems = refiners.length as any ; }
+
     let rules1: RefineRuleValues[] = ['parseBySemiColons'];
     let rules2: RefineRuleValues[] = ['parseBySemiColons'];
     let rules3: RefineRuleValues[] = ['groupByMonthsMMM'];
@@ -530,6 +536,7 @@ export default class Drilldown7WebPart extends BaseClientSideWebPart<IDrilldown7
     //Just for test purposes
     //stringRules = JSON.stringify( [rules1,rules2,rules3] );
 
+
     const element: React.ReactElement<IDrillDownProps> = React.createElement(
       DrillDown,
       {
@@ -571,7 +578,8 @@ export default class Drilldown7WebPart extends BaseClientSideWebPart<IDrilldown7
         },
 
         showItems: {
-            whenToShowItems: this.properties.whenToShowItems,
+            //Modified for https://github.com/mikezimm/drilldown7/issues/95
+            whenToShowItems: whenToShowItems,
             minItemsForHide: this.properties.minItemsForHide === undefined || this.properties.minItemsForHide === null ? 0 : this.properties.minItemsForHide ,
             instructionIntro: this.properties.instructionIntro,
             refinerInstructions: [ 
@@ -674,7 +682,7 @@ export default class Drilldown7WebPart extends BaseClientSideWebPart<IDrilldown7
    */
   private handleListPost = ( listProps : IListViewDDDrillDown ) : void => {
     consoleRef( 'handleListPost-No Object', null );
-    console.log('this.props.viewDefs ~ 638 - handleListPost', listProps );
+    console.log('this.props.viewDefs ~ 638 - handleListPost: callback listProps if any other webparts are listening', listProps );
     if ( this.properties.togOtherListview === true ) {
       let e = event;
 
@@ -816,7 +824,7 @@ export default class Drilldown7WebPart extends BaseClientSideWebPart<IDrilldown7
       if ( this.properties.webPartScenario !== '' && this.properties.webPartScenario != null ) {
         //newMap = getAllItems(configWebURL, 'DrilldownPreConfigProps', thisProps );
         restFilterLD = "webPartScenario eq '" + this.properties.webPartScenario + "'";
-        console.log('_getListDefintions restFilterLD:', restFilterLD );
+        // console.log('_getListDefintions restFilterLD:', restFilterLD );
       }
 
       //Must remove 'newMap' from props because it's one can't be mapped.
@@ -830,7 +838,7 @@ export default class Drilldown7WebPart extends BaseClientSideWebPart<IDrilldown7
       //}
 
       this.properties.newMap = newMap;
-      console.log('this.properties.newMap:',  this.properties.newMap );
+      // console.log('this.properties.newMap:',  this.properties.newMap );
 
     } else {
       console.log('NOT GETTING LIST DEFINITIONS, already fetched:', this.properties.newMap);
