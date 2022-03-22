@@ -9,7 +9,7 @@ import { IRepoLinks } from '@mikezimm/npmfunctions/dist/Links/CreateLinks';
 
 import { convertIssuesMarkdownStringToSpan } from '@mikezimm/npmfunctions/dist/Elements/Markdown';
 
-export const panelVersionNumber = '2021-12-07 -  1.5.1.1'; //Added to show in panel
+export const panelVersionNumber = '2022-03-22 -  1.2.0.3'; //Added to show in panel
 
 export function aboutTable( repoLinks: IRepoLinks ) {
 
@@ -19,7 +19,10 @@ export function aboutTable( repoLinks: IRepoLinks ) {
         rows: [],
     };
 
-    table.rows.push( createAboutRow('2022-03-1?','1.2.0.3'  ,<span>#88, Performance improvements</span>, repoLinks ) );
+    table.rows.push( createAboutRow('2022-03-22?','1.2.0.3'  ,<span>#88, #90, Performance improvements</span>, repoLinks ) );
+    table.rows.push( createAboutRow('"','"'                 ,<span>#77, #78, #82, #83, #85 - Bug fixes</span>, repoLinks ) );
+    table.rows.push( createAboutRow('"','"'                 ,<span>#76, #86, #88, #92, #93 - Improvements</span>, repoLinks ) );
+
     table.rows.push( createAboutRow('"','"'                 ,<span>#85, #86 - Add Banner with Error Messages</span>, repoLinks ) );
     table.rows.push( createAboutRow('"','"'                 ,<span>#82, #83 - YY-MM Refiners, #76 - Hide Folders option</span>, repoLinks ) );
 
