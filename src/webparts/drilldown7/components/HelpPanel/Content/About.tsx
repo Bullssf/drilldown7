@@ -19,15 +19,15 @@ export function aboutTable( repoLinks: IRepoLinks ) {
         rows: [],
     };
 
-    table.rows.push( createAboutRow('2022-03-22?','1.2.0.3'  ,<span>#88, #90, Performance improvements</span>, repoLinks ) );
-    table.rows.push( createAboutRow('"','"'                 ,<span>#77, #78, #82, #83, #85 - Bug fixes</span>, repoLinks ) );
-    table.rows.push( createAboutRow('"','"'                 ,<span>#76, #86, #88, #92, #93 - Improvements</span>, repoLinks ) );
-    table.rows.push( createAboutRow('"','"'                 ,<span>#85, #86 - Add Banner with Error Messages</span>, repoLinks ) );
+    table.rows.push( createAboutRow('2022-03-22?','1.2.0.3'  ,'#88, #90, Performance improvements', repoLinks ) );
+    table.rows.push( createAboutRow('"','"'                 ,'#77, #78, #82, #83, #85 - Bug fixes', repoLinks ) );
+    table.rows.push( createAboutRow('"','"'                 ,'#76, #86, #88, #92, #93 - Improvements', repoLinks ) );
+    table.rows.push( createAboutRow('"','"'                 ,'#85, #86 - Add Banner with Error Messages', repoLinks ) );
 
-    table.rows.push( createAboutRow('2022-03-18','1.2.0.2',<span>Espanol language update, remove settings alerts!</span>, repoLinks ) );
+    table.rows.push( createAboutRow('2022-03-18','1.2.0.2','Espanol language update, remove settings alerts!', repoLinks ) );
 
 
-    table.rows.push( createAboutRow('2022-01-23','1.2.0.1',<span>HelpPanel, npmFunctions v1.0.133</span>, repoLinks ) );
+    table.rows.push( createAboutRow('2022-01-23','1.2.0.1','HelpPanel, npmFunctions v1.0.133', repoLinks ) );
     table.rows.push( createAboutRow('"'         ,'"'      ,'Fix #64, #65, #66', repoLinks ) );
 
     table.rows.push( createAboutRow('2020-11-03','1.1.0.3','Prod Testing bugs, collapsable charts, displays in narrow section', repoLinks ) );
