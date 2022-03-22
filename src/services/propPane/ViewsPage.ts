@@ -99,7 +99,7 @@ import {
             PropertyPaneSlider('minItemsForHide', {
               label: 'Require drill down if number of items exceeds',
                 min: 0,
-                max: 500,
+                max: 100,
                 step: 10,
                 // value: 100,
             }),

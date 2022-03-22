@@ -225,7 +225,7 @@ export class IntroPage {
           PropertyPaneSlider('fetchCountMobile', {
             label: 'Load this many items',
             min: 100,
-            max: 2000,
+            max: 3000,
             step: 100,
             value: webPartProps.fetchCountMobile,
             disabled: true,
