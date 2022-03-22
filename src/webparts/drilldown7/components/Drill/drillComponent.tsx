@@ -1401,6 +1401,8 @@ public componentDidUpdate(prevProps){
                                     { refinersObjects  }
                                 </Stack>
 
+                                { instructionBlock }
+                                
                                 <div> { this.state.showCountChart === true ? countCharts : null } </div>
                                 <div> { this.state.showStats === true ? statCharts : null } </div>
 
@@ -1410,7 +1412,7 @@ public componentDidUpdate(prevProps){
                                     { bannerMessage }
                                     <Stack horizontal={false} wrap={true} horizontalAlign={"stretch"} tokens={stackPageTokens}>{/* Stack for Buttons and Webs */}
                                         {/* { this.state.viewType === 'React' ? reactListItems : drillItems } */}
-                                        { instructionBlock }
+
                                         { reactListItems }
                                         {   }
                                     </Stack>

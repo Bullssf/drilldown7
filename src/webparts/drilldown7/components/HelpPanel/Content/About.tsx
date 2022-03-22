@@ -23,7 +23,7 @@ export function aboutTable( repoLinks: IRepoLinks ) {
 
     table.rows.push( createAboutRow('2022-03-22','1.2.0.3'  ,'#88, #90, Performance improvements', repoLinks ) );
     table.rows.push( createAboutRow('"','"'                 ,'#77, #78, #82, #83, #85 - Bug fixes', repoLinks ) );
-    table.rows.push( createAboutRow('"','"'                 ,'#76, #86, #88, #92, #93, #97, #98 - Improvements', repoLinks ) );
+    table.rows.push( createAboutRow('"','"'                 ,'#76, #86, #88, #92, #93, #97, #98, #99 - Improvements', repoLinks ) );
     table.rows.push( createAboutRow('"','"'                 ,'#85, #86 - Add Banner with Error Messages', repoLinks ) );
 
     table.rows.push( createAboutRow('2022-03-18','1.2.0.2','Espanol language update, remove settings alerts!', repoLinks ) );
