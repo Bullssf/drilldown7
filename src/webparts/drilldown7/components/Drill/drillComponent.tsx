@@ -2185,7 +2185,6 @@ public componentDidUpdate(prevProps){
         let result = [];
 
         //Get sum of array of numbers:  https://codeburst.io/javascript-arrays-finding-the-minimum-maximum-sum-average-values-f02f1b0ce332
-        xxx
         const arrSum = thisCount.reduce((a,b) => a + b, 0);
 
         result.push ({
