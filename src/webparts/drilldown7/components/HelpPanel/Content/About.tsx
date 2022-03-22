@@ -19,7 +19,7 @@ export function aboutTable( repoLinks: IRepoLinks ) {
         rows: [],
     };
 
-    table.rows.push( createAboutRow('2022-03-23','1.2.0.4'  ,'#94 - Fix Sorting with CAPS, trimming all refiner strings', repoLinks ) );
+    table.rows.push( createAboutRow('2022-03-23','1.2.0.4'  ,'#94 - Fix Sorting with CAPS, trimming all refiner strings, #95', repoLinks ) );
 
     table.rows.push( createAboutRow('2022-03-22','1.2.0.3'  ,'#88, #90, Performance improvements', repoLinks ) );
     table.rows.push( createAboutRow('"','"'                 ,'#77, #78, #82, #83, #85 - Bug fixes', repoLinks ) );
