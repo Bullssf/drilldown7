@@ -1213,10 +1213,10 @@ public componentDidUpdate(prevProps){
                         let showListItems = true;
 
                         //This loop just checks props vs items to see if the instructions or items list should show.
-                        if ( this.state.whenToShowItems > 0 ) {
+                        if ( this.state && this.state.whenToShowItems > 0 ) {
                             if ( this.state.searchedItems.length > this.props.showItems.minItemsForHide ) {
                                 //Here we see if the refiner level clicked matches the whenToShowItems... if not, then show instructions
-                                if ( this.state.whenToShowItems > this.state.searchMeta.length ) {
+                                if ( this.state.whenToShowItems > this.state.searchMeta.length || this.state.searchMeta[this.state.whenToShowItems -1 ] === 'All' ) {
                                     showListItems = false;
                                 }
                             }
