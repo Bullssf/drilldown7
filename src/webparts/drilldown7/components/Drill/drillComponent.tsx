@@ -1075,7 +1075,7 @@ public componentDidUpdate(prevProps){
 
                 /*https://developer.microsoft.com/en-us/fabric#/controls/web/searchbox*/
                 let searchBox =  
-                <div className={[styles.searchContainer, styles.padLeft20 ].join(' ')} >
+                <div className={[styles.searchContainer, styles.padLeft20, styles.padTop20 ].join(' ')} >
                     <SearchBox
                     className={styles.searchBox}
                     styles={{ root: { maxWidth: this.props.allowRailsOff === true ? 200 : 300 } }}
