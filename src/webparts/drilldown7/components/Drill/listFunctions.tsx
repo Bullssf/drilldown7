@@ -61,9 +61,9 @@ function getBestFitView (  OrigViewDefs: ICustViewDef[], currentWidth: number ) 
         result = minResult;
     }
 
-    console.log('getAppropriateViewFields: currentWidth = ', currentWidth);
-    console.log('getAppropriateViewFields: Width >= ', maxViewWidth);
-    console.log('getAppropriateViewFields: vd result', result);
+    // console.log('getAppropriateViewFields: currentWidth = ', currentWidth);
+    // console.log('getAppropriateViewFields: Width >= ', maxViewWidth);
+    // console.log('getAppropriateViewFields: vd result', result);
 
     return result;
     

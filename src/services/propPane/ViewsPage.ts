@@ -4,7 +4,7 @@ import {
     IPropertyPaneLabelProps,
     PropertyPaneHorizontalRule,
     PropertyPaneTextField, IPropertyPaneTextFieldProps,
-    PropertyPaneLink, IPropertyPaneLinkProps,PropertyPaneSlider,
+    PropertyPaneLink, IPropertyPaneLinkProps,PropertyPaneSlider,IPropertyPaneSliderProps,
     PropertyPaneDropdown, IPropertyPaneDropdownProps,
     IPropertyPaneDropdownOption,PropertyPaneToggle,
     IPropertyPaneConfiguration,
@@ -34,6 +34,18 @@ import {
   
       if ( webPartProps.rules2 && ( webPartProps.rules2.indexOf('groupByDayOfWeek') > -1 ||  webPartProps.rules2.indexOf('groupByMonthsMMM') > -1 ) ) { showDisabled = true;}
   
+      
+    // whenToShowItems: 0 | 1 | 2 | 3;
+    // refinerInstruction1: string;
+    // refinerInstruction2: string;
+    // refinerInstruction3: string;
+    const whenToShowChoices: IPropertyPaneDropdownOption[] = <IPropertyPaneDropdownOption[]>[
+        {   index: 0,   key: 0, text: 'Always'  },
+        {   index: 1,   key: 1, text: 'After 1 refiner selected'  },
+        {   index: 2,   key: 2, text: 'After 2 refiners selected'  },
+        {   index: 3,   key: 3, text: 'After 3 refiners selected'  },
+    ];
+
       return <IPropertyPanePage>
       { // <page1>
         header: {
@@ -74,6 +86,55 @@ import {
             ]
           },
          
+          { groupName: 'List display',
+          isCollapsed: true ,
+          groupFields: [
+
+            PropertyPaneDropdown('whenToShowItems', <IPropertyPaneDropdownProps>{
+              label: 'When to show items',
+              options: whenToShowChoices,
+              selectedKey: webPartProps.whenToShowItems,
+            }),
+
+            PropertyPaneSlider('minItemsForHide', {
+              label: 'Require drill down if number of items exceeds',
+                min: 0,
+                max: 100,
+                step: 10,
+                // value: 100,
+            }),
+
+            PropertyPaneTextField('instructionIntro', {
+              label: 'Instructions heading',
+              description: 'Please click filters (above) to see items :)',
+              disabled: webPartProps.whenToShowItems < 1 ? true : false,
+              // multiline: true,
+            }),
+
+            PropertyPaneTextField('refinerInstruction1', {
+              label: 'Instructions to pick first refiner',
+              description: 'Example:  select a {{refiner0}}',
+              disabled: webPartProps.whenToShowItems < 1 ? true : false,
+              // multiline: true,
+            }),
+            
+            PropertyPaneTextField('refinerInstruction2', {
+              label: 'Instructions to pick second refiner',
+              description: 'Example:  select a {{refiner1}}',
+              disabled: webPartProps.whenToShowItems < 2 ? true : false,
+              // multiline: true,
+            }),
+            
+            PropertyPaneTextField('refinerInstruction3', {
+              label: 'Instructions to pick third refiner',
+              description: 'Example:  select a {{refiner2}}',
+              disabled: webPartProps.whenToShowItems < 3 ? true : false,
+              // multiline: true,
+            }),
+
+          ]
+        },
+
 //groupByFields
           // 2 - Source and destination list information
           {  groupName: 'List Grouping',
@@ -152,7 +213,7 @@ import {
                     label: 'View settings',
                     description: 'For changing webpart field titles',
                     multiline: true,
-                    }),
+                  }),
   
             ]}, // this group
 

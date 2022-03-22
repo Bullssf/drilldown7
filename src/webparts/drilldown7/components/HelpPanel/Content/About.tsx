@@ -9,7 +9,7 @@ import { IRepoLinks } from '@mikezimm/npmfunctions/dist/Links/CreateLinks';
 
 import { convertIssuesMarkdownStringToSpan } from '@mikezimm/npmfunctions/dist/Elements/Markdown';
 
-export const panelVersionNumber = '2021-12-07 -  1.5.1.1'; //Added to show in panel
+export const panelVersionNumber = '2022-03-23 -  1.2.0.4'; //Added to show in panel
 
 export function aboutTable( repoLinks: IRepoLinks ) {
 
@@ -19,10 +19,17 @@ export function aboutTable( repoLinks: IRepoLinks ) {
         rows: [],
     };
 
-    table.rows.push( createAboutRow('2022-03-18','1.2.0.2',<span>Espanol language update, remove settings alerts!</span>, repoLinks ) );
+    table.rows.push( createAboutRow('2022-03-23','1.2.0.4'  ,'#96, #95, #42, #47, #94 - Fix Sorting with CAPS, trimming all refiner strings', repoLinks ) );
+
+    table.rows.push( createAboutRow('2022-03-22','1.2.0.3'  ,'#88, #90, Performance improvements', repoLinks ) );
+    table.rows.push( createAboutRow('"','"'                 ,'#77, #78, #82, #83, #85 - Bug fixes', repoLinks ) );
+    table.rows.push( createAboutRow('"','"'                 ,'#76, #86, #88, #92, #93, #97, #98, #99 - Improvements', repoLinks ) );
+    table.rows.push( createAboutRow('"','"'                 ,'#85, #86 - Add Banner with Error Messages', repoLinks ) );
+
+    table.rows.push( createAboutRow('2022-03-18','1.2.0.2','Espanol language update, remove settings alerts!', repoLinks ) );
 
 
-    table.rows.push( createAboutRow('2022-01-23','1.2.0.1',<span>HelpPanel, npmFunctions v1.0.133</span>, repoLinks ) );
+    table.rows.push( createAboutRow('2022-01-23','1.2.0.1','HelpPanel, npmFunctions v1.0.133', repoLinks ) );
     table.rows.push( createAboutRow('"'         ,'"'      ,'Fix #64, #65, #66', repoLinks ) );
 
     table.rows.push( createAboutRow('2020-11-03','1.1.0.3','Prod Testing bugs, collapsable charts, displays in narrow section', repoLinks ) );

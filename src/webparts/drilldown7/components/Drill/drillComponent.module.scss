@@ -6,6 +6,7 @@
 
 //Copied to chartsPage.module.scss so it can be more stand alone.
 
+
 .drillDown {
 
       //https://www.w3.org/TR/CSS21/selector.html%23id-selectors#type-selectors
@@ -183,4 +184,48 @@
         transition:all 0.5s ease;
       }
       */
+
+      .instructions {
+        padding: 20px 20px 20px 30px;
+        transition:all 0.4s ease;
+        opacity: 1;
+        overflow: hidden;
+
+        li {
+          padding-bottom: 7px;
+          [role="presentation"] {
+            padding: 0px 10px;
+          }
+        }
+
+        .instHeading {
+          font-size: large;
+          font-weight: bolder;
+          text-decoration: underline;
+          display: inline-block;
+        }
+        .complete {
+          color: green;
+        }
+
+        .incomplete {
+          color: red;
+        }
+
+      }
+
+    //Copied from Pivot Tiles showSearch
+    .hideInstructions {
+      padding: 0px;
+      height: 0px;
+      overflow: hidden;
+      background: transparent;
+      opacity: 0;
+      margin-top: 0px;
+      margin-bottom: 0px;
+      transition:all 0.3s ease;
+    }
+  
+
+
 }

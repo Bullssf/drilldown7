@@ -60,41 +60,51 @@ import { IQuickButton } from '@mikezimm/npmfunctions/dist/QuickCommands/IQuickCo
 // This is what it was before I split off the other part
 export async function getAllItems( drillList: IDrillList, addTheseItemsToState: any, setProgress: any, markComplete: any ): Promise<void>{
 
-    let sourceUserInfo: any = await ensureUserInfo( drillList.webURL, drillList.contextUserInfo.email );
-
-    drillList.sourceUserInfo = sourceUserInfo;
-    //lists.getById(listGUID).webs.orderBy("Title", true).get().then(function(result) {
-    //let allItems : IDrillItemInfo[] = await sp.web.webs.get();
-
+    let errMessage = '';        
     let allItems : IDrillItemInfo[] = [];
-    let errMessage = '';
-
-    let thisListWeb = Web(drillList.webURL);
-    let selColumns = drillList.selectColumnsStr;
-    let expandThese = drillList.expandColumnsStr;
-    let staticCols = drillList.staticColumns.length > 0 ? drillList.staticColumns.join(',') : '';
-    let selectCols = '*,' + staticCols;
-
-    let thisListObject = thisListWeb.lists.getByTitle(drillList.name);
-
-    /**
-     * IN FUTURE, ALWAYS BE SURE TO PUT SELECT AND EXPAND AFTER .ITEMS !!!!!!
-     */
-
+    let sourceUserInfo: IUser = null;
     try {
-        let fetchCount = drillList.fetchCount > 0 ? drillList.fetchCount : 200;
-
-        if ( drillList.restFilter.length > 1 ) {
-            allItems = await thisListObject.items.select(selectCols).expand(expandThese).orderBy('ID',false).top(fetchCount).filter(drillList.restFilter).get();
-        } else {
-            allItems = await thisListObject.items.select(selectCols).expand(expandThese).orderBy('ID',false).top(fetchCount).get();
-        }
+        sourceUserInfo = await ensureUserInfo( drillList.webURL, drillList.contextUserInfo.email );
     } catch (e) {
         errMessage = getHelpfullError(e, false, true);
-
     }
 
-    allItems = processAllItems( allItems, errMessage, drillList, addTheseItemsToState, setProgress, markComplete );
+    if ( errMessage !== '' ) {
+        allItems = processAllItems( allItems, errMessage, drillList, addTheseItemsToState, setProgress, markComplete );
+
+    } else {
+        drillList.sourceUserInfo = sourceUserInfo;
+        //lists.getById(listGUID).webs.orderBy("Title", true).get().then(function(result) {
+        //let allItems : IDrillItemInfo[] = await sp.web.webs.get();
+
+        let thisListWeb = Web(drillList.webURL);
+        let selColumns = drillList.selectColumnsStr;
+        let expandThese = drillList.expandColumnsStr;
+        let staticCols = drillList.staticColumns.length > 0 ? drillList.staticColumns.join(',') : '';
+        let selectCols = '*,' + staticCols;
+    
+        let thisListObject = thisListWeb.lists.getByTitle(drillList.name);
+    
+        /**
+         * IN FUTURE, ALWAYS BE SURE TO PUT SELECT AND EXPAND AFTER .ITEMS !!!!!!
+         */
+    
+        try {
+            let fetchCount = drillList.fetchCount > 0 ? drillList.fetchCount : 200;
+    
+            if ( drillList.restFilter.length > 1 ) {
+                allItems = await thisListObject.items.select(selectCols).expand(expandThese).orderBy('ID',false).top(fetchCount).filter(drillList.restFilter).get();
+            } else {
+                allItems = await thisListObject.items.select(selectCols).expand(expandThese).orderBy('ID',false).top(fetchCount).get();
+            }
+        } catch (e) {
+            errMessage = getHelpfullError(e, false, true);
+    
+        }
+        consoleMe( 'getAllItems' , allItems, drillList );
+        allItems = processAllItems( allItems, errMessage, drillList, addTheseItemsToState, setProgress, markComplete );
+    }
+
 
 }
 
@@ -105,73 +115,130 @@ export function processAllItems( allItems : IDrillItemInfo[], errMessage: string
     let thisIsNow = new Date().toLocaleString();
 
     let itemsHaveAttachments = false;
+    let finalItems : IDrillItemInfo[] = [];
+    let skippedItems : IDrillItemInfo[] = [];
 
-    for (let i in allItems ) {
 
-        if ( allItems[i].timeCreated === undefined ) {
-            allItems[i].timeCreated = makeTheTimeObject(allItems[i].Created);
-            allItems[i].timeModified = makeTheTimeObject(allItems[i].Modified);
+    allItems.map( ( item, i ) => {
 
-            allItems[i].bestCreate = getBestTimeDelta(allItems[i].Created, thisIsNow);
-            allItems[i].bestMod = getBestTimeDelta(allItems[i].Modified, thisIsNow);
+        let skipItem = false;
+        if ( drillList.hideFolders === true ) {
+            if ( item.FileSystemObjectType === 1 ) { 
+                skipItem = true;
+            }
         }
-
-        /**
-         * This loop flattens expanded column objects
-         */
-        if ( drillList.selectColumns.length > 0 ) {
-            drillList.selectColumns.map( expCol => {
-                if (expCol.indexOf('/') > -1 ) {
-                    let oldCol = expCol.split('/');
-                    let newProp = oldCol.join('');
-
-                    allItems[i][newProp] = allItems[i][oldCol[0]] ? allItems[i][oldCol[0]][oldCol[1]] : null;
-                }
-            });
-        }
-
-        if ( drillList.isLibrary === true || allItems[i].ServerRedirectedEmbedUrl ) {
-            allItems[i].goToItemPreview = allItems[i].ServerRedirectedEmbedUrl;
-            allItems[i].goToItemLink = allItems[i].ServerRedirectedEmbedUrl ? allItems[i].ServerRedirectedEmbedUrl.replace('&action=interactivepreview','') : null ;
-            allItems[i].goToPropsLink = drillList.parentListURL + "/Forms/DispForm.aspx?ID=" + allItems[i].Id;
-            allItems[i].isFile = true;
-
-            drillList.isLibrary = true;
+        if ( skipItem === true ) {
+            skippedItems.push( item );
 
         } else {
-            allItems[i].goToItemPreview = drillList.parentListURL + "/DispForm.aspx?ID=" + allItems[i].Id;
-            allItems[i].goToItemLink = drillList.parentListURL + "/DispForm.aspx?ID=" + allItems[i].Id;
-            allItems[i].goToPropsLink = drillList.parentListURL + "/DispForm.aspx?ID=" + allItems[i].Id;
-            allItems[i].isFile = false;
+            if ( item.timeCreated === undefined ) {
+                item.timeCreated = makeTheTimeObject(item.Created);
+                item.timeModified = makeTheTimeObject(item.Modified);
+    
+                item.bestCreate = getBestTimeDelta(item.Created, thisIsNow);
+                item.bestMod = getBestTimeDelta(item.Modified, thisIsNow);
+            }
+    
+            /**
+             * This loop flattens expanded column objects
+             */
+            if ( drillList.selectColumns.length > 0 ) {
+                drillList.selectColumns.map( expCol => {
+                    if (expCol.indexOf('/') > -1 ) {
+                        let oldCol = expCol.split('/');
+                        let newProp = oldCol.join('');
+                        let thisColumn = item[oldCol[0]] ? item[oldCol[0]] : null;
+                        if ( Array.isArray( thisColumn ) === true ) {
+                            if ( drillList.multiSelectColumns.indexOf( expCol ) < 0 ) { drillList.multiSelectColumns.push( expCol ) ; }
+                            item[newProp] = [];
+                            thisColumn.map( oneItem => {
+                                if ( oneItem[oldCol[1]] ) { item[ newProp ] = addItemToArrayIfItDoesNotExist( item[newProp], oneItem[oldCol[1]] ) ; }
+                            });
+                        } else {
+                            item[newProp] = item[oldCol[0]] ? item[oldCol[0]][oldCol[1]] : null;
+                        }
+                    }
+                });
+            }
+
+            //This section will look for any other multi-select columns 
+            drillList.staticColumns.map( staticColumn => {
+                if ( drillList.selectColumns.indexOf( staticColumn ) < 0 
+                && drillList.multiSelectColumns.indexOf( staticColumn ) < 0 ) {
+                    if ( Array.isArray( item[staticColumn] ) === true ) {
+                        drillList.multiSelectColumns.push( staticColumn );
+                    }
+                }
+            });
+    
+            if ( drillList.isLibrary === true || item.ServerRedirectedEmbedUrl ) {
+                item.goToItemPreview = item.ServerRedirectedEmbedUrl;
+                item.goToItemLink = item.ServerRedirectedEmbedUrl ? item.ServerRedirectedEmbedUrl.replace('&action=interactivepreview','') : null ;
+                item.goToPropsLink = drillList.parentListURL + "/Forms/DispForm.aspx?ID=" + item.Id;
+                item.isFile = true;
+    
+                drillList.isLibrary = true;
+    
+            } else {
+                item.goToItemPreview = drillList.parentListURL + "/DispForm.aspx?ID=" + item.Id;
+                item.goToItemLink = drillList.parentListURL + "/DispForm.aspx?ID=" + item.Id;
+                item.goToPropsLink = drillList.parentListURL + "/DispForm.aspx?ID=" + item.Id;
+                item.isFile = false;
+            }
+    
+            if ( item.Attachments === true ) { itemsHaveAttachments = true ; } 
+            item.refiners = getItemRefiners( drillList, item );
+    
+            item.refiners.comments.map( c => {
+                itemRefinerErrors.push( c );
+            });
+            item.meta = buildMetaFromItem(item);
+            item.searchString = buildSearchStringFromItem(item, drillList.staticColumns );
+
+            drillList.multiSelectColumns.map( msColumn => {
+                let msColumnNoSlash = msColumn.replace('/','');
+                let msColumnStr = `${msColumnNoSlash}MultiString`;
+                if ( item[msColumnNoSlash] === null && item[msColumnNoSlash] == undefined ) {
+                    item[msColumnStr] = '';
+                } else if ( item[msColumnNoSlash].length === 1 ) {
+                    item[msColumnStr] = item[msColumnNoSlash][0];
+                } else {
+                    item [msColumnStr ] = typeof item[msColumnNoSlash][0] === 'string' ? item[msColumnNoSlash].join('; ') : 'Must be string' ;
+                }
+            });
+
+            finalItems.push( item );
         }
 
-        if ( allItems[i].Attachments === true ) { itemsHaveAttachments = true ; } 
-        allItems[i].refiners = getItemRefiners( drillList, allItems[i] );
+    });
 
-        allItems[i].refiners.comments.map( c => {
-            itemRefinerErrors.push( c );
-        });
-        allItems[i].meta = buildMetaFromItem(allItems[i]);
-        allItems[i].searchString = buildSearchStringFromItem(allItems[i], drillList.staticColumns );
-
-    }
 
     drillList.hasAttach = itemsHaveAttachments;
     
-    if ( errMessage === '' && allItems.length === 0 ) { 
+    if ( errMessage === '' && finalItems.length === 0 ) { 
         errMessage = 'This list or library does not have any items that you can see.';
      }
 
+     console.log('skippedDrillItems', skippedItems );
      if ( itemRefinerErrors.length > 0 ) {
 //        console.log('HEY!  Had some problems with your item refiners:', itemRefinerErrors);
         console.log('HEY!  Had some problems with your item refiners:', itemRefinerErrors.length);
         console.log('First error:', itemRefinerErrors[0]);
 
+        if ( finalItems.length > 0 && itemRefinerErrors.length > 20 && itemRefinerErrors.length/finalItems.length > .1 ) {
+            errMessage += [
+                'Performance Warning:',
+                `Detected ${itemRefinerErrors.length} Refiner Errors on ${finalItems.length} total items.`,
+                `Here's the first warning.  Check them all in the console.`,
+                `${itemRefinerErrors[0]}`,
+            ].join('--');
+        }
+
      }
 
     console.log('drillList.refiners =', drillList.refiners );
     //for ( let i = 0 ; i < 5000 ; i++ ) {
-        allRefiners = buildRefinersObject( allItems, drillList );
+    allRefiners = buildRefinersObject( finalItems, drillList );
         //console.log(i);
     //}
 
@@ -181,12 +248,11 @@ export function processAllItems( allItems : IDrillItemInfo[], errMessage: string
 
 //    console.log('Post-Sort: getAllItems', allRefiners);
 
-    addTheseItemsToState(drillList, allItems, errMessage, allRefiners );
-    return allItems;
+    consoleMe( 'processAllItems2' , finalItems, drillList );
+    addTheseItemsToState(drillList, finalItems, errMessage, allRefiners );
+    return finalItems;
 
 }
-
-
 
 //    88.    .d88b.  d8888b. d888888b      d8888b. d88888b d88888b d888888b d8b   db d88888b d8888b. 
 //  88'  YP .8P  Y8. 88  `8D `~~88~~'      88  `8D 88'     88'       `88'   888o  88 88'     88  `8D 
@@ -200,9 +266,11 @@ export function processAllItems( allItems : IDrillItemInfo[], errMessage: string
 function sortRefinerObject ( allRefiners: IRefinerLayer, drillList: IDrillList ) {
 
     //webPartDefs.sort((a, b) => (a.alias > b.alias) ? 1 : -1);
+    consoleRef( 'buildRefinersObject1', allRefiners );
+    consoleMe( 'sortRefinerObject1' + '??' , null , drillList );
 
 //    allRefiners.childrenKeys.sort(); //Removed when using sortKeysByOtherKey
-    allRefiners.childrenObjs.sort((a, b) => (a.thisKey > b.thisKey) ? 1 : -1);
+    allRefiners.childrenObjs.sort((a, b) => (a.thisKey.toLowerCase() > b.thisKey.toLowerCase() ) ? 1 : -1);
     let statsToSort : string[] = ['childrenCounts','childrenMultiCounts'];
     for ( let i in drillList.refinerStats ) {
         statsToSort.push('stat' + i);
@@ -211,6 +279,7 @@ function sortRefinerObject ( allRefiners: IRefinerLayer, drillList: IDrillList )
     allRefiners = sortKeysByOtherKey ( allRefiners, 'childrenKeys', 'asc', 'string', statsToSort );
     allRefiners.childrenObjs = sortRefinerLayer( allRefiners.childrenObjs, drillList );
 
+    consoleRef( 'buildRefinersObject2', allRefiners );
     return allRefiners;
 
 }
@@ -219,7 +288,7 @@ function sortRefinerLayer ( allRefiners: IRefinerLayer[], drillList: IDrillList 
 
     for ( let r in allRefiners ) { //Go through all list items
         //allRefiners[r].childrenKeys.sort();
-        allRefiners[r].childrenObjs.sort((a, b) => (a.thisKey > b.thisKey) ? 1 : -1);
+        allRefiners[r].childrenObjs.sort((a, b) => (a.thisKey.toLowerCase() > b.thisKey.toLowerCase() ) ? 1 : -1);
         let statsToSort : string[] = ['childrenCounts','childrenMultiCounts'];
         for ( let i in drillList.refinerStats ) {
             statsToSort.push('stat' + i);
@@ -445,7 +514,9 @@ export function buildRefinersObject ( items: IDrillItemInfo[], drillList: IDrill
     //Go through all items
     for ( let i of items ) { //Go through all list items
         if ( i.refiners ) { //If Item has refiners (all should)
-
+            if ( i.Id === 2626 || i.Id === 2618 ) {
+                // console.log( 'item:', i );
+            }
             //Do just level 1
             let thisRefinerValuesLev0 = i.refiners['lev' + 0];
             //Go through each array of refiners... 
@@ -457,7 +528,6 @@ export function buildRefinersObject ( items: IDrillItemInfo[], drillList: IDrill
                 refiners =updateThisRefiner( r0, topKey0,  thisRefiner0, refiners, drillList );
                 if (topKey0 < 0 ) { topKey0 = refiners.childrenKeys.length -1; }
                 refiners = updateRefinerStats( i , topKey0,  refiners, drillList );
-
 
                 let thisRefinerValuesLev1 = i.refiners['lev' + 1];
                 //Go through each array of refiners... 
@@ -488,7 +558,9 @@ export function buildRefinersObject ( items: IDrillItemInfo[], drillList: IDrill
             } //for ( let r0 in thisRefinerValuesLev0 )
         }
     }
-    console.log('These are the loaded refiners:', refiners );
+
+    consoleMe( 'buildRefinersObject' + '???' , items , drillList );
+    consoleRef( 'buildRefinersObject', refiners );
     return refiners;
 
 }
@@ -512,6 +584,9 @@ export function getItemRefiners( drillList: IDrillList, item: IDrillItemInfo ) {
         comments: [],
     };
 
+    if ( item.Id === 2626 ) {
+        // console.log('Checking Id: 2626 refiners' );
+    }
     for ( let i in drillList.refinerStats ) {
         itemRefiners['stat' + i] = [];
     }
@@ -543,6 +618,11 @@ export function getItemRefiners( drillList: IDrillList, item: IDrillItemInfo ) {
  * @param result 
  */
 export function getRefinerStatsForItem( drillList: IDrillList, item: IDrillItemInfo, itemRefiners: IItemRefiners ) {
+
+    //Added for performance:  https://github.com/mikezimm/drilldown7/issues/88
+    if ( drillList.togStats !== true ) {
+        return itemRefiners;
+    }
 
     for ( let i in drillList.refinerStats ) {
 
@@ -585,7 +665,7 @@ export function getRefinerStatsForItem( drillList: IDrillList, item: IDrillItemI
                 itemRefiners['stat' + i] = 0 ;
 
             } else {
-                itemRefiners.comments.push( 'Sum Err: ' + 'Unable to do ' + stat + ' on ' + primaryType + ' Value...: ' + item[primaryField] + '.  assuming it\s null' ) ;
+                itemRefiners.comments.push( 'Sum Err: ' + 'Unable to do ' + stat + ' on ' + primaryField + ' (' + primaryType + ') Value...: ' + item[primaryField] + '.  assuming it\s null' ) ;
                 itemRefiners['stat' + i] = null ;
 
             }
@@ -644,7 +724,7 @@ function getRefinerFromField ( fieldValue : any, ruleSet: RefineRuleValues[], em
     } else if ( detailType === 'boolean'  ){
         result = [ fieldValue === true ? 'true' : 'false' ];
 
-    } else if ( detailType === 'number'  ){
+    } else if ( detailType === 'number' ){
         result = [ getGroupByNumber(fieldValue, detailType, ruleSet ) ];
 
     } else if ( detailType === 'array' ){
@@ -653,7 +733,8 @@ function getRefinerFromField ( fieldValue : any, ruleSet: RefineRuleValues[], em
     } else if ( detailType === 'object' ){
         result = [ JSON.stringify(fieldValue) ];
 
-    } else if ( detailType === 'datestring' ) {
+    } else if ( detailType === 'datestring' && ruleSet.indexOf('groupByString') < 0 ) {
+        fieldValue = fieldValue.trim();
         let tempDate = makeTheTimeObject( fieldValue );
         let reFormattedDate = null;
         // 'groupByDays' | 'groupByWeeks' |  'groupByMonths' |  'groupByYears' | 'groupByDayOfWeek' | 
@@ -693,7 +774,7 @@ function getRefinerFromField ( fieldValue : any, ruleSet: RefineRuleValues[], em
         } 
         result = [ reFormattedDate ];
     
-    } else if ( detailType === 'numberstring' ) {
+    } else if ( detailType === 'numberstring' && ruleSet.indexOf('groupByString') < 0   ) {
 
         /**
             options.push( buildKeyText( 'groupBy10s' ) );
@@ -701,19 +782,24 @@ function getRefinerFromField ( fieldValue : any, ruleSet: RefineRuleValues[], em
             options.push( buildKeyText( 'groupBy1000s' ) );
             options.push( buildKeyText( 'groupByMillions' ) );
          */
+        fieldValue = fieldValue.trim();
         result = [  getGroupByNumber(fieldValue, detailType, ruleSet ) ];
 
-    } else if ( detailType === 'string' ){
+    } else if ( detailType === 'string' || ruleSet.indexOf('groupByString') > -1 ){
 
         //If it's a string, then test if it's a date, return the best date in an array.   Object.prototype.toString.call(date) === '[object Date]'  //https://stackoverflow.com/a/643827
         //As of 2020-09-01:  This does not accurately detect dates.
-
+        fieldValue = fieldValue.trim();
                 //parse by semiColon or comma if rule dictates
         if ( ruleSet.indexOf('parseBySemiColons')  > -1 && fieldValue.indexOf(';') > -1 ) {
             fieldValue = getRefinerFromField ( fieldValue.split(';') , ruleSet, emptyRefiner );
 
         } else if (ruleSet.indexOf('parseByCommas')  > -1 && fieldValue.indexOf(',') > -1 ) {
             fieldValue = getRefinerFromField ( fieldValue.split(',') , ruleSet, emptyRefiner );
+
+        //This loop closes https://github.com/mikezimm/drilldown7/issues/83
+        } else if (ruleSet.indexOf('groupByString')  > -1 && fieldValue === '' ) {
+            result = [ emptyRefiner ];
 
         } else { // This should be a string
             result = [ fieldValue ];
@@ -852,6 +938,7 @@ function buildMetaFromItem( theItem: IDrillItemInfo ) {
     }
 
     meta = theItem.timeModified.daysAgo < 180 ? addItemToArrayIfItDoesNotExist(meta, 'RecentlyUpdated') : addItemToArrayIfItDoesNotExist(meta, 'Stale');
+    meta = theItem.FileSystemObjectType === 1 ? addItemToArrayIfItDoesNotExist(meta, 'IsFolder') : addItemToArrayIfItDoesNotExist(meta, 'IsItem');
 
     for ( let L of Object.keys(theItem.refiners) ) {
         //Gets rid of the 'undefined' meta key found at the end of the keys
@@ -897,5 +984,56 @@ function buildSearchStringFromItem (newItem : IDrillItemInfo, staticColumns: str
     result = result.toLowerCase();
 
     return result;
+
+}
+
+
+export function consoleRef( location: string, refiners: IRefinerLayer ) {
+
+    return; //Not needed for now.
+
+    let refiners2 = JSON.parse(JSON.stringify(refiners));
+
+    console.log('Error#94: - Refiners', refiners2 );
+
+}
+
+export function consoleMe( location: string, obj: any, drillList: IDrillList ) {
+
+    return; //Not needed for now.
+
+    let testId = 179;
+    let testItem = obj && obj[testId] ? true : false;
+    let testRef = testItem && obj[testId].refiners ? true : false;
+    let testLev = testRef && obj[testId].refiners.level1 ? true : false;
+    let tbdNote = 'null';
+    if ( testLev === true ) { tbdNote = 'Level found' ; }
+    else if ( testRef === true ) { tbdNote = 'Refiner found' ; }
+    else if ( testItem === true ) { tbdNote = 'Item found' ; }
+
+    let pasteMe =  obj && obj[testId] && obj[testId].refiners ? obj[testId].refiners.lev1 : tbdNote ;
+    obj = JSON.parse(JSON.stringify(obj));
+    let drillListX = JSON.parse(JSON.stringify(drillList));
+
+    let itteration = drillList.itteration;
+    console.log('Error#94:', itteration, location, pasteMe, drillListX );
+
+    // let testId = 179;
+    // let testItem = obj && obj[testId] ? true : false;
+    // let testRef = testItem && obj[testId].refiners ? true : false;
+    // let testLev = testRef && obj[testId].refiners.level1 ? true : false;
+    // let tbdNote = 'null';
+    // if ( testLev === true ) { tbdNote = 'Level found' ; }
+    // else if ( testRef === true ) { tbdNote = 'Refiner found' ; }
+    // else if ( testItem === true ) { tbdNote = 'Item found' ; }
+
+    // let pasteMe =  obj && obj[testId] && obj[testId].refiners ? obj[testId].refiners.lev1 : tbdNote ;
+    // obj = JSON.parse(JSON.stringify(obj));
+    // drillList = JSON.parse(JSON.stringify(drillList));
+
+    // let itteration = drillList.itteration;
+    // console.log('Error#94:', itteration, location, pasteMe, drillList );
+
+    return;
 
 }

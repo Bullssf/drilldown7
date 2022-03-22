@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { WebPartContext } from '@microsoft/sp-webpart-base';
 
-import { CompoundButton, Stack, IStackTokens, elementContains, initializeIcons } from 'office-ui-fabric-react';
+import { CompoundButton, Stack, IStackTokens, elementContains, initializeIcons, Icon, IIconStyles } from 'office-ui-fabric-react';
 import { SearchBox } from 'office-ui-fabric-react/lib/SearchBox';
 import { Pivot, PivotItem, IPivotItemProps} from 'office-ui-fabric-react/lib/Pivot';
 
@@ -56,7 +56,7 @@ import ReactListItems from './reactListView';
 
 //parentListFieldTitles
 
-import { getAllItems, buildRefinersObject, processAllItems, } from './drillFunctions';
+import { getAllItems, buildRefinersObject, processAllItems, consoleMe, consoleRef, } from './drillFunctions';
 
 import ResizeGroupOverflowSetExample from './refiners/commandBar';
 
@@ -99,18 +99,25 @@ export type IRefinerStyles = 'pivot' | 'commandBar' | 'other';
  */
 
   export interface IDrillList extends Partial<IPickedList> {
+    itteration: number;
+    location: string;
+
     title: string;
     name?: string;
     guid?: string;
     fetchCount: number;
     fetchCountMobile: number;
     restFilter: string;
+    hideFolders: boolean;
     isLibrary?: boolean;
     hasAttach: boolean;
     webURL?: string;
+    togStats: boolean;
     parentListURL?: string;
     contextUserInfo?: IUser;  //For site you are on ( aka current page context )
     sourceUserInfo?: IUser;   //For site where the list is stored
+
+    refinerInstructions: string[];
 
     refiners: string[]; //String of Keys representing the static name of the column used for drill downs
     emptyRefiner: string;
@@ -123,6 +130,7 @@ export type IRefinerStyles = 'pivot' | 'commandBar' | 'other';
     staticColumnsStr: string;
     selectColumnsStr: string;
     expandColumnsStr: string;
+    multiSelectColumns: string[];
     removeFromSelect: string[];
   }
 
@@ -163,10 +171,56 @@ export const pivCats = {
  *                                                                                                                                                 
  *                                                                                                                                                 
  */
-
+export type IWhenToShowItems = 0 | 1 | 2 | 3;
 
 export type IViewType = 'React' | 'MZ' | 'Other' ;
 
+/**
+ * ## Property Pane updates:
+Page owner can set:
+- min Refiner level required to hide instructions: whenToShowItems
+- minItemsForHide to avoid instructions ( in case count is below this hide instructions )
+- First line of instruction text
+- Instruction text for each refiner to be clicked
+- If nothing is touched, it will  do it's best to tell the user what to do.
+
+## Logic should be:
+
+- If the item count is greater than minItemsForHide && user has not clicked enough refiners, ONLY instructions are shown.
+- If instructions are shown, user can always 'Hide' them via button in instructions div.
+- This setting sticks unless the user clicks on certain things that trigger a reload of the data.
+- At any time the user can press the "Instructions" button in the right side of banner element to show instructions.
+
+## Properties Added this the code
+
+```js
+//Added to webpart props and property pane:
+  whenToShowItems: IWhenToShowItems;
+  minItemsForHide: number;
+  instructionIntro: string;
+  refinerInstruction1: string;
+  refinerInstruction2: string;
+  refinerInstruction3: string;
+
+//Added to IDrillDownProps
+    showItems: {
+        whenToShowItems: IWhenToShowItems;
+        minItemsForHide: number;
+        instructionIntro: string;
+        refinerInstruction1: string;
+        refinerInstruction2: string;
+        refinerInstruction3: string;
+    };
+
+//Added to IDrillDownSTATE
+    whenToShowItems: IWhenToShowItems;
+    instructionsHidden: 'force' | 'hide' | 'dynamic';
+```
+
+
+![image](https://user-images.githubusercontent.com/49648086/159371801-c2977995-6abe-4ade-8cd8-2932b538ab58.png)
+
+ */
 export interface IDrillDownProps {
     // 0 - Context
     description: string;
@@ -175,6 +229,8 @@ export interface IDrillDownProps {
     wpContext: WebPartContext;
 
     bannerProps: IWebpartBannerProps;
+
+    errMessage: string;
 
     allowOtherSites?: boolean; //default is local only.  Set to false to allow provisioning parts on other sites.
 
@@ -188,6 +244,7 @@ export interface IDrillDownProps {
 
     webURL?: string;
     parentListURL?: string;
+    hideFolders: boolean;
 
     listName : string;
     
@@ -205,6 +262,13 @@ export interface IDrillDownProps {
         fetchCount: number;
         fetchCountMobile: number;
         restFilter: string;
+    };
+
+    showItems: {
+        whenToShowItems: IWhenToShowItems;
+        minItemsForHide: number;
+        instructionIntro: string;
+        refinerInstructions: string[];
     };
 
     quickCommands?: IQuickCommands;
@@ -323,6 +387,11 @@ export interface IDrillDownState {
 
     searchText: string;
     searchMeta: string[];
+
+    whenToShowItems: IWhenToShowItems;
+    instructionsHidden: 'force' | 'hide' | 'dynamic';
+
+    // refinerInstructions: string[];
 
     searchedItems: IDrillItemInfo[];
     stats: IStat[];
@@ -492,6 +561,8 @@ export default class DrillDown extends React.Component<IDrillDownProps, IDrillDo
 
     private createRefinerRuleCalcs( calcs: string ) {
         let theCalcs : any = null;
+        //Close https://github.com/mikezimm/drilldown7/issues/78
+        if ( calcs === '' ) { return []; }
         try {
             //2022-01-17:  replace does not modify the original value.
             //But I created a new value here because it did modify "itself" which I don't think I wanted to do.
@@ -506,6 +577,33 @@ export default class DrillDown extends React.Component<IDrillDownProps, IDrillDo
         return theCalcs;
     }
 
+    private buildInstructionIcons() {
+        //See banner/NearAndFarSample.js for how to build this.
+        let elements = [];
+        defaultBannerCommandStyles.fontWeight = 'bolder';
+        defaultBannerCommandStyles.fontSize = 'normal';
+        
+        elements.push(<span style={{ paddingLeft: '20px' }} className={ '' } title={ 'Hide instructions based on webpart settings' }>
+          <Icon iconName='Hide3' onClick={ this.hideInstructions.bind(this) } style={ defaultBannerCommandStyles }></Icon> </span>);
+
+        return elements;
+      }
+
+    private createInstructionRow( row : 0 | 1 | 2 ){
+        let isDone = this.state.searchMeta.length > row && this.state.searchMeta[row] !== 'All' ? true : false;
+        let itemStyle = isDone ? stylesD.complete : stylesD.incomplete;
+        const liIcon = <Icon iconName={ isDone === true ? 'CheckboxComposite' : 'Checkbox' } styles={{ root: { } }}></Icon>;
+        const itemTextEnd = isDone ? <span style={{paddingLeft: '10px'}}><b>{this.state.searchMeta[row]}</b>  is selected</span> : null;
+        let rowText = row === 0 ? 'First... ' : 'Then... ';
+        rowText += this.state.drillList.refinerInstructions[ row ];
+        let itemText = <span>
+            { rowText }
+            { itemTextEnd }
+        </span>;
+
+        return <li className={ itemStyle }>{liIcon}{ itemText }</li>;
+
+    }
 
 /***
  *    db    db d8888b. d8888b.  .d8b.  d888888b d88888b      d8888b. d8888b. d888888b db      db      db      d888888b .d8888. d888888b       .o88b.  .d88b.  db      db    db .88b  d88. d8b   db .d8888. 
@@ -579,7 +677,7 @@ export default class DrillDown extends React.Component<IDrillDownProps, IDrillDo
      */
 
     private createDrillList(webURL: string, name: string, isLibrary: boolean, refiners: string[], rules: string, stats: string, 
-        OrigViewDefs: ICustViewDef[], togOtherChartpart: boolean, title: string = null, stateSourceUserInfo: boolean) {
+        OrigViewDefs: ICustViewDef[], togOtherChartpart: boolean, title: string = null, stateSourceUserInfo: boolean, location: string, itteration: number ) {
 
         let viewDefs = JSON.parse(JSON.stringify(OrigViewDefs)) ;
         let refinerRules = this.createEmptyRefinerRules( rules );
@@ -593,6 +691,8 @@ export default class DrillDown extends React.Component<IDrillDownProps, IDrillDo
         }
 
         let list: IDrillList = {
+            itteration: itteration + 1,
+            location: location,
             title: title,
             name: name,
             guid: '',
@@ -605,26 +705,36 @@ export default class DrillDown extends React.Component<IDrillDownProps, IDrillDo
             fetchCount: this.props.performance.fetchCount,
             fetchCountMobile: this.props.performance.fetchCountMobile,
             restFilter: !this.props.performance.restFilter ? ' ' : this.props.performance.restFilter,
-
+            hideFolders: this.props.hideFolders,
             isLibrary: isLibrary,
             hasAttach: false,
+            togStats: this.props.toggles.togStats,
 
             webURL: webURL,
             parentListURL: this.props.parentListURL,
             refiners: refiners,
             emptyRefiner: 'Unknown',
             refinerRules: refinerRules,
+
+            refinerInstructions: [ 
+                this.props.showItems.refinerInstructions[0],
+                this.props.showItems.refinerInstructions[1],
+                this.props.showItems.refinerInstructions[2],
+            ],
+
             refinerStats: refinerStats,
             viewDefs: viewDefs,
             staticColumns: [],
             selectColumns: [],
             expandColumns: [],
+            multiSelectColumns: [],
             staticColumnsStr: '',
             selectColumnsStr: '',
             expandColumnsStr: '',
             removeFromSelect: ['currentTime','currentUser'],
         };
 
+        consoleMe( 'createDL' + location , this.state ? this.state.allItems : null , list );
         list = this.updateDrillListColumns( list ) ;
 
         return list;
@@ -649,7 +759,7 @@ export default class DrillDown extends React.Component<IDrillDownProps, IDrillDo
          * This is copied later in code when you have to call the data in case something changed.
          */
 
-        let drillList = this.createDrillList(this.props.webURL, this.props.listName, false, this.props.refiners, this.props.rules, this.props.stats, this.props.viewDefs, this.props.toggles.togOtherChartpart, '', false);
+        let drillList = this.createDrillList(this.props.webURL, this.props.listName, false, this.props.refiners, this.props.rules, this.props.stats, this.props.viewDefs, this.props.toggles.togOtherChartpart, '', false, 'constructor', 0);
         let errMessage = drillList.refinerRules === undefined ? 'Invalid Rule set: ' +  this.props.rules : '';
         if ( drillList.refinerRules === undefined ) { drillList.refinerRules = [[],[],[]] ; } 
 
@@ -698,6 +808,9 @@ export default class DrillDown extends React.Component<IDrillDownProps, IDrillDo
             first20searchedItems: [],
             searchCount: 0,
 
+            whenToShowItems: this.props.showItems.whenToShowItems,
+            instructionsHidden: 'dynamic',
+            
             meta: [],
 
             webURL: this.props.webURL,
@@ -753,7 +866,7 @@ export default class DrillDown extends React.Component<IDrillDownProps, IDrillDo
       // showAll= { this.showAll.bind(this) }
 
       return [
-        // <Icon iconName='Search' onClick={ this.searchMe.bind(this) } style={ defaultBannerCommandStyles }></Icon>,
+        // <Icon iconName='BookAnswers' onClick={ this.toggleInstructions.bind(this) } style={ defaultBannerCommandStyles }></Icon>,
         // <Icon iconName='ChromeMinimize' onClick={ this.minimizeTiles.bind(this) } style={ defaultBannerCommandStyles }></Icon>,
         // <Icon iconName='ClearFilter' onClick={ this.showAll.bind(this) } style={ defaultBannerCommandStyles }></Icon>,
       ];
@@ -834,7 +947,61 @@ public componentDidUpdate(prevProps){
          * 2022-01-17:  Added this to see if this gets mutated and breaks on refresh items.  
          * After deeper testing, adding this to getBestFitView solved it but that was getting called a lot so I'm just doing it once in the render
          */
-        let viewDefs: ICustViewDef[] = JSON.parse(JSON.stringify(this.props.viewDefs));
+        let viewDefsString = JSON.stringify(this.props.viewDefs);
+        this.state.drillList.multiSelectColumns.map( msColumn => {
+            viewDefsString = viewDefsString.replace( msColumn , msColumn.replace('/','') + 'MultiString' );
+        });
+        let viewDefs: ICustViewDef[] = JSON.parse(viewDefsString);
+
+        
+        let createBanner = this.state.quickCommands !== null && this.state.quickCommands.successBanner > 0 ? true : false;
+        let bannerMessage = createBanner === false ? null : <div style={{ width: '100%'}} 
+            className={ [ stylesD.bannerStyles,  this.state.bannerMessage === null ? stylesD.bannerHide : stylesD.bannerShow ].join(' ') }>
+            { this.state.bannerMessage }
+        </div>;
+
+        /***
+            *    d8888b.  .d8b.  d8b   db d8b   db d88888b d8888b. 
+            *    88  `8D d8' `8b 888o  88 888o  88 88'     88  `8D 
+            *    88oooY' 88ooo88 88V8o 88 88V8o 88 88ooooo 88oobY' 
+            *    88~~~b. 88~~~88 88 V8o88 88 V8o88 88~~~~~ 88`8b   
+            *    88   8D 88   88 88  V888 88  V888 88.     88 `88. 
+            *    Y8888P' YP   YP VP   V8P VP   V8P Y88888P 88   YD 
+            *                                                      
+            *                                                      
+            */
+
+        // let farBannerElementsArray = [];
+        let farBannerElementsArray = [...this.farBannerElements,
+            // <Icon iconName={layoutIcon} onClick={ this.toggleLayout.bind(this) } style={ defaultBannerCommandStyles }></Icon>,
+            <Icon iconName='BookAnswers' onClick={ this.forceInstructions.bind(this) } style={ defaultBannerCommandStyles }></Icon>,
+        ];
+
+        //Exclude the props.bannerProps.title if the webpart is narrow to make more responsive
+        let bannerTitle = this.props.bannerProps.bannerWidth < 900 ? '' : `${this.props.bannerProps.title} - ${''}`;
+        if ( bannerTitle === '' ) { bannerTitle = 'Pivot Tiles' ; }
+
+        let Banner = <WebpartBanner 
+            showBanner={ this.props.bannerProps.showBanner }
+            bannerWidth={ this.props.bannerProps.bannerWidth }
+            pageContext={ this.props.bannerProps.pageContext }
+            title ={ bannerTitle }
+            panelTitle = { this.props.bannerProps.panelTitle }
+            bannerReactCSS={ this.props.bannerProps.bannerReactCSS }
+            bannerCommandStyles={ defaultBannerCommandStyles }
+            showTricks={ this.props.bannerProps.showTricks }
+            showGoToParent={ this.props.bannerProps.showGoToParent }
+            showGoToHome={ this.props.bannerProps.showGoToHome }
+            onHomePage={ this.props.bannerProps.onHomePage }
+            showBannerGear={ this.props.bannerProps.showBannerGear }
+            hoverEffect={ this.props.bannerProps.hoverEffect }
+            gitHubRepo={ this.props.bannerProps.gitHubRepo }
+            earyAccess={ this.props.bannerProps.earyAccess }
+            wideToggle={ this.props.bannerProps.wideToggle }
+            nearElements = { this.nearBannerElements }
+            farElements = { farBannerElementsArray }
+
+        ></WebpartBanner>;
 
 /***
  *              d888888b db   db d888888b .d8888.      d8888b.  .d8b.   d888b  d88888b 
@@ -850,374 +1017,416 @@ public componentDidUpdate(prevProps){
             let thisPage = null;
             let tipsStyles = defCommandIconStyles;
 
-            let toggleTipsButton = <div style={{marginRight: "20px", background: 'white', opacity: '.7', borderRadius: '10px' }}>
-                 { createIconButton('Help','Toggle Tips',this.toggleTips.bind(this), null, tipsStyles ) } </div>;
+            let performanceMessage = false;
 
-            let errMessage = this.state.errMessage === '' ? null : <div>
-                { this.state.errMessage }
-            </div>;
-
-            /***
-             *    .d8888. d88888b  .d8b.  d8888b.  .o88b. db   db      d8888b.  .d88b.  db    db 
-             *    88'  YP 88'     d8' `8b 88  `8D d8P  Y8 88   88      88  `8D .8P  Y8. `8b  d8' 
-             *    `8bo.   88ooooo 88ooo88 88oobY' 8P      88ooo88      88oooY' 88    88  `8bd8'  
-             *      `Y8b. 88~~~~~ 88~~~88 88`8b   8b      88~~~88      88~~~b. 88    88  .dPYb.  
-             *    db   8D 88.     88   88 88 `88. Y8b  d8 88   88      88   8D `8b  d8' .8P  Y8. 
-             *    `8888Y' Y88888P YP   YP 88   YD  `Y88P' YP   YP      Y8888P'  `Y88P'  YP    YP 
-             *                                                                                   
-             *                                                                                   
-             */
-
-            /*https://developer.microsoft.com/en-us/fabric#/controls/web/searchbox*/
-            let searchBox =  
-            <div className={[styles.searchContainer, styles.padLeft20 ].join(' ')} >
-              <SearchBox
-                className={styles.searchBox}
-                styles={{ root: { maxWidth: this.props.allowRailsOff === true ? 200 : 300 } }}
-                placeholder="Search"
-                onSearch={ this._searchForText.bind(this) }
-                onFocus={ null } // () => console.log('this.state',  this.state)
-                onBlur={ () => console.log('onBlur called') }
-                onChange={ this._searchForText.bind(this) }
-              />
-              <div className={styles.searchStatus}>
-                { 'Searching ' + this.state.searchCount + ' items' }
-                { /* 'Searching ' + (this.state.searchType !== 'all' ? this.state.filteredTiles.length : ' all' ) + ' items' */ }
-              </div>
-            </div>;
-
-            const stackPageTokens: IStackTokens = { childrenGap: 10 };
-
-            /***
-             *    d8888b. d88888b d88888b d888888b d8b   db d88888b d8888b. .d8888. 
-             *    88  `8D 88'     88'       `88'   888o  88 88'     88  `8D 88'  YP 
-             *    88oobY' 88ooooo 88ooo      88    88V8o 88 88ooooo 88oobY' `8bo.   
-             *    88`8b   88~~~~~ 88~~~      88    88 V8o88 88~~~~~ 88`8b     `Y8b. 
-             *    88 `88. 88.     88        .88.   88  V888 88.     88 `88. db   8D 
-             *    88   YD Y88888P YP      Y888888P VP   V8P Y88888P 88   YD `8888Y' 
-             *                                                                      
-             *                                                                      
-             */
-
-            //                <div> { resizePage0 } </div>
-            let showRefiner0 = true;
-            let showRefiner1 = this.state.maxRefinersToShow >= 2 && this.state.searchMeta[0] !== 'All' && this.state.cmdCats.length > 1 ? true : false;
-            let showRefiner2 = this.state.maxRefinersToShow >= 3 && this.state.searchMeta.length >= 2 && this.state.searchMeta[1] !== 'All' && this.state.cmdCats.length > 2 ? true : false;
-
-            let thisIsRefiner0 = null;
-            let thisIsRefiner1 = null;
-            let thisIsRefiner2 = null;
-
-            let refinersObjects = [];
-            if ( this.state.style === 'pivot' ) {
-
-                let drillPivots0 = this.createPivotObject(this.state.searchMeta[0], '', 0);
-                let drillPivots1 = showRefiner1 ? this.createPivotObject(this.state.searchMeta[1], '', 1) : null;
-                let drillPivots2 = showRefiner2 ?  this.createPivotObject(this.state.searchMeta[2], '', 2) : null;
-
-                if ( showRefiner0 ) { refinersObjects.push( drillPivots0 ) ; }
-                if ( showRefiner1 ) { refinersObjects.push( drillPivots1 ) ; }
-                if ( showRefiner2 ) { refinersObjects.push( drillPivots2 ) ; }
-
-            } else if ( this.state.style === 'commandBar' ) {
-
-                let pinCmd1 = createIconButton('Pin','Pin ' + this.state.refiners[1] + ' to top, Alt-Click to move DOWNOne level.',this.changeRefinerOrder1.bind(this), null, null );
-                let pinCmd2 = createIconButton('Pin','Pin ' + this.state.refiners[2] + ' to top, Alt-Click to move UP One level.',this.changeRefinerOrder2.bind(this), null, null );
-                let pinSpanStyle = { paddingLeft: '8px', height: '0px' } ;
-
-                thisIsRefiner0 = showRefiner0 ? <div><ResizeGroupOverflowSetExample
-                    items={ this.state.cmdCats[0] }
-                    cachingEnabled = { true }
-                    checkedItem = { this.state.searchMeta[0] }
-                    onClick = { this._onSearchForMetaCmd0.bind(this) }
-                    showRefinerCounts = { this.state.showRefinerCounts }
-                    regroupKey = { this.state.cmdCats.length === 0 ? 'showRefiner0' : this.state.cmdCats[0].map( i => { return i.name;  }).join('|||') }
-                ></ResizeGroupOverflowSetExample></div> : null;
-
-                thisIsRefiner1 = showRefiner1 ?  <div style={{ display: 'inline-block', width: '100%' }}><div style={ pinSpanStyle }>{pinCmd1}</div><div style={{ marginLeft: '40px', left: '0px'}}><ResizeGroupOverflowSetExample
-                    items={ this.state.cmdCats[1] }
-                    cachingEnabled = { true }
-                    checkedItem = { this.state.searchMeta[1] }
-                    onClick = { this._onSearchForMetaCmd1.bind(this)}
-                    showRefinerCounts = { this.state.showRefinerCounts }
-                    regroupKey = { this.state.cmdCats.length === 0 ? 'showRefiner1' : this.state.cmdCats[1].map( i => { return i.name;  }).join('|||') }
-                ></ResizeGroupOverflowSetExample></div></div> : null;
-
-                thisIsRefiner2 = showRefiner2 ?  <div style={{ display: 'inline-block', width: '100%' }}><div style={ pinSpanStyle }>{pinCmd2}</div><div style={{ marginLeft: '40px', left: '0px'}}><ResizeGroupOverflowSetExample
-                    items={ this.state.cmdCats[2] }
-                    cachingEnabled = { true }
-                    checkedItem = { this.state.searchMeta[2] }
-                    onClick = { this._onSearchForMetaCmd2.bind(this)}
-                    showRefinerCounts = { this.state.showRefinerCounts }
-                    regroupKey = { this.state.cmdCats.length === 0 ? 'showRefiner2' : this.state.cmdCats[2].map( i => { return i.name;  }).join('|||') }
-                ></ResizeGroupOverflowSetExample></div></div> : null;
-
-                if ( showRefiner0 ) { refinersObjects.push( thisIsRefiner0 ) ; }
-                if ( showRefiner1 ) { refinersObjects.push( thisIsRefiner1 ) ; }
-                if ( showRefiner2 ) { refinersObjects.push( thisIsRefiner2 ) ; }
-
+            if ( typeof this.state.errMessage === 'string' && this.state.errMessage.indexOf('Performance') === 0 ) {
+                performanceMessage = true;
             }
 
-            let noInfo = [];
-            noInfo.push( <h3>{'Found ' + this.state.searchCount + ' items with this search criteria:'}</h3> )  ;
-            if ( this.state.searchText != '' ) { noInfo.push( <p>{'Search Text: ' + this.state.searchText}</p> )  ; }
-            if ( this.state.searchMeta[0] != '' ) { noInfo.push( <p>{'Refiner: ' + this.state.searchMeta[0]}</p> ) ; }
-
-            if ( this.state.allItems.length === 0 ) {
-                thisPage = <div style={{ paddingBottom: 30 }}className={styles.contents}>
-                { errMessage }</div>;
-            } else {
-
-                /***
-                 *    db      d888888b .d8888. d888888b      d888888b d888888b d88888b .88b  d88. .d8888. 
-                 *    88        `88'   88'  YP `~~88~~'        `88'   `~~88~~' 88'     88'YbdP`88 88'  YP 
-                 *    88         88    `8bo.      88            88       88    88ooooo 88  88  88 `8bo.   
-                 *    88         88      `Y8b.    88            88       88    88~~~~~ 88  88  88   `Y8b. 
-                 *    88booo.   .88.   db   8D    88           .88.      88    88.     88  88  88 db   8D 
-                 *    Y88888P Y888888P `8888Y'    YP         Y888888P    YP    Y88888P YP  YP  YP `8888Y' 
-                 *                                                                                        
-                 *                                                                                        
-                 */
-
-                let blueBar = this.state.searchMeta.map( m => { return <span><span style={{ paddingLeft: 0 }}> {'>'} </span><span style={{ paddingLeft: 10, paddingRight: 20 }}> { m } </span></span>; });
-
-
-                let drillItems = this.state.searchedItems.length === 0 ? <div>NO ITEMS FOUND</div> : <div>
-                    <MyDrillItems 
-                        items={ this.state.searchedItems }
-                        blueBar={ blueBar }
-                    ></MyDrillItems>
-                    </div>;
-
-                let includeDetails = getAppropriateViewProp( viewDefs, this.state.WebpartWidth, 'includeDetails' );
-                let includeAttach = getAppropriateViewProp( viewDefs, this.state.WebpartWidth, 'includeAttach' );
-                let includeListLink = getAppropriateViewProp( viewDefs, this.state.WebpartWidth, 'includeListLink' );
-                
-                if ( this.state.drillList.hasAttach !== true ) { includeAttach = false; }
-                let currentViewFields: any[] = [];
-
-                if ( viewDefs.length > 0 )  { currentViewFields = getAppropriateViewFields( viewDefs, this.state.WebpartWidth ); }
-
-                let currentViewGroups : IGrouping[] =  getAppropriateViewGroups( viewDefs , this.state.WebpartWidth );
-
-                let reactListItems  = null;
-
-                if ( this.props.toggles.togOtherListview === false ) {
-
-                    reactListItems  = this.state.searchedItems.length === 0 ? <div>NO ITEMS FOUND</div> : 
-                    <ReactListItems 
-                        parentListFieldTitles={ viewDefs.length > 0 ? null : this.props.parentListFieldTitles }
-
-                        webURL = { this.state.drillList.webURL }
-                        parentListURL = { this.state.drillList.parentListURL }
-                        listName = { this.state.drillList.name }
-
-                        contextUserInfo = { this.state.drillList.contextUserInfo }
-                        sourceUserInfo = { this.state.drillList.sourceUserInfo }
-
-                        viewFields={ currentViewFields }
-                        groupByFields={ currentViewGroups }
-                        items={ this.state.searchedItems }
-                        includeDetails= { includeDetails }
-                        includeAttach= { includeAttach }
-                        includeListLink = { includeListLink }
-                        quickCommands={ this.state.quickCommands }
-                    
-                     ></ReactListItems>;
-                }
-
-
-
-                /***
-                 *    .d8888. db    db .88b  d88. .88b  d88.  .d8b.  d8888b. db    db 
-                 *    88'  YP 88    88 88'YbdP`88 88'YbdP`88 d8' `8b 88  `8D `8b  d8' 
-                 *    `8bo.   88    88 88  88  88 88  88  88 88ooo88 88oobY'  `8bd8'  
-                 *      `Y8b. 88    88 88  88  88 88  88  88 88~~~88 88`8b      88    
-                 *    db   8D 88b  d88 88  88  88 88  88  88 88   88 88 `88.    88    
-                 *    `8888Y' ~Y8888P' YP  YP  YP YP  YP  YP YP   YP 88   YD    YP    
-                 *                                                                    
-                 *                                                                    
-                 */
-
-                let countCharts = [];
-                let statCharts = [];
-                let statRefinerObject = null;
-                let buildStats = this.state.drillList.refinerStats && this.state.drillList.refinerStats.length > 0 ? true : false;
-                let buildCount = this.state.showCountChart;
-
-                let statsVisible = this.props.toggles.togOtherChartpart === true || this.props.toggles.togStats === true ? true : false;
-                let textMaxRefinersToShow = 0;
-                let childIndex0 = null;
-                let childIndex1 = null;
-
-                if ( buildStats ) {  statRefinerObject = this.state.refinerObj; }
-
-                if ( this.state.maxRefinersToShow > 1 && this.state.searchMeta[0] !== 'All' ) { 
-                    textMaxRefinersToShow = 1;
-                    childIndex0 = this.state.refinerObj.childrenKeys.indexOf(this.state.searchMeta[0]);
-                    if ( buildStats ) {  statRefinerObject = this.state.refinerObj.childrenObjs[childIndex0]; }
-                }
-                if ( textMaxRefinersToShow >= 1 && this.state.maxRefinersToShow > 2 && this.state.searchMeta.length > 1 && this.state.searchMeta[1] !== 'All' ) { 
-                    textMaxRefinersToShow = 2;
-                    childIndex1 = this.state.refinerObj.childrenObjs[childIndex0].childrenKeys.indexOf(this.state.searchMeta[1]);
-                    if ( buildStats ) {  statRefinerObject = this.state.refinerObj.childrenObjs[childIndex0].childrenObjs[childIndex1]; }
-                }
-
-                if ( this.state.showCountChart === true || statsVisible === true ) {
-                    if ( buildCount ) { countCharts.push( this.buildCountCharts( this.state.refiners[0], 'refiner0' , this.state.refinerObj, RefinerChartTypes ) ); }
-                    if ( textMaxRefinersToShow >= 1 ) {
-                        if ( buildCount ) {  countCharts.push( this.buildCountCharts( this.state.refiners[1], 'refiner1' , this.state.refinerObj.childrenObjs[childIndex0], RefinerChartTypes ) ); }
-                        if ( textMaxRefinersToShow >= 2 ) {
-                            if ( buildCount ) {  countCharts.push( this.buildCountCharts( this.state.refiners[2], 'refiner2' , this.state.refinerObj.childrenObjs[childIndex0].childrenObjs[childIndex1],  RefinerChartTypes ) ); }
-                        }
-                    }
-
-                    if ( countCharts.length === 0 ) { countCharts = null ; }
-                    if ( buildStats && statsVisible === true && statRefinerObject && statRefinerObject.childrenKeys.length > 0  ) {
-                        let statChartArray = buildStatChartsArray( this.state.drillList.refinerStats, 'summaries', statRefinerObject );
-                        statCharts = this.buildStatCharts( statChartArray );
-
-                    } else {
-
-                    }
-    
-                }
-                if ( statRefinerObject && statRefinerObject.childrenKeys.length > 0  ) {
-                    //Update Dynamic Data cssChartData  cssChartProps : ICssChartProps
-                    if ( this.props.handleSwitch ) {
-                        this.props.handleSwitch ( this.state.drillList.refinerStats, 'summaries', statRefinerObject, this.state.searchMeta ) ; //resultSummaryArray  ); //: //  { chartData : ICSSChartSeries[], callBackID: string }[]  
-                    }
-                } else {
-                    //Update Dynamic Data cssChartData
-                    if ( this.props.handleSwitch ) {
-                        this.props.handleSwitch ( null, null, null ); //: ICssChartProps
-                    }
-                }
-
-                /***
-                 *    d888888b  .d88b.   d888b   d888b  db      d88888b .d8888. 
-                 *    `~~88~~' .8P  Y8. 88' Y8b 88' Y8b 88      88'     88'  YP 
-                 *       88    88    88 88      88      88      88ooooo `8bo.   
-                 *       88    88    88 88  ooo 88  ooo 88      88~~~~~   `Y8b. 
-                 *       88    `8b  d8' 88. ~8~ 88. ~8~ 88booo. 88.     db   8D 
-                 *       YP     `Y88P'   Y888P   Y888P  Y88888P Y88888P `8888Y' 
-                 *                                                              
-                 *                                                              
-                 */
-
-
-                let toggles = <div style={{ float: 'right' }}> { makeToggles(this.getPageToggles( statCharts.length > 0 ? true : false )) } </div>;
-
-                let messages : any[] = [];
-                if ( this.state.WebpartWidth > 800 ) { 
-                    messages.push( <div><span><b>{ 'Welcome to ALV Webpart Early Access!!!' }</b></span></div> ) ;
-                    messages.push( <div><span><b>{ 'Get more info here -->' }</b></span></div> ) ;
-                }
-                else if ( this.state.WebpartWidth > 700 ) {
-                    messages.push( <div><span><b>{ 'Webpart Early Access!' }</b></span></div> ) ;
-                    messages.push( <div><span><b>{ 'More info ->' }</b></span></div> ) ;
-                } else if ( this.state.WebpartWidth > 600 ) {
-                    messages.push( <div><span><b>{ 'info ->' }</b></span></div> ) ;
-
-                } else if ( this.state.WebpartWidth > 400 ) {
-                    messages.push( <div><span><b>{ 'info ->' }</b></span></div> ) ;
-                }
-
-                let createBanner = this.state.quickCommands !== null && this.state.quickCommands.successBanner > 0 ? true : false;
-                let bannerMessage = createBanner === false ? null : <div style={{ width: '100%'}} 
-                    className={ [ stylesD.bannerStyles,  this.state.bannerMessage === null ? stylesD.bannerHide : stylesD.bannerShow ].join(' ') }>
-                    { this.state.bannerMessage }
-                </div>;
-
-                /***
-                 *    d8888b.  .d8b.  d8b   db d8b   db d88888b d8888b. 
-                 *    88  `8D d8' `8b 888o  88 888o  88 88'     88  `8D 
-                 *    88oooY' 88ooo88 88V8o 88 88V8o 88 88ooooo 88oobY' 
-                 *    88~~~b. 88~~~88 88 V8o88 88 V8o88 88~~~~~ 88`8b   
-                 *    88   8D 88   88 88  V888 88  V888 88.     88 `88. 
-                 *    Y8888P' YP   YP VP   V8P VP   V8P Y88888P 88   YD 
-                 *                                                      
-                 *                                                      
-                 */
-
-                // let farBannerElementsArray = [];
-                let farBannerElementsArray = [...this.farBannerElements,
-                    // <Icon iconName={layoutIcon} onClick={ this.toggleLayout.bind(this) } style={ defaultBannerCommandStyles }></Icon>,
-                ];
-
-                //Exclude the props.bannerProps.title if the webpart is narrow to make more responsive
-                let bannerTitle = this.props.bannerProps.bannerWidth < 900 ? '' : `${this.props.bannerProps.title} - ${''}`;
-                if ( bannerTitle === '' ) { bannerTitle = 'Pivot Tiles' ; }
-
-                let Banner = <WebpartBanner 
-                    showBanner={ this.props.bannerProps.showBanner }
-                    bannerWidth={ this.props.bannerProps.bannerWidth }
-                    pageContext={ this.props.bannerProps.pageContext }
-                    title ={ bannerTitle }
-                    panelTitle = { this.props.bannerProps.panelTitle }
-                    bannerReactCSS={ this.props.bannerProps.bannerReactCSS }
-                    bannerCommandStyles={ defaultBannerCommandStyles }
-                    showTricks={ this.props.bannerProps.showTricks }
-                    showGoToParent={ this.props.bannerProps.showGoToParent }
-                    showGoToHome={ this.props.bannerProps.showGoToHome }
-                    onHomePage={ this.props.bannerProps.onHomePage }
-                    showBannerGear={ this.props.bannerProps.showBannerGear }
-                    hoverEffect={ this.props.bannerProps.hoverEffect }
-                    gitHubRepo={ this.props.bannerProps.gitHubRepo }
-                    earyAccess={ this.props.bannerProps.earyAccess }
-                    wideToggle={ this.props.bannerProps.wideToggle }
-                    nearElements = { this.nearBannerElements }
-                    farElements = { farBannerElementsArray }
-
-                ></WebpartBanner>;
-
-
-                /***
-                 *    d888888b db   db d888888b .d8888.      d8888b.  .d8b.   d888b  d88888b 
-                 *    `~~88~~' 88   88   `88'   88'  YP      88  `8D d8' `8b 88' Y8b 88'     
-                 *       88    88ooo88    88    `8bo.        88oodD' 88ooo88 88      88ooooo 
-                 *       88    88~~~88    88      `Y8b.      88~~~   88~~~88 88  ooo 88~~~~~ 
-                 *       88    88   88   .88.   db   8D      88      88   88 88. ~8~ 88.     
-                 *       YP    YP   YP Y888888P `8888Y'      88      YP   YP  Y888P  Y88888P 
-                 *                                                                           
-                 *                                                                           
-                 */
-                    
+            if ( this.props.errMessage ) {
+                let issues = this.props.errMessage.split(';');
+                let issueElements = issues.map( issue => {
+                    return <li>{ issue } </li>;
+                });
                 thisPage = <div>
                     { Banner }
-                    <div className={styles.contents}>
-                        <div className={stylesD.drillDown}>
-                            {  /* <div className={styles.floatRight}>{ toggleTipsButton }</div> */ }
-                            <div className={ this.state.errMessage === '' ? styles.hideMe : styles.showErrorMessage  }>{ this.state.errMessage } </div>
-                            {  /* <p><mark>Check why picking Assists does not show Help as a chapter even though it's the only chapter...</mark></p> */ }
-                            <Stack horizontal={true} wrap={true} horizontalAlign={"space-between"} verticalAlign= {"center"} tokens={stackPageTokens}>{/* Stack for Buttons and Webs */}
-                                { searchBox } { toggles } 
-                            </Stack>
+                    <h2>The webpart props have some issues</h2>
+                    { issueElements }
+                </div>;
 
-                            <Stack horizontal={false} wrap={true} horizontalAlign={"stretch"} tokens={stackPageTokens} className={ stylesD.refiners }>{/* Stack for Buttons and Webs */}
-                                { refinersObjects  }
-                            </Stack>
+            } else if ( this.state.errMessage && performanceMessage !== true  ) {
+                let issues = [];
+                if ( typeof this.state.errMessage === 'string' ) {
+                    issues = this.state.errMessage.split('--');
+                } else { issues = [this.state.errMessage] ; }
 
-                            <div> { this.state.showCountChart === true ? countCharts : null } </div>
-                            <div> { this.state.showStats === true ? statCharts : null } </div>
+                let issueElements = issues.map( issue => {
+                    return <li>{ issue } </li>;
+                });
+                thisPage = <div>
+                    { Banner }
+                    <h2>The webpart props have some issues</h2>
+                    { issueElements }
+                </div>;
 
-                            <div>
+            } else {
 
-                                <div className={ this.state.searchCount !== 0 ? styles.hideMe : styles.showErrorMessage  }>{ noInfo } </div>
-                                { bannerMessage }
-                                <Stack horizontal={false} wrap={true} horizontalAlign={"stretch"} tokens={stackPageTokens}>{/* Stack for Buttons and Webs */}
-                                    { this.state.viewType === 'React' ? reactListItems : drillItems }
-                                    {   }
-                                </Stack>
-                            </div> { /* Close tag from above noInfo */}
-                        </div>
+                let toggleTipsButton = <div style={{marginRight: "20px", background: 'white', opacity: '.7', borderRadius: '10px' }}>
+                { createIconButton('Help','Toggle Tips',this.toggleTips.bind(this), null, tipsStyles ) } </div>;
+
+                let errMessage = this.state.errMessage === '' ? null : <div>
+                    { this.state.errMessage }
+                </div>;
+                if ( performanceMessage === true && typeof this.state.errMessage === 'string' ) {
+                    let issues = this.state.errMessage.split('--');
+                    let issueElements = issues.map( issue => {
+                        return <li>{ issue } </li>;
+                    });
+                    errMessage = this.state.errMessage === '' ? null : <div>
+                    <h2>Detected potential performance issues... :(</h2>
+                    { issueElements }
+                    </div>;
+                }
+
+                /***
+                    *    .d8888. d88888b  .d8b.  d8888b.  .o88b. db   db      d8888b.  .d88b.  db    db 
+                    *    88'  YP 88'     d8' `8b 88  `8D d8P  Y8 88   88      88  `8D .8P  Y8. `8b  d8' 
+                    *    `8bo.   88ooooo 88ooo88 88oobY' 8P      88ooo88      88oooY' 88    88  `8bd8'  
+                    *      `Y8b. 88~~~~~ 88~~~88 88`8b   8b      88~~~88      88~~~b. 88    88  .dPYb.  
+                    *    db   8D 88.     88   88 88 `88. Y8b  d8 88   88      88   8D `8b  d8' .8P  Y8. 
+                    *    `8888Y' Y88888P YP   YP 88   YD  `Y88P' YP   YP      Y8888P'  `Y88P'  YP    YP 
+                    *                                                                                   
+                    *                                                                                   
+                    */
+
+                /*https://developer.microsoft.com/en-us/fabric#/controls/web/searchbox*/
+                let searchBox =  
+                <div className={[styles.searchContainer, styles.padLeft20, styles.padTop20, styles.padBot10 ].join(' ')} >
+                    <SearchBox
+                    className={styles.searchBox}
+                    styles={{ root: { maxWidth: this.props.allowRailsOff === true ? 200 : 300 } }}
+                    placeholder="Search"
+                    onSearch={ this._searchForText.bind(this) }
+                    onFocus={ null } // () => console.log('this.state',  this.state)
+                    onBlur={ () => console.log('onBlur called') }
+                    onChange={ this._searchForText.bind(this) }
+                    />
+                    <div className={styles.searchStatus}>
+                    { 'Searching ' + this.state.searchCount + ' items' }
+                    { /* 'Searching ' + (this.state.searchType !== 'all' ? this.state.filteredTiles.length : ' all' ) + ' items' */ }
                     </div>
                 </div>;
+
+                const stackPageTokens: IStackTokens = { childrenGap: 10 };
+
+                /***
+                    *    d8888b. d88888b d88888b d888888b d8b   db d88888b d8888b. .d8888. 
+                    *    88  `8D 88'     88'       `88'   888o  88 88'     88  `8D 88'  YP 
+                    *    88oobY' 88ooooo 88ooo      88    88V8o 88 88ooooo 88oobY' `8bo.   
+                    *    88`8b   88~~~~~ 88~~~      88    88 V8o88 88~~~~~ 88`8b     `Y8b. 
+                    *    88 `88. 88.     88        .88.   88  V888 88.     88 `88. db   8D 
+                    *    88   YD Y88888P YP      Y888888P VP   V8P Y88888P 88   YD `8888Y' 
+                    *                                                                      
+                    *                                                                      
+                    */
+
+                //                <div> { resizePage0 } </div>
+                let showRefiner0 = true;
+                let showRefiner1 = this.state.maxRefinersToShow >= 2 && this.state.searchMeta[0] !== 'All' && this.state.cmdCats.length > 1 ? true : false;
+                let showRefiner2 = this.state.maxRefinersToShow >= 3 && this.state.searchMeta.length >= 2 && this.state.searchMeta[1] !== 'All' && this.state.cmdCats.length > 2 ? true : false;
+
+                let thisIsRefiner0 = null;
+                let thisIsRefiner1 = null;
+                let thisIsRefiner2 = null;
+
+                let refinersObjects = [];
+                if ( this.state.style === 'pivot' ) {
+
+                    let drillPivots0 = this.createPivotObject(this.state.searchMeta[0], '', 0);
+                    let drillPivots1 = showRefiner1 ? this.createPivotObject(this.state.searchMeta[1], '', 1) : null;
+                    let drillPivots2 = showRefiner2 ?  this.createPivotObject(this.state.searchMeta[2], '', 2) : null;
+
+                    if ( showRefiner0 ) { refinersObjects.push( drillPivots0 ) ; }
+                    if ( showRefiner1 ) { refinersObjects.push( drillPivots1 ) ; }
+                    if ( showRefiner2 ) { refinersObjects.push( drillPivots2 ) ; }
+
+                } else if ( this.state.style === 'commandBar' ) {
+
+                    let pinCmd1 = createIconButton('Pin','Pin ' + this.state.refiners[1] + ' to top, Alt-Click to move DOWNOne level.',this.changeRefinerOrder1.bind(this), null, null );
+                    let pinCmd2 = createIconButton('Pin','Pin ' + this.state.refiners[2] + ' to top, Alt-Click to move UP One level.',this.changeRefinerOrder2.bind(this), null, null );
+                    let pinSpanStyle = { paddingLeft: '8px', height: '0px' } ;
+
+                    thisIsRefiner0 = showRefiner0 ? <div><ResizeGroupOverflowSetExample
+                        items={ this.state.cmdCats[0] }
+                        cachingEnabled = { true }
+                        checkedItem = { this.state.searchMeta[0] }
+                        onClick = { this._onSearchForMetaCmd0.bind(this) }
+                        showRefinerCounts = { this.state.showRefinerCounts }
+                        regroupKey = { this.state.cmdCats.length === 0 ? 'showRefiner0' : this.state.cmdCats[0].map( i => { return i.name;  }).join('|||') }
+                    ></ResizeGroupOverflowSetExample></div> : null;
+
+                    thisIsRefiner1 = showRefiner1 ?  <div style={{ display: 'inline-block', width: '100%' }}><div style={ pinSpanStyle }>{pinCmd1}</div><div style={{ marginLeft: '40px', left: '0px'}}><ResizeGroupOverflowSetExample
+                        items={ this.state.cmdCats[1] }
+                        cachingEnabled = { true }
+                        checkedItem = { this.state.searchMeta[1] }
+                        onClick = { this._onSearchForMetaCmd1.bind(this)}
+                        showRefinerCounts = { this.state.showRefinerCounts }
+                        regroupKey = { this.state.cmdCats.length === 0 ? 'showRefiner1' : this.state.cmdCats[1].map( i => { return i.name;  }).join('|||') }
+                    ></ResizeGroupOverflowSetExample></div></div> : null;
+
+                    thisIsRefiner2 = showRefiner2 ?  <div style={{ display: 'inline-block', width: '100%' }}><div style={ pinSpanStyle }>{pinCmd2}</div><div style={{ marginLeft: '40px', left: '0px'}}><ResizeGroupOverflowSetExample
+                        items={ this.state.cmdCats[2] }
+                        cachingEnabled = { true }
+                        checkedItem = { this.state.searchMeta[2] }
+                        onClick = { this._onSearchForMetaCmd2.bind(this)}
+                        showRefinerCounts = { this.state.showRefinerCounts }
+                        regroupKey = { this.state.cmdCats.length === 0 ? 'showRefiner2' : this.state.cmdCats[2].map( i => { return i.name;  }).join('|||') }
+                    ></ResizeGroupOverflowSetExample></div></div> : null;
+
+                    if ( showRefiner0 ) { refinersObjects.push( thisIsRefiner0 ) ; }
+                    if ( showRefiner1 ) { refinersObjects.push( thisIsRefiner1 ) ; }
+                    if ( showRefiner2 ) { refinersObjects.push( thisIsRefiner2 ) ; }
+
+                }
+
+                let noInfo = [];
+                noInfo.push( <h3>{'Found ' + this.state.searchCount + ' items with this search criteria:'}</h3> )  ;
+                if ( this.state.searchText != '' ) { noInfo.push( <p>{'Search Text: ' + this.state.searchText}</p> )  ; }
+                if ( this.state.searchMeta[0] != '' ) { noInfo.push( <p>{'Refiner: ' + this.state.searchMeta[0]}</p> ) ; }
 
                 if ( this.state.allItems.length === 0 ) {
                     thisPage = <div style={{ paddingBottom: 30 }}className={styles.contents}>
                     { errMessage }</div>;
+                } else {
+
+                    /***
+                        *    db      d888888b .d8888. d888888b      d888888b d888888b d88888b .88b  d88. .d8888. 
+                        *    88        `88'   88'  YP `~~88~~'        `88'   `~~88~~' 88'     88'YbdP`88 88'  YP 
+                        *    88         88    `8bo.      88            88       88    88ooooo 88  88  88 `8bo.   
+                        *    88         88      `Y8b.    88            88       88    88~~~~~ 88  88  88   `Y8b. 
+                        *    88booo.   .88.   db   8D    88           .88.      88    88.     88  88  88 db   8D 
+                        *    Y88888P Y888888P `8888Y'    YP         Y888888P    YP    Y88888P YP  YP  YP `8888Y' 
+                        *                                                                                        
+                        *                                                                                        
+                        */
+
+                    // let blueBar = this.state.searchMeta.map( m => { return <span><span style={{ paddingLeft: 0 }}> {'>'} </span><span style={{ paddingLeft: 10, paddingRight: 20 }}> { m } </span></span>; });
+
+
+                    // let drillItems = this.state.searchedItems.length === 0 ? <div>NO ITEMS FOUND</div> : <div>
+                    //     <MyDrillItems 
+                    //         items={ this.state.searchedItems }
+                    //         blueBar={ blueBar }
+                    //     ></MyDrillItems>
+                    //     </div>;
+
+                    let includeDetails = getAppropriateViewProp( viewDefs, this.state.WebpartWidth, 'includeDetails' );
+                    let includeAttach = getAppropriateViewProp( viewDefs, this.state.WebpartWidth, 'includeAttach' );
+                    let includeListLink = getAppropriateViewProp( viewDefs, this.state.WebpartWidth, 'includeListLink' );
+                    
+                    if ( this.state.drillList.hasAttach !== true ) { includeAttach = false; }
+                    let currentViewFields: any[] = [];
+
+                    if ( viewDefs.length > 0 )  { currentViewFields = getAppropriateViewFields( viewDefs, this.state.WebpartWidth ); }
+
+                    let currentViewGroups : IGrouping[] =  getAppropriateViewGroups( viewDefs , this.state.WebpartWidth );
+
+                    let instructionBlock  = null;
+                    let reactListItems  = null;
+
+                    if ( this.props.toggles.togOtherListview === false ) {
+
+                        let showListItems = true;
+
+                        //This loop just checks props vs items to see if the instructions or items list should show.
+                        if ( this.state && this.state.whenToShowItems > 0 ) {
+                            if ( this.state.searchedItems.length > this.props.showItems.minItemsForHide ) {
+                                //Here we see if the refiner level clicked matches the whenToShowItems... if not, then show instructions
+                                if ( this.state.whenToShowItems > this.state.searchMeta.length || this.state.searchMeta [ this.state.whenToShowItems -1 ] === 'All' ) {
+                                    showListItems = false;
+                                }
+                            }
+                        }
+
+                        let instructions = [];
+                        if ( this.state.drillList.refinerInstructions[0].length > 0 && this.props.refiners.length > 0 ) { //Updated to solve #95
+                            instructions.push( this.createInstructionRow(0));
+                        } 
+                        if ( this.state.drillList.refinerInstructions[1].length > 0 && this.props.refiners.length > 1 ) { //Updated to solve #95
+                            instructions.push( this.createInstructionRow(1));
+                        } 
+                        if ( this.state.drillList.refinerInstructions[2].length > 0 && this.props.refiners.length > 2 ) { //Updated to solve #95
+                            instructions.push( this.createInstructionRow(2));
+                        } 
+                        let instructionContent = <div className={ [stylesD.instructions, null ].join(' ') }>
+                            <div className={ stylesD.instHeading } style={{ }}>{ this.props.showItems.instructionIntro } { this.buildInstructionIcons() }</div>
+                            <ul style={{ listStyleType: 'decimal' }}>
+                                { instructions }
+                            </ul>
+                        </div>;
+
+                        if ( showListItems === false || this.state.instructionsHidden === 'force' ) {
+                            instructionBlock = instructionContent;
+
+                        } else {
+                            instructionBlock = null;
+                            reactListItems  = this.state.searchedItems.length === 0 ? <div>NO ITEMS FOUND</div> : 
+                            <ReactListItems 
+                                parentListFieldTitles={ viewDefs.length > 0 ? null : this.props.parentListFieldTitles }
+    
+                                webURL = { this.state.drillList.webURL }
+                                parentListURL = { this.state.drillList.parentListURL }
+                                listName = { this.state.drillList.name }
+    
+                                contextUserInfo = { this.state.drillList.contextUserInfo }
+                                sourceUserInfo = { this.state.drillList.sourceUserInfo }
+    
+                                viewFields={ currentViewFields }
+                                groupByFields={ currentViewGroups }
+                                items={ this.state.searchedItems }
+                                includeDetails= { includeDetails }
+                                includeAttach= { includeAttach }
+                                includeListLink = { includeListLink }
+                                quickCommands={ this.state.quickCommands }
+                            
+                            ></ReactListItems>;
+                        }
+                    }
+
+
+
+                    /***
+                        *    .d8888. db    db .88b  d88. .88b  d88.  .d8b.  d8888b. db    db 
+                        *    88'  YP 88    88 88'YbdP`88 88'YbdP`88 d8' `8b 88  `8D `8b  d8' 
+                        *    `8bo.   88    88 88  88  88 88  88  88 88ooo88 88oobY'  `8bd8'  
+                        *      `Y8b. 88    88 88  88  88 88  88  88 88~~~88 88`8b      88    
+                        *    db   8D 88b  d88 88  88  88 88  88  88 88   88 88 `88.    88    
+                        *    `8888Y' ~Y8888P' YP  YP  YP YP  YP  YP YP   YP 88   YD    YP    
+                        *                                                                    
+                        *                                                                    
+                        */
+
+                    let countCharts = [];
+                    let statCharts = [];
+                    let statRefinerObject = null;
+                    let buildStats = this.state.drillList.refinerStats && this.state.drillList.refinerStats.length > 0 ? true : false;
+                    let buildCount = this.state.showCountChart;
+
+                    let statsVisible = this.props.toggles.togOtherChartpart === true || this.props.toggles.togStats === true ? true : false;
+                    let textMaxRefinersToShow = 0;
+                    let childIndex0 = null;
+                    let childIndex1 = null;
+
+                    if ( buildStats ) {  statRefinerObject = this.state.refinerObj; }
+
+                    consoleRef( 'rederObjects1', this.state.refinerObj );
+                    if ( this.state.maxRefinersToShow > 1 && this.state.searchMeta[0] !== 'All' ) { 
+                        textMaxRefinersToShow = 1;
+                        childIndex0 = this.state.refinerObj.childrenKeys.indexOf(this.state.searchMeta[0]);
+                        if ( buildStats ) {  statRefinerObject = this.state.refinerObj.childrenObjs[childIndex0]; }
+                        consoleRef( 'rederObjects2', this.state.refinerObj );
+                    }
+                    if ( textMaxRefinersToShow >= 1 && this.state.maxRefinersToShow > 2 && this.state.searchMeta.length > 1 && this.state.searchMeta[1] !== 'All' ) { 
+                        textMaxRefinersToShow = 2;
+                        childIndex1 = this.state.refinerObj.childrenObjs[childIndex0].childrenKeys.indexOf(this.state.searchMeta[1]);
+                        if ( buildStats ) {  statRefinerObject = this.state.refinerObj.childrenObjs[childIndex0].childrenObjs[childIndex1]; }
+                        consoleRef( 'rederObjects3', this.state.refinerObj );
+                    }
+
+                    if ( this.state.showCountChart === true || statsVisible === true ) {
+                        if ( buildCount ) { countCharts.push( this.buildCountCharts( this.state.refiners[0], 'refiner0' , this.state.refinerObj, RefinerChartTypes ) ); }
+                        if ( textMaxRefinersToShow >= 1 ) {
+                            if ( buildCount ) {  countCharts.push( this.buildCountCharts( this.state.refiners[1], 'refiner1' , this.state.refinerObj.childrenObjs[childIndex0], RefinerChartTypes ) ); }
+                            if ( textMaxRefinersToShow >= 2 ) {
+                                if ( buildCount ) {  countCharts.push( this.buildCountCharts( this.state.refiners[2], 'refiner2' , this.state.refinerObj.childrenObjs[childIndex0].childrenObjs[childIndex1],  RefinerChartTypes ) ); }
+                            }
+                        }
+
+                        if ( countCharts.length === 0 ) { countCharts = null ; }
+                        if ( buildStats && statsVisible === true && statRefinerObject && statRefinerObject.childrenKeys.length > 0  ) {
+                            let statChartArray = buildStatChartsArray( this.state.drillList.refinerStats, 'summaries', statRefinerObject );
+                            statCharts = this.buildStatCharts( statChartArray );
+
+                        } else {
+
+                        }
+
+                    }
+                    if ( statRefinerObject && statRefinerObject.childrenKeys.length > 0  ) {
+                        //Update Dynamic Data cssChartData  cssChartProps : ICssChartProps
+                        if ( this.props.handleSwitch ) {
+                            this.props.handleSwitch ( this.state.drillList.refinerStats, 'summaries', statRefinerObject, this.state.searchMeta ) ; //resultSummaryArray  ); //: //  { chartData : ICSSChartSeries[], callBackID: string }[]  
+                        }
+                    } else {
+                        //Update Dynamic Data cssChartData
+                        if ( this.props.handleSwitch ) {
+                            this.props.handleSwitch ( null, null, null ); //: ICssChartProps
+                        }
+                    }
+
+                    /***
+                        *    d888888b  .d88b.   d888b   d888b  db      d88888b .d8888. 
+                        *    `~~88~~' .8P  Y8. 88' Y8b 88' Y8b 88      88'     88'  YP 
+                        *       88    88    88 88      88      88      88ooooo `8bo.   
+                        *       88    88    88 88  ooo 88  ooo 88      88~~~~~   `Y8b. 
+                        *       88    `8b  d8' 88. ~8~ 88. ~8~ 88booo. 88.     db   8D 
+                        *       YP     `Y88P'   Y888P   Y888P  Y88888P Y88888P `8888Y' 
+                        *                                                              
+                        *                                                              
+                        */
+
+
+                    let toggles = <div style={{ float: 'right' }}> { makeToggles(this.getPageToggles( statCharts.length > 0 ? true : false )) } </div>;
+
+                    let messages : any[] = [];
+                    if ( this.state.WebpartWidth > 800 ) { 
+                        messages.push( <div><span><b>{ 'Welcome to ALV Webpart Early Access!!!' }</b></span></div> ) ;
+                        messages.push( <div><span><b>{ 'Get more info here -->' }</b></span></div> ) ;
+                    }
+                    else if ( this.state.WebpartWidth > 700 ) {
+                        messages.push( <div><span><b>{ 'Webpart Early Access!' }</b></span></div> ) ;
+                        messages.push( <div><span><b>{ 'More info ->' }</b></span></div> ) ;
+                    } else if ( this.state.WebpartWidth > 600 ) {
+                        messages.push( <div><span><b>{ 'info ->' }</b></span></div> ) ;
+
+                    } else if ( this.state.WebpartWidth > 400 ) {
+                        messages.push( <div><span><b>{ 'info ->' }</b></span></div> ) ;
+                    }
+
+
+
+                    /***
+                        *    d888888b db   db d888888b .d8888.      d8888b.  .d8b.   d888b  d88888b 
+                        *    `~~88~~' 88   88   `88'   88'  YP      88  `8D d8' `8b 88' Y8b 88'     
+                        *       88    88ooo88    88    `8bo.        88oodD' 88ooo88 88      88ooooo 
+                        *       88    88~~~88    88      `Y8b.      88~~~   88~~~88 88  ooo 88~~~~~ 
+                        *       88    88   88   .88.   db   8D      88      88   88 88. ~8~ 88.     
+                        *       YP    YP   YP Y888888P `8888Y'      88      YP   YP  Y888P  Y88888P 
+                        *                                                                           
+                        *                                                                           
+                        */
+                        
+                    thisPage = <div>
+                        { Banner }
+                        <div className={styles.contents}>
+                            <div className={stylesD.drillDown}>
+                                {  /* <div className={styles.floatRight}>{ toggleTipsButton }</div> */ }
+                                <div className={ this.state.errMessage === '' ? styles.hideMe : styles.showErrorMessage  }>{ errMessage } </div>
+                                {  /* <p><mark>Check why picking Assists does not show Help as a chapter even though it's the only chapter...</mark></p> */ }
+                                <Stack horizontal={true} wrap={true} horizontalAlign={"space-between"} verticalAlign= {"center"} tokens={stackPageTokens}>{/* Stack for Buttons and Webs */}
+                                    { searchBox } { toggles } 
+                                </Stack>
+
+                                <Stack horizontal={false} wrap={true} horizontalAlign={"stretch"} tokens={stackPageTokens} className={ stylesD.refiners }>{/* Stack for Buttons and Webs */}
+                                    { refinersObjects  }
+                                </Stack>
+
+                                { instructionBlock }
+                                
+                                <div> { this.state.showCountChart === true ? countCharts : null } </div>
+                                <div> { this.state.showStats === true ? statCharts : null } </div>
+
+                                <div>
+
+                                    <div className={ this.state.searchCount !== 0 ? styles.hideMe : styles.showErrorMessage  }>{ noInfo } </div>
+                                    { bannerMessage }
+                                    <Stack horizontal={false} wrap={true} horizontalAlign={"stretch"} tokens={stackPageTokens}>{/* Stack for Buttons and Webs */}
+                                        {/* { this.state.viewType === 'React' ? reactListItems : drillItems } */}
+
+                                        { reactListItems }
+                                        {   }
+                                    </Stack>
+                                </div> { /* Close tag from above noInfo */}
+                            </div>
+                        </div>
+                    </div>;
+
+                    if ( this.state.allItems.length === 0 ) {
+                        thisPage = <div style={{ paddingBottom: 30 }}className={styles.contents}>
+                        { errMessage }</div>;
+                    }
                 }
+                
             }
 
 
@@ -1255,7 +1464,7 @@ public componentDidUpdate(prevProps){
          * This is copied from constructor when you have to call the data in case something changed.
          */
 
-        let drillList = this.createDrillList(this.props.webURL, this.props.listName, false, refiners, this.state.rules, this.props.stats, viewDefs, this.props.toggles.togOtherChartpart, '', false);
+        let drillList = this.createDrillList(this.props.webURL, this.props.listName, false, refiners, this.state.rules, this.props.stats, viewDefs, this.props.toggles.togOtherChartpart, '', false, 'getAllItemsCall', this.state.drillList.itteration );
         let errMessage = drillList.refinerRules === undefined ? 'Invalid Rule set: ' +  this.state.rules : '';
         if ( drillList.refinerRules === undefined ) { drillList.refinerRules = [[],[],[]] ; } 
 
@@ -1264,7 +1473,8 @@ public componentDidUpdate(prevProps){
     }
 
     private addTheseItemsToState( drillList: IDrillList, allItems , errMessage : string, refinerObj: IRefinerLayer ) {
-
+        consoleRef( 'addTheseItems1REF', refinerObj );
+        consoleMe( 'addTheseItems1' , allItems, drillList );
         //let newFilteredItems : IDrillItemInfo[] = this.getNewFilteredItems( '', this.state.searchMeta, allItems, 0 );
         let pivotCats : any = [];
         let cmdCats : any = [];
@@ -1273,15 +1483,11 @@ public componentDidUpdate(prevProps){
 
         cmdCats.push ( this.convertRefinersToCMDs( ['All'],  refinerObj.childrenKeys, countTree, 0 , 0, refinerObj) );
 
-        console.log('addTheseItemsToState: refinerObj',refinerObj );
-        console.log('drillList.refinerStats: ', drillList.refinerStats );
-
         if ( allItems.length < 300 ) {
             console.log('addTheseItemsToState allItems: ', allItems);
         } {
             console.log('addTheseItemsToState allItems: QTY: ', allItems.length );
         }
-
 
         let maxRefinersToShow = 1;
         if ( this.props.refiners ) {
@@ -1296,6 +1502,8 @@ public componentDidUpdate(prevProps){
         let viewDefs: ICustViewDef[] = JSON.parse(JSON.stringify(this.props.viewDefs));
 
         if ( this.props.toggles.togOtherListview === true ) {
+
+            //2022-03-22:  This will update the listViewDD for other parts if it's turned on in main webpart props.
             let listViewDD : IListViewDDDrillDown = {
 
                 parentListFieldTitles: this.props.viewDefs.length > 0 ? null : this.props.parentListFieldTitles,
@@ -1322,6 +1530,7 @@ public componentDidUpdate(prevProps){
 
         } else {
 
+            //2022-03-22:  This will just clear the listViewDD for other parts if it's turned off in main webpart props.
             let listViewDD : IListViewDDDrillDown = {
 
                 parentListFieldTitles: null,
@@ -1347,6 +1556,13 @@ public componentDidUpdate(prevProps){
             if ( this.props.handleListPost ) { this.props.handleListPost( listViewDD ); }
 
         }
+        consoleRef( 'addTheseItems2REF', refinerObj );
+        consoleMe( 'addTheseItems2' , allItems, drillList );
+
+        console.log('addTheseItemsToState: props',this.props );
+        console.log('addTheseItemsToState: refinerObj',refinerObj );
+        console.log('addTheseItemsToState: drillList',drillList );
+        console.log('addTheseItemsToState: refinerStats', drillList.refinerStats );
 
         this.setState({
             allItems: allItems,
@@ -1362,6 +1578,7 @@ public componentDidUpdate(prevProps){
             refiners: drillList.refiners,
             maxRefinersToShow: maxRefinersToShow,
             rules: JSON.stringify(drillList.refinerRules),
+            instructionsHidden: 'dynamic',
         });
 
         //This is required so that the old list items are removed and it's re-rendered.
@@ -1496,14 +1713,17 @@ public componentDidUpdate(prevProps){
 
         //This sends back the correct pivot category which matches the category on the tile.
         let validText = this.findMatchtingElementText( item );
+        this.consoleClick( 'getClickInfo1 - validText' , validText );
         validText = this._getValidCountFromClickItem( item, validText );
-
+        this.consoleClick( 'getClickInfo2 - validText' , validText );
         let clickInfo = {
             isAltClick : e.altKey,
             isShfitClick : e.shiftKey,
             isCtrlClick : e.ctrlKey,
             validText : validText,
         };
+        this.consoleClick( 'getClickInfo - clickInfo' , clickInfo );
+
 
         return clickInfo;
 
@@ -1606,22 +1826,32 @@ public componentDidUpdate(prevProps){
     let refinerRulesNew: IRefinerRules[][] = [];
     let refinerRulesOrig: IRefinerRules[][] = JSON.parse(JSON.stringify( this.state.drillList.refinerRules ));
 
+    let newOrder = [];
     if ( newLeadRefiner === 'refiner0' ) {
-        let newOrder = clickInfo.isAltClick !== true ? [0,1,2] : [1,0,2];
-        newOrder.map( i => { refiners.push( refinersOrig[i] ); refinerRulesNew.push( refinerRulesOrig[i] ); });
-
+        newOrder = clickInfo.isAltClick !== true ? [0,1,2] : [1,0,2];
+        
     } else if ( newLeadRefiner === 'refiner1' ) {
-        let newOrder = clickInfo.isAltClick !== true ? [1,0,2] : [0,2,1];
-        newOrder.map( i => { refiners.push( refinersOrig[i] ); refinerRulesNew.push( refinerRulesOrig[i] ); });
+        newOrder = clickInfo.isAltClick !== true ? [1,0,2] : [0,2,1];
 
     } else if ( newLeadRefiner === 'refiner2' ) {
-        let newOrder = clickInfo.isAltClick !== true ? [2,0,1] : [0,2,1];
-        newOrder.map( i => { refiners.push( refinersOrig[i] ); refinerRulesNew.push( refinerRulesOrig[i] ); });
+        newOrder = clickInfo.isAltClick !== true ? [2,0,1] : [0,2,1];
 
     } else {
         alert ("I think there is a problem with changeRefinerOrder, " + newLeadRefiner + " was not expected." );
 
     }
+
+    let stateRefinerInstructions: string[] = [];
+
+    this.consoleClick( 'changeRefinerOrder - newOrder' , newOrder );
+    
+    newOrder.map( i => { 
+        refiners.push( refinersOrig[i] );
+        refinerRulesNew.push( refinerRulesOrig[i] );
+        stateRefinerInstructions.push( `${this.state.drillList.refinerInstructions[i]}` ); // Put this in quotes to insure it is not a direct pointer to the current drillList instructions
+    });
+
+    this.consoleClick( 'changeRefinerOrder - refiners', refiners );
 
     /**
      * 2022-01-17:  Added this to see if this gets mutated and breaks on refresh items.  
@@ -1629,7 +1859,10 @@ public componentDidUpdate(prevProps){
      */ 
     let viewDefs: ICustViewDef[] = JSON.parse(JSON.stringify(this.props.viewDefs));
 
-    let drillList = this.createDrillList(this.props.webURL, this.props.listName, false, refiners, JSON.stringify(refinerRulesNew), this.props.stats, viewDefs, this.props.toggles.togOtherChartpart, '', true );
+    let drillList = this.createDrillList(this.props.webURL, this.props.listName, false, refiners, JSON.stringify(refinerRulesNew), this.props.stats, viewDefs, this.props.toggles.togOtherChartpart, '', true, 'changeRefinerOrder', this.state.drillList.itteration  );
+
+    drillList.refinerInstructions = stateRefinerInstructions;
+    
     let errMessage = drillList.refinerRules === undefined ? 'Invalid Rule set: ' +  this.state.rules : '';
     if ( drillList.refinerRules === undefined ) { drillList.refinerRules = [[],[],[]] ; }
 
@@ -1691,6 +1924,8 @@ public componentDidUpdate(prevProps){
 
   public searchForItems = (text: string, newMeta: string[] , layer: number, searchType: 'meta' | 'text' ): void => {
 
+            
+    consoleMe( 'searchForItems1: ' + text , this.state.allItems, this.state.drillList );
     let searchItems : IDrillItemInfo[] = this.state.allItems;
     let searchCount = searchItems.length;
 
@@ -1814,7 +2049,9 @@ public componentDidUpdate(prevProps){
         searchCount = newFilteredItems.length;
     }
 
-
+    consoleMe( 'searchForItems2: ' + text , this.state.allItems, this.state.drillList );
+    consoleRef( 'searchForItems2: ' + text , refinerObj );
+    this.consoleClick('searchForItems2: cmdCats', cmdCats );
     this.setState({
       searchedItems: newFilteredItems,
       searchCount: searchCount,
@@ -1823,7 +2060,7 @@ public componentDidUpdate(prevProps){
       pivotCats: pivotCats,
       cmdCats: cmdCats,
       refinerObj: refinerObj,
-
+      instructionsHidden: 'dynamic',
     });
 
 
@@ -1922,6 +2159,8 @@ public componentDidUpdate(prevProps){
             bannerMessage: message,
         });
 
+        consoleMe( '_reloadOnUpdate' , this.state.allItems, this.state.drillList );
+
         this.getAllItemsCall( viewDefs, this.state.refiners );
 
         let delay = hasError === true ? 10000 : this.state.quickCommands.successBanner;
@@ -1952,7 +2191,6 @@ public componentDidUpdate(prevProps){
         let result = [];
 
         //Get sum of array of numbers:  https://codeburst.io/javascript-arrays-finding-the-minimum-maximum-sum-average-values-f02f1b0ce332
-        
         const arrSum = thisCount.reduce((a,b) => a + b, 0);
 
         result.push ({
@@ -2095,6 +2333,20 @@ public componentDidUpdate(prevProps){
  *                                                                   
  */
 
+    private hideInstructions(){
+        let newState = this.state.whenToShowItems === 0 ? this.props.showItems.whenToShowItems : 0;
+        
+        this.setState( { whenToShowItems: newState, instructionsHidden: 'hide' });
+
+    }
+
+    private forceInstructions(){
+        let newState = this.state.whenToShowItems === 0 ? this.props.showItems.whenToShowItems : 0;
+        
+        this.setState( { whenToShowItems: newState, instructionsHidden: 'force' });
+
+    }
+
     private getPageToggles( showStats ) {
 
         let togRefinerCounts = {
@@ -2225,4 +2477,14 @@ public componentDidUpdate(prevProps){
       
       } //End toggleTips  
 
+      
+    private consoleClick( location: string, info: any ) {
+
+        return; //Not needed for now.
+
+        let info2 = JSON.parse(JSON.stringify(info));
+
+        console.log('Error#94: - Click', location, info2 );
+
+    }
 }

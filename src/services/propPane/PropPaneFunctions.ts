@@ -85,7 +85,7 @@ export async function getAllItems( configWebURL: string, propsListName: string, 
     if ( errMessage === '' && returnProps.length === 0 ) { 
         errMessage = 'This list or library does not have any items that you can see.';
      }
-     console.log('Found returnProps: ' ,returnProps );
+    //  console.log('Found returnProps: ' ,returnProps );
     return returnProps;
 
 }

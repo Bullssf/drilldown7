@@ -11,7 +11,8 @@ import { Web, IList, IItem } from "@pnp/sp/presets/all";
 
 import * as strings from 'Drilldown7WebPartStrings';
 import DrillDown from './components/Drill/drillComponent';
-import { IDrillDownProps } from './components/Drill/drillComponent';
+import { IDrillDownProps, IWhenToShowItems } from './components/Drill/drillComponent';
+import { consoleRef } from './components/Drill/drillFunctions';
 
 import { PageContext } from '@microsoft/sp-page-context';
 
@@ -102,6 +103,7 @@ export interface IDrilldown7WebPartProps {
   parentListTitle: string;
   parentListWeb: string;
   parentListURL?: string;
+  hideFolders: boolean;
 
   refiner0: string;
   refiner1: string;
@@ -162,6 +164,14 @@ export interface IDrilldown7WebPartProps {
 
   // 6 - User Feedback:
   progress: IMyProgress;
+
+  whenToShowItems: IWhenToShowItems;
+  minItemsForHide: number;
+  instructionIntro: string;
+  refinerInstruction1: string;
+  refinerInstruction2: string;
+  refinerInstruction3: string;
+
 
   // 7 - TBD
 
@@ -243,6 +253,14 @@ export default class Drilldown7WebPart extends BaseClientSideWebPart<IDrilldown7
       if ( !this.properties.rules2 ) { 
         this.properties.rules2 = [] ; 
       }
+
+      //Added for https://github.com/mikezimm/drilldown7/issues/95
+      if ( this.properties.whenToShowItems === undefined || this.properties.whenToShowItems === null ) { this.properties.whenToShowItems = 2; }
+      if ( this.properties.minItemsForHide === undefined || this.properties.minItemsForHide === null ) { this.properties.minItemsForHide = 30; }
+      if ( !this.properties.instructionIntro ) { this.properties.instructionIntro = `Please click filters (above) to see items :)`; }
+      if ( !this.properties.refinerInstruction1 ) { this.properties.refinerInstruction1 = `Select a {{refiner0}}`; }
+      if ( !this.properties.refinerInstruction2 ) { this.properties.refinerInstruction2 = `Select a {{refiner1}}`; }
+      if ( !this.properties.refinerInstruction3 ) { this.properties.refinerInstruction3 = `Select a {{refiner2}}`; }
 
       // other init code may be present
 
@@ -404,7 +422,7 @@ export default class Drilldown7WebPart extends BaseClientSideWebPart<IDrilldown7
 
   public render(): void {
 
-    
+    let errMessage = '';    
     /***
      *    d8888b.  .d8b.  d8b   db d8b   db d88888b d8888b. 
      *    88  `8D d8' `8b 888o  88 888o  88 88'     88  `8D 
@@ -449,6 +467,7 @@ export default class Drilldown7WebPart extends BaseClientSideWebPart<IDrilldown7
       nearElements: [],
       earyAccess: false,
       wideToggle: true,
+
     };
     //close #129:  This makes the maxWidth added in fps options apply to banner as well.
     if ( this.properties.fpsContainerMaxWidth && this.properties.fpsContainerMaxWidth.length > 0 ) {
@@ -471,6 +490,10 @@ export default class Drilldown7WebPart extends BaseClientSideWebPart<IDrilldown7
     if ( this.properties.refiner1 && this.properties.refiner1.length > 0 ) { refiners.push( this.properties.refiner1 ) ;}
     if ( this.properties.refiner2 && this.properties.refiner2.length > 0 ) { refiners.push( this.properties.refiner2 ) ;}
 
+    //Added for https://github.com/mikezimm/drilldown7/issues/95
+    let whenToShowItems: IWhenToShowItems = this.properties.whenToShowItems;
+    if ( whenToShowItems > refiners.length ) { whenToShowItems = refiners.length as any ; }
+
     let rules1: RefineRuleValues[] = ['parseBySemiColons'];
     let rules2: RefineRuleValues[] = ['parseBySemiColons'];
     let rules3: RefineRuleValues[] = ['groupByMonthsMMM'];
@@ -485,7 +508,15 @@ export default class Drilldown7WebPart extends BaseClientSideWebPart<IDrilldown7
     let viewFields2 : IViewField[] = this.getViewFieldsObject('Med Size view', this.properties.viewJSON2, this.properties.groupByFields );
     let viewFields3 : IViewField[] = this.getViewFieldsObject('Small Size view', this.properties.viewJSON3, this.properties.groupByFields );
 
+    if ( !viewFields1 ) { errMessage += 'viewFields1 has an error; '; viewFields1 = [] ; }
+    if ( !viewFields2 ) { errMessage += 'viewFields2 has an error; '; viewFields2 = [] ; }
+    if ( !viewFields3 ) { errMessage += 'viewFields3 has an error; '; viewFields3 = [] ; }
+
+    if ( errMessage.indexOf('viewFields') > -1 ) { errMessage += 'Tip:  Extra commas after last object can cause this!'; }
+
     let groupByFields: IGrouping[] = this.getViewGroupFields( 'Group View Fields', this.properties.groupByFields);
+
+    if ( !groupByFields ) { errMessage += 'groupByFields has an error; '; groupByFields = []; }
 
     let includeDetails = this.properties.includeDetails;
     let includeAttach = this.properties.includeAttach;
@@ -506,6 +537,7 @@ export default class Drilldown7WebPart extends BaseClientSideWebPart<IDrilldown7
     //Just for test purposes
     //stringRules = JSON.stringify( [rules1,rules2,rules3] );
 
+
     const element: React.ReactElement<IDrillDownProps> = React.createElement(
       DrillDown,
       {
@@ -516,6 +548,8 @@ export default class Drilldown7WebPart extends BaseClientSideWebPart<IDrilldown7
         wpContext: this.context,
         
         bannerProps: bannerProps,
+
+        errMessage: errMessage,
 
         tenant: this.context.pageContext.web.absoluteUrl.replace(this.context.pageContext.web.serverRelativeUrl,""),
         urlVars: this.getUrlVars(),
@@ -544,12 +578,26 @@ export default class Drilldown7WebPart extends BaseClientSideWebPart<IDrilldown7
             restFilter: !this.properties.restFilter ? '' : this.properties.restFilter,
         },
 
+        showItems: {
+            //Modified for https://github.com/mikezimm/drilldown7/issues/95
+            whenToShowItems: whenToShowItems,
+            minItemsForHide: this.properties.minItemsForHide,
+            instructionIntro: this.properties.instructionIntro,
+            refinerInstructions: [ 
+              this.properties.refinerInstruction1.replace(`{{refiner0}}`, this.properties.refiner0 ),
+              this.properties.refinerInstruction2.replace(`{{refiner1}}`, this.properties.refiner1 ),
+              this.properties.refinerInstruction3.replace(`{{refiner2}}`, this.properties.refiner2 ),
+          ],
+
+        },
+
         quickCommands: quickCommands,
 
         // 2 - Source and destination list information
         listName: this.properties.parentListTitle,
         webURL: parentWeb,
         parentListURL: this.properties.parentListURL,
+        hideFolders: this.properties.hideFolders,
 
         refiners: refiners,
         showDisabled: this.properties.showDisabled,
@@ -613,6 +661,7 @@ export default class Drilldown7WebPart extends BaseClientSideWebPart<IDrilldown7
    */
   private handleSwitch = ( stats: IRefinerStat[], callBackID: string, refinerObj: IRefinerLayer, breadCrumb: string[] ) : void => {
 
+    consoleRef( 'handleSwitch', refinerObj );
     let e = event;
 
     let cssChartProps : ICSSChartDD = {
@@ -633,8 +682,8 @@ export default class Drilldown7WebPart extends BaseClientSideWebPart<IDrilldown7
    * 2) Tell anybody who subscribed, that property changed
    */
   private handleListPost = ( listProps : IListViewDDDrillDown ) : void => {
-
-    console.log('this.props.viewDefs ~ 638 - handleListPost', listProps );
+    consoleRef( 'handleListPost-No Object', null );
+    console.log('this.props.viewDefs ~ 638 - handleListPost: callback listProps if any other webparts are listening', listProps );
     if ( this.properties.togOtherListview === true ) {
       let e = event;
 
@@ -776,7 +825,7 @@ export default class Drilldown7WebPart extends BaseClientSideWebPart<IDrilldown7
       if ( this.properties.webPartScenario !== '' && this.properties.webPartScenario != null ) {
         //newMap = getAllItems(configWebURL, 'DrilldownPreConfigProps', thisProps );
         restFilterLD = "webPartScenario eq '" + this.properties.webPartScenario + "'";
-        console.log('_getListDefintions restFilterLD:', restFilterLD );
+        // console.log('_getListDefintions restFilterLD:', restFilterLD );
       }
 
       //Must remove 'newMap' from props because it's one can't be mapped.
@@ -790,7 +839,7 @@ export default class Drilldown7WebPart extends BaseClientSideWebPart<IDrilldown7
       //}
 
       this.properties.newMap = newMap;
-      console.log('this.properties.newMap:',  this.properties.newMap );
+      // console.log('this.properties.newMap:',  this.properties.newMap );
 
     } else {
       console.log('NOT GETTING LIST DEFINITIONS, already fetched:', this.properties.newMap);

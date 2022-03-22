@@ -204,6 +204,11 @@ export class IntroPage {
           PropertyPaneTextField('parentListTitle', {
             label: strings.FieldLabel_ParentListTitle
           }),
+          PropertyPaneToggle('hideFolders', {
+            label: 'Hide Folders',
+            offText: 'Show Folders',
+            onText: 'Hide Folders',
+          }),
         ]}, // this group
 
         { groupName: 'Performance Properties',
@@ -220,7 +225,7 @@ export class IntroPage {
           PropertyPaneSlider('fetchCountMobile', {
             label: 'Load this many items',
             min: 100,
-            max: 2000,
+            max: 3000,
             step: 100,
             value: webPartProps.fetchCountMobile,
             disabled: true,
