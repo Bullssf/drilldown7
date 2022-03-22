@@ -12,6 +12,7 @@ import { Web, IList, IItem } from "@pnp/sp/presets/all";
 import * as strings from 'Drilldown7WebPartStrings';
 import DrillDown from './components/Drill/drillComponent';
 import { IDrillDownProps, IWhenToShowItems } from './components/Drill/drillComponent';
+import { consoleRef } from './components/Drill/drillFunctions';
 
 import { PageContext } from '@microsoft/sp-page-context';
 
@@ -651,6 +652,7 @@ export default class Drilldown7WebPart extends BaseClientSideWebPart<IDrilldown7
    */
   private handleSwitch = ( stats: IRefinerStat[], callBackID: string, refinerObj: IRefinerLayer, breadCrumb: string[] ) : void => {
 
+    consoleRef( 'handleSwitch', refinerObj );
     let e = event;
 
     let cssChartProps : ICSSChartDD = {
@@ -671,7 +673,7 @@ export default class Drilldown7WebPart extends BaseClientSideWebPart<IDrilldown7
    * 2) Tell anybody who subscribed, that property changed
    */
   private handleListPost = ( listProps : IListViewDDDrillDown ) : void => {
-
+    consoleRef( 'handleListPost-No Object', null );
     console.log('this.props.viewDefs ~ 638 - handleListPost', listProps );
     if ( this.properties.togOtherListview === true ) {
       let e = event;

@@ -56,7 +56,7 @@ import ReactListItems from './reactListView';
 
 //parentListFieldTitles
 
-import { getAllItems, buildRefinersObject, processAllItems, } from './drillFunctions';
+import { getAllItems, buildRefinersObject, processAllItems, consoleMe, consoleRef, } from './drillFunctions';
 
 import ResizeGroupOverflowSetExample from './refiners/commandBar';
 
@@ -99,6 +99,9 @@ export type IRefinerStyles = 'pivot' | 'commandBar' | 'other';
  */
 
   export interface IDrillList extends Partial<IPickedList> {
+    itteration: number;
+    location: string;
+
     title: string;
     name?: string;
     guid?: string;
@@ -674,7 +677,7 @@ export default class DrillDown extends React.Component<IDrillDownProps, IDrillDo
      */
 
     private createDrillList(webURL: string, name: string, isLibrary: boolean, refiners: string[], rules: string, stats: string, 
-        OrigViewDefs: ICustViewDef[], togOtherChartpart: boolean, title: string = null, stateSourceUserInfo: boolean) {
+        OrigViewDefs: ICustViewDef[], togOtherChartpart: boolean, title: string = null, stateSourceUserInfo: boolean, location: string, itteration: number ) {
 
         let viewDefs = JSON.parse(JSON.stringify(OrigViewDefs)) ;
         let refinerRules = this.createEmptyRefinerRules( rules );
@@ -688,6 +691,8 @@ export default class DrillDown extends React.Component<IDrillDownProps, IDrillDo
         }
 
         let list: IDrillList = {
+            itteration: itteration + 1,
+            location: location,
             title: title,
             name: name,
             guid: '',
@@ -729,6 +734,7 @@ export default class DrillDown extends React.Component<IDrillDownProps, IDrillDo
             removeFromSelect: ['currentTime','currentUser'],
         };
 
+        consoleMe( 'createDL' + location , this.state ? this.state.allItems : null , list );
         list = this.updateDrillListColumns( list ) ;
 
         return list;
@@ -753,7 +759,7 @@ export default class DrillDown extends React.Component<IDrillDownProps, IDrillDo
          * This is copied later in code when you have to call the data in case something changed.
          */
 
-        let drillList = this.createDrillList(this.props.webURL, this.props.listName, false, this.props.refiners, this.props.rules, this.props.stats, this.props.viewDefs, this.props.toggles.togOtherChartpart, '', false);
+        let drillList = this.createDrillList(this.props.webURL, this.props.listName, false, this.props.refiners, this.props.rules, this.props.stats, this.props.viewDefs, this.props.toggles.togOtherChartpart, '', false, 'constructor', 0);
         let errMessage = drillList.refinerRules === undefined ? 'Invalid Rule set: ' +  this.props.rules : '';
         if ( drillList.refinerRules === undefined ) { drillList.refinerRules = [[],[],[]] ; } 
 
@@ -1216,7 +1222,7 @@ public componentDidUpdate(prevProps){
                         if ( this.state && this.state.whenToShowItems > 0 ) {
                             if ( this.state.searchedItems.length > this.props.showItems.minItemsForHide ) {
                                 //Here we see if the refiner level clicked matches the whenToShowItems... if not, then show instructions
-                                if ( this.state.whenToShowItems > this.state.searchMeta.length || this.state.searchMeta[this.state.whenToShowItems -1 ] === 'All' ) {
+                                if ( this.state.whenToShowItems > this.state.searchMeta.length || this.state.searchMeta [ this.state.whenToShowItems -1 ] === 'All' ) {
                                     showListItems = false;
                                 }
                             }
@@ -1293,15 +1299,18 @@ public componentDidUpdate(prevProps){
 
                     if ( buildStats ) {  statRefinerObject = this.state.refinerObj; }
 
+                    consoleRef( 'rederObjects1', this.state.refinerObj );
                     if ( this.state.maxRefinersToShow > 1 && this.state.searchMeta[0] !== 'All' ) { 
                         textMaxRefinersToShow = 1;
                         childIndex0 = this.state.refinerObj.childrenKeys.indexOf(this.state.searchMeta[0]);
                         if ( buildStats ) {  statRefinerObject = this.state.refinerObj.childrenObjs[childIndex0]; }
+                        consoleRef( 'rederObjects2', this.state.refinerObj );
                     }
                     if ( textMaxRefinersToShow >= 1 && this.state.maxRefinersToShow > 2 && this.state.searchMeta.length > 1 && this.state.searchMeta[1] !== 'All' ) { 
                         textMaxRefinersToShow = 2;
                         childIndex1 = this.state.refinerObj.childrenObjs[childIndex0].childrenKeys.indexOf(this.state.searchMeta[1]);
                         if ( buildStats ) {  statRefinerObject = this.state.refinerObj.childrenObjs[childIndex0].childrenObjs[childIndex1]; }
+                        consoleRef( 'rederObjects3', this.state.refinerObj );
                     }
 
                     if ( this.state.showCountChart === true || statsVisible === true ) {
@@ -1453,7 +1462,7 @@ public componentDidUpdate(prevProps){
          * This is copied from constructor when you have to call the data in case something changed.
          */
 
-        let drillList = this.createDrillList(this.props.webURL, this.props.listName, false, refiners, this.state.rules, this.props.stats, viewDefs, this.props.toggles.togOtherChartpart, '', false);
+        let drillList = this.createDrillList(this.props.webURL, this.props.listName, false, refiners, this.state.rules, this.props.stats, viewDefs, this.props.toggles.togOtherChartpart, '', false, 'getAllItemsCall', this.state.drillList.itteration );
         let errMessage = drillList.refinerRules === undefined ? 'Invalid Rule set: ' +  this.state.rules : '';
         if ( drillList.refinerRules === undefined ) { drillList.refinerRules = [[],[],[]] ; } 
 
@@ -1462,7 +1471,8 @@ public componentDidUpdate(prevProps){
     }
 
     private addTheseItemsToState( drillList: IDrillList, allItems , errMessage : string, refinerObj: IRefinerLayer ) {
-
+        consoleRef( 'addTheseItems1REF', refinerObj );
+        consoleMe( 'addTheseItems1' , allItems, drillList );
         //let newFilteredItems : IDrillItemInfo[] = this.getNewFilteredItems( '', this.state.searchMeta, allItems, 0 );
         let pivotCats : any = [];
         let cmdCats : any = [];
@@ -1545,6 +1555,8 @@ public componentDidUpdate(prevProps){
             if ( this.props.handleListPost ) { this.props.handleListPost( listViewDD ); }
 
         }
+        consoleRef( 'addTheseItems2REF', refinerObj );
+        consoleMe( 'addTheseItems2' , allItems, drillList );
 
         this.setState({
             allItems: allItems,
@@ -1695,14 +1707,17 @@ public componentDidUpdate(prevProps){
 
         //This sends back the correct pivot category which matches the category on the tile.
         let validText = this.findMatchtingElementText( item );
+        this.consoleClick( 'getClickInfo1 - validText' , validText );
         validText = this._getValidCountFromClickItem( item, validText );
-
+        this.consoleClick( 'getClickInfo2 - validText' , validText );
         let clickInfo = {
             isAltClick : e.altKey,
             isShfitClick : e.shiftKey,
             isCtrlClick : e.ctrlKey,
             validText : validText,
         };
+        this.consoleClick( 'getClickInfo - clickInfo' , clickInfo );
+
 
         return clickInfo;
 
@@ -1822,11 +1837,15 @@ public componentDidUpdate(prevProps){
 
     let stateRefinerInstructions: string[] = [];
 
+    this.consoleClick( 'changeRefinerOrder - newOrder' , newOrder );
+    
     newOrder.map( i => { 
         refiners.push( refinersOrig[i] );
         refinerRulesNew.push( refinerRulesOrig[i] );
         stateRefinerInstructions.push( `${this.state.drillList.refinerInstructions[i]}` ); // Put this in quotes to insure it is not a direct pointer to the current drillList instructions
     });
+
+    this.consoleClick( 'changeRefinerOrder - refiners', refiners );
 
     /**
      * 2022-01-17:  Added this to see if this gets mutated and breaks on refresh items.  
@@ -1834,7 +1853,8 @@ public componentDidUpdate(prevProps){
      */ 
     let viewDefs: ICustViewDef[] = JSON.parse(JSON.stringify(this.props.viewDefs));
 
-    let drillList = this.createDrillList(this.props.webURL, this.props.listName, false, refiners, JSON.stringify(refinerRulesNew), this.props.stats, viewDefs, this.props.toggles.togOtherChartpart, '', true );
+    let drillList = this.createDrillList(this.props.webURL, this.props.listName, false, refiners, JSON.stringify(refinerRulesNew), this.props.stats, viewDefs, this.props.toggles.togOtherChartpart, '', true, 'changeRefinerOrder', this.state.drillList.itteration  );
+
     drillList.refinerInstructions = stateRefinerInstructions;
     
     let errMessage = drillList.refinerRules === undefined ? 'Invalid Rule set: ' +  this.state.rules : '';
@@ -1898,6 +1918,8 @@ public componentDidUpdate(prevProps){
 
   public searchForItems = (text: string, newMeta: string[] , layer: number, searchType: 'meta' | 'text' ): void => {
 
+            
+    consoleMe( 'searchForItems1: ' + text , this.state.allItems, this.state.drillList );
     let searchItems : IDrillItemInfo[] = this.state.allItems;
     let searchCount = searchItems.length;
 
@@ -2021,7 +2043,9 @@ public componentDidUpdate(prevProps){
         searchCount = newFilteredItems.length;
     }
 
-
+    consoleMe( 'searchForItems2: ' + text , this.state.allItems, this.state.drillList );
+    consoleRef( 'searchForItems2: ' + text , refinerObj );
+    this.consoleClick('searchForItems2: cmdCats', cmdCats );
     this.setState({
       searchedItems: newFilteredItems,
       searchCount: searchCount,
@@ -2129,6 +2153,8 @@ public componentDidUpdate(prevProps){
             bannerMessage: message,
         });
 
+        consoleMe( '_reloadOnUpdate' , this.state.allItems, this.state.drillList );
+
         this.getAllItemsCall( viewDefs, this.state.refiners );
 
         let delay = hasError === true ? 10000 : this.state.quickCommands.successBanner;
@@ -2159,7 +2185,7 @@ public componentDidUpdate(prevProps){
         let result = [];
 
         //Get sum of array of numbers:  https://codeburst.io/javascript-arrays-finding-the-minimum-maximum-sum-average-values-f02f1b0ce332
-        
+        xxx
         const arrSum = thisCount.reduce((a,b) => a + b, 0);
 
         result.push ({
@@ -2446,4 +2472,11 @@ public componentDidUpdate(prevProps){
       
       } //End toggleTips  
 
+      
+    private consoleClick( location: string, info: any ) {
+        let info2 = JSON.parse(JSON.stringify(info));
+
+        console.log('Error#94: - Click', location, info2 );
+
+    }
 }

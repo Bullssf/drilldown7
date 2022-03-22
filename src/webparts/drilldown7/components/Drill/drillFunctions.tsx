@@ -101,7 +101,7 @@ export async function getAllItems( drillList: IDrillList, addTheseItemsToState: 
             errMessage = getHelpfullError(e, false, true);
     
         }
-    
+        consoleMe( 'getAllItems' , allItems, drillList );
         allItems = processAllItems( allItems, errMessage, drillList, addTheseItemsToState, setProgress, markComplete );
     }
 
@@ -238,7 +238,7 @@ export function processAllItems( allItems : IDrillItemInfo[], errMessage: string
 
     console.log('drillList.refiners =', drillList.refiners );
     //for ( let i = 0 ; i < 5000 ; i++ ) {
-        allRefiners = buildRefinersObject( finalItems, drillList );
+    allRefiners = buildRefinersObject( finalItems, drillList );
         //console.log(i);
     //}
 
@@ -248,6 +248,7 @@ export function processAllItems( allItems : IDrillItemInfo[], errMessage: string
 
 //    console.log('Post-Sort: getAllItems', allRefiners);
 
+    consoleMe( 'processAllItems2' , finalItems, drillList );
     addTheseItemsToState(drillList, finalItems, errMessage, allRefiners );
     return finalItems;
 
@@ -265,9 +266,11 @@ export function processAllItems( allItems : IDrillItemInfo[], errMessage: string
 function sortRefinerObject ( allRefiners: IRefinerLayer, drillList: IDrillList ) {
 
     //webPartDefs.sort((a, b) => (a.alias > b.alias) ? 1 : -1);
+    consoleRef( 'buildRefinersObject1', allRefiners );
+    consoleMe( 'sortRefinerObject1' + '??' , null , drillList );
 
 //    allRefiners.childrenKeys.sort(); //Removed when using sortKeysByOtherKey
-    allRefiners.childrenObjs.sort((a, b) => (a.thisKey > b.thisKey) ? 1 : -1);
+    allRefiners.childrenObjs.sort((a, b) => (a.thisKey.toLowerCase() > b.thisKey.toLowerCase() ) ? 1 : -1);
     let statsToSort : string[] = ['childrenCounts','childrenMultiCounts'];
     for ( let i in drillList.refinerStats ) {
         statsToSort.push('stat' + i);
@@ -276,6 +279,7 @@ function sortRefinerObject ( allRefiners: IRefinerLayer, drillList: IDrillList )
     allRefiners = sortKeysByOtherKey ( allRefiners, 'childrenKeys', 'asc', 'string', statsToSort );
     allRefiners.childrenObjs = sortRefinerLayer( allRefiners.childrenObjs, drillList );
 
+    consoleRef( 'buildRefinersObject2', allRefiners );
     return allRefiners;
 
 }
@@ -284,7 +288,7 @@ function sortRefinerLayer ( allRefiners: IRefinerLayer[], drillList: IDrillList 
 
     for ( let r in allRefiners ) { //Go through all list items
         //allRefiners[r].childrenKeys.sort();
-        allRefiners[r].childrenObjs.sort((a, b) => (a.thisKey > b.thisKey) ? 1 : -1);
+        allRefiners[r].childrenObjs.sort((a, b) => (a.thisKey.toLowerCase() > b.thisKey.toLowerCase() ) ? 1 : -1);
         let statsToSort : string[] = ['childrenCounts','childrenMultiCounts'];
         for ( let i in drillList.refinerStats ) {
             statsToSort.push('stat' + i);
@@ -510,8 +514,8 @@ export function buildRefinersObject ( items: IDrillItemInfo[], drillList: IDrill
     //Go through all items
     for ( let i of items ) { //Go through all list items
         if ( i.refiners ) { //If Item has refiners (all should)
-            if ( i.Id === 358 ) {
-                console.log( 'item 358:', i );
+            if ( i.Id === 2626 || i.Id === 2618 ) {
+                console.log( 'item:', i );
             }
             //Do just level 1
             let thisRefinerValuesLev0 = i.refiners['lev' + 0];
@@ -524,7 +528,6 @@ export function buildRefinersObject ( items: IDrillItemInfo[], drillList: IDrill
                 refiners =updateThisRefiner( r0, topKey0,  thisRefiner0, refiners, drillList );
                 if (topKey0 < 0 ) { topKey0 = refiners.childrenKeys.length -1; }
                 refiners = updateRefinerStats( i , topKey0,  refiners, drillList );
-
 
                 let thisRefinerValuesLev1 = i.refiners['lev' + 1];
                 //Go through each array of refiners... 
@@ -555,7 +558,9 @@ export function buildRefinersObject ( items: IDrillItemInfo[], drillList: IDrill
             } //for ( let r0 in thisRefinerValuesLev0 )
         }
     }
-    console.log('These are the loaded refiners:', refiners );
+
+    consoleMe( 'buildRefinersObject' + '???' , items , drillList );
+    consoleRef( 'buildRefinersObject', refiners );
     return refiners;
 
 }
@@ -579,8 +584,8 @@ export function getItemRefiners( drillList: IDrillList, item: IDrillItemInfo ) {
         comments: [],
     };
 
-    if ( item.Id === 358 ) {
-        console.log('Checking Id: 358 refiners' );
+    if ( item.Id === 2626 ) {
+        console.log('Checking Id: 2626 refiners' );
     }
     for ( let i in drillList.refinerStats ) {
         itemRefiners['stat' + i] = [];
@@ -977,5 +982,50 @@ function buildSearchStringFromItem (newItem : IDrillItemInfo, staticColumns: str
     result = result.toLowerCase();
 
     return result;
+
+}
+
+
+export function consoleRef( location: string, refiners: IRefinerLayer ) {
+    let refiners2 = JSON.parse(JSON.stringify(refiners));
+
+    console.log('Error#94: - Refiners', refiners2 );
+
+}
+
+export function consoleMe( location: string, obj: any, drillList: IDrillList ) {
+    let testId = 179;
+    let testItem = obj && obj[testId] ? true : false;
+    let testRef = testItem && obj[testId].refiners ? true : false;
+    let testLev = testRef && obj[testId].refiners.level1 ? true : false;
+    let tbdNote = 'null';
+    if ( testLev === true ) { tbdNote = 'Level found' ; }
+    else if ( testRef === true ) { tbdNote = 'Refiner found' ; }
+    else if ( testItem === true ) { tbdNote = 'Item found' ; }
+
+    let pasteMe =  obj && obj[testId] && obj[testId].refiners ? obj[testId].refiners.lev1 : tbdNote ;
+    obj = JSON.parse(JSON.stringify(obj));
+    let drillListX = JSON.parse(JSON.stringify(drillList));
+
+    let itteration = drillList.itteration;
+    console.log('Error#94:', itteration, location, pasteMe, drillListX );
+
+    // let testId = 179;
+    // let testItem = obj && obj[testId] ? true : false;
+    // let testRef = testItem && obj[testId].refiners ? true : false;
+    // let testLev = testRef && obj[testId].refiners.level1 ? true : false;
+    // let tbdNote = 'null';
+    // if ( testLev === true ) { tbdNote = 'Level found' ; }
+    // else if ( testRef === true ) { tbdNote = 'Refiner found' ; }
+    // else if ( testItem === true ) { tbdNote = 'Item found' ; }
+
+    // let pasteMe =  obj && obj[testId] && obj[testId].refiners ? obj[testId].refiners.lev1 : tbdNote ;
+    // obj = JSON.parse(JSON.stringify(obj));
+    // drillList = JSON.parse(JSON.stringify(drillList));
+
+    // let itteration = drillList.itteration;
+    // console.log('Error#94:', itteration, location, pasteMe, drillList );
+
+    return;
 
 }

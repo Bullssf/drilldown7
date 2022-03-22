@@ -19,7 +19,9 @@ export function aboutTable( repoLinks: IRepoLinks ) {
         rows: [],
     };
 
-    table.rows.push( createAboutRow('2022-03-22?','1.2.0.3'  ,'#88, #90, Performance improvements', repoLinks ) );
+    table.rows.push( createAboutRow('2022-03-23','1.2.0.4'  ,'#94 Testing', repoLinks ) );
+
+    table.rows.push( createAboutRow('2022-03-22','1.2.0.3'  ,'#88, #90, Performance improvements', repoLinks ) );
     table.rows.push( createAboutRow('"','"'                 ,'#77, #78, #82, #83, #85 - Bug fixes', repoLinks ) );
     table.rows.push( createAboutRow('"','"'                 ,'#76, #86, #88, #92, #93 - Improvements', repoLinks ) );
     table.rows.push( createAboutRow('"','"'                 ,'#85, #86 - Add Banner with Error Messages', repoLinks ) );
