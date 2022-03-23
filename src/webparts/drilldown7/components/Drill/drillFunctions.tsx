@@ -171,9 +171,10 @@ export function processAllItems( allItems : IDrillItemInfo[], errMessage: string
                 }
             });
     
-            if ( drillList.isLibrary === true || item.ServerRedirectedEmbedUrl ) {
-                item.goToItemPreview = item.ServerRedirectedEmbedUrl;
-                item.goToItemLink = item.ServerRedirectedEmbedUrl ? item.ServerRedirectedEmbedUrl.replace('&action=interactivepreview','') : null ;
+            if ( drillList.isLibrary === true || item.ServerRedirectedEmbedUrl || item.FileRef ) {
+                const useUrl = item.ServerRedirectedEmbedUrl ? item.ServerRedirectedEmbedUrl : item.FileRef;
+                item.goToItemPreview = useUrl;
+                item.goToItemLink = useUrl ? useUrl.replace('&action=interactivepreview','') : null ;
                 item.goToPropsLink = drillList.parentListURL + "/Forms/DispForm.aspx?ID=" + item.Id;
                 item.isFile = true;
     

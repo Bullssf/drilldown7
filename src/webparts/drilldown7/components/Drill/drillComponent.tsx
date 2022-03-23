@@ -621,6 +621,7 @@ export default class DrillDown extends React.Component<IDrillDownProps, IDrillDo
        
         let selectCols: string = "*";
         let expandThese = "";
+        const nonColumnViewItemProps: string[] = ['goToItemPreview', 'goToItemLink', 'goToPropsLink'];
   
         let allColumns = ['Title','Id','Created','Modified','Author/Title','Author/ID','Author/Name','Editor/Title','Editor/ID','Editor/Name'];
 
@@ -632,6 +633,9 @@ export default class DrillDown extends React.Component<IDrillDownProps, IDrillDo
             vd.viewFields.map( vf => {
                 if ( allColumns.indexOf( vf.name ) < 0 && list.removeFromSelect.indexOf(vf.name) < 0 ) {
                     allColumns.push( vf.name );
+                }
+                if ( vf.linkPropertyName && nonColumnViewItemProps.indexOf( vf.linkPropertyName ) < 0 && allColumns.indexOf( vf.linkPropertyName ) < 0 ) {
+                    allColumns.push( vf.linkPropertyName );                 
                 }
             });
         });
