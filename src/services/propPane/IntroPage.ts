@@ -205,17 +205,18 @@ export class IntroPage {
           PropertyPaneTextField('parentListTitle', {
             label: strings.FieldLabel_ParentListTitle
           }),
+
+          //https://docs.microsoft.com/en-us/previous-versions/windows/desktop/indexsrv/valid-locale-identifiers
+          PropertyPaneTextField('language', {
+            label: 'Langage list data and structure were created in',
+            description: 'Will impact sorting.  example:  en-us or es-es',
+          }),
+          ValidLocalLanguages,
+
           PropertyPaneToggle('hideFolders', {
             label: 'Hide Folders',
             offText: 'Show Folders',
             onText: 'Hide Folders',
-          }),
-
-          //https://docs.microsoft.com/en-us/previous-versions/windows/desktop/indexsrv/valid-locale-identifiers
-          ValidLocalLanguages,
-          PropertyPaneTextField('language', {
-            label: 'Langage list data and structure were created in',
-            description: 'Will impact sorting.  example:  en-us',
           }),
           
         ]}, // this group
