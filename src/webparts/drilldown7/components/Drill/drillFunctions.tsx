@@ -148,14 +148,30 @@ export function processAllItems( allItems : IDrillItemInfo[], errMessage: string
                         let oldCol = expCol.split('/');
                         let newProp = oldCol.join('');
                         let thisColumn = item[oldCol[0]] ? item[oldCol[0]] : null;
+
+                        //This if looks for multi-select columns
                         if ( Array.isArray( thisColumn ) === true ) {
                             if ( drillList.multiSelectColumns.indexOf( expCol ) < 0 ) { drillList.multiSelectColumns.push( expCol ) ; }
                             item[newProp] = [];
                             thisColumn.map( oneItem => {
                                 if ( oneItem[oldCol[1]] ) { item[ newProp ] = addItemToArrayIfItDoesNotExist( item[newProp], oneItem[oldCol[1]] ) ; }
                             });
+
+                        //This loop handles all the others.
                         } else {
-                            item[newProp] = item[oldCol[0]] ? item[oldCol[0]][oldCol[1]] : null;
+
+                            let detailType = getDetailValueType(  oldCol[0] );
+
+                            if ( detailType === 'link' ) {
+                                if ( drillList.linkColumns.indexOf( expCol ) < 0 ) { drillList.linkColumns.push( expCol ) ; }
+                                item[newProp + 'Url' ] = item[newProp].Url;
+                                item[newProp + 'Desc' ] = item[newProp].Description;
+
+                            } else {
+                                item[newProp] = item[oldCol[0]] ? item[oldCol[0]][oldCol[1]] : null;
+
+                            }
+
                         }
                     }
                 });
@@ -171,6 +187,31 @@ export function processAllItems( allItems : IDrillItemInfo[], errMessage: string
                 }
             });
     
+            if ( item.Id === 8 ) {
+                console.log('Check item 8' );
+            }
+            //This section will look for any other Link
+            drillList.staticColumns.map( staticColumn => {
+                if ( drillList.linkColumns.indexOf( staticColumn ) > -1 ) {
+                    let splitCol = staticColumn.split("/");
+                    let leftSide = splitCol[0];
+                    let rightSide = splitCol[1];
+
+                    let detailType = getDetailValueType(  item[leftSide] );
+
+                    if ( detailType === 'link' ) {
+                        item[ leftSide + 'GetLinkUrl' ] = item[ leftSide ].Url;
+                        item[ leftSide + 'GetLinkDesc' ] = item[ leftSide ].Description;
+
+                    } else {
+                        //This is not a link column but set props anyway
+                        item[ leftSide + 'GetLinkUrl' ] = 'Empty Link Url';
+                        item[ leftSide + 'GetLinkDesc' ] = 'Empty Link Description';
+                    }
+
+                }
+            });
+
             if ( drillList.isLibrary === true || item.ServerRedirectedEmbedUrl || item.FileRef ) {
                 const useUrl = item.ServerRedirectedEmbedUrl ? item.ServerRedirectedEmbedUrl : item.FileRef;
                 item.goToItemPreview = useUrl;
@@ -208,11 +249,17 @@ export function processAllItems( allItems : IDrillItemInfo[], errMessage: string
                 }
             });
 
+
+
             finalItems.push( item );
         }
 
     });
 
+
+    drillList.linkColumns.map( linkColumn => {
+        linkColumn = linkColumn.replace('/','');
+    });
 
     drillList.hasAttach = itemsHaveAttachments;
     
@@ -782,6 +829,18 @@ function getRefinerFromField ( fieldValue : any, ruleSet: RefineRuleValues[], em
         } 
         result = [ reFormattedDate ];
     
+    } else if ( detailType === 'link'  ) {
+        if ( ruleSet.indexOf( 'linkDescription' ) > -1  ) {
+            result = fieldValue.Description;
+
+        } else if ( ruleSet.indexOf( 'linkUrl' ) > -1  ) {
+            result = fieldValue.Url;
+
+        } else {
+            result = fieldValue.Description;
+            console.log( 'drillFunctions.getRefinerFromField - assuming result is linkDescription', fieldValue );
+        }
+
     } else if ( detailType === 'numberstring' && ruleSet.indexOf('groupByString') < 0   ) {
 
         /**
