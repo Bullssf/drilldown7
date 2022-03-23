@@ -270,14 +270,16 @@ function sortRefinerObject ( allRefiners: IRefinerLayer, drillList: IDrillList )
     consoleRef( 'buildRefinersObject1', allRefiners );
     consoleMe( 'sortRefinerObject1' + '??' , null , drillList );
 
-//    allRefiners.childrenKeys.sort(); //Removed when using sortKeysByOtherKey
-    allRefiners.childrenObjs.sort((a, b) => (a.thisKey.toLowerCase() > b.thisKey.toLowerCase() ) ? 1 : -1);
+    //Adding collator per:  https://stackoverflow.com/a/52369951
+    const collator = new Intl.Collator(drillList.language, { numeric: true, sensitivity: 'base' });
+    allRefiners.childrenObjs.sort((a, b) => { return collator.compare(a.thisKey, b.thisKey); });
+
     let statsToSort : string[] = ['childrenCounts','childrenMultiCounts'];
     for ( let i in drillList.refinerStats ) {
         statsToSort.push('stat' + i);
         statsToSort.push('stat' + i + 'Count');
     }
-    allRefiners = sortKeysByOtherKey ( allRefiners, 'childrenKeys', 'asc', 'string', statsToSort );
+    allRefiners = sortKeysByOtherKey ( allRefiners, 'childrenKeys', 'asc', 'string', statsToSort, null, drillList.language  );
     allRefiners.childrenObjs = sortRefinerLayer( allRefiners.childrenObjs, drillList );
 
     consoleRef( 'buildRefinersObject2', allRefiners );
@@ -289,13 +291,18 @@ function sortRefinerLayer ( allRefiners: IRefinerLayer[], drillList: IDrillList 
 
     for ( let r in allRefiners ) { //Go through all list items
         //allRefiners[r].childrenKeys.sort();
-        allRefiners[r].childrenObjs.sort((a, b) => (a.thisKey.toLowerCase() > b.thisKey.toLowerCase() ) ? 1 : -1);
+
+        //Adding collator per:  https://stackoverflow.com/a/52369951
+        const collator = new Intl.Collator(drillList.language, { numeric: true, sensitivity: 'base' });
+        allRefiners[r].childrenObjs.sort((a, b) => { return collator.compare(a.thisKey, b.thisKey); });
+
+        // allRefiners[r].childrenObjs.sort((a, b) => ( a.thisKey.toLowerCase() > b.thisKey.toLowerCase() ) ? 1 : -1);
         let statsToSort : string[] = ['childrenCounts','childrenMultiCounts'];
         for ( let i in drillList.refinerStats ) {
             statsToSort.push('stat' + i);
             statsToSort.push('stat' + i + 'Count');
         }
-        allRefiners[r] = sortKeysByOtherKey ( allRefiners[r], 'childrenKeys', 'asc', 'string', statsToSort);
+        allRefiners[r] = sortKeysByOtherKey ( allRefiners[r], 'childrenKeys', 'asc', 'string', statsToSort, null, drillList.language );
         allRefiners[r].childrenObjs = sortRefinerLayer( allRefiners[r].childrenObjs, drillList );
     }
 
