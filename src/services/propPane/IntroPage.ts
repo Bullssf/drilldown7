@@ -13,7 +13,7 @@ import {
   PropertyPaneSlider,
 } from '@microsoft/sp-property-pane';
 
-import { JSON_Edit_Link } from './zReusablePropPane';
+import { JSON_Edit_Link, ValidLocalLanguages } from './zReusablePropPane';
 
 import { PropertyFieldMultiSelect } from '@pnp/spfx-property-controls/lib/PropertyFieldMultiSelect';
 
@@ -22,7 +22,7 @@ import { pivotOptionsGroup} from './index';
 
 import { FPSOptionsGroup, FPSBanner2Group } from '@mikezimm/npmfunctions/dist/Services/PropPane/FPSOptionsGroup';
 import * as links from '@mikezimm/npmfunctions/dist/Links/LinksRepos';   //              { links.gitRepoDrilldown7WebPart.issues }
-
+import { createLink } from '@mikezimm/npmfunctions/dist/Links/CreateLinks';
 import { IDrilldown7WebPartProps } from '../../webparts/drilldown7/Drilldown7WebPart';
 
 import { buildKeyText, refinerRuleItems } from '@mikezimm/npmfunctions/dist/Refiners/functions';
@@ -80,6 +80,7 @@ import { buildKeyText, refinerRuleItems } from '@mikezimm/npmfunctions/dist/Refi
 
 export class IntroPage {
   public getPropertyPanePage(webPartProps: IDrilldown7WebPartProps, _onClickUpdateTitles, _getListDefintions, forceBanner: boolean, modifyBannerTitle: boolean, modifyBannerStyle: boolean ): IPropertyPanePage {
+
 
     let ruleChoices = refinerRuleItems();
     let showDisabled = false;
@@ -204,11 +205,20 @@ export class IntroPage {
           PropertyPaneTextField('parentListTitle', {
             label: strings.FieldLabel_ParentListTitle
           }),
+
+          //https://docs.microsoft.com/en-us/previous-versions/windows/desktop/indexsrv/valid-locale-identifiers
+          PropertyPaneTextField('language', {
+            label: 'Langage list data and structure were created in',
+            description: 'Will impact sorting.  example:  en-us or es-es',
+          }),
+          ValidLocalLanguages,
+
           PropertyPaneToggle('hideFolders', {
             label: 'Hide Folders',
             offText: 'Show Folders',
             onText: 'Hide Folders',
           }),
+          
         ]}, // this group
 
         { groupName: 'Performance Properties',

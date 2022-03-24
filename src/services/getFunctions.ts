@@ -66,20 +66,58 @@
    *    It pushes the entire expanded name like:  Created/ID
    * @param lookupColumns 
    */
+  
+   /**
+    * NOTE All this should be gotten from npmFunctions!!!!
+    * Lists/getFunctions.ts
+    * 
+    */
+   export const DoNotExpandLinkColumns : string[] = [ 'GetLinkDesc', 'GetLinkUrl' ];
+
+   export const DoNotExpandColumns : string[] = [ ...DoNotExpandLinkColumns ];
+
   export function getSelectColumns(lookupColumns : string[] ){
 
     let baseSelectColumns = [];
+    let DoNotExpandLinkColumnsLC = DoNotExpandLinkColumns.map( item => { return item.toLowerCase(); } ) ;
 
     for (let thisColumn of lookupColumns) {
       // Only look at columns with / in the name
       if (thisColumn && thisColumn.indexOf("/") > -1 ) {
         let isLookup = thisColumn.indexOf("/");
         if(isLookup) {
-          baseSelectColumns.push(thisColumn);
+          let splitCol = thisColumn.split("/");
+          let rightSide = splitCol[1];
+          if ( rightSide && DoNotExpandLinkColumnsLC.indexOf( rightSide.toLowerCase() ) > -1 ) {
+            //Then do nothing since this column is a 'faux expanded column' used in Drilldown for Link Columns
+
+          } else {
+            baseSelectColumns.push(thisColumn);
+          }
         }
       }
     }
     return baseSelectColumns;
+  }
+
+  export function getLinkColumns(lookupColumns : string[] ){
+
+    let baseLinkColumns = [];
+    let DoNotExpandLinkColumnsLC = DoNotExpandLinkColumns.map( item => { return item.toLowerCase(); } ) ;
+
+    for (let thisColumn of lookupColumns) {
+      // Only look at columns with / in the name
+
+          let splitCol = thisColumn.split("/");
+          let leftSide = splitCol[0];
+          let rightSide = splitCol[1];
+          if ( rightSide && DoNotExpandLinkColumnsLC.indexOf( rightSide.toLowerCase() ) > -1 ) {
+            //Then do nothing since this column is a 'faux expanded column' used in Drilldown for Link Columns
+            if ( baseLinkColumns.indexOf( thisColumn ) < 0 ) { baseLinkColumns.push(thisColumn); }
+          }
+
+    }
+    return baseLinkColumns;
   }
 
     /**
@@ -88,17 +126,28 @@
    *    It pushes the just the column name: It finds: Created/ID and returns just Created
    * @param lookupColumns 
    */
+
+   //column 'names' that are special and do not get expanded:
+
+
   export function getExpandColumns(lookupColumns : string[] ){
 
     let baseExpandColumns = [];
+    let DoNotExpandLinkColumnsLC = DoNotExpandLinkColumns.map( item => { return item.toLowerCase(); } ) ;
 
     for (let thisColumn of lookupColumns) {
       // Only look at columns with / in the name
       if (thisColumn && thisColumn.indexOf("/") > -1 ) {
         let splitCol = thisColumn.split("/");
         let leftSide = splitCol[0];
-        if(baseExpandColumns.indexOf(leftSide) < 0) {
+        let rightSide = splitCol[1];
+
+        if ( rightSide && DoNotExpandLinkColumnsLC.indexOf( rightSide.toLowerCase() ) > -1 ) {
+          //Then do nothing since this column is a 'faux expanded column' used in Drilldown for Link Columns
+
+        } else if(baseExpandColumns.indexOf(leftSide) < 0) {
           baseExpandColumns.push(leftSide);
+
         }
       }
     }

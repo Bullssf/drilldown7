@@ -104,6 +104,7 @@ export interface IDrilldown7WebPartProps {
   parentListWeb: string;
   parentListURL?: string;
   hideFolders: boolean;
+  language: string; //local language list data is saved in (needed to properly sort refiners)
 
   refiner0: string;
   refiner1: string;
@@ -261,6 +262,7 @@ export default class Drilldown7WebPart extends BaseClientSideWebPart<IDrilldown7
       if ( !this.properties.refinerInstruction1 ) { this.properties.refinerInstruction1 = `Select a {{refiner0}}`; }
       if ( !this.properties.refinerInstruction2 ) { this.properties.refinerInstruction2 = `Select a {{refiner1}}`; }
       if ( !this.properties.refinerInstruction3 ) { this.properties.refinerInstruction3 = `Select a {{refiner2}}`; }
+      if ( !this.properties.language ) { this.properties.language = `en-us`; }
 
       // other init code may be present
 
@@ -537,6 +539,12 @@ export default class Drilldown7WebPart extends BaseClientSideWebPart<IDrilldown7
     //Just for test purposes
     //stringRules = JSON.stringify( [rules1,rules2,rules3] );
 
+    let language = this.properties.language;
+    try {
+      language = language.toLowerCase();
+    } catch( e ) {
+      console.log('Unable to convert language to lower case.' );
+    }
 
     const element: React.ReactElement<IDrillDownProps> = React.createElement(
       DrillDown,
@@ -598,6 +606,7 @@ export default class Drilldown7WebPart extends BaseClientSideWebPart<IDrilldown7
         webURL: parentWeb,
         parentListURL: this.properties.parentListURL,
         hideFolders: this.properties.hideFolders,
+        language: language,
 
         refiners: refiners,
         showDisabled: this.properties.showDisabled,

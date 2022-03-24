@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { WebPartContext } from '@microsoft/sp-webpart-base';
 
-import { CompoundButton, Stack, IStackTokens, elementContains, initializeIcons, Icon, IIconStyles } from 'office-ui-fabric-react';
+import { CompoundButton, Stack, IStackTokens, elementContains, initializeIcons, Icon, IIconStyles, getLanguage } from 'office-ui-fabric-react';
 import { SearchBox } from 'office-ui-fabric-react/lib/SearchBox';
 import { Pivot, PivotItem, IPivotItemProps} from 'office-ui-fabric-react/lib/Pivot';
 
@@ -46,7 +46,7 @@ import { PageContext } from '@microsoft/sp-page-context';
 
 import { pivotOptionsGroup, } from '../../../../services/propPane';
 
-import { getExpandColumns, getKeysLike, getSelectColumns } from '../../../../services/getFunctions';
+import { getExpandColumns, getKeysLike, getSelectColumns, getLinkColumns } from '../../../../services/getFunctions';
 
 import { getHelpfullError } from '@mikezimm/npmfunctions/dist/Services/Logging/ErrorHandler';
 
@@ -102,6 +102,7 @@ export type IRefinerStyles = 'pivot' | 'commandBar' | 'other';
     itteration: number;
     location: string;
 
+    language: string; // used for sorting items/refiners with local language
     title: string;
     name?: string;
     guid?: string;
@@ -130,7 +131,9 @@ export type IRefinerStyles = 'pivot' | 'commandBar' | 'other';
     staticColumnsStr: string;
     selectColumnsStr: string;
     expandColumnsStr: string;
+    linkColumnsStr: string;
     multiSelectColumns: string[];
+    linkColumns: string[];
     removeFromSelect: string[];
   }
 
@@ -247,6 +250,7 @@ export interface IDrillDownProps {
     hideFolders: boolean;
 
     listName : string;
+    language: string; //local language list data is saved in (needed to properly sort refiners)
     
     allLoaded: boolean;
 
@@ -621,6 +625,7 @@ export default class DrillDown extends React.Component<IDrillDownProps, IDrillDo
        
         let selectCols: string = "*";
         let expandThese = "";
+        const nonColumnViewItemProps: string[] = ['goToItemPreview', 'goToItemLink', 'goToPropsLink' ]; //,'linkDesc', 'linkUrl'
   
         let allColumns = ['Title','Id','Created','Modified','Author/Title','Author/ID','Author/Name','Editor/Title','Editor/ID','Editor/Name'];
 
@@ -632,6 +637,11 @@ export default class DrillDown extends React.Component<IDrillDownProps, IDrillDo
             vd.viewFields.map( vf => {
                 if ( allColumns.indexOf( vf.name ) < 0 && list.removeFromSelect.indexOf(vf.name) < 0 ) {
                     allColumns.push( vf.name );
+                }
+                // if linkPropertyName seems to be a column, then add to select columns
+                // Should fix https://github.com/mikezimm/drilldown7/issues/103
+                if ( vf.linkPropertyName && nonColumnViewItemProps.indexOf( vf.linkPropertyName ) < 0 && allColumns.indexOf( vf.linkPropertyName ) < 0 ) {
+                    allColumns.push( vf.linkPropertyName );                 
                 }
             });
         });
@@ -645,9 +655,9 @@ export default class DrillDown extends React.Component<IDrillDownProps, IDrillDo
             });
         }
 
-
         let expColumns = getExpandColumns(allColumns);
         let selColumns = getSelectColumns(allColumns);
+        let linkColumns = getLinkColumns(allColumns);
 
         selColumns.length > 0 ? selectCols += "," + allColumns.join(",") : selectCols = selectCols;
         if (expColumns.length > 0) { expandThese = expColumns.join(","); }
@@ -655,10 +665,12 @@ export default class DrillDown extends React.Component<IDrillDownProps, IDrillDo
         list.selectColumns = selColumns;
         list.staticColumns = allColumns;
         list.expandColumns = expColumns;
+        list.linkColumns = linkColumns;
 
         list.selectColumnsStr = selColumns.join(',') ;
         list.staticColumnsStr = allColumns.join(',');
         list.expandColumnsStr = expColumns.join(',');
+        list.linkColumnsStr = linkColumns.join(',');
 
         return list;
 
@@ -677,7 +689,7 @@ export default class DrillDown extends React.Component<IDrillDownProps, IDrillDo
      */
 
     private createDrillList(webURL: string, name: string, isLibrary: boolean, refiners: string[], rules: string, stats: string, 
-        OrigViewDefs: ICustViewDef[], togOtherChartpart: boolean, title: string = null, stateSourceUserInfo: boolean, location: string, itteration: number ) {
+        OrigViewDefs: ICustViewDef[], togOtherChartpart: boolean, title: string = null, stateSourceUserInfo: boolean, language: string, location: string, itteration: number ) {
 
         let viewDefs = JSON.parse(JSON.stringify(OrigViewDefs)) ;
         let refinerRules = this.createEmptyRefinerRules( rules );
@@ -693,6 +705,7 @@ export default class DrillDown extends React.Component<IDrillDownProps, IDrillDo
         let list: IDrillList = {
             itteration: itteration + 1,
             location: location,
+            language: language,
             title: title,
             name: name,
             guid: '',
@@ -728,9 +741,11 @@ export default class DrillDown extends React.Component<IDrillDownProps, IDrillDo
             selectColumns: [],
             expandColumns: [],
             multiSelectColumns: [],
+            linkColumns: [],
             staticColumnsStr: '',
             selectColumnsStr: '',
             expandColumnsStr: '',
+            linkColumnsStr: '',
             removeFromSelect: ['currentTime','currentUser'],
         };
 
@@ -759,7 +774,7 @@ export default class DrillDown extends React.Component<IDrillDownProps, IDrillDo
          * This is copied later in code when you have to call the data in case something changed.
          */
 
-        let drillList = this.createDrillList(this.props.webURL, this.props.listName, false, this.props.refiners, this.props.rules, this.props.stats, this.props.viewDefs, this.props.toggles.togOtherChartpart, '', false, 'constructor', 0);
+        let drillList = this.createDrillList(this.props.webURL, this.props.listName, false, this.props.refiners, this.props.rules, this.props.stats, this.props.viewDefs, this.props.toggles.togOtherChartpart, '', false, this.props.language, 'constructor', 0);
         let errMessage = drillList.refinerRules === undefined ? 'Invalid Rule set: ' +  this.props.rules : '';
         if ( drillList.refinerRules === undefined ) { drillList.refinerRules = [[],[],[]] ; } 
 
@@ -950,6 +965,9 @@ public componentDidUpdate(prevProps){
         let viewDefsString = JSON.stringify(this.props.viewDefs);
         this.state.drillList.multiSelectColumns.map( msColumn => {
             viewDefsString = viewDefsString.replace( msColumn , msColumn.replace('/','') + 'MultiString' );
+        });
+        this.state.drillList.linkColumns.map( linkColumn => {
+            viewDefsString = viewDefsString.replace( linkColumn , linkColumn.replace('/','') );
         });
         let viewDefs: ICustViewDef[] = JSON.parse(viewDefsString);
 
@@ -1464,7 +1482,7 @@ public componentDidUpdate(prevProps){
          * This is copied from constructor when you have to call the data in case something changed.
          */
 
-        let drillList = this.createDrillList(this.props.webURL, this.props.listName, false, refiners, this.state.rules, this.props.stats, viewDefs, this.props.toggles.togOtherChartpart, '', false, 'getAllItemsCall', this.state.drillList.itteration );
+        let drillList = this.createDrillList(this.props.webURL, this.props.listName, false, refiners, this.state.rules, this.props.stats, viewDefs, this.props.toggles.togOtherChartpart, '', false, this.props.language, 'getAllItemsCall', this.state.drillList.itteration );
         let errMessage = drillList.refinerRules === undefined ? 'Invalid Rule set: ' +  this.state.rules : '';
         if ( drillList.refinerRules === undefined ) { drillList.refinerRules = [[],[],[]] ; } 
 
@@ -1859,7 +1877,7 @@ public componentDidUpdate(prevProps){
      */ 
     let viewDefs: ICustViewDef[] = JSON.parse(JSON.stringify(this.props.viewDefs));
 
-    let drillList = this.createDrillList(this.props.webURL, this.props.listName, false, refiners, JSON.stringify(refinerRulesNew), this.props.stats, viewDefs, this.props.toggles.togOtherChartpart, '', true, 'changeRefinerOrder', this.state.drillList.itteration  );
+    let drillList = this.createDrillList(this.props.webURL, this.props.listName, false, refiners, JSON.stringify(refinerRulesNew), this.props.stats, viewDefs, this.props.toggles.togOtherChartpart, '', true, this.props.language, 'changeRefinerOrder', this.state.drillList.itteration  );
 
     drillList.refinerInstructions = stateRefinerInstructions;
     
