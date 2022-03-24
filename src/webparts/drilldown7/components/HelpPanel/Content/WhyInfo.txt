@@ -2,3 +2,18 @@ These are some of the things Drilldown does for you automatically:
 
 #94 - automatically trim any string values so that if you change some of values but not others (as in the case of 'SecureScript ' with a space), it will consider them the same.
 You can have a refiner (group) that is a multi-select value including choice or even lookup value.
+
+#107 - Special link column features:
+For Refiners or View columns, add /GetLinkUrl and /GetLinkDesc to Link columns to use either the Url or the Description of the link as a value
+
+Example:
+ColumnInternalName/GetLinkUrl
+ColumnInternalName/GetLinkDesc
+
+Example of IViewField:
+  {
+    "name": "ColumnInternalName/GetLinkDesc",
+    "displayName": "What ever you want",
+    "minWidth": 200,
+    "linkPropertyName": "ColumnInternalName/GetLinkUrl"
+  },

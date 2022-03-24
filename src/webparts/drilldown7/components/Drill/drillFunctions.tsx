@@ -829,17 +829,18 @@ function getRefinerFromField ( fieldValue : any, ruleSet: RefineRuleValues[], em
         } 
         result = [ reFormattedDate ];
     
-    } else if ( detailType === 'link'  ) {
-        if ( ruleSet.indexOf( 'linkDescription' ) > -1  ) {
-            result = fieldValue.Description;
+    // Removed this loop because it's not neccessary any more
+    // } else if ( detailType === 'link'  ) {
+    //     if ( ruleSet.indexOf( 'linkDescription' ) > -1  ) {
+    //         result = fieldValue.Description;
 
-        } else if ( ruleSet.indexOf( 'linkUrl' ) > -1  ) {
-            result = fieldValue.Url;
+    //     } else if ( ruleSet.indexOf( 'linkUrl' ) > -1  ) {
+    //         result = fieldValue.Url;
 
-        } else {
-            result = fieldValue.Description;
-            console.log( 'drillFunctions.getRefinerFromField - assuming result is linkDescription', fieldValue );
-        }
+    //     } else {
+    //         result = fieldValue.Description;
+    //         console.log( 'drillFunctions.getRefinerFromField - assuming result is linkDescription', fieldValue );
+    //     }
 
     } else if ( detailType === 'numberstring' && ruleSet.indexOf('groupByString') < 0   ) {
 

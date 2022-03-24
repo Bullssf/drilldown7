@@ -15,6 +15,9 @@ import {
     PropertyPaneSlider,
   } from '@microsoft/sp-property-pane';
 
+
+  //NOTE:  Both of these are in npmFunctions in /Services/PropPane/zReusablePropPane.ts as of v1.0.199
+  
   export const JSON_Edit_Link = PropertyPaneLink('JSON Link' , {
         text: 'Use this site to more easily work on JSON',
         href: 'https://codebeautify.org/jsonviewer',
