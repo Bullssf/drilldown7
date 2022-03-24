@@ -17,3 +17,7 @@ Example of IViewField:
     "minWidth": 200,
     "linkPropertyName": "ColumnInternalName/GetLinkUrl"
   },
+
+#111 - Basic String functions without adding columns to the list
+DoNotExpandFuncColumns : string[] = [ 'TrimB4Hyphen' , 'TrimB4Space', 'FirstWord' , 'TrimB4Tilda' , 'TrimB4Par' , 'TrimB4Colon' , 'TrimB4Dot' , 'TrimB42ndDot' , 'TrimAfterHyphen' , 'TrimAfterTilda' , 'TrimAfterColon' ];
+NOTE:  'TrimB42ndDot' is in the code but not working at this moment.

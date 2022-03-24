@@ -73,13 +73,14 @@
     * 
     */
    export const DoNotExpandLinkColumns : string[] = [ 'GetLinkDesc', 'GetLinkUrl' ];
+   export const DoNotExpandFuncColumns : string[] = [ 'TrimB4Hyphen' , 'TrimB4Space', 'FirstWord' , 'TrimB4Tilda' , 'TrimB4Colon' ,  'TrimB4Dot' ,  'TrimB4Par' , 'TrimB42ndDot' ,  'TrimAfterHyphen' , 'TrimAfterTilda' , 'TrimAfterColon' ];
 
-   export const DoNotExpandColumns : string[] = [ ...DoNotExpandLinkColumns ];
+   export const DoNotExpandColumns : string[] = [ ...DoNotExpandLinkColumns, ...DoNotExpandFuncColumns ];
 
-  export function getSelectColumns(lookupColumns : string[] ){
+  export function getSelectColumns(lookupColumns : string[], DoNotExpandColumnsIn: string[] = DoNotExpandColumns ){
 
     let baseSelectColumns = [];
-    let DoNotExpandLinkColumnsLC = DoNotExpandLinkColumns.map( item => { return item.toLowerCase(); } ) ;
+    let DoNotExpandColumnsLC = DoNotExpandColumnsIn.map( item => { return item.toLowerCase(); } ) ;
 
     for (let thisColumn of lookupColumns) {
       // Only look at columns with / in the name
@@ -88,7 +89,7 @@
         if(isLookup) {
           let splitCol = thisColumn.split("/");
           let rightSide = splitCol[1];
-          if ( rightSide && DoNotExpandLinkColumnsLC.indexOf( rightSide.toLowerCase() ) > -1 ) {
+          if ( rightSide && DoNotExpandColumnsLC.indexOf( rightSide.toLowerCase() ) > -1 ) {
             //Then do nothing since this column is a 'faux expanded column' used in Drilldown for Link Columns
 
           } else {
@@ -100,10 +101,10 @@
     return baseSelectColumns;
   }
 
-  export function getLinkColumns(lookupColumns : string[] ){
+  export function getLinkColumns(lookupColumns : string[], DoNotExpandColumnsIn: string[] = DoNotExpandLinkColumns ){
 
     let baseLinkColumns = [];
-    let DoNotExpandLinkColumnsLC = DoNotExpandLinkColumns.map( item => { return item.toLowerCase(); } ) ;
+    let DoNotExpandLinkColumnsLC = DoNotExpandColumnsIn.map( item => { return item.toLowerCase(); } ) ;
 
     for (let thisColumn of lookupColumns) {
       // Only look at columns with / in the name
@@ -120,6 +121,26 @@
     return baseLinkColumns;
   }
 
+  export function getFuncColumns(lookupColumns : string[], DoNotExpandColumnsIn: string[] = DoNotExpandFuncColumns ){
+
+    let baseFuncColumns = [];
+    let DoNotExpandFuncColumnsLC = DoNotExpandColumnsIn.map( item => { return item.toLowerCase(); } ) ;
+
+    for (let thisColumn of lookupColumns) {
+      // Only look at columns with / in the name
+
+          let splitCol = thisColumn.split("/");
+          let leftSide = splitCol[0];
+          let rightSide = splitCol[1];
+          if ( rightSide && DoNotExpandFuncColumnsLC.indexOf( rightSide.toLowerCase() ) > -1 ) {
+            //Then do nothing since this column is a 'faux expanded column' used in Drilldown for Func Columns
+            if ( baseFuncColumns.indexOf( thisColumn ) < 0 ) { baseFuncColumns.push(thisColumn); }
+          }
+
+    }
+    return baseFuncColumns;
+  }
+
     /**
    * getExpandColumns function will take an array of column names (string format)
    *    and return an array of the columns that need to be added to the expand variable in getItems
@@ -130,10 +151,10 @@
    //column 'names' that are special and do not get expanded:
 
 
-  export function getExpandColumns(lookupColumns : string[] ){
+  export function getExpandColumns(lookupColumns : string[] , DoNotExpandColumnsIn: string[] = DoNotExpandColumns ){
 
     let baseExpandColumns = [];
-    let DoNotExpandLinkColumnsLC = DoNotExpandLinkColumns.map( item => { return item.toLowerCase(); } ) ;
+    let DoNotExpandColumnsLC = DoNotExpandColumnsIn.map( item => { return item.toLowerCase(); } ) ;
 
     for (let thisColumn of lookupColumns) {
       // Only look at columns with / in the name
@@ -142,7 +163,7 @@
         let leftSide = splitCol[0];
         let rightSide = splitCol[1];
 
-        if ( rightSide && DoNotExpandLinkColumnsLC.indexOf( rightSide.toLowerCase() ) > -1 ) {
+        if ( rightSide && DoNotExpandColumnsLC.indexOf( rightSide.toLowerCase() ) > -1 ) {
           //Then do nothing since this column is a 'faux expanded column' used in Drilldown for Link Columns
 
         } else if(baseExpandColumns.indexOf(leftSide) < 0) {
