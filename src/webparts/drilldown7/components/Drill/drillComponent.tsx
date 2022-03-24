@@ -46,7 +46,7 @@ import { PageContext } from '@microsoft/sp-page-context';
 
 import { pivotOptionsGroup, } from '../../../../services/propPane';
 
-import { getExpandColumns, getKeysLike, getSelectColumns, getLinkColumns } from '../../../../services/getFunctions';
+import { getExpandColumns, getKeysLike, getSelectColumns, getLinkColumns, getFuncColumns } from '../../../../services/getFunctions';
 
 import { getHelpfullError } from '@mikezimm/npmfunctions/dist/Services/Logging/ErrorHandler';
 
@@ -134,6 +134,7 @@ export type IRefinerStyles = 'pivot' | 'commandBar' | 'other';
     linkColumnsStr: string;
     multiSelectColumns: string[];
     linkColumns: string[];
+    funcColumns: string[];
     removeFromSelect: string[];
   }
 
@@ -658,6 +659,7 @@ export default class DrillDown extends React.Component<IDrillDownProps, IDrillDo
         let expColumns = getExpandColumns(allColumns);
         let selColumns = getSelectColumns(allColumns);
         let linkColumns = getLinkColumns(allColumns);
+        let funcColumns = getFuncColumns(allColumns);
 
         selColumns.length > 0 ? selectCols += "," + allColumns.join(",") : selectCols = selectCols;
         if (expColumns.length > 0) { expandThese = expColumns.join(","); }
@@ -666,6 +668,7 @@ export default class DrillDown extends React.Component<IDrillDownProps, IDrillDo
         list.staticColumns = allColumns;
         list.expandColumns = expColumns;
         list.linkColumns = linkColumns;
+        list.funcColumns = funcColumns;
 
         list.selectColumnsStr = selColumns.join(',') ;
         list.staticColumnsStr = allColumns.join(',');
@@ -742,6 +745,7 @@ export default class DrillDown extends React.Component<IDrillDownProps, IDrillDo
             expandColumns: [],
             multiSelectColumns: [],
             linkColumns: [],
+            funcColumns: [],
             staticColumnsStr: '',
             selectColumnsStr: '',
             expandColumnsStr: '',
@@ -963,12 +967,17 @@ public componentDidUpdate(prevProps){
          * After deeper testing, adding this to getBestFitView solved it but that was getting called a lot so I'm just doing it once in the render
          */
         let viewDefsString = JSON.stringify(this.props.viewDefs);
+        
         this.state.drillList.multiSelectColumns.map( msColumn => {
             viewDefsString = viewDefsString.replace( msColumn , msColumn.replace('/','') + 'MultiString' );
         });
         this.state.drillList.linkColumns.map( linkColumn => {
             viewDefsString = viewDefsString.replace( linkColumn , linkColumn.replace('/','') );
         });
+        this.state.drillList.funcColumns.map( linkColumn => {
+            viewDefsString = viewDefsString.replace( linkColumn , linkColumn.replace('/','') );
+        });
+
         let viewDefs: ICustViewDef[] = JSON.parse(viewDefsString);
 
         

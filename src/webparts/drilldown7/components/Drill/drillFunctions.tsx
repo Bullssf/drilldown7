@@ -208,7 +208,52 @@ export function processAllItems( allItems : IDrillItemInfo[], errMessage: string
                         item[ leftSide + 'GetLinkUrl' ] = 'Empty Link Url';
                         item[ leftSide + 'GetLinkDesc' ] = 'Empty Link Description';
                     }
+                } else if ( drillList.funcColumns.indexOf( staticColumn ) > -1 ) {
+                    let splitCol = staticColumn.split("/");
+                    let leftSide = splitCol[0];
+                    let rightSide = splitCol[1];
+                    let newProp = leftSide + rightSide;
 
+                    let detailType = getDetailValueType(  item[leftSide] );
+
+                    //   export const DoNotExpandFuncColumns : string[] = [ 'TrimB4Hyphen' , 'TrimB4Space', 'FirstWord' , 'TrimB4Tilda' , 'TrimB4Par', 'TrimB4Colon' ,  'TrimB4Dot' , 'TrimB42ndDot',  'TrimAfterTilda' , 'TrimAfterHyphen' , 'TrimAfterColon' ];
+                    if ( detailType.indexOf('string') > -1 && item[leftSide].length > 0 ) {
+                        let trimmedItem = item[ leftSide ].trim();
+                        if ( rightSide.toLowerCase() === 'TrimB4Hyphen'.toLowerCase() ) { item[ newProp ] = trimmedItem.split('-')[0].trim() ; }
+                        else if ( rightSide.toLowerCase() === 'TrimB4Space'.toLowerCase() ) { item[ newProp ] = trimmedItem.split(' ')[0].trim() ; }
+                        else if ( rightSide.toLowerCase() === 'FirstWord'.toLowerCase() ) { 
+                            let newValue = trimmedItem.split(/^[^a-zA-Z]*/gm)[1];
+                            if ( newValue === undefined ) { 
+                                newValue = trimmedItem.split(/^[^a-zA-Z]*/gm)[0].split(/\W/gm)[0] ;
+                            } else {
+                                newValue = newValue.split(/\W/gm)[0] ;
+                            }
+                            item[ newProp ] = newValue ; 
+                        }
+                        else if ( rightSide.toLowerCase() === 'TrimB4Tilda'.toLowerCase() ) { item[ newProp ] = trimmedItem.split('~')[0].trim() ; }
+                        else if ( rightSide.toLowerCase() === 'TrimB4Par'.toLowerCase() ) { item[ newProp ] = trimmedItem.split(')')[0].trim() ; }
+                        else if ( rightSide.toLowerCase() === 'TrimB4Colon'.toLowerCase() ) { item[ newProp ] = trimmedItem.split(':')[0].trim() ; }
+                        else if ( rightSide.toLowerCase() === 'TrimB4Dot'.toLowerCase() ) { item[ newProp ] = trimmedItem.split('.')[0].trim() ; }
+
+                        else if ( rightSide.toLowerCase() === 'TrimB42ndDot'.toLowerCase() ) { 
+                            //This does not currently work... DO NOT USE
+                            var pos1 = trimmedItem.indexOf(".");           // 3
+                            var pos2 = trimmedItem.indexOf(".", pos1 + 1); // 7
+                            item[ newProp ] = trimmedItem.split('.')[0].trim() ;
+                         }
+
+                        else if ( rightSide.toLowerCase() === 'TrimAfterHyphen'.toLowerCase() ) { 
+                            let idx = item[ leftSide ].indexOf("-");
+                            if ( idx > -1 ) { item[ newProp ] = trimmedItem.substring(idx + 1 ).trim() ; }
+                        } else if ( rightSide.toLowerCase() === 'TrimAfterTilda'.toLowerCase() ) { 
+                            let idx = item[ leftSide ].indexOf("~");
+                            if ( idx > -1 ) { item[ newProp ] = trimmedItem.substring(idx + 1 ).trim() ; }
+                        } else if ( rightSide.toLowerCase() === 'TrimAfterColon'.toLowerCase() ) { 
+                            let idx = item[ leftSide ].indexOf(":");
+                            if ( idx > -1 ) { item[ newProp ] = trimmedItem.substring(idx + 1 ).trim() ; }
+                        }
+
+                    }
                 }
             });
 
