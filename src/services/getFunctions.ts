@@ -70,7 +70,7 @@
    /**
     * NOTE All this should be gotten from npmFunctions!!!!
     * Lists/getFunctions.ts
-    * 
+    *  
     */
    export const DoNotExpandLinkColumns : string[] = [ 'GetLinkDesc', 'GetLinkUrl' ];
    export const DoNotExpandFuncColumns : string[] = [ 'TrimB4Hyphen' , 'TrimB4Space', 'FirstWord' , 'TrimB4Tilda' , 'TrimB4Colon' ,  'TrimB4Dot' ,  'TrimB4Par' , 'TrimB42ndDot' ,  'TrimAfterHyphen' , 'TrimAfterTilda' , 'TrimAfterColon' ];
