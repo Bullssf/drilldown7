@@ -212,7 +212,7 @@ export function processAllItems( allItems : IDrillItemInfo[], errMessage: string
                     }
                 } else if ( drillList.funcColumns.indexOf( staticColumn ) > -1 ) {
 
-                    item = createItemFunctionProp( staticColumn, item );
+                    item = createItemFunctionProp( staticColumn, item, drillList.emptyRefiner );
 
                 }
             });

@@ -42,7 +42,7 @@ export const DidNotTrim = 'NothingChanged';
  *                                                                                                                
  */
 
-export function createItemFunctionProp ( staticColumn: string, item: any ) {
+export function createItemFunctionProp ( staticColumn: string, item: any, defaultValue: string | 'originalValue' ) {
 
   let splitCol = staticColumn.split("/");
   let leftSide = splitCol[0];
@@ -78,9 +78,7 @@ export function createItemFunctionProp ( staticColumn: string, item: any ) {
     // 'FirstLetter' | 'FirstNumber' | 'FirstInLast' | 'Initials' | 'FirstAcronym' | 'SecondAcronym';
     }
 
-
-
-
+    if ( item[ newProp ] === '' && defaultValue !== 'originalValue' ) { item[ newProp ] = defaultValue ; }
 
   }
 
@@ -111,9 +109,11 @@ export function trimB4( str: string, trimCommand: ITrimB4, ) {
   let result: string = '';
 
   if ( trimCommand === 'TrimB4Hyphen'.toLowerCase() ) { parser = '-'; }
+  if ( trimCommand === 'TrimB4Dash'.toLowerCase() ) { parser = '-'; }
   else if ( trimCommand === 'TrimB4Space'.toLowerCase() ) { parser = ' '; }
   else if ( trimCommand === 'TrimB4Tilda'.toLowerCase() ) { parser = '~'; }
   else if ( trimCommand === 'TrimB4Par'.toLowerCase() ) { parser = ')'; }
+  else if ( trimCommand === 'TrimB4LPar'.toLowerCase() ) { parser = '('; }
   else if ( trimCommand === 'TrimB4Colon'.toLowerCase() ) { parser = ':'; }
   else if ( trimCommand === 'TrimB4Dot'.toLowerCase() ) { parser = '.'; }
   else if ( trimCommand === 'TrimB42ndDot'.toLowerCase() ) { 
@@ -146,6 +146,7 @@ export function trimAfter( str: string, trimCommand: ITrimAfter, ) {
   let result: string = DidNotTrim;
 
   if ( trimCommand === 'TrimAfterHyphen'.toLowerCase() ) { parser = '-'; }
+  if ( trimCommand === 'TrimAfterDash'.toLowerCase() ) { parser = '-'; }
   else if ( trimCommand === 'TrimAfterTilda'.toLowerCase() ) { parser = '~'; }
   else if ( trimCommand === 'TrimAfterColon'.toLowerCase() ) { parser = ':'; }
   else if ( trimCommand === 'TrimAfterPar'.toLowerCase() ) { parser = ')'; }
@@ -191,7 +192,17 @@ export function TrimAfterThis( str: string, parser: string ) {
 /**
  * GetFirstWord is what was tested to pull the first word from a string
  * This will get the first 'word' consisting of letters and numbers
+ * 
+ * HOWEVER, testing shows that: 
+ *  a value of all numbers: '2003/88', will return just ''
+ *  whereas '10a08/2334' will return 'a08'
+ * 
+ *  ALSO, this does NOT work on non-arabic characters so 'Código' just returns a 'C'
+ * 
+ *   IN THOSE CASES, a Tested option would be 'TrimB4Space' or other triming
+ * 
  * @param str 
+ * 
  */
 export function GetFirstWord( str: string ) {
 

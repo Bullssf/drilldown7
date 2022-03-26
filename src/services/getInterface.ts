@@ -9,11 +9,11 @@
   export type ITrimLink = 'GetLinkDesc' | 'GetLinkUrl';
   export const DoNotExpandLinkColumns : ITrimLink[] = [ 'GetLinkDesc', 'GetLinkUrl' ];
 
-  export type ITrimB4 = 'TrimB4Hyphen' | 'TrimB4Space'| 'TrimB4Tilda' | 'TrimB4Colon' |  'TrimB4Dot' |  'TrimB4Par' | 'TrimB42ndDot' ;
-  export const DoNotExpandTrimB4 : ITrimB4[] = [ 'TrimB4Hyphen', 'TrimB4Space', 'TrimB4Tilda', 'TrimB4Colon', 'TrimB4Dot', 'TrimB4Par', 'TrimB42ndDot' ];
+  export type ITrimB4 = 'TrimB4Hyphen' | 'TrimB4Dash' | 'TrimB4Space'| 'TrimB4Tilda' | 'TrimB4Colon' |  'TrimB4Dot' |  'TrimB4Par' | 'TrimB4LPar' | 'TrimB42ndDot' ;
+  export const DoNotExpandTrimB4 : ITrimB4[] = [ 'TrimB4Hyphen', 'TrimB4Dash', 'TrimB4Space', 'TrimB4Tilda', 'TrimB4Colon', 'TrimB4Dot', 'TrimB4Par', 'TrimB4LPar', 'TrimB42ndDot' ];
 
-  export type ITrimAfter = 'TrimAfterHyphen' | 'TrimAfterTilda'| 'TrimAfterColon' | 'TrimAfterPar' | 'TrimAfterDot';
-  export const DoNotExpandTrimAfter : ITrimAfter[] = [ 'TrimAfterHyphen', 'TrimAfterTilda', 'TrimAfterColon', 'TrimAfterPar', 'TrimAfterDot' ];
+  export type ITrimAfter = 'TrimAfterHyphen' | 'TrimAfterDash' | 'TrimAfterTilda'| 'TrimAfterColon' | 'TrimAfterPar' | 'TrimAfterDot';
+  export const DoNotExpandTrimAfter : ITrimAfter[] = [ 'TrimAfterHyphen','TrimAfterDash', 'TrimAfterTilda', 'TrimAfterColon', 'TrimAfterPar', 'TrimAfterDot' ];
 
   export type ITrimSpecial = 'FirstWord' | 'LastWord' | 'FirstLetter' | 'FirstNumber' | 'Initials' | 'FirstInLast' | 'FirstAcronym' | 'SecondAcronym';
   export const DoNotExpandTrimSpecial : ITrimSpecial[] = [ 'FirstWord', 'LastWord', 'FirstLetter', 'FirstNumber', 'Initials', 'FirstInLast', 'FirstAcronym', 'SecondAcronym', ];
