@@ -11,6 +11,7 @@ import ReactJson from "react-json-view";
 
 import { IUser } from '@mikezimm/npmfunctions/dist/Services/Users/IUserInterfaces';
 import { IQuickButton, IQuickCommands } from '@mikezimm/npmfunctions/dist/QuickCommands/IQuickCommands';
+import { gitRepoDrillDown } from '@mikezimm/npmfunctions/dist/Links/LinksRepos';
 
 import { IDrillItemInfo } from '@mikezimm/npmfunctions/dist/WebPartInterfaces/DrillDown/IDrillItem';
 
@@ -101,6 +102,21 @@ export interface IReactListItemsState {
 
 }
 
+
+const NoCommandsInfo = <div>
+        <h2>This pane is for optional command buttons</h2>
+        <p>Currently there are no commands set up but.....</p>
+        <p>Command buttons can be created to make simple item changes like: 
+            <ol >
+                <li>Set status to Complete</li>
+                <li>Put today's date in Completed Date column</li>
+                <li>Add current user's name into Completed By column</li>
+            </ol>
+        </p>
+        <p>You can find out more about quick commands here: { gitRepoDrillDown.wiki }</p>
+    </div>;
+
+
 const stackFormRowTokens: IStackTokens = { childrenGap: 10 };
 
 const iconClassAction = mergeStyles({
@@ -178,7 +194,10 @@ export default class ReactListItems extends React.Component<IReactListItemsProps
 
         let allButtonRows : any[] = [];
 
-        if ( quickCommands && quickCommands.buttons.length > 0 ) {
+        if ( quickCommands && quickCommands.buttons.length === 0 ) { 
+            return NoCommandsInfo;
+
+        } else {
 
             let buildAllButtonsTest = true;
             if ( quickCommands.showWhenEvalTrue && quickCommands.showWhenEvalTrue.length > 0 ) {

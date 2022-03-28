@@ -48,6 +48,8 @@ import { IRefinerLayer, IRefiners, IItemRefiners, IRefinerStats, RefineRuleValue
 import { IUser } from '@mikezimm/npmfunctions/dist/Services/Users/IUserInterfaces';
 import { IQuickButton } from '@mikezimm/npmfunctions/dist/QuickCommands/IQuickCommands';
 
+import { createItemFunctionProp,  } from '../../../../services/parse'; //Main function to update item
+
 //   d888b  d88888b d888888b  .d8b.  db      db      d888888b d888888b d88888b .88b  d88. .d8888. 
 //  88' Y8b 88'     `~~88~~' d8' `8b 88      88        `88'   `~~88~~' 88'     88'YbdP`88 88'  YP 
 //  88      88ooooo    88    88ooo88 88      88         88       88    88ooooo 88  88  88 `8bo.   
@@ -209,51 +211,9 @@ export function processAllItems( allItems : IDrillItemInfo[], errMessage: string
                         item[ leftSide + 'GetLinkDesc' ] = 'Empty Link Description';
                     }
                 } else if ( drillList.funcColumns.indexOf( staticColumn ) > -1 ) {
-                    let splitCol = staticColumn.split("/");
-                    let leftSide = splitCol[0];
-                    let rightSide = splitCol[1];
-                    let newProp = leftSide + rightSide;
 
-                    let detailType = getDetailValueType(  item[leftSide] );
+                    item = createItemFunctionProp( staticColumn, item, drillList.emptyRefiner );
 
-                    //   export const DoNotExpandFuncColumns : string[] = [ 'TrimB4Hyphen' , 'TrimB4Space', 'FirstWord' , 'TrimB4Tilda' , 'TrimB4Par', 'TrimB4Colon' ,  'TrimB4Dot' , 'TrimB42ndDot',  'TrimAfterTilda' , 'TrimAfterHyphen' , 'TrimAfterColon' ];
-                    if ( detailType.indexOf('string') > -1 && item[leftSide].length > 0 ) {
-                        let trimmedItem = item[ leftSide ].trim();
-                        if ( rightSide.toLowerCase() === 'TrimB4Hyphen'.toLowerCase() ) { item[ newProp ] = trimmedItem.split('-')[0].trim() ; }
-                        else if ( rightSide.toLowerCase() === 'TrimB4Space'.toLowerCase() ) { item[ newProp ] = trimmedItem.split(' ')[0].trim() ; }
-                        else if ( rightSide.toLowerCase() === 'FirstWord'.toLowerCase() ) { 
-                            let newValue = trimmedItem.split(/^[^a-zA-Z]*/gm)[1];
-                            if ( newValue === undefined ) { 
-                                newValue = trimmedItem.split(/^[^a-zA-Z]*/gm)[0].split(/\W/gm)[0] ;
-                            } else {
-                                newValue = newValue.split(/\W/gm)[0] ;
-                            }
-                            item[ newProp ] = newValue ; 
-                        }
-                        else if ( rightSide.toLowerCase() === 'TrimB4Tilda'.toLowerCase() ) { item[ newProp ] = trimmedItem.split('~')[0].trim() ; }
-                        else if ( rightSide.toLowerCase() === 'TrimB4Par'.toLowerCase() ) { item[ newProp ] = trimmedItem.split(')')[0].trim() ; }
-                        else if ( rightSide.toLowerCase() === 'TrimB4Colon'.toLowerCase() ) { item[ newProp ] = trimmedItem.split(':')[0].trim() ; }
-                        else if ( rightSide.toLowerCase() === 'TrimB4Dot'.toLowerCase() ) { item[ newProp ] = trimmedItem.split('.')[0].trim() ; }
-
-                        else if ( rightSide.toLowerCase() === 'TrimB42ndDot'.toLowerCase() ) { 
-                            //This does not currently work... DO NOT USE
-                            var pos1 = trimmedItem.indexOf(".");           // 3
-                            var pos2 = trimmedItem.indexOf(".", pos1 + 1); // 7
-                            item[ newProp ] = trimmedItem.split('.')[0].trim() ;
-                         }
-
-                        else if ( rightSide.toLowerCase() === 'TrimAfterHyphen'.toLowerCase() ) { 
-                            let idx = item[ leftSide ].indexOf("-");
-                            if ( idx > -1 ) { item[ newProp ] = trimmedItem.substring(idx + 1 ).trim() ; }
-                        } else if ( rightSide.toLowerCase() === 'TrimAfterTilda'.toLowerCase() ) { 
-                            let idx = item[ leftSide ].indexOf("~");
-                            if ( idx > -1 ) { item[ newProp ] = trimmedItem.substring(idx + 1 ).trim() ; }
-                        } else if ( rightSide.toLowerCase() === 'TrimAfterColon'.toLowerCase() ) { 
-                            let idx = item[ leftSide ].indexOf(":");
-                            if ( idx > -1 ) { item[ newProp ] = trimmedItem.substring(idx + 1 ).trim() ; }
-                        }
-
-                    }
                 }
             });
 
@@ -1130,22 +1090,6 @@ export function consoleMe( location: string, obj: any, drillList: IDrillList ) {
 
     let itteration = drillList.itteration;
     console.log('Error#94:', itteration, location, pasteMe, drillListX );
-
-    // let testId = 179;
-    // let testItem = obj && obj[testId] ? true : false;
-    // let testRef = testItem && obj[testId].refiners ? true : false;
-    // let testLev = testRef && obj[testId].refiners.level1 ? true : false;
-    // let tbdNote = 'null';
-    // if ( testLev === true ) { tbdNote = 'Level found' ; }
-    // else if ( testRef === true ) { tbdNote = 'Refiner found' ; }
-    // else if ( testItem === true ) { tbdNote = 'Item found' ; }
-
-    // let pasteMe =  obj && obj[testId] && obj[testId].refiners ? obj[testId].refiners.lev1 : tbdNote ;
-    // obj = JSON.parse(JSON.stringify(obj));
-    // drillList = JSON.parse(JSON.stringify(drillList));
-
-    // let itteration = drillList.itteration;
-    // console.log('Error#94:', itteration, location, pasteMe, drillList );
 
     return;
 

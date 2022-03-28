@@ -205,7 +205,7 @@ export default class Drilldown7WebPart extends BaseClientSideWebPart<IDrilldown7
   private _selected_cssChartProps : ICSSChartDD;
   private _selected_listProps : any;
 
-  
+  private quickCommands : IQuickCommands = null;
 
   /**
    * 2020-09-08:  Add for dynamic data refiners.
@@ -264,6 +264,8 @@ export default class Drilldown7WebPart extends BaseClientSideWebPart<IDrilldown7
       if ( !this.properties.refinerInstruction3 ) { this.properties.refinerInstruction3 = `Select a {{refiner2}}`; }
       if ( !this.properties.language ) { this.properties.language = `en-us`; }
 
+      this.getQuickCommandsObject( 'Group Quick Commands', this.properties.quickCommands);
+      
       // other init code may be present
 
       let mess = 'onInit - ONINIT: ' + new Date().toLocaleTimeString();
@@ -362,14 +364,19 @@ export default class Drilldown7WebPart extends BaseClientSideWebPart<IDrilldown7
     if ( str === null || str === undefined ) { return result; }
     try {
       str = str.replace(/\\\"/g,'"').replace(/\\'"/g,"'"); //Replace any cases where I copied the hashed characters from JSON file directly.
+      if ( str === '[]' || str === '' ) { str = '{}' ; }
       result = JSON.parse(str);
+      if ( !result.buttons ) { result.buttons = []; }
+      if ( !result.fields ) { result.fields = []; }
+      if ( !result.onUpdateReload ) { result.onUpdateReload = true; }
+
+      this.properties.quickCommands = JSON.stringify(result);
+      this.quickCommands = result;
 
     } catch(e) {
       console.log(message + ' is not a valid JSON object.  Please fix it and re-run');
 
     }
-    
-    return result;
 
   }
 
@@ -532,8 +539,6 @@ export default class Drilldown7WebPart extends BaseClientSideWebPart<IDrilldown7
     if (viewFields2 !== undefined ) { viewDefs.push( { minWidth: viewWidth2, viewFields: viewFields2, groupByFields: groupByFields, includeDetails: includeDetails, includeAttach: includeAttach, includeListLink: includeListLink }); }
     if (viewFields3 !== undefined ) { viewDefs.push( { minWidth: viewWidth3, viewFields: viewFields3, groupByFields: groupByFields, includeDetails: includeDetails, includeAttach: includeAttach, includeListLink: includeListLink }); }
 
-    let quickCommands : IQuickCommands = this.getQuickCommandsObject( 'Group Quick Commands', this.properties.quickCommands);
-
     let stringRules: string = JSON.stringify( rules );
 
     //Just for test purposes
@@ -599,7 +604,7 @@ export default class Drilldown7WebPart extends BaseClientSideWebPart<IDrilldown7
 
         },
 
-        quickCommands: quickCommands,
+        quickCommands: this.quickCommands,
 
         // 2 - Source and destination list information
         listName: this.properties.parentListTitle,
@@ -1032,6 +1037,11 @@ export default class Drilldown7WebPart extends BaseClientSideWebPart<IDrilldown7
       'togRefinerCounts', 'togCountChart', 'togStats', 'togOtherListview', 'togOtherChartpart',
       'fetchCount', 'fetchCountMobile', 'restFilter', 'quickCommands', 'definitionToggle', 'includeListLink',
     ];
+
+    if ( propertyPath === 'quickCommands' ) {
+      this.getQuickCommandsObject( 'Group Quick Commands', this.properties.quickCommands);
+    }
+
     //alert('props updated');
     console.log('onPropertyPaneFieldChanged:', propertyPath, oldValue, newValue);
     if (updateOnThese.indexOf(propertyPath) > -1 ) {
