@@ -39,6 +39,8 @@ import { IQuickButton, IQuickCommands } from '@mikezimm/npmfunctions/dist/QuickC
 
 import { IListViewDDDrillDown } from '@mikezimm/npmfunctions/dist/Views/IDrillViews';
 
+import { gitRepoDrillDown } from '@mikezimm/npmfunctions/dist/Links/LinksRepos';
+
 import { IRefinerLayer, IRefiners, IItemRefiners, IRefinerStats, RefineRuleValues,
     IRefinerRules, IRefinerStatType, RefinerStatTypes, IRefinerStat } from '@mikezimm/npmfunctions/dist/Refiners/IRefiners';
 
@@ -357,7 +359,6 @@ export interface IStat {
     val2?: any;
     result?: string;
 }
-
 
 /***
  *    d888888b      d8888b. d8888b. d888888b db      db      d8888b.  .d88b.  db   d8b   db d8b   db      .d8888. d888888b  .d8b.  d888888b d88888b 
@@ -787,6 +788,7 @@ export default class DrillDown extends React.Component<IDrillDownProps, IDrillDo
             if ( this.props.refiners.length > 1 ) { maxRefinersToShow = 2; }
             if ( this.props.refiners.length > 2 ) { maxRefinersToShow = 3; }
         }
+
 
         let quickCommands : IQuickCommands = this.props.quickCommands ? JSON.parse( JSON.stringify(this.props.quickCommands )) : null ;
         
