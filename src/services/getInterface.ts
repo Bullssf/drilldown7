@@ -15,8 +15,10 @@
   export type ITrimAfter = 'TrimAfterHyphen' | 'TrimAfterDash' | 'TrimAfterTilda'| 'TrimAfterColon' | 'TrimAfterPar' | 'TrimAfterDot';
   export const DoNotExpandTrimAfter : ITrimAfter[] = [ 'TrimAfterHyphen','TrimAfterDash', 'TrimAfterTilda', 'TrimAfterColon', 'TrimAfterPar', 'TrimAfterDot' ];
 
-  export type ITrimSpecial = 'FirstWord' | 'LastWord' | 'FirstLetter' | 'FirstNumber' | 'Initials' | 'FirstInLast' | 'FirstAcronym' | 'SecondAcronym';
-  export const DoNotExpandTrimSpecial : ITrimSpecial[] = [ 'FirstWord', 'LastWord', 'FirstLetter', 'FirstNumber', 'Initials', 'FirstInLast', 'FirstAcronym', 'SecondAcronym', ];
+    // InitialsAsCaps, 1nitials, 1nitialsAsCaps
+
+  export type ITrimSpecial = 'FirstWord' | 'LastWord' | 'FirstLetter' | 'FirstLetterAsCap' | 'FirstNumber' | 'Initials' | 'InitialsAsCaps' | 'InitialsD' | 'InitialsAsCapsD' | 'FirstInFirst' | 'FirstInLast'  | 'FirstInFirstAsCap' | 'FirstInLastAsCap' | 'FirstAcronym' | 'SecondAcronym';
+  export const DoNotExpandTrimSpecial : ITrimSpecial[] = [ 'FirstWord', 'LastWord', 'FirstLetter', 'FirstLetterAsCap', 'FirstNumber', 'Initials', 'InitialsAsCaps', 'InitialsD', 'InitialsAsCapsD', 'FirstInFirst', 'FirstInLast', 'FirstInFirstAsCap', 'FirstInLastAsCap', 'FirstAcronym', 'SecondAcronym', ];
 
   export type ITrimFunctions = ITrimB4 | ITrimAfter | ITrimSpecial;
 

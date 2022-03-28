@@ -25,7 +25,8 @@ require('../../services/GrayPropPaneAccordions.css');
 import { createStyleFromString, getReactCSSFromString, ICurleyBraceCheck } from '@mikezimm/npmfunctions/dist/Services/PropPane/StringToReactCSS';
 import { IWebpartBannerProps, IWebpartBannerState } from './components/HelpPanel/banner/onNpm/bannerProps';
 
-import { setPageFormatting, IFPSPage } from '@mikezimm/npmfunctions/dist/Services/DOM/FPSFormatFunctions';
+import { setPageFormatting } from '@mikezimm/npmfunctions/dist/Services/DOM/FPSFormatFunctions';
+import { IFPSPage } from '@mikezimm/npmfunctions/dist/Services/DOM/FPSInterfaces';
 
 import { minimizeQuickLaunch } from '@mikezimm/npmfunctions/dist/Services/DOM/quickLaunch';
 
@@ -755,14 +756,25 @@ export default class Drilldown7WebPart extends BaseClientSideWebPart<IDrilldown7
    */
   private setThisPageFormatting( fpsPageStyle: string ) {
     let fpsPage: IFPSPage = {
-      Done: this.fpsPageDone,
+      // Done: this.fpsPageDone, // 2022-03-28: Errored out in npmFunctions v1.0.199, removing for now
+
+      // VVVV JUST SET THESE BY HAND TO MAKE ERRORS GO AWAY.  NEEDS UPDATING
+      attempted: false,
+      title: 'setThisPageFormatting',
+      wpInstanceID: 'wpInstanceID',
+      do: true,
+      errors: null,
+      success: null,
+      // ^^^^ JUST SET THESE BY HAND TO MAKE ERRORS GO AWAY.  NEEDS UPDATING
+
+
       Style: fpsPageStyle,
       Array: this.fpsPageArray,
     };
 
     fpsPage = setPageFormatting( this.domElement, fpsPage );
     this.fpsPageArray = fpsPage.Array;
-    this.fpsPageDone = fpsPage.Done;
+    // this.fpsPageDone = fpsPage.Done;  // 2022-03-28: Errored out in npmFunctions v1.0.199, removing for now
   }
 
   private async UpdateTitles(): Promise<boolean> {

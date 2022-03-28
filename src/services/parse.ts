@@ -3,7 +3,7 @@
  * 
  */
 import { DoNotExpandLinkColumns, DoNotExpandTrimB4, DoNotExpandTrimAfter, DoNotExpandTrimSpecial } from './getInterface';
-import { ITrimLink, ITrimB4, ITrimAfter, ITrimSpecial } from './getInterface';
+import { ITrimLink, ITrimB4, ITrimAfter, ITrimSpecial, IDoNotExpandColumns } from './getInterface';
 import { DoNotExpandFuncColumns, DoNotExpandColumns, } from './getInterface';
 import { convertArrayToLC, } from './getInterface';
 
@@ -49,40 +49,127 @@ export function createItemFunctionProp ( staticColumn: string, item: any, defaul
   let rightSide = splitCol[1] ? splitCol[1] : null;
   let rightSideLC = rightSide ? rightSide.toLowerCase() : null;
   let newProp = leftSide + rightSide;
+  let itemTypes: string[] = [];
+  let newValuesArray: any[] = [];
 
   let detailType = getDetailValueType(  item[leftSide] );
+  let itemLeftSide = item[leftSide];
 
-  if ( detailType.indexOf('string') > -1 && item[leftSide].length > 0 ) {
-    let trimmedItem = item[ leftSide ].trim();
+  let isMultiSelect = typeof itemLeftSide === 'object' && Array.isArray( itemLeftSide ) === true ? true : false;
 
-    //Handle all TrimB4
-    if ( convertArrayToLC( DoNotExpandTrimB4 ).indexOf( rightSideLC ) > -1 ) {
-      item[ newProp ] = trimB4( trimmedItem, rightSideLC as any );
+  //Added this to apply rules to multi-select items
+  let arrayOfItemValues = isMultiSelect === true ?  itemLeftSide : [ itemLeftSide ] ;
 
-    //Handle all TrimAfter
-    } else if ( convertArrayToLC( DoNotExpandTrimAfter ).indexOf( rightSideLC ) > -1 ) {
-      let newValue = DidNotTrim;
-      newValue = trimAfter( trimmedItem, rightSideLC as any );
+  //Get an array of all the individual item types (for multi-select items)
+  if ( isMultiSelect === true ) {
+    itemLeftSide.map ( singleItem => { itemTypes.push( getDetailValueType( singleItem ) ) ; } );
+  } else { itemTypes.push( detailType ) ; }
 
-      if ( newValue !== DidNotTrim ) { item[ newProp ] = newValue; }
-    
-    //Hanlde FirstWord
-    } else if ( rightSideLC === 'FirstWord'.toLowerCase() ) {
-      item[ newProp ] = GetFirstWord( trimmedItem );
+  const DoNotExpandTrimB4LC = convertArrayToLC( DoNotExpandTrimB4 );
+  const DoNotExpandTrimAfterLC = convertArrayToLC( DoNotExpandTrimAfter );
 
-    //Hanlde LastWord
-    } else if ( rightSideLC === 'LastWord'.toLowerCase() ) {
-      item[ newProp ] = GetLastWord( trimmedItem );
+  //Added this to apply rules to multi-select items
+  arrayOfItemValues.map( ( singleItemValue, idx ) => {
 
+    let singleItemType = itemTypes[ idx ];
 
-    // 'FirstLetter' | 'FirstNumber' | 'FirstInLast' | 'Initials' | 'FirstAcronym' | 'SecondAcronym';
+    //If this is singleItemValue is a string and length > 0, then apply the rules
+    if ( singleItemType.indexOf('string') > -1 && singleItemValue.length > 0 ) {
+      let trimmedItem = singleItemValue.trim();
+
+      //Handle all TrimB4
+      if ( DoNotExpandTrimB4LC.indexOf( rightSideLC ) > -1 ) {
+        singleItemValue = trimB4( trimmedItem, rightSideLC as any );
+  
+      //Handle all TrimAfter
+      } else if ( DoNotExpandTrimAfterLC.indexOf( rightSideLC ) > -1 ) {
+        let newValue = DidNotTrim;
+        newValue = trimAfter( trimmedItem, rightSideLC as any );
+  
+        if ( newValue !== DidNotTrim ) { singleItemValue = newValue; }
+      
+      //Hanlde FirstWord
+      } else if ( rightSideLC === 'FirstWord'.toLowerCase() ) {
+        singleItemValue = GetFirstWord( trimmedItem, false, false );
+  
+      //Hanlde LastWord
+      } else if ( rightSideLC === 'LastWord'.toLowerCase() ) {
+        singleItemValue = GetLastWord( trimmedItem, false, false  );
+
+      //Hanlde FirstWord
+      } else if ( rightSideLC === 'FirstLetter'.toLowerCase() ) {
+        singleItemValue = GetFirstWord( trimmedItem, false, true );
+
+      } else if ( rightSideLC === 'FirstLetterAsCap'.toLowerCase() ) {
+        singleItemValue = GetFirstWord( trimmedItem, true, true );
+
+      } else if ( rightSideLC === 'FirstInFirst'.toLowerCase() ) {
+        singleItemValue = GetFirstWord( trimmedItem, false, true  );
+
+      } else if ( rightSideLC === 'FirstInFirstAsCap'.toLowerCase() ) {
+        singleItemValue = GetFirstWord( trimmedItem, true, true  );
+
+      } else if ( rightSideLC === 'FirstInLast'.toLowerCase() ) {
+        singleItemValue = GetLastWord( trimmedItem, false, true );
+  
+      } else if ( rightSideLC === 'FirstInLastAsCap'.toLowerCase() ) {
+        singleItemValue = GetLastWord( trimmedItem, true, true );
+  
+      } else if ( rightSideLC === 'Initials'.toLowerCase() ) {
+        singleItemValue = getInitials( trimmedItem, false, false ); 
+
+      } else if ( rightSideLC === 'InitialsAsCaps'.toLowerCase() ) {
+        singleItemValue = getInitials( trimmedItem, true, false ); 
+
+      } else if ( rightSideLC === 'InitialsD'.toLowerCase() ) {
+        singleItemValue = getInitials( trimmedItem, false, true ); 
+
+      } else if ( rightSideLC === 'InitialsAsCapsD'.toLowerCase() ) {
+        singleItemValue = getInitials( trimmedItem, true, true ); 
+        
+      } else if ( rightSideLC === 'FirstNumber'.toLowerCase() ) {
+        let firstNumber = trimmedItem.match(/(\d+)/);
+        singleItemValue = firstNumber ? firstNumber[0] : ''; 
+        
+      }
+
+      if ( singleItemValue === '' && defaultValue !== 'originalValue' ) { singleItemValue = defaultValue ; }
+
+    } else { //Opposite of:  If this is singleItemValue is a string and length > 0, then apply the rules
+
     }
 
-    if ( item[ newProp ] === '' && defaultValue !== 'originalValue' ) { item[ newProp ] = defaultValue ; }
+    newValuesArray.push( singleItemValue );
 
+  });
+
+  if ( isMultiSelect === true ) {
+    item[ newProp ] = newValuesArray;
+  } else {
+    item[ newProp ] = newValuesArray [ 0 ];
   }
 
   return item;
+
+}
+
+export const regexInitials = /[^a-zA-Z- ]/g;
+export const regexInitialsWithNumbers = /[^a-zA-Z-\d ]/g;
+
+export function getInitials( str: string, asCaps: boolean, includeNumbers: boolean ) {
+
+  let useRegex = includeNumbers === true ? regexInitialsWithNumbers : regexInitials;
+
+  //Get array of initials based on the includeNumbers option
+  let initials = str.replace( useRegex, "").match(/\b\w/g);
+
+  let inititalString = initials ? initials.join('') : '';
+
+  if ( asCaps === true ) {
+    inititalString = inititalString.toLocaleUpperCase();
+  }
+  
+  return inititalString;
 
 }
 
@@ -204,7 +291,7 @@ export function TrimAfterThis( str: string, parser: string ) {
  * @param str 
  * 
  */
-export function GetFirstWord( str: string ) {
+export function GetFirstWord( str: string, asCaps: boolean, justInitial: boolean ) {
 
   if ( !str ) { return str; }
   if ( typeof str !== 'string' ) { return str; }
@@ -218,6 +305,12 @@ export function GetFirstWord( str: string ) {
   } else {
       newValue = newValue.split(/\W/gm)[0] ;
   }
+  if ( justInitial === true ) { newValue = newValue.charAt(0) ; }
+
+  if ( asCaps === true ) {
+    newValue = newValue.toLocaleUpperCase();
+  }
+
   return newValue ; 
 
 }
@@ -238,7 +331,7 @@ export function GetFirstWord( str: string ) {
  * This will get the LAST 'word' consisting of letters and/or numbers, even if the last word is only 1 char/digit
  * @param str 
  */
-export function GetLastWord( str: string ) {
+export function GetLastWord( str: string, asCaps: boolean, justInitial: boolean  ) {
 
   if ( !str ) { return str; }
   if ( typeof str !== 'string' ) { return str; }
@@ -252,6 +345,13 @@ export function GetLastWord( str: string ) {
   } else {
       newValue = newValue.split(/\W/gm)[0] ;
   }
+  
+  if ( justInitial === true ) { newValue = newValue.charAt(0) ; }
+
+  if ( asCaps === true ) {
+    newValue = newValue.toLocaleUpperCase();
+  }
+
   return newValue ; 
 
 }
