@@ -86,7 +86,7 @@ import { DoNotExpandLinkColumns, DoNotExpandColumns, DoNotExpandFuncColumns } fr
         let isLookup = thisColumn.indexOf("/");
         if(isLookup) {
           let splitCol = thisColumn.split("/");
-          let rightSide = splitCol[1];
+          let rightSide = splitCol[ splitCol.length -1 ];
           if ( rightSide && DoNotExpandColumnsLC.indexOf( rightSide.toLowerCase() ) > -1 ) {
             //Then do nothing since this column is a 'faux expanded column' used in Drilldown for Link Columns
 
@@ -109,7 +109,7 @@ import { DoNotExpandLinkColumns, DoNotExpandColumns, DoNotExpandFuncColumns } fr
 
           let splitCol = thisColumn.split("/");
           let leftSide = splitCol[0];
-          let rightSide = splitCol[1];
+          let rightSide = splitCol[ splitCol.length -1 ];
           if ( rightSide && DoNotExpandLinkColumnsLC.indexOf( rightSide.toLowerCase() ) > -1 ) {
             //Then do nothing since this column is a 'faux expanded column' used in Drilldown for Link Columns
             if ( baseLinkColumns.indexOf( thisColumn ) < 0 ) { baseLinkColumns.push(thisColumn); }
@@ -121,22 +121,29 @@ import { DoNotExpandLinkColumns, DoNotExpandColumns, DoNotExpandFuncColumns } fr
 
   export function getFuncColumns(lookupColumns : string[], DoNotExpandColumnsIn: string[] = DoNotExpandFuncColumns ){
 
-    let baseFuncColumns = [];
+    let allFuncColumns = [];
+    let actualFuncColumns = [];
     let DoNotExpandFuncColumnsLC = DoNotExpandColumnsIn.map( item => { return item.toLowerCase(); } ) ;
 
     for (let thisColumn of lookupColumns) {
       // Only look at columns with / in the name
 
           let splitCol = thisColumn.split("/");
-          let leftSide = splitCol[0];
-          let rightSide = splitCol[1];
+          let leftSide = splitCol.length === 3 ? splitCol[0] + '/' + splitCol[1]: splitCol[0] ;
+          let rightSide = splitCol[ splitCol.length -1 ];
           if ( rightSide && DoNotExpandFuncColumnsLC.indexOf( rightSide.toLowerCase() ) > -1 ) {
             //Then do nothing since this column is a 'faux expanded column' used in Drilldown for Func Columns
-            if ( baseFuncColumns.indexOf( thisColumn ) < 0 ) { baseFuncColumns.push(thisColumn); }
+            if ( allFuncColumns.indexOf( thisColumn ) < 0 ) { 
+              allFuncColumns.push( thisColumn );
+
+              //This extra if-then is required because there could be 2 functions pointing to the same actual column
+              if ( actualFuncColumns.indexOf( leftSide ) < 0 ) { actualFuncColumns.push( leftSide ); }
+              
+            }
           }
 
     }
-    return baseFuncColumns;
+    return { all: allFuncColumns, actual: actualFuncColumns };
   }
 
     /**
@@ -158,8 +165,8 @@ import { DoNotExpandLinkColumns, DoNotExpandColumns, DoNotExpandFuncColumns } fr
       // Only look at columns with / in the name
       if (thisColumn && thisColumn.indexOf("/") > -1 ) {
         let splitCol = thisColumn.split("/");
-        let leftSide = splitCol[0];
-        let rightSide = splitCol[1];
+        let leftSide = splitCol.length === 3 ? splitCol[0] + '/' + splitCol[1]: splitCol[0] ;
+        let rightSide = splitCol[ splitCol.length -1 ];
 
         if ( rightSide && DoNotExpandColumnsLC.indexOf( rightSide.toLowerCase() ) > -1 ) {
           //Then do nothing since this column is a 'faux expanded column' used in Drilldown for Link Columns

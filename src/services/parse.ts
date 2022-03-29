@@ -44,16 +44,49 @@ export const DidNotTrim = 'NothingChanged';
 
 export function createItemFunctionProp ( staticColumn: string, item: any, defaultValue: string | 'originalValue' ) {
 
+  const DoNotExpandTrimB4LC = convertArrayToLC( DoNotExpandTrimB4 );
+  const DoNotExpandTrimAfterLC = convertArrayToLC( DoNotExpandTrimAfter );
+  const DoNotExpandColumnsLC = convertArrayToLC( DoNotExpandColumns );
+
+  //This is kind of what I need to get to
   let splitCol = staticColumn.split("/");
-  let leftSide = splitCol[0];
-  let rightSide = splitCol[1] ? splitCol[1] : null;
+  let rightSide = splitCol[ splitCol.length -1 ];
+  let leftSide = [];
+  let itemLeftSide: any = null;
+
+  /**
+   * MEMO TO SELF... WHere you left off...
+   * Test here:  https://tenant.sharepoint.com/sites/SharePointLists/SitePages/Training-List---Drilldown-Sample.aspx?debug=true&noredir=true&debugManifestsFile=https%3A%2F%2Flocalhost%3A4321%2Ftemp%2Fmanifests.js
+   * 
+   *  In this loop, the 
+   *  let isMultiSelect = typeof itemLeftSide === 'object' && Array.isArray( itemLeftSide ) === true ? true : false;
+   */
+  if ( rightSide && DoNotExpandColumnsLC.indexOf( rightSide.toLowerCase() ) > -1 ) {
+    // this column is a 'faux expanded column' used in Drilldown for Link Columns
+
+    if ( splitCol.length === 3 ) {
+      leftSide = [ splitCol[0], splitCol[1] ] ;
+      //Added ternary to the update below for cases where the base column ( like person column is null or empty )
+      itemLeftSide =  item [ splitCol[0] ] ? item [ splitCol[0] ] [ splitCol[1] ] : null ;
+
+    }  else if ( splitCol.length === 2 ) {
+      leftSide = [ splitCol[0] ] ;
+      itemLeftSide = item [ splitCol[0] ] ;
+    }
+
+  } else {
+    // baseSelectColumns.push(thisColumn);
+    rightSide = '';
+  }
+
+
   let rightSideLC = rightSide ? rightSide.toLowerCase() : null;
-  let newProp = leftSide + rightSide;
+  let newProp = leftSide.join('') + rightSide;
   let itemTypes: string[] = [];
   let newValuesArray: any[] = [];
 
-  let detailType = getDetailValueType(  item[leftSide] );
-  let itemLeftSide = item[leftSide];
+  let detailType = getDetailValueType(  itemLeftSide );
+
 
   let isMultiSelect = typeof itemLeftSide === 'object' && Array.isArray( itemLeftSide ) === true ? true : false;
 
@@ -65,8 +98,6 @@ export function createItemFunctionProp ( staticColumn: string, item: any, defaul
     itemLeftSide.map ( singleItem => { itemTypes.push( getDetailValueType( singleItem ) ) ; } );
   } else { itemTypes.push( detailType ) ; }
 
-  const DoNotExpandTrimB4LC = convertArrayToLC( DoNotExpandTrimB4 );
-  const DoNotExpandTrimAfterLC = convertArrayToLC( DoNotExpandTrimAfter );
 
   //Added this to apply rules to multi-select items
   arrayOfItemValues.map( ( singleItemValue, idx ) => {
@@ -149,7 +180,7 @@ export function createItemFunctionProp ( staticColumn: string, item: any, defaul
     item[ newProp ] = newValuesArray [ 0 ];
   }
 
-  return item;
+  return { item: item, isMultiSelect: isMultiSelect } ;
 
 }
 

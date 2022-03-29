@@ -137,6 +137,7 @@ export type IRefinerStyles = 'pivot' | 'commandBar' | 'other';
     multiSelectColumns: string[];
     linkColumns: string[];
     funcColumns: string[];
+    funcColumnsActual: string[];    
     removeFromSelect: string[];
   }
 
@@ -669,7 +670,8 @@ export default class DrillDown extends React.Component<IDrillDownProps, IDrillDo
         list.staticColumns = allColumns;
         list.expandColumns = expColumns;
         list.linkColumns = linkColumns;
-        list.funcColumns = funcColumns;
+        list.funcColumns = funcColumns.all;
+        list.funcColumnsActual = funcColumns.actual;
 
         list.selectColumnsStr = selColumns.join(',') ;
         list.staticColumnsStr = allColumns.join(',');
@@ -747,6 +749,7 @@ export default class DrillDown extends React.Component<IDrillDownProps, IDrillDo
             multiSelectColumns: [],
             linkColumns: [],
             funcColumns: [],
+            funcColumnsActual: [],
             staticColumnsStr: '',
             selectColumnsStr: '',
             expandColumnsStr: '',
@@ -970,16 +973,16 @@ public componentDidUpdate(prevProps){
          */
         let viewDefsString = JSON.stringify(this.props.viewDefs);
         
-        this.state.drillList.multiSelectColumns.map( msColumn => {
-            viewDefsString = viewDefsString.replace( msColumn , msColumn.replace('/','') + 'MultiString' );
-        });
         this.state.drillList.linkColumns.map( linkColumn => {
             viewDefsString = viewDefsString.replace( linkColumn , linkColumn.replace('/','') );
         });
         this.state.drillList.funcColumns.map( linkColumn => {
             viewDefsString = viewDefsString.replace( linkColumn , linkColumn.replace('/','') );
         });
-
+        this.state.drillList.multiSelectColumns.map( msColumn => {
+            viewDefsString = viewDefsString.replace( msColumn , msColumn.replace('/','') + 'MultiString' );
+        });
+        
         let viewDefs: ICustViewDef[] = JSON.parse(viewDefsString);
 
         

@@ -35,6 +35,7 @@ import { getHelpfullError } from '@mikezimm/npmfunctions/dist/Services/Logging/E
 import { IViewLog, addTheseViews } from '../../../../services/listServices/viewServices'; //Import view arrays for Time list
 
 import { IAnyArray } from  '../../../../services/listServices/listServices';
+import { DoNotExpandFuncColumns, convertArrayToLC } from  '../../../../services/getInterface';
 
 import { getDetailValueType, ITypeStrings } from '@mikezimm/npmfunctions/dist/Services/typeServices';
 
@@ -83,7 +84,8 @@ export async function getAllItems( drillList: IDrillList, addTheseItemsToState: 
         let selColumns = drillList.selectColumnsStr;
         let expandThese = drillList.expandColumnsStr;
         let staticCols = drillList.staticColumns.length > 0 ? drillList.staticColumns.join(',') : '';
-        let selectCols = '*,' + staticCols;
+        // let selectCols = '*,' + staticCols;
+        let selectCols = '*,' + selColumns;
     
         let thisListObject = thisListWeb.lists.getByTitle(drillList.name);
     
@@ -111,6 +113,8 @@ export async function getAllItems( drillList: IDrillList, addTheseItemsToState: 
 }
 
 export function processAllItems( allItems : IDrillItemInfo[], errMessage: string, drillList: IDrillList, addTheseItemsToState: any, setProgress: any, markComplete: any ){
+
+    const DoNotExpandFuncColumnsLC = convertArrayToLC(DoNotExpandFuncColumns);
 
     let allRefiners : IRefinerLayer = null;
     let itemRefinerErrors: string[] = [];
@@ -186,7 +190,7 @@ export function processAllItems( allItems : IDrillItemInfo[], errMessage: string
                     if ( Array.isArray( item[staticColumn] ) === true ) {
                         drillList.multiSelectColumns.push( staticColumn );
                     }
-                }
+                } 
             });
     
             if ( item.Id === 8 ) {
@@ -212,10 +216,17 @@ export function processAllItems( allItems : IDrillItemInfo[], errMessage: string
                     }
                 } else if ( drillList.funcColumns.indexOf( staticColumn ) > -1 ) {
 
-                    item = createItemFunctionProp( staticColumn, item, drillList.emptyRefiner );
+                    const itemFunctionResult = createItemFunctionProp( staticColumn, item, drillList.emptyRefiner );
+                    item = itemFunctionResult.item;
+
+                    if ( itemFunctionResult.isMultiSelect === true && drillList.multiSelectColumns.indexOf( staticColumn ) < 0 ) {
+                        drillList.multiSelectColumns.push( staticColumn );
+                    }
 
                 }
             });
+
+
 
             if ( drillList.isLibrary === true || item.ServerRedirectedEmbedUrl || item.FileRef ) {
                 const useUrl = item.ServerRedirectedEmbedUrl ? item.ServerRedirectedEmbedUrl : item.FileRef;
@@ -243,8 +254,18 @@ export function processAllItems( allItems : IDrillItemInfo[], errMessage: string
             item.searchString = buildSearchStringFromItem(item, drillList.staticColumns );
 
             drillList.multiSelectColumns.map( msColumn => {
+
+                let splitCol = msColumn.split("/");
+                let leftSide = splitCol[0];
+                let rightSide = splitCol[1];    
+                if ( drillList.selectColumns.indexOf( msColumn ) > -1 ) {
+                    //Then we have to adjust the left side to be the full expanded value
+                    leftSide = msColumn.replace('/','');
+                    rightSide = '';
+                }
+
                 let msColumnNoSlash = msColumn.replace('/','');
-                let msColumnStr = `${msColumnNoSlash}MultiString`;
+                let msColumnStr = rightSide? `${leftSide}MultiString${rightSide}` : `${leftSide}MultiString`;
                 if ( item[msColumnNoSlash] === null && item[msColumnNoSlash] == undefined ) {
                     item[msColumnStr] = '';
                 } else if ( item[msColumnNoSlash].length === 1 ) {
