@@ -110,6 +110,7 @@ import { DoNotExpandLinkColumns, DoNotExpandColumns, DoNotExpandFuncColumns } fr
           let splitCol = thisColumn.split("/");
           let leftSide = splitCol[0];
           let rightSide = splitCol[ splitCol.length -1 ];
+          
           if ( rightSide && DoNotExpandLinkColumnsLC.indexOf( rightSide.toLowerCase() ) > -1 ) {
             //Then do nothing since this column is a 'faux expanded column' used in Drilldown for Link Columns
             if ( baseLinkColumns.indexOf( thisColumn ) < 0 ) { baseLinkColumns.push(thisColumn); }
@@ -131,6 +132,7 @@ import { DoNotExpandLinkColumns, DoNotExpandColumns, DoNotExpandFuncColumns } fr
           let splitCol = thisColumn.split("/");
           let leftSide = splitCol.length === 3 ? splitCol[0] + '/' + splitCol[1]: splitCol[0] ;
           let rightSide = splitCol[ splitCol.length -1 ];
+
           if ( rightSide && DoNotExpandFuncColumnsLC.indexOf( rightSide.toLowerCase() ) > -1 ) {
             //Then do nothing since this column is a 'faux expanded column' used in Drilldown for Func Columns
             if ( allFuncColumns.indexOf( thisColumn ) < 0 ) { 

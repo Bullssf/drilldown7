@@ -48,12 +48,6 @@ export function createItemFunctionProp ( staticColumn: string, item: any, defaul
   const DoNotExpandTrimAfterLC = convertArrayToLC( DoNotExpandTrimAfter );
   const DoNotExpandColumnsLC = convertArrayToLC( DoNotExpandColumns );
 
-  //This is kind of what I need to get to
-  let splitCol = staticColumn.split("/");
-  let rightSide = splitCol[ splitCol.length -1 ];
-  let leftSide = [];
-  let itemLeftSide: any = null;
-
   /**
    * MEMO TO SELF... WHere you left off...
    * Test here:  https://tenant.sharepoint.com/sites/SharePointLists/SitePages/Training-List---Drilldown-Sample.aspx?debug=true&noredir=true&debugManifestsFile=https%3A%2F%2Flocalhost%3A4321%2Ftemp%2Fmanifests.js
@@ -61,13 +55,34 @@ export function createItemFunctionProp ( staticColumn: string, item: any, defaul
    *  In this loop, the 
    *  let isMultiSelect = typeof itemLeftSide === 'object' && Array.isArray( itemLeftSide ) === true ? true : false;
    */
+
+         /**
+       * MEMO TO SELF... The problem here is that item [ splitCol[0] ] is AN ARRAY OF LOOKUP VALUES.... SO YOU HAVE TO LOOP THROUGH ALL OF THEM :(
+       * CURRENTLY itemLeftSide[ Role ] [ Department ] is undefined because you need to actually do something like:  itemLeftSide[ Role ] [ DepartmentCalc ] [ i ] 
+       * BASICALLY Create an Array of values like I did somewhere else if it were multi-select
+       * Like arrValues = itemLeftSide[ Role ] [ DepartmentCalc ];
+       */
+
+  /**
+   * 
+
   if ( rightSide && DoNotExpandColumnsLC.indexOf( rightSide.toLowerCase() ) > -1 ) {
     // this column is a 'faux expanded column' used in Drilldown for Link Columns
 
     if ( splitCol.length === 3 ) {
       leftSide = [ splitCol[0], splitCol[1] ] ;
       //Added ternary to the update below for cases where the base column ( like person column is null or empty )
-      itemLeftSide =  item [ splitCol[0] ] ? item [ splitCol[0] ] [ splitCol[1] ] : null ;
+
+
+
+       stop here now ^^^^^ SEE NOTES ABOVE
+
+      if ( item [ splitCol[0] ] ) {
+        itemLeftSide =  item [ splitCol[0] ] [ splitCol[1] ] ;
+
+      } else {
+        itemLeftSide = null ;
+      }
 
     }  else if ( splitCol.length === 2 ) {
       leftSide = [ splitCol[0] ] ;
@@ -78,15 +93,43 @@ export function createItemFunctionProp ( staticColumn: string, item: any, defaul
     // baseSelectColumns.push(thisColumn);
     rightSide = '';
   }
+  */
 
+  let splitCol = staticColumn.split("/");
+  let rightSide = splitCol[ splitCol.length -1 ];
+  let leftSide = [];
+  let itemLeftSide: any = null;
+
+    /**
+     * MEMO TO SELF... The problem here is that item [ splitCol[0] ] is AN ARRAY OF LOOKUP VALUES.... SO YOU HAVE TO LOOP THROUGH ALL OF THEM :(
+     * CURRENTLY itemLeftSide[ Role ] [ Department ] is undefined because you need to actually do something like:  itemLeftSide[ Role ] [ DepartmentCalc ] [ i ] 
+     * BASICALLY Create an Array of values like I did somewhere else if it were multi-select
+     * Like arrValues = itemLeftSide[ Role ] [ DepartmentCalc ];
+     */
+
+  if ( splitCol.length === 3 ) {
+    leftSide = [ splitCol[0], splitCol[1] ] ;
+    //Added ternary to the update below for cases where the base column ( like person column is null or empty )
+
+    if ( item [ splitCol[0] ] ) {
+      itemLeftSide =  item [ splitCol[0] ] [ splitCol[1] ] ;
+
+    } else {
+      itemLeftSide = null ;
+    }
+
+  }  else if ( splitCol.length === 2 ) {
+    leftSide = [ splitCol[0] ] ;
+    itemLeftSide = item [ splitCol[0] ] ;
+  }
 
   let rightSideLC = rightSide ? rightSide.toLowerCase() : null;
   let newProp = leftSide.join('') + rightSide;
   let itemTypes: string[] = [];
   let newValuesArray: any[] = [];
 
-  let detailType = getDetailValueType(  itemLeftSide );
 
+  let detailType = getDetailValueType(  itemLeftSide );
 
   let isMultiSelect = typeof itemLeftSide === 'object' && Array.isArray( itemLeftSide ) === true ? true : false;
 

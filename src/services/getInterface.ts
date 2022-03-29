@@ -18,6 +18,7 @@
     // InitialsAsCaps, 1nitials, 1nitialsAsCaps
 
   export type ITrimSpecial = 'FirstWord' | 'LastWord' | 'FirstLetter' | 'FirstLetterAsCap' | 'FirstNumber' | 'Initials' | 'InitialsAsCaps' | 'InitialsD' | 'InitialsAsCapsD' | 'FirstInFirst' | 'FirstInLast'  | 'FirstInFirstAsCap' | 'FirstInLastAsCap' | 'FirstAcronym' | 'SecondAcronym';
+  
   export const DoNotExpandTrimSpecial : ITrimSpecial[] = [ 'FirstWord', 'LastWord', 'FirstLetter', 'FirstLetterAsCap', 'FirstNumber', 'Initials', 'InitialsAsCaps', 'InitialsD', 'InitialsAsCapsD', 'FirstInFirst', 'FirstInLast', 'FirstInFirstAsCap', 'FirstInLastAsCap', 'FirstAcronym', 'SecondAcronym', ];
 
   export type ITrimFunctions = ITrimB4 | ITrimAfter | ITrimSpecial;
