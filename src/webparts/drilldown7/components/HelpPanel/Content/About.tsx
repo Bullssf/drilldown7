@@ -20,6 +20,7 @@ export function aboutTable( repoLinks: IRepoLinks ) {
     };
 
     table.rows.push( createAboutRow('2022-03-28','1.2.0.9'  ,'#115 - links, #119 - refiner bug, #122 - more parsing on more things, npmFunctions v1.0.199', repoLinks ) );
+    table.rows.push( createAboutRow('"','"'                 ,'#123 - improve error message, #125 - prop pane refresh', repoLinks ) );
 
     table.rows.push( createAboutRow('2022-03-28','1.2.0.8'  ,'#80, #115, add text parsing to refiners, refactor gets', repoLinks ) );
 

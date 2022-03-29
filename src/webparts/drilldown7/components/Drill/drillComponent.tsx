@@ -139,6 +139,9 @@ export type IRefinerStyles = 'pivot' | 'commandBar' | 'other';
     funcColumns: string[];
     funcColumnsActual: string[];    
     removeFromSelect: string[];
+
+    errors: any[];
+
   }
 
 /***
@@ -672,6 +675,7 @@ export default class DrillDown extends React.Component<IDrillDownProps, IDrillDo
         list.linkColumns = linkColumns;
         list.funcColumns = funcColumns.all;
         list.funcColumnsActual = funcColumns.actual;
+        list.errors = [ ...funcColumns.funcErrors ];
 
         list.selectColumnsStr = selColumns.join(',') ;
         list.staticColumnsStr = allColumns.join(',');
@@ -755,6 +759,7 @@ export default class DrillDown extends React.Component<IDrillDownProps, IDrillDo
             expandColumnsStr: '',
             linkColumnsStr: '',
             removeFromSelect: ['currentTime','currentUser'],
+            errors:  [],
         };
 
         consoleMe( 'createDL' + location , this.state ? this.state.allItems : null , list );
@@ -1002,6 +1007,12 @@ public componentDidUpdate(prevProps){
             });
         });
 
+        let drillListErrors = this.state.drillList.errors.length === 0 ? null : <div style={{ padding: '20px'}}>
+            <h3>These column functions have errors... Check refiners or ViewFields :)</h3>
+            { this.state.drillList.errors.map( message => {
+                return <li> { message }</li>;
+            }) }
+        </div>;
         
         let createBanner = this.state.quickCommands !== null && this.state.quickCommands.successBanner > 0 ? true : false;
         let bannerMessage = createBanner === false ? null : <div style={{ width: '100%'}} 
@@ -1081,6 +1092,7 @@ public componentDidUpdate(prevProps){
                     { Banner }
                     <h2>The webpart props have some issues</h2>
                     { issueElements }
+                    { drillListErrors }
                 </div>;
 
             } else if ( this.state.errMessage && performanceMessage !== true  ) {
@@ -1096,6 +1108,7 @@ public componentDidUpdate(prevProps){
                     { Banner }
                     <h2>The webpart props have some issues</h2>
                     { issueElements }
+                    { drillListErrors }
                 </div>;
 
             } else {
@@ -1116,6 +1129,7 @@ public componentDidUpdate(prevProps){
                     { issueElements }
                     </div>;
                 }
+
 
                 /***
                     *    .d8888. d88888b  .d8b.  d8888b.  .o88b. db   db      d8888b.  .d88b.  db    db 
@@ -1449,7 +1463,7 @@ public componentDidUpdate(prevProps){
                                 <Stack horizontal={false} wrap={true} horizontalAlign={"stretch"} tokens={stackPageTokens} className={ stylesD.refiners }>{/* Stack for Buttons and Webs */}
                                     { refinersObjects  }
                                 </Stack>
-
+                                { drillListErrors }
                                 { instructionBlock }
                                 
                                 <div> { this.state.showCountChart === true ? countCharts : null } </div>
@@ -1459,6 +1473,7 @@ public componentDidUpdate(prevProps){
 
                                     <div className={ this.state.searchCount !== 0 ? styles.hideMe : styles.showErrorMessage  }>{ noInfo } </div>
                                     { bannerMessage }
+
                                     <Stack horizontal={false} wrap={true} horizontalAlign={"stretch"} tokens={stackPageTokens}>{/* Stack for Buttons and Webs */}
                                         {/* { this.state.viewType === 'React' ? reactListItems : drillItems } */}
 
@@ -1472,7 +1487,9 @@ public componentDidUpdate(prevProps){
 
                     if ( this.state.allItems.length === 0 ) {
                         thisPage = <div style={{ paddingBottom: 30 }}className={styles.contents}>
-                        { errMessage }</div>;
+                        { errMessage }
+                        { drillListErrors }
+                        </div>;
                     }
                 }
                 
