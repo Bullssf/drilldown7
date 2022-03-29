@@ -921,6 +921,11 @@ public componentDidUpdate(prevProps){
     if ( JSON.stringify(prevProps.refiners) !== JSON.stringify(this.props.refiners )) {
         rebuildPart = true;
     }
+
+    if ( JSON.stringify(prevProps.viewDefs) !== JSON.stringify(this.props.viewDefs )) {
+        rebuildPart = true;
+    }
+
     if ( prevProps.listName !== this.props.listName || prevProps.webURL !== this.props.webURL ) {
       rebuildPart = true ;
     }
@@ -973,17 +978,29 @@ public componentDidUpdate(prevProps){
          */
         let viewDefsString = JSON.stringify(this.props.viewDefs);
         
-        this.state.drillList.linkColumns.map( linkColumn => {
-            viewDefsString = viewDefsString.replace( linkColumn , linkColumn.replace('/','') );
-        });
-        this.state.drillList.funcColumns.map( linkColumn => {
-            viewDefsString = viewDefsString.replace( linkColumn , linkColumn.replace('/','') );
-        });
-        this.state.drillList.multiSelectColumns.map( msColumn => {
-            viewDefsString = viewDefsString.replace( msColumn , msColumn.replace('/','') + 'MultiString' );
-        });
+        // this.state.drillList.linkColumns.map( linkColumn => {
+        //     viewDefsString = viewDefsString.replace( linkColumn , linkColumn.replace(/\//g,'') );
+        // });
+        // this.state.drillList.funcColumns.map( linkColumn => {
+        //     viewDefsString = viewDefsString.replace( linkColumn , linkColumn.replace(/\//g,'') );
+        // });
+        // this.state.drillList.multiSelectColumns.map( msColumn => {
+        //     viewDefsString = viewDefsString.replace( msColumn , msColumn.replace(/\//g,'') + 'MultiString' );
+        // });
         
         let viewDefs: ICustViewDef[] = JSON.parse(viewDefsString);
+
+        viewDefs.map( view => {
+            view.viewFields.map ( field => {
+                if (  this.state.drillList.multiSelectColumns.indexOf( field.name ) > -1 ) {
+                    field.name += 'MultiString';
+                }
+                field.name = field.name.replace(/\//g,'');
+                // Since linkPropertyName is optional, first check to make sure it exists and is a string.
+                if ( typeof field.linkPropertyName === 'string' ) { field.linkPropertyName = field.linkPropertyName.replace(/\//g,''); }
+
+            });
+        });
 
         
         let createBanner = this.state.quickCommands !== null && this.state.quickCommands.successBanner > 0 ? true : false;

@@ -107,12 +107,35 @@ export function createItemFunctionProp ( staticColumn: string, item: any, defaul
      * Like arrValues = itemLeftSide[ Role ] [ DepartmentCalc ];
      */
 
+     /**
+      * This is what lookup column looks like at this point:
+      * Main column ('Role' is an array of objects)
+      * Secondary columns (Title, DepartmentCalc are arrays of string)
+      * 
+      * Role: Array(4)
+          0: {odata.type: 'SP.Data.TrainingRolesListItem', odata.id: 'c5c603c4-73cf-407c-8a59-96da495a3687', Title: 'Coordinador de QMS', DepartmentCalc: 'Quality'}
+          1: {odata.type: 'SP.Data.TrainingRolesListItem', odata.id: '1fb880e9-4bfa-4560-be4a-9b9290246f9d', Title: 'ING de cal Proveedores', DepartmentCalc: 'Other'}
+          2: {odata.type: 'SP.Data.TrainingRolesListItem', odata.id: '252f0759-588b-4f94-b5f7-86030ea64cb6', Title: 'Ingeniero de Calidad', DepartmentCalc: 'Quality'}
+          3: {odata.type: 'SP.Data.TrainingRolesListItem', odata.id: 'a3886af4-d85e-46aa-986b-764a2eba25f7', Title: 'Supervisor de Calidad', DepartmentCalc: 'Quality'}
+          length: 4
+          [[Prototype]]: Array(0)
+        Role@odata.navigationLinkUrl: "Web/Lists(guid'7057e999-09a5-4044-9310-f1192153ee59')/Items(358)/Role"
+        RoleDepartmentCalc: (2) ['Quality', 'Other']
+        RoleId: (4) [7, 6, 5, 4]
+        RoleTitle: (4) ['Coordinador de QMS', 'ING de cal Proveedores', 'Ingeniero de Calidad', 'Supervisor de Calidad']
+
+        11:02 initial StaticColumn testing the value:  "Role/DepartmentCalc/initials"
+
+        LeftSideItem would be RoleDepartmentCalc which is an array by this point.
+
+      */
+
   if ( splitCol.length === 3 ) {
     leftSide = [ splitCol[0], splitCol[1] ] ;
     //Added ternary to the update below for cases where the base column ( like person column is null or empty )
 
     if ( item [ splitCol[0] ] ) {
-      itemLeftSide =  item [ splitCol[0] ] [ splitCol[1] ] ;
+      itemLeftSide =  item [ splitCol[0] + splitCol[1] ] ;
 
     } else {
       itemLeftSide = null ;
@@ -127,7 +150,6 @@ export function createItemFunctionProp ( staticColumn: string, item: any, defaul
   let newProp = leftSide.join('') + rightSide;
   let itemTypes: string[] = [];
   let newValuesArray: any[] = [];
-
 
   let detailType = getDetailValueType(  itemLeftSide );
 

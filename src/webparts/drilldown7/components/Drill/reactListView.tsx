@@ -332,7 +332,7 @@ export default class ReactListItems extends React.Component<IReactListItemsProps
         
         viewFields.map( vf => {
             //2022-03-18:  MEMO TO SELF... SOMETHING SEEMS OFF about this replace...
-            vf.name = vf.name.replace('/','');
+            vf.name = vf.name.replace(/\//g,'');
         });
 
         return viewFields;
@@ -382,7 +382,7 @@ export default class ReactListItems extends React.Component<IReactListItemsProps
         let groupByFields : IGrouping[] = [];
         if ( this.props.groupByFields && this.props.groupByFields.length > 0 ) { 
             this.props.groupByFields.map( gF => {  groupByFields.push(gF) ;  });
-            groupByFields.map( gF => {  gF.name = gF.name.replace('/','') ;  });
+            groupByFields.map( gF => {  gF.name = gF.name.replace(/\//g,'') ;  });
         }
 
         this.state = {

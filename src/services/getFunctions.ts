@@ -86,12 +86,23 @@ import { DoNotExpandLinkColumns, DoNotExpandColumns, DoNotExpandFuncColumns } fr
         let isLookup = thisColumn.indexOf("/");
         if(isLookup) {
           let splitCol = thisColumn.split("/");
+          let baseColumn = splitCol[ 0 ] ; //This is always the zero index splitCol period
+          let nextPart = splitCol[ 1 ];
           let rightSide = splitCol[ splitCol.length -1 ];
-          if ( rightSide && DoNotExpandColumnsLC.indexOf( rightSide.toLowerCase() ) > -1 ) {
+
+          if ( nextPart && DoNotExpandColumnsLC.indexOf( nextPart.toLowerCase() ) > -1 ) {
             //Then do nothing since this column is a 'faux expanded column' used in Drilldown for Link Columns
+
+          } else if ( splitCol && splitCol.length === 3 ) {
+            //Then check since this is likely an expanded column with special function
+            if ( nextPart && DoNotExpandColumnsLC.indexOf( nextPart.toLowerCase() ) < 0 ) {
+              baseSelectColumns.push( splitCol[ 0 ] + '/' + splitCol[ 1 ] );
+
+            }
 
           } else {
             baseSelectColumns.push(thisColumn);
+
           }
         }
       }
@@ -167,14 +178,19 @@ import { DoNotExpandLinkColumns, DoNotExpandColumns, DoNotExpandFuncColumns } fr
       // Only look at columns with / in the name
       if (thisColumn && thisColumn.indexOf("/") > -1 ) {
         let splitCol = thisColumn.split("/");
-        let leftSide = splitCol.length === 3 ? splitCol[0] + '/' + splitCol[1]: splitCol[0] ;
-        let rightSide = splitCol[ splitCol.length -1 ];
+        // let leftSide = splitCol.length === 3 ? splitCol[0] + '/' + splitCol[1]: splitCol[0] ;
+        let baseColumn = splitCol[ 0 ] ; //This is always the zero index splitCol period
+        let nextPart = splitCol[ 1 ];
 
-        if ( rightSide && DoNotExpandColumnsLC.indexOf( rightSide.toLowerCase() ) > -1 ) {
+        // Need to check 2 special cases:
+        // #1 is splitCol[1] = link column?  If so, do not expand
+        // #2 is if splitCol[1] = any other special column, do not expand
+
+        if ( nextPart && DoNotExpandColumnsLC.indexOf( nextPart.toLowerCase() ) > -1 ) {
           //Then do nothing since this column is a 'faux expanded column' used in Drilldown for Link Columns
 
-        } else if(baseExpandColumns.indexOf(leftSide) < 0) {
-          baseExpandColumns.push(leftSide);
+        } else if(baseExpandColumns.indexOf(baseColumn) < 0) {
+          baseExpandColumns.push(baseColumn);
 
         }
       }
