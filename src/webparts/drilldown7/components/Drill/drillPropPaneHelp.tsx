@@ -42,7 +42,7 @@ export const WebPartHelpElement = <div>
             <div className={ stylesD.topic}>For Lookup columns (Single/Multi) - that are brought in under the LookupColumn</div>
             <div><b>LookupColumnName/Title</b> - /Title shows the Title field from the lookup item</div>
             <div><b>LookupColumnName/OtherField</b> - /OtherField is the StaticColumnName of the lookup column from the other list</div>
-            <div>So if you have a lookup column like 'CustomerPlant' which has a Title column (Plant name) and Country column (where it is located)</div>
+            <div style={{ paddingTop: '8px'}}>So if you have a lookup column like 'CustomerPlant' which has a Title column (Plant name) and Country column (where it is located)</div>
             <div>To show Customer Plant Title, use <b>CustomerPlant/Title</b></div>
             <div>To show Customer Plant Country, use <b>CustomerPlant/Country</b></div>
         </div>
