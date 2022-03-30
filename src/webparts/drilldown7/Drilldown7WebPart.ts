@@ -1,6 +1,6 @@
 import * as React from 'react';
 import * as ReactDom from 'react-dom';
-import { Version } from '@microsoft/sp-core-library';
+import { DisplayMode, Version } from '@microsoft/sp-core-library';
 import {
   IPropertyPaneConfiguration,
   PropertyPaneTextField
@@ -69,6 +69,7 @@ export interface IDrilldown7WebPartProps {
 
   // 0 - Context
   pageContext: PageContext;
+
 
   // 1 - Analytics options
   useListAnalytics: boolean;
@@ -560,7 +561,7 @@ export default class Drilldown7WebPart extends BaseClientSideWebPart<IDrilldown7
         // 0 - Context
         pageContext: this.context.pageContext,
         wpContext: this.context,
-        
+        displayMode: this.displayMode,
         bannerProps: bannerProps,
 
         errMessage: errMessage,

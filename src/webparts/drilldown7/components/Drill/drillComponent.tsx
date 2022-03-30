@@ -1,9 +1,10 @@
 import * as React from 'react';
 import { WebPartContext } from '@microsoft/sp-webpart-base';
+import { DisplayMode, } from '@microsoft/sp-core-library';
 
 import { CompoundButton, Stack, IStackTokens, elementContains, initializeIcons, Icon, IIconStyles, getLanguage } from 'office-ui-fabric-react';
 import { SearchBox } from 'office-ui-fabric-react/lib/SearchBox';
-import { Pivot, PivotItem, IPivotItemProps} from 'office-ui-fabric-react/lib/Pivot';
+import { Pivot, PivotItem, IPivotItemProps, PivotLinkFormat, PivotLinkSize,} from 'office-ui-fabric-react/lib/Pivot';
 
 import { sp } from "@pnp/sp";
 import { Web, Lists } from "@pnp/sp/presets/all"; //const projectWeb = Web(useProjectWeb);
@@ -50,6 +51,8 @@ import { pivotOptionsGroup, } from '../../../../services/propPane';
 
 import { getExpandColumns, getKeysLike, getSelectColumns, getLinkColumns, getFuncColumns } from '../../../../services/getFunctions';
 
+import { DoNotExpandLinkColumns, DoNotExpandTrimB4, DoNotExpandTrimAfter, DoNotExpandTrimSpecial } from '../../../../services/getInterface';
+
 import { getHelpfullError } from '@mikezimm/npmfunctions/dist/Services/Logging/ErrorHandler';
 
 import MyDrillItems from './drillListView';
@@ -75,6 +78,7 @@ import Cssreactbarchart from '../CssCharts/Cssreactbarchart';
 import {buildCountChartsObject ,  buildStatChartsArray} from '../CssCharts/cssChartFunctions';
 
 import { getAppropriateViewFields, getAppropriateViewGroups, getAppropriateViewProp } from './listFunctions';
+import { WebPartHelpElement } from './drillPropPaneHelp';
 
 import { ProgressIndicator } from 'office-ui-fabric-react/lib/ProgressIndicator';
 
@@ -86,6 +90,8 @@ import { IWebpartBannerProps, } from "../HelpPanel/banner/onNpm/bannerProps";
 import { defaultBannerCommandStyles, } from "../HelpPanel/banner/onNpm/defaults";
 
 import { IDrillItemInfo } from '@mikezimm/npmfunctions/dist/WebPartInterfaces/DrillDown/IDrillItem';
+
+
 
 export type IRefinerStyles = 'pivot' | 'commandBar' | 'other';
 
@@ -238,6 +244,8 @@ export interface IDrillDownProps {
     pageContext: PageContext;
     wpContext: WebPartContext;
 
+    displayMode: DisplayMode;
+
     bannerProps: IWebpartBannerProps;
 
     errMessage: string;
@@ -384,6 +392,7 @@ export interface IDrillDownState {
 
     allLoaded: boolean;
 
+    showPropsHelp: boolean;
     bannerMessage: any;
 
     showTips: boolean;
@@ -469,6 +478,8 @@ export default class DrillDown extends React.Component<IDrillDownProps, IDrillDo
 
     private nearBannerElements = this.buildNearBannerElements();
     private farBannerElements = this.buildFarBannerElements();
+    //DoNotExpandLinkColumns, DoNotExpandTrimB4, DoNotExpandTrimAfter, DoNotExpandTrimSpecial
+
 
     /***
      *    d8888b. db    db d888888b db      d8888b.      .d8888. db    db .88b  d88.       .o88b.  .d88b.  db    db d8b   db d888888b       .o88b. db   db  .d8b.  d8888b. d888888b .d8888. 
@@ -818,6 +829,7 @@ export default class DrillDown extends React.Component<IDrillDownProps, IDrillDo
             drillList: drillList,
 
             bannerMessage: null,
+            showPropsHelp: false,
             showTips: false,
             showRefinerCounts: this.props.showRefinerCounts ? this.props.showRefinerCounts : false,
             showCountChart: this.props.showCountChart ? this.props.showCountChart : false,
@@ -1014,6 +1026,11 @@ public componentDidUpdate(prevProps){
             }) }
         </div>;
         
+        
+        let propsHelp = <div className={ this.state.showPropsHelp !== true ? stylesD.bannerHide : stylesD.helpPropsShow  }>
+            { WebPartHelpElement }
+        </div>;
+
         let createBanner = this.state.quickCommands !== null && this.state.quickCommands.successBanner > 0 ? true : false;
         let bannerMessage = createBanner === false ? null : <div style={{ width: '100%'}} 
             className={ [ stylesD.bannerStyles,  this.state.bannerMessage === null ? stylesD.bannerHide : stylesD.bannerShow ].join(' ') }>
@@ -1036,6 +1053,11 @@ public componentDidUpdate(prevProps){
             // <Icon iconName={layoutIcon} onClick={ this.toggleLayout.bind(this) } style={ defaultBannerCommandStyles }></Icon>,
             <Icon iconName='BookAnswers' onClick={ this.forceInstructions.bind(this) } style={ defaultBannerCommandStyles }></Icon>,
         ];
+        if ( this.props.displayMode === DisplayMode.Edit ) {
+            farBannerElementsArray.push( 
+                <Icon iconName='OpenEnrollment' onClick={ this.togglePropsHelp.bind(this) } style={ defaultBannerCommandStyles }></Icon>
+        );
+        }
 
         //Exclude the props.bannerProps.title if the webpart is narrow to make more responsive
         let bannerTitle = this.props.bannerProps.bannerWidth < 900 ? '' : `${this.props.bannerProps.title} - ${''}`;
@@ -1436,8 +1458,6 @@ public componentDidUpdate(prevProps){
                         messages.push( <div><span><b>{ 'info ->' }</b></span></div> ) ;
                     }
 
-
-
                     /***
                         *    d888888b db   db d888888b .d8888.      d8888b.  .d8b.   d888b  d88888b 
                         *    `~~88~~' 88   88   `88'   88'  YP      88  `8D d8' `8b 88' Y8b 88'     
@@ -1448,13 +1468,13 @@ public componentDidUpdate(prevProps){
                         *                                                                           
                         *                                                                           
                         */
-                        
                     thisPage = <div>
                         { Banner }
                         <div className={styles.contents}>
                             <div className={stylesD.drillDown}>
                                 {  /* <div className={styles.floatRight}>{ toggleTipsButton }</div> */ }
                                 <div className={ this.state.errMessage === '' ? styles.hideMe : styles.showErrorMessage  }>{ errMessage } </div>
+                                { propsHelp }
                                 {  /* <p><mark>Check why picking Assists does not show Help as a chapter even though it's the only chapter...</mark></p> */ }
                                 <Stack horizontal={true} wrap={true} horizontalAlign={"space-between"} verticalAlign= {"center"} tokens={stackPageTokens}>{/* Stack for Buttons and Webs */}
                                     { searchBox } { toggles } 
@@ -1487,6 +1507,7 @@ public componentDidUpdate(prevProps){
 
                     if ( this.state.allItems.length === 0 ) {
                         thisPage = <div style={{ paddingBottom: 30 }}className={styles.contents}>
+                        { propsHelp }
                         { errMessage }
                         { drillListErrors }
                         </div>;
@@ -2399,6 +2420,12 @@ public componentDidUpdate(prevProps){
  *                                                                   
  */
 
+    private togglePropsHelp(){
+        let newState = this.state.showPropsHelp === true ? false : true;
+        
+        this.setState( { showPropsHelp: newState });
+
+    }
     private hideInstructions(){
         let newState = this.state.whenToShowItems === 0 ? this.props.showItems.whenToShowItems : 0;
         

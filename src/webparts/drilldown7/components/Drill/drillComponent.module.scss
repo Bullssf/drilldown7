@@ -158,6 +158,29 @@
         transition:all 0.6s ease;
       }
 
+      
+
+      .helpContent {
+        padding: .5em 1em 1em 1em;
+      }
+
+      .helpPropsShow {
+        opacity: 1;
+        background: 'lightgray';
+        transition: all 0.6s ease;
+        padding: 30px;
+        box-sizing: border-box;
+
+        .topic {
+          font-size: larger;
+          font-weight: 600;
+          padding-top: 15px;
+          // padding-bottom: 5px !important;
+          box-sizing: border-box;
+        }
+        // text-align: center;
+      }
+
       /**
             .bannerStyles {
         text-align: center;
