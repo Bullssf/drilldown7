@@ -28,7 +28,10 @@
 	}
 	
   
-  //Copied from Pivot Tiles showSearch
+
+	// NOTE ABOUT HIDING - ALWAYS DO OVERFLOW: HIDDEN OR LINKS AND BUTTONS NOT SHOWN INTERFERE WITH VISIBLE ONES
+	// REMEMBER:  In this webpart, drillPropPaneHelp.tsx and Hide Instructions panel.
+	// In Pivot Tiles - Permissions and Group Pivot Buttons
   .hideSettings {
 		height: 0px;
 		overflow: hidden;

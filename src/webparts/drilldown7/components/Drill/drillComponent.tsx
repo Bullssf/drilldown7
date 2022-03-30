@@ -605,7 +605,7 @@ export default class DrillDown extends React.Component<IDrillDownProps, IDrillDo
         defaultBannerCommandStyles.fontSize = 'normal';
         
         elements.push(<span style={{ paddingLeft: '20px' }} className={ '' } title={ 'Hide instructions based on webpart settings' }>
-          <Icon iconName='Hide3' onClick={ this.hideInstructions.bind(this) } style={ defaultBannerCommandStyles }></Icon> </span>);
+          <Icon iconName='Hide3' onClick={ this.hideInstructions.bind(this) } style={ defaultBannerCommandStyles }></Icon></span>);
 
         return elements;
       }
@@ -1052,6 +1052,7 @@ public componentDidUpdate(prevProps){
         let farBannerElementsArray = [...this.farBannerElements,
             // <Icon iconName={layoutIcon} onClick={ this.toggleLayout.bind(this) } style={ defaultBannerCommandStyles }></Icon>,
             <Icon iconName='BookAnswers' onClick={ this.forceInstructions.bind(this) } style={ defaultBannerCommandStyles }></Icon>,
+            // <Icon iconName='Hide3' onClick={ this.hideInstructions.bind(this) } style={ defaultBannerCommandStyles }></Icon>,
         ];
         if ( this.props.displayMode === DisplayMode.Edit ) {
             farBannerElementsArray.push( 
@@ -1483,6 +1484,7 @@ public componentDidUpdate(prevProps){
                                 <Stack horizontal={false} wrap={true} horizontalAlign={"stretch"} tokens={stackPageTokens} className={ stylesD.refiners }>{/* Stack for Buttons and Webs */}
                                     { refinersObjects  }
                                 </Stack>
+                                
                                 { drillListErrors }
                                 { instructionBlock }
                                 
@@ -2422,20 +2424,17 @@ public componentDidUpdate(prevProps){
 
     private togglePropsHelp(){
         let newState = this.state.showPropsHelp === true ? false : true;
-        
         this.setState( { showPropsHelp: newState });
 
     }
     private hideInstructions(){
         let newState = this.state.whenToShowItems === 0 ? this.props.showItems.whenToShowItems : 0;
-        
         this.setState( { whenToShowItems: newState, instructionsHidden: 'hide' });
 
     }
 
     private forceInstructions(){
         let newState = this.state.whenToShowItems === 0 ? this.props.showItems.whenToShowItems : 0;
-        
         this.setState( { whenToShowItems: newState, instructionsHidden: 'force' });
 
     }
