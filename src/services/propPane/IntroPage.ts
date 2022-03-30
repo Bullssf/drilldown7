@@ -140,17 +140,17 @@ export class IntroPage {
             ]},
                 
         // 2 - Source and destination list information
-        {  groupName: 'Create-Verify Lists',
-            isCollapsed: true ,
-            groupFields: [
+        // {  groupName: 'Create-Verify Lists',
+        //     isCollapsed: true ,
+        //     groupFields: [
 
-            PropertyPaneLabel('Notice', {
-              text: 'NOTE:  It may take 5-20 seconds to create/verify list.  Do NOT close browser or interupt while it is creating lists.'
-            }),
+            // PropertyPaneLabel('Notice', {
+            //   text: 'NOTE:  It may take 5-20 seconds to create/verify list.  Do NOT close browser or interupt while it is creating lists.'
+            // }),
 
-            PropertyPaneLabel('Notice', {
-              text: ''
-            }),
+            // PropertyPaneLabel('Notice', {
+            //   text: ''
+            // }),
 /*
             PropertyPaneButton('CreateParentList',  
             {  
@@ -159,9 +159,9 @@ export class IntroPage {
              onClick: _onClickCreateParent
             }),
 */
-            PropertyPaneLabel('Notice', {
-              text: ''
-            }),
+            // PropertyPaneLabel('Notice', {
+            //   text: ''
+            // }),
 /*
             PropertyPaneButton('CreateChildList',
             {  
@@ -171,26 +171,26 @@ export class IntroPage {
             }),
 */
             
-            PropertyPaneButton('UpdateTitles',
-            {  
-             text: "Update Column Titles",  
-             description: "Copy list title to WebPart",
-             buttonType: PropertyPaneButtonType.Compound,
-             onClick: _onClickUpdateTitles
-            }),
+            // PropertyPaneButton('UpdateTitles',
+            // {  
+            //  text: "Update Column Titles",  
+            //  description: "Copy list title to WebPart",
+            //  buttonType: PropertyPaneButtonType.Compound,
+            //  onClick: _onClickUpdateTitles
+            // }),
 
-            PropertyPaneTextField('parentListFieldTitles', {
-              label: 'Advanced Field Settings',
-              description: 'For changing webpart field titles',
-              multiline: true,
-            }),
+            // PropertyPaneTextField('parentListFieldTitles', {
+            //   label: 'Advanced Field Settings',
+            //   description: 'For changing webpart field titles',
+            //   multiline: true,
+            // }),
 /*
             PropertyPaneLabel('FieldInfo', {
               text: webPartProps.projectListFieldTitles
             }),
 */
 
-          ]}, // this group
+          // ]}, // this group
 
 
 
@@ -323,23 +323,23 @@ export class IntroPage {
 
 
         // 9 - Other web part options
-        { groupName: 'Pivot Styles (headings)',
-          isCollapsed: true ,
-          groupFields: [
-            PropertyPaneDropdown('pivotSize', <IPropertyPaneDropdownProps>{
-              label: strings.FieldLabel_PivSize,
-              options: pivotOptionsGroup.pivSizeChoices,
-            }),
-            PropertyPaneDropdown('pivotFormat', <IPropertyPaneDropdownProps>{
-              label: strings.FieldLabel_PivFormat,
-              options: pivotOptionsGroup.pivFormatChoices,
-            }),
-            PropertyPaneDropdown('pivotOptions', <IPropertyPaneDropdownProps>{
-              label: strings.FieldLabel_PivOptions,
-              options: pivotOptionsGroup.pivOptionsChoices,
-              disabled: true,
-            }),
-          ]}, // this group
+        // { groupName: 'Pivot Styles (headings)',
+        //   isCollapsed: true ,
+        //   groupFields: [
+        //     PropertyPaneDropdown('pivotSize', <IPropertyPaneDropdownProps>{
+        //       label: strings.FieldLabel_PivSize,
+        //       options: pivotOptionsGroup.pivSizeChoices,
+        //     }),
+        //     PropertyPaneDropdown('pivotFormat', <IPropertyPaneDropdownProps>{
+        //       label: strings.FieldLabel_PivFormat,
+        //       options: pivotOptionsGroup.pivFormatChoices,
+        //     }),
+        //     PropertyPaneDropdown('pivotOptions', <IPropertyPaneDropdownProps>{
+        //       label: strings.FieldLabel_PivOptions,
+        //       options: pivotOptionsGroup.pivOptionsChoices,
+        //       disabled: true,
+        //     }),
+        //   ]}, // this group
 
                   // 9 - Other web part options
         { groupName: 'Toggles',

@@ -35,6 +35,7 @@ import { getHelpfullError } from '@mikezimm/npmfunctions/dist/Services/Logging/E
 import { IViewLog, addTheseViews } from '../../../../services/listServices/viewServices'; //Import view arrays for Time list
 
 import { IAnyArray } from  '../../../../services/listServices/listServices';
+import { DoNotExpandFuncColumns, convertArrayToLC } from  '../../../../services/getInterface';
 
 import { getDetailValueType, ITypeStrings } from '@mikezimm/npmfunctions/dist/Services/typeServices';
 
@@ -81,9 +82,27 @@ export async function getAllItems( drillList: IDrillList, addTheseItemsToState: 
 
         let thisListWeb = Web(drillList.webURL);
         let selColumns = drillList.selectColumnsStr;
+
+        //Needed to add these to select columns as well as say it's a library
+        if ( drillList.isLibrary !== true ) {
+            if ( drillList.staticColumns.indexOf( 'FileLeafRef' ) > -1 ) {
+                drillList.isLibrary = true;
+            } else if ( drillList.staticColumns.indexOf( 'FileRef' ) > -1 ) {
+                drillList.isLibrary = true;
+            }
+        }
+
+        //Always add these columns if it's a library to get links
+        if ( drillList.isLibrary === true ) {
+            selColumns += ',FileLeafRef,FileRef';
+        }
+        //Always add this column to fetch an embed url
+        selColumns += ',ServerRedirectedEmbedUrl';
+
         let expandThese = drillList.expandColumnsStr;
         let staticCols = drillList.staticColumns.length > 0 ? drillList.staticColumns.join(',') : '';
-        let selectCols = '*,' + staticCols;
+        // let selectCols = '*,' + staticCols;
+        let selectCols = '*,' + selColumns;
     
         let thisListObject = thisListWeb.lists.getByTitle(drillList.name);
     
@@ -111,6 +130,8 @@ export async function getAllItems( drillList: IDrillList, addTheseItemsToState: 
 }
 
 export function processAllItems( allItems : IDrillItemInfo[], errMessage: string, drillList: IDrillList, addTheseItemsToState: any, setProgress: any, markComplete: any ){
+
+    const DoNotExpandFuncColumnsLC = convertArrayToLC(DoNotExpandFuncColumns);
 
     let allRefiners : IRefinerLayer = null;
     let itemRefinerErrors: string[] = [];
@@ -186,7 +207,7 @@ export function processAllItems( allItems : IDrillItemInfo[], errMessage: string
                     if ( Array.isArray( item[staticColumn] ) === true ) {
                         drillList.multiSelectColumns.push( staticColumn );
                     }
-                }
+                } 
             });
     
             if ( item.Id === 8 ) {
@@ -202,20 +223,27 @@ export function processAllItems( allItems : IDrillItemInfo[], errMessage: string
                     let detailType = getDetailValueType(  item[leftSide] );
 
                     if ( detailType === 'link' ) {
-                        item[ leftSide + 'GetLinkUrl' ] = item[ leftSide ].Url;
+                        item[ leftSide + 'GetLinkUrl' ] = item[ leftSide ].Url ? item[ leftSide ].Url : null;
                         item[ leftSide + 'GetLinkDesc' ] = item[ leftSide ].Description;
 
                     } else {
                         //This is not a link column but set props anyway
-                        item[ leftSide + 'GetLinkUrl' ] = 'Empty Link Url';
-                        item[ leftSide + 'GetLinkDesc' ] = 'Empty Link Description';
+                        item[ leftSide + 'GetLinkUrl' ] = null;
+                        item[ leftSide + 'GetLinkDesc' ] = 'No Link Description';
                     }
                 } else if ( drillList.funcColumns.indexOf( staticColumn ) > -1 ) {
 
-                    item = createItemFunctionProp( staticColumn, item, drillList.emptyRefiner );
+                    const itemFunctionResult = createItemFunctionProp( staticColumn, item, drillList.emptyRefiner );
+                    item = itemFunctionResult.item;
+
+                    if ( itemFunctionResult.isMultiSelect === true && drillList.multiSelectColumns.indexOf( staticColumn ) < 0 ) {
+                        drillList.multiSelectColumns.push( staticColumn );
+                    }
 
                 }
             });
+
+
 
             if ( drillList.isLibrary === true || item.ServerRedirectedEmbedUrl || item.FileRef ) {
                 const useUrl = item.ServerRedirectedEmbedUrl ? item.ServerRedirectedEmbedUrl : item.FileRef;
@@ -232,7 +260,71 @@ export function processAllItems( allItems : IDrillItemInfo[], errMessage: string
                 item.goToPropsLink = drillList.parentListURL + "/DispForm.aspx?ID=" + item.Id;
                 item.isFile = false;
             }
-    
+
+            drillList.multiSelectColumns.map( msColumn => {
+
+                let splitCol = msColumn.split("/");
+                let leftSide = [];
+                let rightSide = splitCol[ splitCol.length -1 ];  
+
+                /**
+                 * Example object (Multi-select lookup value )
+                    Role: (4) [{..}, {...}, {...}, {...}]
+                        Role@odata.navigationLinkUrl: "Web/Lists(guid'7057e999-09a5-4044-9310-f1192153ee59')/Items(358)/Role"
+                    RoleDepartmentCalc: (2) ['Quality', 'Other']
+                    RoleDepartmentCalcMultiString: "Quality; Other"
+                    RoleDepartmentCalcinitials: (2) ['Q', 'O']
+                    RoleId: (4) [7, 6, 5, 4]
+                    RoleTitle: (4) ['Coordinador de QMS', 'ING de cal Proveedores', 'Ingeniero de Calidad', 'Supervisor de Calidad']
+                    RoleTitleMultiString: "Coordinador de QMS; ING de cal Proveedores; Ingeniero de Calidad; Supervisor de Calidad"
+                    ServerRedirectedEmbedUri: null
+                 */
+                
+                // let splitCol = staticColumn.split("/");
+                // let rightSide = splitCol[ splitCol.length -1 ];
+                // let leftSide = [];
+                // let itemLeftSide: any = null;
+
+                // if ( splitCol.length === 3 ) {
+                //     leftSide = [ splitCol[0], splitCol[1] ] ;
+                //     //Added ternary to the update below for cases where the base column ( like person column is null or empty )
+                
+                //     if ( item [ splitCol[0] ] ) {
+                //     //   itemLeftSide =  item [ splitCol[0] + splitCol[1] ] ;
+                
+                //     } else {
+                //     //   itemLeftSide = null ;
+                //     }
+                
+                //   }  else if ( splitCol.length === 2 ) {
+                //     leftSide = [ splitCol[0] ] ;
+                //     // itemLeftSide = item [ splitCol[0] ] ;
+                //   }
+                
+
+
+                // if ( drillList.selectColumns.indexOf( msColumn ) > -1 ) {
+                //     //Then we have to adjust the left side to be the full expanded value
+                //     leftSide = msColumn.replace(/\//g,'');
+                //     rightSide = '';
+                // }
+
+                let msColumnNoSlash = msColumn.replace(/\//g,'');
+                // let msColumnStr = rightSide? `${leftSide}MultiString${rightSide}` : `${leftSide}MultiString`;
+                let msColumnStr = `${msColumnNoSlash}MultiString`;
+
+                //Switched if from && to || 
+                if ( item[msColumnNoSlash] === null || item[msColumnNoSlash] === undefined ) {
+                    item[msColumnStr] = '';
+                } else if ( item[msColumnNoSlash].length === 1 ) {
+                    item[msColumnStr] = item[msColumnNoSlash][0];
+                } else {
+                    item [msColumnStr ] = typeof item[msColumnNoSlash][0] === 'string' ? item[msColumnNoSlash].join('; ') : 'Must be string' ;
+                }
+
+
+            });
+
             if ( item.Attachments === true ) { itemsHaveAttachments = true ; } 
             item.refiners = getItemRefiners( drillList, item );
     
@@ -242,28 +334,13 @@ export function processAllItems( allItems : IDrillItemInfo[], errMessage: string
             item.meta = buildMetaFromItem(item);
             item.searchString = buildSearchStringFromItem(item, drillList.staticColumns );
 
-            drillList.multiSelectColumns.map( msColumn => {
-                let msColumnNoSlash = msColumn.replace('/','');
-                let msColumnStr = `${msColumnNoSlash}MultiString`;
-                if ( item[msColumnNoSlash] === null && item[msColumnNoSlash] == undefined ) {
-                    item[msColumnStr] = '';
-                } else if ( item[msColumnNoSlash].length === 1 ) {
-                    item[msColumnStr] = item[msColumnNoSlash][0];
-                } else {
-                    item [msColumnStr ] = typeof item[msColumnNoSlash][0] === 'string' ? item[msColumnNoSlash].join('; ') : 'Must be string' ;
-                }
-            });
-
-
-
             finalItems.push( item );
         }
 
     });
 
-
     drillList.linkColumns.map( linkColumn => {
-        linkColumn = linkColumn.replace('/','');
+        linkColumn = linkColumn.replace(/\//g,'');
     });
 
     drillList.hasAttach = itemsHaveAttachments;
@@ -657,7 +734,7 @@ export function getItemRefiners( drillList: IDrillList, item: IDrillItemInfo ) {
         let allRules = drillList.refinerRules;
         for ( let r of refiners ) {
             if ( r != null ) {
-                r = r.replace('/','');
+                r = r.replace(/\//g,'');
                 let thisRuleSet : any = allRules[i];
                 let fieldValue = item[r];
                 itemRefiners['lev' + i] = getRefinerFromField( fieldValue , thisRuleSet , drillList.emptyRefiner );
@@ -1046,7 +1123,7 @@ function buildSearchStringFromItem (newItem : IDrillItemInfo, staticColumns: str
     if ( newItem.Id ) { result += 'Id=' + newItem.Id + delim ; }
 
     staticColumns.map( c => {
-        let thisCol = c.replace('/','');
+        let thisCol = c.replace(/\//g,'');
         if ( newItem[thisCol] ) { result += c + '=' + newItem[thisCol] + delim ; }
     });
 

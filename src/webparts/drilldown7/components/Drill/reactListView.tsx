@@ -329,10 +329,11 @@ export default class ReactListItems extends React.Component<IReactListItemsProps
     }
 
     private handleExpandedFieldInfoToIViewFields( viewFields?: IViewField[] ) {
-        
+        //Before this line was added, I think it was mutating props causing double render
+        viewFields = JSON.parse(JSON.stringify( viewFields ));
         viewFields.map( vf => {
             //2022-03-18:  MEMO TO SELF... SOMETHING SEEMS OFF about this replace...
-            vf.name = vf.name.replace('/','');
+            vf.name = vf.name.replace(/\//g,'');
         });
 
         return viewFields;
@@ -381,8 +382,9 @@ export default class ReactListItems extends React.Component<IReactListItemsProps
 
         let groupByFields : IGrouping[] = [];
         if ( this.props.groupByFields && this.props.groupByFields.length > 0 ) { 
-            this.props.groupByFields.map( gF => {  groupByFields.push(gF) ;  });
-            groupByFields.map( gF => {  gF.name = gF.name.replace('/','') ;  });
+            //Added this reparse to prevent mutating props
+            groupByFields = JSON.parse(JSON.stringify( this.props.groupByFields ));
+            groupByFields.map( gF => {  gF.name = gF.name.replace(/\//g,'') ;  });
         }
 
         this.state = {
@@ -422,13 +424,23 @@ export default class ReactListItems extends React.Component<IReactListItemsProps
 
     public componentDidUpdate(prevProps: IReactListItemsProps): void {
         let redraw = false;
+        let updateViewFields = false;
 
-        if ( prevProps.viewFields !== this.props.viewFields ) { redraw = true; }
+        if ( JSON.stringify(prevProps.viewFields) !== JSON.stringify(this.props.viewFields )) {
+            updateViewFields = true;
+            redraw = true;
+        }
+
+        if ( JSON.stringify(prevProps.groupByFields) !== JSON.stringify(this.props.groupByFields )) {
+            updateViewFields = true;
+            redraw = true;
+        }
+
         if ( prevProps.items.length !== this.props.items.length ) { redraw = true; }
         if ( prevProps.parentListURL !== this.props.parentListURL ) { redraw = true; }
 
 
-        this._updateStateOnPropsChange();
+        this._updateStateOnPropsChange( updateViewFields );
     }
 
 /***
@@ -626,9 +638,29 @@ export default class ReactListItems extends React.Component<IReactListItemsProps
     }
 
 
-    private _updateStateOnPropsChange(): void {
-//        this.setState({
-//        });
+    private _updateStateOnPropsChange( pushViewFieldsToState : boolean ): void {
+
+        let viewFields : IViewField[] = [];
+        let parentListFieldTitles = this.props.parentListFieldTitles !== undefined && this.props.parentListFieldTitles !== null ? JSON.parse(this.props.parentListFieldTitles) : '';
+
+        if ( this.props.viewFields.length > 0 ) { 
+            viewFields = this.handleExpandedFieldInfoToIViewFields( this.props.viewFields );
+        } else { 
+            viewFields = this.covertFieldInfoToIViewFields( parentListFieldTitles , [] );
+        }
+   
+        let groupByFields : IGrouping[] = [];
+        if ( this.props.groupByFields && this.props.groupByFields.length > 0 ) { 
+            groupByFields = JSON.parse(JSON.stringify( this.props.groupByFields ));
+            groupByFields.map( gF => {  gF.name = gF.name.replace(/\//g,'') ;  });
+        }
+
+        if ( pushViewFieldsToState === true ) {
+            this.setState({
+                viewFields: viewFields,
+                groupByFields: groupByFields,
+            });
+        }
     }
 
 /***

@@ -149,6 +149,9 @@
         text-align: center;
       }
 
+      // NOTE ABOUT HIDING - ALWAYS DO OVERFLOW: HIDDEN OR LINKS AND BUTTONS NOT SHOWN INTERFERE WITH VISIBLE ONES
+      // REMEMBER:  In this webpart, drillPropPaneHelp.tsx and Hide Instructions panel.
+      // In Pivot Tiles - Permissions and Group Pivot Buttons
       .bannerHide {
         height: 0px;
         background: transparent;
@@ -156,6 +159,30 @@
         margin-top: 0px;
         margin-bottom: 0px;
         transition:all 0.6s ease;
+        overflow: hidden;
+      }
+
+      
+
+      .helpContent {
+        padding: .5em 1em 1em 1em;
+      }
+
+      .helpPropsShow {
+        opacity: 1;
+        background: 'lightgray';
+        transition: all 0.6s ease;
+        padding: 30px;
+        box-sizing: border-box;
+
+        .topic {
+          font-size: larger;
+          font-weight: 600;
+          padding-top: 15px;
+          // padding-bottom: 5px !important;
+          box-sizing: border-box;
+        }
+        // text-align: center;
       }
 
       /**
@@ -174,6 +201,10 @@
         transition: all 0.5s ease;
 
       }
+
+      // NOTE ABOUT HIDING - ALWAYS DO OVERFLOW: HIDDEN OR LINKS AND BUTTONS NOT SHOWN INTERFERE WITH VISIBLE ONES
+      // REMEMBER:  In this webpart, drillPropPaneHelp.tsx and Hide Instructions panel.
+      // In Pivot Tiles - Permissions and Group Pivot Buttons
 
       .bannerHide {
         height: 0px;
@@ -214,7 +245,11 @@
 
       }
 
-    //Copied from Pivot Tiles showSearch
+
+    // NOTE ABOUT HIDING - ALWAYS DO OVERFLOW: HIDDEN OR LINKS AND BUTTONS NOT SHOWN INTERFERE WITH VISIBLE ONES
+    // REMEMBER:  In this webpart, drillPropPaneHelp.tsx and Hide Instructions panel.
+    // In Pivot Tiles - Permissions and Group Pivot Buttons
+
     .hideInstructions {
       padding: 0px;
       height: 0px;

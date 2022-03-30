@@ -3,7 +3,7 @@
  * 
  */
 import { DoNotExpandLinkColumns, DoNotExpandTrimB4, DoNotExpandTrimAfter, DoNotExpandTrimSpecial } from './getInterface';
-import { ITrimLink, ITrimB4, ITrimAfter, ITrimSpecial } from './getInterface';
+import { ITrimLink, ITrimB4, ITrimAfter, ITrimSpecial, IDoNotExpandColumns } from './getInterface';
 import { DoNotExpandFuncColumns, DoNotExpandColumns, } from './getInterface';
 import { convertArrayToLC, } from './getInterface';
 
@@ -44,45 +44,228 @@ export const DidNotTrim = 'NothingChanged';
 
 export function createItemFunctionProp ( staticColumn: string, item: any, defaultValue: string | 'originalValue' ) {
 
-  let splitCol = staticColumn.split("/");
-  let leftSide = splitCol[0];
-  let rightSide = splitCol[1] ? splitCol[1] : null;
-  let rightSideLC = rightSide ? rightSide.toLowerCase() : null;
-  let newProp = leftSide + rightSide;
+  const DoNotExpandTrimB4LC = convertArrayToLC( DoNotExpandTrimB4 );
+  const DoNotExpandTrimAfterLC = convertArrayToLC( DoNotExpandTrimAfter );
+  const DoNotExpandColumnsLC = convertArrayToLC( DoNotExpandColumns );
 
-  let detailType = getDetailValueType(  item[leftSide] );
+  /**
+   * MEMO TO SELF... WHere you left off...
+   * Test here:  https://tenant.sharepoint.com/sites/SharePointLists/SitePages/Training-List---Drilldown-Sample.aspx?debug=true&noredir=true&debugManifestsFile=https%3A%2F%2Flocalhost%3A4321%2Ftemp%2Fmanifests.js
+   * 
+   *  In this loop, the 
+   *  let isMultiSelect = typeof itemLeftSide === 'object' && Array.isArray( itemLeftSide ) === true ? true : false;
+   */
 
-  if ( detailType.indexOf('string') > -1 && item[leftSide].length > 0 ) {
-    let trimmedItem = item[ leftSide ].trim();
+         /**
+       * MEMO TO SELF... The problem here is that item [ splitCol[0] ] is AN ARRAY OF LOOKUP VALUES.... SO YOU HAVE TO LOOP THROUGH ALL OF THEM :(
+       * CURRENTLY itemLeftSide[ Role ] [ Department ] is undefined because you need to actually do something like:  itemLeftSide[ Role ] [ DepartmentCalc ] [ i ] 
+       * BASICALLY Create an Array of values like I did somewhere else if it were multi-select
+       * Like arrValues = itemLeftSide[ Role ] [ DepartmentCalc ];
+       */
 
-    //Handle all TrimB4
-    if ( convertArrayToLC( DoNotExpandTrimB4 ).indexOf( rightSideLC ) > -1 ) {
-      item[ newProp ] = trimB4( trimmedItem, rightSideLC as any );
+  /**
+   * 
 
-    //Handle all TrimAfter
-    } else if ( convertArrayToLC( DoNotExpandTrimAfter ).indexOf( rightSideLC ) > -1 ) {
-      let newValue = DidNotTrim;
-      newValue = trimAfter( trimmedItem, rightSideLC as any );
+  if ( rightSide && DoNotExpandColumnsLC.indexOf( rightSide.toLowerCase() ) > -1 ) {
+    // this column is a 'faux expanded column' used in Drilldown for Link Columns
 
-      if ( newValue !== DidNotTrim ) { item[ newProp ] = newValue; }
-    
-    //Hanlde FirstWord
-    } else if ( rightSideLC === 'FirstWord'.toLowerCase() ) {
-      item[ newProp ] = GetFirstWord( trimmedItem );
-
-    //Hanlde LastWord
-    } else if ( rightSideLC === 'LastWord'.toLowerCase() ) {
-      item[ newProp ] = GetLastWord( trimmedItem );
+    if ( splitCol.length === 3 ) {
+      leftSide = [ splitCol[0], splitCol[1] ] ;
+      //Added ternary to the update below for cases where the base column ( like person column is null or empty )
 
 
-    // 'FirstLetter' | 'FirstNumber' | 'FirstInLast' | 'Initials' | 'FirstAcronym' | 'SecondAcronym';
+
+       stop here now ^^^^^ SEE NOTES ABOVE
+
+      if ( item [ splitCol[0] ] ) {
+        itemLeftSide =  item [ splitCol[0] ] [ splitCol[1] ] ;
+
+      } else {
+        itemLeftSide = null ;
+      }
+
+    }  else if ( splitCol.length === 2 ) {
+      leftSide = [ splitCol[0] ] ;
+      itemLeftSide = item [ splitCol[0] ] ;
     }
 
-    if ( item[ newProp ] === '' && defaultValue !== 'originalValue' ) { item[ newProp ] = defaultValue ; }
+  } else {
+    // baseSelectColumns.push(thisColumn);
+    rightSide = '';
+  }
+  */
 
+  let splitCol = staticColumn.split("/");
+  let rightSide = splitCol[ splitCol.length -1 ];
+  let leftSide = [];
+  let itemLeftSide: any = null;
+
+    /**
+     * MEMO TO SELF... The problem here is that item [ splitCol[0] ] is AN ARRAY OF LOOKUP VALUES.... SO YOU HAVE TO LOOP THROUGH ALL OF THEM :(
+     * CURRENTLY itemLeftSide[ Role ] [ Department ] is undefined because you need to actually do something like:  itemLeftSide[ Role ] [ DepartmentCalc ] [ i ] 
+     * BASICALLY Create an Array of values like I did somewhere else if it were multi-select
+     * Like arrValues = itemLeftSide[ Role ] [ DepartmentCalc ];
+     */
+
+     /**
+      * This is what lookup column looks like at this point:
+      * Main column ('Role' is an array of objects)
+      * Secondary columns (Title, DepartmentCalc are arrays of string)
+      * 
+      * Role: Array(4)
+          0: {odata.type: 'SP.Data.TrainingRolesListItem', odata.id: 'c5c603c4-73cf-407c-8a59-96da495a3687', Title: 'Coordinador de QMS', DepartmentCalc: 'Quality'}
+          1: {odata.type: 'SP.Data.TrainingRolesListItem', odata.id: '1fb880e9-4bfa-4560-be4a-9b9290246f9d', Title: 'ING de cal Proveedores', DepartmentCalc: 'Other'}
+          2: {odata.type: 'SP.Data.TrainingRolesListItem', odata.id: '252f0759-588b-4f94-b5f7-86030ea64cb6', Title: 'Ingeniero de Calidad', DepartmentCalc: 'Quality'}
+          3: {odata.type: 'SP.Data.TrainingRolesListItem', odata.id: 'a3886af4-d85e-46aa-986b-764a2eba25f7', Title: 'Supervisor de Calidad', DepartmentCalc: 'Quality'}
+          length: 4
+          [[Prototype]]: Array(0)
+        Role@odata.navigationLinkUrl: "Web/Lists(guid'7057e999-09a5-4044-9310-f1192153ee59')/Items(358)/Role"
+        RoleDepartmentCalc: (2) ['Quality', 'Other']
+        RoleId: (4) [7, 6, 5, 4]
+        RoleTitle: (4) ['Coordinador de QMS', 'ING de cal Proveedores', 'Ingeniero de Calidad', 'Supervisor de Calidad']
+
+        11:02 initial StaticColumn testing the value:  "Role/DepartmentCalc/initials"
+
+        LeftSideItem would be RoleDepartmentCalc which is an array by this point.
+
+      */
+
+  if ( splitCol.length === 3 ) {
+    leftSide = [ splitCol[0], splitCol[1] ] ;
+    //Added ternary to the update below for cases where the base column ( like person column is null or empty )
+
+    if ( item [ splitCol[0] ] ) {
+      itemLeftSide =  item [ splitCol[0] + splitCol[1] ] ;
+
+    } else {
+      itemLeftSide = null ;
+    }
+
+  }  else if ( splitCol.length === 2 ) {
+    leftSide = [ splitCol[0] ] ;
+    itemLeftSide = item [ splitCol[0] ] ;
   }
 
-  return item;
+  let rightSideLC = rightSide ? rightSide.toLowerCase() : null;
+  let newProp = leftSide.join('') + rightSide;
+  let itemTypes: string[] = [];
+  let newValuesArray: any[] = [];
+
+  let detailType = getDetailValueType(  itemLeftSide );
+
+  let isMultiSelect = typeof itemLeftSide === 'object' && Array.isArray( itemLeftSide ) === true ? true : false;
+
+  //Added this to apply rules to multi-select items
+  let arrayOfItemValues = isMultiSelect === true ?  itemLeftSide : [ itemLeftSide ] ;
+
+  //Get an array of all the individual item types (for multi-select items)
+  if ( isMultiSelect === true ) {
+    itemLeftSide.map ( singleItem => { itemTypes.push( getDetailValueType( singleItem ) ) ; } );
+  } else { itemTypes.push( detailType ) ; }
+
+
+  //Added this to apply rules to multi-select items
+  arrayOfItemValues.map( ( singleItemValue, idx ) => {
+
+    let singleItemType = itemTypes[ idx ];
+
+    //If this is singleItemValue is a string and length > 0, then apply the rules
+    if ( singleItemType.indexOf('string') > -1 && singleItemValue.length > 0 ) {
+      let trimmedItem = singleItemValue.trim();
+
+      //Handle all TrimB4
+      if ( DoNotExpandTrimB4LC.indexOf( rightSideLC ) > -1 ) {
+        singleItemValue = trimB4( trimmedItem, rightSideLC as any );
+  
+      //Handle all TrimAfter
+      } else if ( DoNotExpandTrimAfterLC.indexOf( rightSideLC ) > -1 ) {
+        let newValue = DidNotTrim;
+        newValue = trimAfter( trimmedItem, rightSideLC as any );
+  
+        if ( newValue !== DidNotTrim ) { singleItemValue = newValue; }
+      
+      //Hanlde FirstWord
+      } else if ( rightSideLC === 'FirstWord'.toLowerCase() ) {
+        singleItemValue = GetFirstWord( trimmedItem, false, false );
+  
+      //Hanlde LastWord
+      } else if ( rightSideLC === 'LastWord'.toLowerCase() ) {
+        singleItemValue = GetLastWord( trimmedItem, false, false  );
+
+      //Hanlde FirstWord
+      } else if ( rightSideLC === 'FirstLetter'.toLowerCase() ) {
+        singleItemValue = GetFirstWord( trimmedItem, false, true );
+
+      } else if ( rightSideLC === 'FirstLetterAsCap'.toLowerCase() ) {
+        singleItemValue = GetFirstWord( trimmedItem, true, true );
+
+      } else if ( rightSideLC === 'FirstInFirst'.toLowerCase() ) {
+        singleItemValue = GetFirstWord( trimmedItem, false, true  );
+
+      } else if ( rightSideLC === 'FirstInFirstAsCap'.toLowerCase() ) {
+        singleItemValue = GetFirstWord( trimmedItem, true, true  );
+
+      } else if ( rightSideLC === 'FirstInLast'.toLowerCase() ) {
+        singleItemValue = GetLastWord( trimmedItem, false, true );
+  
+      } else if ( rightSideLC === 'FirstInLastAsCap'.toLowerCase() ) {
+        singleItemValue = GetLastWord( trimmedItem, true, true );
+  
+      } else if ( rightSideLC === 'Initials'.toLowerCase() ) {
+        singleItemValue = getInitials( trimmedItem, false, false ); 
+
+      } else if ( rightSideLC === 'InitialsAsCaps'.toLowerCase() ) {
+        singleItemValue = getInitials( trimmedItem, true, false ); 
+
+      } else if ( rightSideLC === 'InitialsD'.toLowerCase() ) {
+        singleItemValue = getInitials( trimmedItem, false, true ); 
+
+      } else if ( rightSideLC === 'InitialsAsCapsD'.toLowerCase() ) {
+        singleItemValue = getInitials( trimmedItem, true, true ); 
+        
+      } else if ( rightSideLC === 'FirstNumber'.toLowerCase() ) {
+        let firstNumber = trimmedItem.match(/(\d+)/);
+        singleItemValue = firstNumber ? firstNumber[0] : ''; 
+        
+      }
+
+      if ( singleItemValue === '' && defaultValue !== 'originalValue' ) { singleItemValue = defaultValue ; }
+
+    } else { //Opposite of:  If this is singleItemValue is a string and length > 0, then apply the rules
+
+    }
+
+    newValuesArray.push( singleItemValue );
+
+  });
+
+  if ( isMultiSelect === true ) {
+    item[ newProp ] = newValuesArray;
+  } else {
+    item[ newProp ] = newValuesArray [ 0 ];
+  }
+
+  return { item: item, isMultiSelect: isMultiSelect } ;
+
+}
+
+export const regexInitials = /[^a-zA-Z- ]/g;
+export const regexInitialsWithNumbers = /[^a-zA-Z-\d ]/g;
+
+export function getInitials( str: string, asCaps: boolean, includeNumbers: boolean ) {
+
+  let useRegex = includeNumbers === true ? regexInitialsWithNumbers : regexInitials;
+
+  //Get array of initials based on the includeNumbers option
+  let initials = str.replace( useRegex, "").match(/\b\w/g);
+
+  let inititalString = initials ? initials.join('') : '';
+
+  if ( asCaps === true ) {
+    inititalString = inititalString.toLocaleUpperCase();
+  }
+  
+  return inititalString;
 
 }
 
@@ -204,7 +387,7 @@ export function TrimAfterThis( str: string, parser: string ) {
  * @param str 
  * 
  */
-export function GetFirstWord( str: string ) {
+export function GetFirstWord( str: string, asCaps: boolean, justInitial: boolean ) {
 
   if ( !str ) { return str; }
   if ( typeof str !== 'string' ) { return str; }
@@ -218,6 +401,12 @@ export function GetFirstWord( str: string ) {
   } else {
       newValue = newValue.split(/\W/gm)[0] ;
   }
+  if ( justInitial === true ) { newValue = newValue.charAt(0) ; }
+
+  if ( asCaps === true ) {
+    newValue = newValue.toLocaleUpperCase();
+  }
+
   return newValue ; 
 
 }
@@ -238,7 +427,7 @@ export function GetFirstWord( str: string ) {
  * This will get the LAST 'word' consisting of letters and/or numbers, even if the last word is only 1 char/digit
  * @param str 
  */
-export function GetLastWord( str: string ) {
+export function GetLastWord( str: string, asCaps: boolean, justInitial: boolean  ) {
 
   if ( !str ) { return str; }
   if ( typeof str !== 'string' ) { return str; }
@@ -252,6 +441,13 @@ export function GetLastWord( str: string ) {
   } else {
       newValue = newValue.split(/\W/gm)[0] ;
   }
+  
+  if ( justInitial === true ) { newValue = newValue.charAt(0) ; }
+
+  if ( asCaps === true ) {
+    newValue = newValue.toLocaleUpperCase();
+  }
+
   return newValue ; 
 
 }
