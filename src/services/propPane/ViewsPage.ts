@@ -86,7 +86,7 @@ import {
             ]
           },
          
-          { groupName: 'List display',
+          { groupName: 'Refiner Instructions',
           isCollapsed: true ,
           groupFields: [
 

@@ -318,8 +318,15 @@ export function processAllItems( allItems : IDrillItemInfo[], errMessage: string
                     item[msColumnStr] = '';
                 } else if ( item[msColumnNoSlash].length === 1 ) {
                     item[msColumnStr] = item[msColumnNoSlash][0];
+                    if ( typeof item[msColumnStr] === 'number'  ) { item[msColumnStr] = item[msColumnStr].toString(); }
                 } else {
-                    item [msColumnStr ] = typeof item[msColumnNoSlash][0] === 'string' ? item[msColumnNoSlash].join('; ') : 'Must be string' ;
+                    //Added number to this join because numbers can be joined into a string.
+                    if (  typeof item[msColumnNoSlash][0] === 'string' || typeof item[msColumnNoSlash][0] === 'number' ) {
+                        item [msColumnStr ] = item[msColumnNoSlash].join('; ');
+
+                    } else {
+                        item [msColumnStr ] = 'Must be string' ;
+                    }
                 }
 
 
@@ -604,9 +611,13 @@ export function updateRefinerStats( i: IDrillItemInfo , topKeyZ: number,  refine
 
 export function updateThisRefiner( r0: any, topKeyZ: number,  thisRefiner0: any, refiners:IRefinerLayer, drillList: IDrillList ) {
 
+    let refinerType = typeof thisRefiner0;
+
+    let thisRefiner0Str = refinerType === 'string' ? thisRefiner0 : refinerType === 'number' ? thisRefiner0.toString() : thisRefiner0;
+    
     if ( topKeyZ < 0 ) { //Add to topKeys and create keys child object
-        refiners.childrenKeys.push( thisRefiner0 );
-        refiners.childrenObjs.push( createNewRefinerLayer ( thisRefiner0, drillList ) );
+        refiners.childrenKeys.push( thisRefiner0Str );
+        refiners.childrenObjs.push( createNewRefinerLayer ( thisRefiner0Str, drillList ) );
         refiners.childrenCounts.push( 0 );
         refiners.childrenMultiCounts.push( 0 );
         topKeyZ = refiners.childrenKeys.length -1;
@@ -660,8 +671,11 @@ export function buildRefinersObject ( items: IDrillItemInfo[], drillList: IDrill
             for ( let r0 in thisRefinerValuesLev0 ) { //Go through all list items
 
                 let thisRefiner0 = thisRefinerValuesLev0[r0];
-                let topKey0 = refiners.childrenKeys.indexOf( thisRefiner0 );
-                
+                let thisRefiner0Str = typeof thisRefinerValuesLev0[r0] === 'string' ? thisRefinerValuesLev0[r0] : 
+                    typeof thisRefinerValuesLev0[r0] === 'number' ? JSON.stringify( thisRefinerValuesLev0[r0] ) : thisRefinerValuesLev0[r0] ;
+
+                let topKey0 = refiners.childrenKeys.indexOf( thisRefiner0Str );
+
                 refiners =updateThisRefiner( r0, topKey0,  thisRefiner0, refiners, drillList );
                 if (topKey0 < 0 ) { topKey0 = refiners.childrenKeys.length -1; }
                 refiners = updateRefinerStats( i , topKey0,  refiners, drillList );
@@ -672,7 +686,11 @@ export function buildRefinersObject ( items: IDrillItemInfo[], drillList: IDrill
    
                     let thisRefiner1 = thisRefinerValuesLev1[r1];
                     let refiners1 = refiners.childrenObjs[topKey0];
-                    let topKey1 = refiners1.childrenKeys.indexOf( thisRefiner1 );
+
+                    let thisRefiner1Str = typeof thisRefinerValuesLev1[r1] === 'string' ? thisRefinerValuesLev1[r1] : 
+                        typeof thisRefinerValuesLev1[r1] === 'number' ? JSON.stringify( thisRefinerValuesLev1[r1] ) : thisRefinerValuesLev1[r1] ;
+
+                    let topKey1 = refiners1.childrenKeys.indexOf( thisRefiner1Str );
 
                     refiners1 =updateThisRefiner( r0, topKey1,  thisRefiner1, refiners1, drillList );
                     if (topKey1 < 0 ) { topKey1 = refiners1.childrenKeys.length -1; }
@@ -684,7 +702,11 @@ export function buildRefinersObject ( items: IDrillItemInfo[], drillList: IDrill
 
                         let thisRefiner2 = thisRefinerValuesLev2[r2];
                         let refiners2 = refiners1.childrenObjs[topKey1];
-                        let topKey2 = refiners2.childrenKeys.indexOf( thisRefiner2 );
+
+                        let thisRefiner2Str = typeof thisRefinerValuesLev2[r2] === 'string' ? thisRefinerValuesLev2[r2] : 
+                            typeof thisRefinerValuesLev2[r2] === 'number' ? JSON.stringify( thisRefinerValuesLev2[r2] ) : thisRefinerValuesLev2[r2] ;
+
+                        let topKey2 = refiners2.childrenKeys.indexOf( thisRefiner2Str );
 
                         refiners2 =updateThisRefiner( r0, topKey2,  thisRefiner2, refiners2, drillList );
                         if (topKey2 < 0 ) { topKey2 = refiners2.childrenKeys.length -1; }
@@ -737,7 +759,19 @@ export function getItemRefiners( drillList: IDrillList, item: IDrillItemInfo ) {
                 r = r.replace(/\//g,'');
                 let thisRuleSet : any = allRules[i];
                 let fieldValue = item[r];
-                itemRefiners['lev' + i] = getRefinerFromField( fieldValue , thisRuleSet , drillList.emptyRefiner );
+
+                if ( Array.isArray( fieldValue ) === true ) {
+                    itemRefiners['lev' + i] = [];
+                    fieldValue.map( singleValue => {
+                        let possibleValue = getRefinerFromField( singleValue , thisRuleSet , drillList.emptyRefiner );
+                        itemRefiners['lev' + i] = addItemToArrayIfItDoesNotExist( itemRefiners['lev' + i] , possibleValue[0] );
+                    });
+                    
+                } else {
+                    itemRefiners['lev' + i] = getRefinerFromField( fieldValue , thisRuleSet , drillList.emptyRefiner );
+                    
+                }
+                
             }
             i++;
         }
@@ -866,6 +900,11 @@ function getRefinerFromField ( fieldValue : any, ruleSet: RefineRuleValues[], em
 
     } else if ( detailType === 'array' ){
         result = fieldValue;
+
+        //Applying this logic would cause the refiner list to grow for some  reason... likely due to nesting
+        // result = fieldValue.map( value => {
+        //     return getRefinerFromField( value, ruleSet, emptyRefiner );
+        // });
 
     } else if ( detailType === 'object' ){
         result = [ JSON.stringify(fieldValue) ];
@@ -1056,6 +1095,12 @@ export function getGroupByNumber( fieldValue : any, type : ITypeStrings , ruleSe
 
     }
 
+    // if ( typeof result !== 'string' && ruleSet.indexOf( 'numberAsText' ) > -1 ) {
+    //2022-03-31:  For now, going to just assume any number should be converted to string at this point because the refiner filter function is always going to get the label to compare to which is a string.
+    if ( typeof result !== 'string' ) {
+        result = result.toString();
+    }
+
     return result;
 
 }
@@ -1095,7 +1140,14 @@ function buildMetaFromItem( theItem: IDrillItemInfo ) {
         //Only do this if it is the lev0, lev1 or lev2 arrays
         if (L.indexOf('lev') === 0 ) { 
             for ( let R in theItem.refiners[L] ) {
-                meta = addItemToArrayIfItDoesNotExist(meta, theItem.refiners[L][R]);
+                if ( Array.isArray( theItem.refiners[L][R] ) === true ) {
+                    theItem.refiners[L][R].map( value => {
+                        meta = addItemToArrayIfItDoesNotExist(meta, value);
+                    });
+
+                } else {
+                    meta = addItemToArrayIfItDoesNotExist(meta, theItem.refiners[L][R]);
+                }
             }
         }
     }

@@ -2,7 +2,7 @@ import * as React from 'react';
 import { WebPartContext } from '@microsoft/sp-webpart-base';
 import { DisplayMode, } from '@microsoft/sp-core-library';
 
-import { CompoundButton, Stack, IStackTokens, elementContains, initializeIcons, Icon, IIconStyles, getLanguage } from 'office-ui-fabric-react';
+import { CompoundButton, Stack, IStackTokens, elementContains, initializeIcons, Icon, IIconStyles, getLanguage, FontWeights } from 'office-ui-fabric-react';
 import { SearchBox } from 'office-ui-fabric-react/lib/SearchBox';
 import { Pivot, PivotItem, IPivotItemProps, PivotLinkFormat, PivotLinkSize,} from 'office-ui-fabric-react/lib/Pivot';
 
@@ -611,13 +611,18 @@ export default class DrillDown extends React.Component<IDrillDownProps, IDrillDo
       }
 
     private createInstructionRow( row : 0 | 1 | 2 ){
-        let isDone = this.state.searchMeta.length > row && this.state.searchMeta[row] !== 'All' ? true : false;
+        let isDone = this.state.searchMeta.length > row && this.state.searchMeta[ row ] !== 'All' ? true : false;
+        let isNext = row === this.state.searchMeta.length && this.state.searchMeta[ row ] !== 'All' ? true : false;
+        //Make this adjustment for first row
+        if ( row === 0 && this.state.searchMeta[ 0 ] === 'All' ) { isNext = true ; }
+        else if ( row === 1 && this.state.searchMeta[ 0 ] === 'All' ) { isNext = false ; }
+
         let itemStyle = isDone ? stylesD.complete : stylesD.incomplete;
-        const liIcon = <Icon iconName={ isDone === true ? 'CheckboxComposite' : 'Checkbox' } styles={{ root: { } }}></Icon>;
+        const liIcon = <Icon iconName={ isDone === true ? 'CheckboxComposite' : 'Error' } styles={{ root: { } }}></Icon>;
         const itemTextEnd = isDone ? <span style={{paddingLeft: '10px'}}><b>{this.state.searchMeta[row]}</b>  is selected</span> : null;
-        let rowText = row === 0 ? 'First... ' : 'Then... ';
+        let rowText = row === 0 ? 'First... ' : isNext === true ? 'Now... ' : 'Then... ';
         rowText += this.state.drillList.refinerInstructions[ row ];
-        let itemText = <span>
+        let itemText = <span style={{ fontWeight: isNext === true ? 600 : null }}>
             { rowText }
             { itemTextEnd }
         </span>;
@@ -2171,8 +2176,8 @@ public componentDidUpdate(prevProps){
         if ( meta !== undefined && meta !== null && meta.length > 0 ) {
             for ( let m in meta ) {
                 let itemMeta = thisSearchItem.refiners['lev' + m];
-                let metaM = meta[m]; //Only make this so it's easier to debug.
-                if ( meta[m] == 'All' || meta[m] == '' || itemMeta.indexOf(meta[m]) > -1 ) {
+                let metaM = typeof meta[m] === 'string' ? meta[m] : JSON.stringify(meta[m]); //Only make this so it's easier to debug.
+                if ( metaM == 'All' || metaM == '' || itemMeta.indexOf(metaM) > -1 ) {
                     if( searchString === '' || searchString.indexOf(text.toLowerCase()) > -1 ) {
                         showItem = true;
                     } else { showItem = false; searchFails ++; }
