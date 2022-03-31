@@ -671,8 +671,11 @@ export function buildRefinersObject ( items: IDrillItemInfo[], drillList: IDrill
             for ( let r0 in thisRefinerValuesLev0 ) { //Go through all list items
 
                 let thisRefiner0 = thisRefinerValuesLev0[r0];
-                let topKey0 = refiners.childrenKeys.indexOf( thisRefiner0 );
-                
+                let thisRefiner0Str = typeof thisRefinerValuesLev0[r0] === 'string' ? thisRefinerValuesLev0[r0] : 
+                    typeof thisRefinerValuesLev0[r0] === 'number' ? JSON.stringify( thisRefinerValuesLev0[r0] ) : thisRefinerValuesLev0[r0] ;
+
+                let topKey0 = refiners.childrenKeys.indexOf( thisRefiner0Str );
+
                 refiners =updateThisRefiner( r0, topKey0,  thisRefiner0, refiners, drillList );
                 if (topKey0 < 0 ) { topKey0 = refiners.childrenKeys.length -1; }
                 refiners = updateRefinerStats( i , topKey0,  refiners, drillList );
@@ -683,7 +686,11 @@ export function buildRefinersObject ( items: IDrillItemInfo[], drillList: IDrill
    
                     let thisRefiner1 = thisRefinerValuesLev1[r1];
                     let refiners1 = refiners.childrenObjs[topKey0];
-                    let topKey1 = refiners1.childrenKeys.indexOf( thisRefiner1 );
+
+                    let thisRefiner1Str = typeof thisRefinerValuesLev1[r1] === 'string' ? thisRefinerValuesLev1[r1] : 
+                        typeof thisRefinerValuesLev1[r1] === 'number' ? JSON.stringify( thisRefinerValuesLev1[r1] ) : thisRefinerValuesLev1[r1] ;
+
+                    let topKey1 = refiners1.childrenKeys.indexOf( thisRefiner1Str );
 
                     refiners1 =updateThisRefiner( r0, topKey1,  thisRefiner1, refiners1, drillList );
                     if (topKey1 < 0 ) { topKey1 = refiners1.childrenKeys.length -1; }
@@ -695,7 +702,11 @@ export function buildRefinersObject ( items: IDrillItemInfo[], drillList: IDrill
 
                         let thisRefiner2 = thisRefinerValuesLev2[r2];
                         let refiners2 = refiners1.childrenObjs[topKey1];
-                        let topKey2 = refiners2.childrenKeys.indexOf( thisRefiner2 );
+
+                        let thisRefiner2Str = typeof thisRefinerValuesLev2[r2] === 'string' ? thisRefinerValuesLev2[r2] : 
+                            typeof thisRefinerValuesLev2[r2] === 'number' ? JSON.stringify( thisRefinerValuesLev2[r2] ) : thisRefinerValuesLev2[r2] ;
+
+                        let topKey2 = refiners2.childrenKeys.indexOf( thisRefiner2Str );
 
                         refiners2 =updateThisRefiner( r0, topKey2,  thisRefiner2, refiners2, drillList );
                         if (topKey2 < 0 ) { topKey2 = refiners2.childrenKeys.length -1; }
@@ -748,7 +759,19 @@ export function getItemRefiners( drillList: IDrillList, item: IDrillItemInfo ) {
                 r = r.replace(/\//g,'');
                 let thisRuleSet : any = allRules[i];
                 let fieldValue = item[r];
-                itemRefiners['lev' + i] = getRefinerFromField( fieldValue , thisRuleSet , drillList.emptyRefiner );
+
+                if ( Array.isArray( fieldValue ) === true ) {
+                    itemRefiners['lev' + i] = [];
+                    fieldValue.map( singleValue => {
+                        let possibleValue = getRefinerFromField( singleValue , thisRuleSet , drillList.emptyRefiner );
+                        itemRefiners['lev' + i] = addItemToArrayIfItDoesNotExist( itemRefiners['lev' + i] , possibleValue[0] );
+                    });
+                    
+                } else {
+                    itemRefiners['lev' + i] = getRefinerFromField( fieldValue , thisRuleSet , drillList.emptyRefiner );
+                    
+                }
+                
             }
             i++;
         }
@@ -1117,7 +1140,14 @@ function buildMetaFromItem( theItem: IDrillItemInfo ) {
         //Only do this if it is the lev0, lev1 or lev2 arrays
         if (L.indexOf('lev') === 0 ) { 
             for ( let R in theItem.refiners[L] ) {
-                meta = addItemToArrayIfItDoesNotExist(meta, theItem.refiners[L][R]);
+                if ( Array.isArray( theItem.refiners[L][R] ) === true ) {
+                    theItem.refiners[L][R].map( value => {
+                        meta = addItemToArrayIfItDoesNotExist(meta, value);
+                    });
+
+                } else {
+                    meta = addItemToArrayIfItDoesNotExist(meta, theItem.refiners[L][R]);
+                }
             }
         }
     }

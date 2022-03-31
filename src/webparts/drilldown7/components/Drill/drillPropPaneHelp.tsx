@@ -111,14 +111,17 @@ export const WebPartHelpElement = <div>
       <PivotItem headerText={ 'Refiner Columns' } > 
         <div className={ stylesD.helpContent}>
           <div className={ stylesD.topic}>Setting the Refiner 'Column Value'</div>
+          <div><mark><b>NOTE:</b></mark> ColumnNames in this webpart <b>MUST BE Internal Column names</b>.</div>
+          <div><b>Internal Column names</b> ARE NOT the Column Titles you see. { LinkFindInternalName }</div>
           <div className={ stylesD.topic}>Simple column types (Text, Date, Number, Single/Multi Select Choice)</div>
-          <div><b>InternalColumnName</b> - NOTE:  InternalColumn names are not the Titles you see. { LinkFindInternalName }</div>
+          <div><b>InternalColumnName</b> - </div>
           {/* <div><b>UserColumnName/Title</b> - /Title shows the person's Name</div> */}
 
           {/* <div>User columns (Single/Multi) on the main list (can not be part of lookup column)</div> */}
 
           <div className={ stylesD.topic}>User columns (Single/Multi) on the main list (can not be part of lookup column)</div>
           <div><b>UserColumnName/Title</b> - /Title shows the person's Name</div>
+          <div>See the Users tab in this page for more information on using User columns</div>
 
           <div className={ stylesD.topic}>Lookup columns (Single/Multi) - that are brought in under the LookupColumn</div>
           <div><b>LookupColumnName/Title</b> - /Title shows the Title field from the lookup item</div>
@@ -320,9 +323,8 @@ export const WebPartHelpElement = <div>
 
       <PivotItem  headerText={ 'Users' } >
         <div className={ stylesD.helpContent}>
-          <div className={ stylesD.topic}>Properties you can get from a User Column.</div>
+          <div className={ stylesD.topic}>Properties you can get from a Single/Multi User Column.</div>
 
-          <div>Commands can be simple or advanced.  Please join ShareLab if you want some help or have questions.</div>
           <div style={{ display: 'flex' }}>
 
 
@@ -337,15 +339,15 @@ export const WebPartHelpElement = <div>
             <div>
               <div className={ stylesD.topic}>Sample User Props</div>
               <ul>
-                <li><b>Title</b>: example:  John Smith</li>
-                <li><b>Name</b>: example:  i:0#.f|membership|john.smith@fps.com</li>
-                <li><b>EMail</b>: example:  john.smith@fps.com</li>
-                <li><b>Office</b>: example:  Office in Delve</li>
-                <li><b>ID</b>: example:  79</li>
-                <li><b>FirstName</b>: example:  John</li>
-                <li><b>LastName</b>: example:  Smith</li>
-                <li><b>UserName</b>: example:  john.smith@fps.com</li>
-                <li><b>SipAddress</b>: example:  john.smith@fps.com</li>
+                <li><b>Title</b> ~ John Smith</li>
+                <li><b>Name</b> ~ i:0#.f|membership|john.smith@fps.com</li>
+                <li><b>EMail</b> ~ john.smith@fps.com</li>
+                <li><b>Office</b> ~ Office in Delve</li>
+                <li><b>ID</b> ~ 79</li>
+                <li><b>FirstName</b> ~ John</li>
+                <li><b>LastName</b> ~ Smith</li>
+                <li><b>UserName</b> ~ john.smith@fps.com</li>
+                <li><b>SipAddress</b> ~ john.smith@fps.com</li>
               </ul>
             </div>
           </div>
