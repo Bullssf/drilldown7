@@ -82,6 +82,9 @@ const SampleCharts: any = [
   }
 ];
 
+const UserColumnRestPropertiesSPO : string[] = [ 'Title', 'Name', 'EMail', 'FirstName', 'UserName', 'ID', 'SipAddress', 'Office', 'Modified', 'Created', ];
+const UserColumnRestPropertiesSPONOTWORK : string[] = [ 'MobilePhone', 'Department', 'JobTitle', 'WorkPhone', 'ImnName', 'NameWithPicture', 'NameWithPictureAndDetails', 'ContentTypeDisp', ];
+
 export function putObjectIntoJSON ( obj: any, name: string = null ) {
   // return <ReactJson src={ obj } name={ 'panelItem' } collapsed={ true } displayDataTypes={ true } displayObjectSize={ true } enableClipboard={ true } style={{ padding: '20px 0px' }}/>;
   return <ReactJson src={ obj } name={ name } collapsed={ false } displayDataTypes={ false } displayObjectSize={ false } enableClipboard={ true } style={{ padding: '20px 0px' }} theme= { 'rjv-default' } indentWidth={ 2}/>;
@@ -312,6 +315,41 @@ export const WebPartHelpElement = <div>
             </div>
           </div>
           { PleaseSeeWiki }
+        </div>
+      </PivotItem>
+
+      <PivotItem  headerText={ 'Users' } >
+        <div className={ stylesD.helpContent}>
+          <div className={ stylesD.topic}>Properties you can get from a User Column.</div>
+
+          <div>Commands can be simple or advanced.  Please join ShareLab if you want some help or have questions.</div>
+          <div style={{ display: 'flex' }}>
+
+
+            <div style={ padRight15 }><div className={ stylesD.topic}>Valid User Props</div><ul>
+              { UserColumnRestPropertiesSPO.map( rule => <li>{ rule }</li> ) }
+              </ul></div>
+
+            <div style={ padRight15 }><div className={ stylesD.topic}>May not work in SPO</div><ul>
+                { UserColumnRestPropertiesSPONOTWORK.map( rule => <li>{ rule }</li> ) }
+                </ul></div>
+
+            <div>
+              <div className={ stylesD.topic}>Sample User Props</div>
+              <ul>
+                <li><b>Title</b>: example:  John Smith</li>
+                <li><b>Name</b>: example:  i:0#.f|membership|john.smith@fps.com</li>
+                <li><b>EMail</b>: example:  john.smith@fps.com</li>
+                <li><b>Office</b>: example:  Office in Delve</li>
+                <li><b>ID</b>: example:  79</li>
+                <li><b>FirstName</b>: example:  John</li>
+                <li><b>LastName</b>: example:  Smith</li>
+                <li><b>UserName</b>: example:  john.smith@fps.com</li>
+                <li><b>SipAddress</b>: example:  john.smith@fps.com</li>
+              </ul>
+            </div>
+          </div>
+          <a href="https://sharepoint.stackexchange.com/a/272687" target="_blank">source:  stack exchange</a>
         </div>
       </PivotItem>
   </Pivot>

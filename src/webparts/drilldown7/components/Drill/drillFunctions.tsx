@@ -318,8 +318,15 @@ export function processAllItems( allItems : IDrillItemInfo[], errMessage: string
                     item[msColumnStr] = '';
                 } else if ( item[msColumnNoSlash].length === 1 ) {
                     item[msColumnStr] = item[msColumnNoSlash][0];
+                    if ( typeof item[msColumnStr] === 'number'  ) { item[msColumnStr] = item[msColumnStr].toString(); }
                 } else {
-                    item [msColumnStr ] = typeof item[msColumnNoSlash][0] === 'string' ? item[msColumnNoSlash].join('; ') : 'Must be string' ;
+                    //Added number to this join because numbers can be joined into a string.
+                    if (  typeof item[msColumnNoSlash][0] === 'string' || typeof item[msColumnNoSlash][0] === 'number' ) {
+                        item [msColumnStr ] = item[msColumnNoSlash].join('; ');
+
+                    } else {
+                        item [msColumnStr ] = 'Must be string' ;
+                    }
                 }
 
 
@@ -604,9 +611,13 @@ export function updateRefinerStats( i: IDrillItemInfo , topKeyZ: number,  refine
 
 export function updateThisRefiner( r0: any, topKeyZ: number,  thisRefiner0: any, refiners:IRefinerLayer, drillList: IDrillList ) {
 
+    let refinerType = typeof thisRefiner0;
+
+    let thisRefiner0Str = refinerType === 'string' ? thisRefiner0 : refinerType === 'number' ? thisRefiner0.toString() : thisRefiner0;
+    
     if ( topKeyZ < 0 ) { //Add to topKeys and create keys child object
-        refiners.childrenKeys.push( thisRefiner0 );
-        refiners.childrenObjs.push( createNewRefinerLayer ( thisRefiner0, drillList ) );
+        refiners.childrenKeys.push( thisRefiner0Str );
+        refiners.childrenObjs.push( createNewRefinerLayer ( thisRefiner0Str, drillList ) );
         refiners.childrenCounts.push( 0 );
         refiners.childrenMultiCounts.push( 0 );
         topKeyZ = refiners.childrenKeys.length -1;
@@ -866,6 +877,11 @@ function getRefinerFromField ( fieldValue : any, ruleSet: RefineRuleValues[], em
 
     } else if ( detailType === 'array' ){
         result = fieldValue;
+
+        //Applying this logic would cause the refiner list to grow for some  reason... likely due to nesting
+        // result = fieldValue.map( value => {
+        //     return getRefinerFromField( value, ruleSet, emptyRefiner );
+        // });
 
     } else if ( detailType === 'object' ){
         result = [ JSON.stringify(fieldValue) ];
