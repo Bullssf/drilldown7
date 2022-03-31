@@ -2171,8 +2171,8 @@ public componentDidUpdate(prevProps){
         if ( meta !== undefined && meta !== null && meta.length > 0 ) {
             for ( let m in meta ) {
                 let itemMeta = thisSearchItem.refiners['lev' + m];
-                let metaM = meta[m]; //Only make this so it's easier to debug.
-                if ( meta[m] == 'All' || meta[m] == '' || itemMeta.indexOf(meta[m]) > -1 ) {
+                let metaM = typeof meta[m] === 'string' ? meta[m] : JSON.stringify(meta[m]); //Only make this so it's easier to debug.
+                if ( metaM == 'All' || metaM == '' || itemMeta.indexOf(metaM) > -1 ) {
                     if( searchString === '' || searchString.indexOf(text.toLowerCase()) > -1 ) {
                         showItem = true;
                     } else { showItem = false; searchFails ++; }
