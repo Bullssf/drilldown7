@@ -1056,6 +1056,12 @@ export function getGroupByNumber( fieldValue : any, type : ITypeStrings , ruleSe
 
     }
 
+    // if ( typeof result !== 'string' && ruleSet.indexOf( 'numberAsText' ) > -1 ) {
+    //2022-03-31:  For now, going to just assume any number should be converted to string at this point because the refiner filter function is always going to get the label to compare to which is a string.
+    if ( typeof result !== 'string' ) {
+        result = result.toString();
+    }
+
     return result;
 
 }
