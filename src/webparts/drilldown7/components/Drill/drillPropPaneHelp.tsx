@@ -114,7 +114,7 @@ export const WebPartHelpElement = <div>
           <div><mark><b>NOTE:</b></mark> ColumnNames in this webpart <b>MUST BE Internal Column names</b>.</div>
           <div><b>Internal Column names</b> ARE NOT the Column Titles you see. { LinkFindInternalName }</div>
           <div className={ stylesD.topic}>Simple column types (Text, Date, Number, Single/Multi Select Choice)</div>
-          <div><b>InternalColumnName</b> - </div>
+          <div><b>InternalColumnName</b> - Nothing special require for these column types</div>
           {/* <div><b>UserColumnName/Title</b> - /Title shows the person's Name</div> */}
 
           {/* <div>User columns (Single/Multi) on the main list (can not be part of lookup column)</div> */}
@@ -339,15 +339,15 @@ export const WebPartHelpElement = <div>
             <div>
               <div className={ stylesD.topic}>Sample User Props</div>
               <ul>
-                <li><b>Title</b> ~ John Smith</li>
-                <li><b>Name</b> ~ i:0#.f|membership|john.smith@fps.com</li>
-                <li><b>EMail</b> ~ john.smith@fps.com</li>
-                <li><b>Office</b> ~ Office in Delve</li>
-                <li><b>ID</b> ~ 79</li>
-                <li><b>FirstName</b> ~ John</li>
-                <li><b>LastName</b> ~ Smith</li>
-                <li><b>UserName</b> ~ john.smith@fps.com</li>
-                <li><b>SipAddress</b> ~ john.smith@fps.com</li>
+                <li><b>Title</b>~ John Smith</li>
+                <li><b>Name</b>~ i:0#.f|membership|john.smith@fps.com</li>
+                <li><b>EMail</b>~ john.smith@fps.com</li>
+                <li><b>Office</b>~ Office in Delve</li>
+                <li><b>ID</b>~ 79</li>
+                <li><b>FirstName</b>~ John</li>
+                <li><b>LastName</b>~ Smith</li>
+                <li><b>UserName</b>~ john.smith@fps.com</li>
+                <li><b>SipAddress</b>~ john.smith@fps.com</li>
               </ul>
             </div>
           </div>
