@@ -339,15 +339,15 @@ export const WebPartHelpElement = <div>
             <div>
               <div className={ stylesD.topic}>Sample User Props</div>
               <ul>
-                <li><b>Title</b>~ John Smith</li>
-                <li><b>Name</b>~ i:0#.f|membership|john.smith@fps.com</li>
-                <li><b>EMail</b>~ john.smith@fps.com</li>
-                <li><b>Office</b>~ Office in Delve</li>
-                <li><b>ID</b>~ 79</li>
-                <li><b>FirstName</b>~ John</li>
-                <li><b>LastName</b>~ Smith</li>
-                <li><b>UserName</b>~ john.smith@fps.com</li>
-                <li><b>SipAddress</b>~ john.smith@fps.com</li>
+                <li><b>Title</b> ~ John Smith</li>
+                <li><b>Name</b> ~ i:0#.f|membership|john.smith@fps.com</li>
+                <li><b>EMail</b> ~ john.smith@fps.com</li>
+                <li><b>Office</b> ~ Office in Delve</li>
+                <li><b>ID</b> ~ 79</li>
+                <li><b>FirstName</b> ~ John</li>
+                <li><b>LastName</b> ~ Smith</li>
+                <li><b>UserName</b> ~ john.smith@fps.com</li>
+                <li><b>SipAddress</b> ~ john.smith@fps.com</li>
               </ul>
             </div>
           </div>

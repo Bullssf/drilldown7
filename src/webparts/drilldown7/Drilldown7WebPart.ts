@@ -397,6 +397,12 @@ export default class Drilldown7WebPart extends BaseClientSideWebPart<IDrilldown7
       str = str.replace(/\\\"/g,'"').replace(/\\'"/g,"'"); //Replace any cases where I copied the hashed characters from JSON file directly.
       result = JSON.parse(str);
 
+      //Solve this but in view fields:  https://github.com/mikezimm/drilldown7/issues/135
+      result.map( field => {
+        field.name = typeof field.name === 'string' ? field.name.replace(/\s/g,'') : field.name;
+        field.linkPropertyName = typeof field.linkPropertyName === 'string' ? field.linkPropertyName.replace(/\s/g,'') : field.linkPropertyName;
+      });
+
     } catch(e) {
       console.log(message + ' is not a valid JSON object.  Please fix it and re-run');
 
@@ -497,9 +503,9 @@ export default class Drilldown7WebPart extends BaseClientSideWebPart<IDrilldown7
 
     let refiners: string[] = [];
 
-    if ( this.properties.refiner0 && this.properties.refiner0.length > 0 ) { refiners.push( this.properties.refiner0 ) ;}
-    if ( this.properties.refiner1 && this.properties.refiner1.length > 0 ) { refiners.push( this.properties.refiner1 ) ;}
-    if ( this.properties.refiner2 && this.properties.refiner2.length > 0 ) { refiners.push( this.properties.refiner2 ) ;}
+    if ( this.properties.refiner0 && this.properties.refiner0.length > 0 ) { refiners.push( this.properties.refiner0.replace(/\s/g,'') ) ;}
+    if ( this.properties.refiner1 && this.properties.refiner1.length > 0 ) { refiners.push( this.properties.refiner1.replace(/\s/g,'') ) ;}
+    if ( this.properties.refiner2 && this.properties.refiner2.length > 0 ) { refiners.push( this.properties.refiner2.replace(/\s/g,'') ) ;}
 
     //Added for https://github.com/mikezimm/drilldown7/issues/95
     let whenToShowItems: IWhenToShowItems = this.properties.whenToShowItems;

@@ -9,7 +9,7 @@ import { IRepoLinks } from '@mikezimm/npmfunctions/dist/Links/CreateLinks';
 
 import { convertIssuesMarkdownStringToSpan } from '@mikezimm/npmfunctions/dist/Elements/Markdown';
 
-export const panelVersionNumber = '2022-03-28 -  1.2.0.10'; //Added to show in panel
+export const panelVersionNumber = '2022-04-04 -  1.2.0.11'; //Added to show in panel
 
 export function aboutTable( repoLinks: IRepoLinks ) {
 
@@ -18,6 +18,8 @@ export function aboutTable( repoLinks: IRepoLinks ) {
         headers: ['Date','Version','Focus'],
         rows: [],
     };
+
+    table.rows.push( createAboutRow('2022-04-04','1.2.0.11'  ,'#135, #137 - Assist in refiner typos, #136 - Show Unknown items tab for when multiselect column is empty.', repoLinks ) );
 
     table.rows.push( createAboutRow('2022-03-28','1.2.0.10'  ,'#128, #129 - number & Multi User Id refiners fix, #130, #131 - UI', repoLinks ) );
 

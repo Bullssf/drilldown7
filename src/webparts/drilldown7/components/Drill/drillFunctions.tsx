@@ -167,6 +167,7 @@ export function processAllItems( allItems : IDrillItemInfo[], errMessage: string
              */
             if ( drillList.selectColumns.length > 0 ) {
                 drillList.selectColumns.map( expCol => {
+                    if ( expCol ) { expCol = expCol.trim(); }
                     if (expCol.indexOf('/') > -1 ) {
                         let oldCol = expCol.split('/');
                         let newProp = oldCol.join('');
@@ -322,7 +323,7 @@ export function processAllItems( allItems : IDrillItemInfo[], errMessage: string
                 } else {
 
                     //Added number to this join because numbers can be joined into a string.
-                    
+
                     //Added this first if for https://github.com/mikezimm/drilldown7/issues/136
                     if (  item[msColumnNoSlash].length === 0 ) {
                         item [msColumnStr ] = drillList.emptyRefiner ;
