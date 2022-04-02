@@ -187,34 +187,68 @@ export function createItemFunctionProp ( staticColumn: string, item: any, defaul
       
       //Hanlde FirstWord
       } else if ( rightSideLC === 'FirstWord'.toLowerCase() ) {
+        singleItemValue = GetFirstWord( trimmedItem, false, false, false );
+
+      //Hanlde FirstWord
+      } else if ( rightSideLC === 'FirstWord2C'.toLowerCase() ) {
+        singleItemValue = GetFirstWord( trimmedItem, false, false, false );
+        singleItemValue = singleItemValue.substring(0,2);
+
+      //Hanlde FirstWord
+      } else if ( rightSideLC === 'FirstWord3C'.toLowerCase() ) {
+        singleItemValue = GetFirstWord( trimmedItem, false, false, false );
+        singleItemValue = singleItemValue.substring(0,3);
+
+      //Hanlde FirstWord
+      } else if ( rightSideLC === 'FirstWord4C'.toLowerCase() ) {
+        singleItemValue = GetFirstWord( trimmedItem, false, false, false );
+        singleItemValue = singleItemValue.substring(0,4);
+
+              //Hanlde FirstWord
+      } else if ( rightSideLC === 'FirstWordNoNum2C'.toLowerCase() ) {
         singleItemValue = GetFirstWord( trimmedItem, false, false, true );
-  
+        singleItemValue = singleItemValue.substring(0,2);
+
+      //Hanlde FirstWord
+      } else if ( rightSideLC === 'FirstWordNoNum3C'.toLowerCase() ) {
+        singleItemValue = GetFirstWord( trimmedItem, false, false, true );
+        singleItemValue = singleItemValue.substring(0,3);
+
+      //Hanlde FirstWord
+      } else if ( rightSideLC === 'FirstWordNoNum4C'.toLowerCase() ) {
+        singleItemValue = GetFirstWord( trimmedItem, false, false, true );
+        singleItemValue = singleItemValue.substring(0,4);
+
       //Hanlde FirstWord
       } else if ( rightSideLC === 'FirstWordNoNum'.toLowerCase() ) {
         singleItemValue = GetFirstWord( trimmedItem, false, false, true );
 
       //Hanlde LastWord
       } else if ( rightSideLC === 'LastWord'.toLowerCase() ) {
-        singleItemValue = GetLastWord( trimmedItem, false, false, true );
+        singleItemValue = GetLastWord( trimmedItem, false, false, false );
+
+      //Hanlde LastWord
+    } else if ( rightSideLC === 'LastWordNoNum'.toLowerCase() ) {
+      singleItemValue = GetLastWord( trimmedItem, false, false, true );
 
       //Hanlde FirstWord
       } else if ( rightSideLC === 'FirstLetter'.toLowerCase() ) {
-        singleItemValue = GetFirstWord( trimmedItem, false, true, true );
+        singleItemValue = GetFirstWord( trimmedItem, false, true, false );
 
       } else if ( rightSideLC === 'FirstLetterAsCap'.toLowerCase() ) {
-        singleItemValue = GetFirstWord( trimmedItem, true, true, true );
+        singleItemValue = GetFirstWord( trimmedItem, true, true, false );
 
       } else if ( rightSideLC === 'FirstInFirst'.toLowerCase() ) {
-        singleItemValue = GetFirstWord( trimmedItem, false, true, true  );
+        singleItemValue = GetFirstWord( trimmedItem, false, true, false  );
 
       } else if ( rightSideLC === 'FirstInFirstAsCap'.toLowerCase() ) {
-        singleItemValue = GetFirstWord( trimmedItem, true, true, true  );
+        singleItemValue = GetFirstWord( trimmedItem, true, true, false  );
 
       } else if ( rightSideLC === 'FirstInLast'.toLowerCase() ) {
-        singleItemValue = GetLastWord( trimmedItem, false, true, true );
+        singleItemValue = GetLastWord( trimmedItem, false, true, false );
   
       } else if ( rightSideLC === 'FirstInLastAsCap'.toLowerCase() ) {
-        singleItemValue = GetLastWord( trimmedItem, true, true, true );
+        singleItemValue = GetLastWord( trimmedItem, true, true, false );
   
       } else if ( rightSideLC === 'Initials'.toLowerCase() ) {
         singleItemValue = getInitials( trimmedItem, false, false ); 
