@@ -9,7 +9,7 @@ import { RefinerRulesStrs, RefinerRulesInts, RefinerRulesNums, RefinerRulesTime,
 
 import { gitRepoDrillDownSmall } from '@mikezimm/npmfunctions/dist/Links/LinksRepos';
 
-import { DoNotExpandLinkColumns, DoNotExpandTrimB4, DoNotExpandTrimAfter, DoNotExpandTrimSpecial } from '../../../../services/getInterface';
+import { DoNotExpandLinkColumns, DoNotExpandTrimB4, DoNotExpandTrimAfter, DoNotExpandTrimWords, DoNotExpandTrimSpecial } from '../../../../services/getInterface';
 
 import stylesD from './drillComponent.module.scss';
 
@@ -150,7 +150,10 @@ export const WebPartHelpElement = <div>
                 <div style={ padRight40 }><div className={ stylesD.topic}>Split after character</div><ul>
                   { DoNotExpandTrimAfter.map( rule => <li>{ '/' + rule }</li> ) }
                 </ul></div>
-                <div style={ padRight40 }><div className={ stylesD.topic}>Words and initials</div><ul>
+                <div style={ padRight40 }><div className={ stylesD.topic}>Words</div><ul>
+                  { DoNotExpandTrimWords.map( rule => <li>{ '/' + rule }</li> ) }
+                </ul></div>
+                <div style={ padRight40 }><div className={ stylesD.topic}>Initials</div><ul>
                   { DoNotExpandTrimSpecial.map( rule => <li>{ '/' + rule }</li> ) }
                 </ul></div>
                 <div style={ padRight40 }><div className={ stylesD.topic}>Link columns</div><ul>
