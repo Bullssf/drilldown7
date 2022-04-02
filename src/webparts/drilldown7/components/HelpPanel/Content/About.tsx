@@ -19,7 +19,7 @@ export function aboutTable( repoLinks: IRepoLinks ) {
         rows: [],
     };
 
-    table.rows.push( createAboutRow('2022-04-04','1.2.0.11'  ,'#135, #137 - Assist in refiner typos, #136 - Show Unknown items tab for when multiselect column is empty.', repoLinks ) );
+    table.rows.push( createAboutRow('2022-04-04','1.2.0.11'  ,'#135, #137 - Assist in refiner typos, #136 - Show Unknown items tab for when multiselect column is empty.  #139 - trim functions', repoLinks ) );
 
     table.rows.push( createAboutRow('2022-03-28','1.2.0.10'  ,'#128, #129 - number & Multi User Id refiners fix, #130, #131 - UI', repoLinks ) );
 
