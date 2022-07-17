@@ -2,6 +2,7 @@
 logs
 *.log
 npm-debug.log*
+release
 
 # Dependency directories
 node_modules

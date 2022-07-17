@@ -121,12 +121,12 @@ export function buildCommandBarProps ( thisAction: IMyCommandBarItem ) {
   let name = thisAction.name ?  thisAction.name : text;
 
 
-  const newProps: ICommandBarItemProps = { key: key, text: text,  name: name  , ariaLabel: ariaLabel , commandBarButtonAs: customButton,
-      iconProps: {  iconName: iconName, },
-      onClick: () => onClick,
-  };
+  // const newProps: ICommandBarItemProps = { key: key, text: text,  name: name  , ariaLabel: ariaLabel , commandBarButtonAs: customButton,
+  //     iconProps: {  iconName: iconName, },
+  //     onClick: () => onClick,
+  // };
 
-  return newProps;
+  // return newProps;
 }
 
 

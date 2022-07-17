@@ -1,26 +1,13 @@
 import { Web, IList, IItem } from "@pnp/sp/presets/all";
 
-import { sp } from "@pnp/sp";
-
 import "@pnp/sp/webs";
 import "@pnp/sp/clientside-pages/web";
 import "@pnp/sp/site-users/web";
 
-import { ClientsideWebpart } from "@pnp/sp/clientside-pages";
-import { CreateClientsidePage, PromotedState, ClientsidePageLayoutType, ClientsideText,  } from "@pnp/sp/clientside-pages";
-
-import { IContentsListInfo, IMyListInfo, IServiceLog, IContentsLists } from '../../../../services/listServices/listTypes'; //Import view arrays for Time list
 
 import { IDrillItemInfo } from '@mikezimm/npmfunctions/dist/WebPartInterfaces/DrillDown/IDrillItem';
 
 import { IDrillList, pivCats } from  './drillComponent';
-
-
-import { changes, IMyFieldTypes } from '../../../../services/listServices/columnTypes'; //Import view arrays for Time list
-
-import { IMyView,  } from '../../../../services/listServices/viewTypes'; //Import view arrays for Time list
-
-import { addTheseItemsToList, addTheseItemsToListInBatch } from '../../../../services/listServices/listServices';
 
 import { makeTheTimeObject } from '@mikezimm/npmfunctions/dist/Services/Time/timeObject';
 import { monthStr3 } from '@mikezimm/npmfunctions/dist/Services/Time/monthLabels';
@@ -114,9 +101,9 @@ export async function getAllItems( drillList: IDrillList, addTheseItemsToState: 
             let fetchCount = drillList.fetchCount > 0 ? drillList.fetchCount : 200;
     
             if ( drillList.restFilter.length > 1 ) {
-                allItems = await thisListObject.items.select(selectCols).expand(expandThese).orderBy('ID',false).top(fetchCount).filter(drillList.restFilter).get();
+                allItems = await thisListObject.items.select(selectCols).expand(expandThese).orderBy('ID',false).top(fetchCount).filter(drillList.restFilter)();  //1.15 - got rid of the .get()
             } else {
-                allItems = await thisListObject.items.select(selectCols).expand(expandThese).orderBy('ID',false).top(fetchCount).get();
+                allItems = await thisListObject.items.select(selectCols).expand(expandThese).orderBy('ID',false).top(fetchCount)();  //1.15 - got rid of the .get()
             }
         } catch (e) {
             errMessage = getHelpfullError(e, false, true);

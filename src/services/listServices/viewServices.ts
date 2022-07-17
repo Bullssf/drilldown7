@@ -1,13 +1,6 @@
 import { Web } from "@pnp/sp/presets/all";
 
-import { sp, Views, IViews } from "@pnp/sp/presets/all";
-
-import { IMyFieldTypes, IBaseField , ITextField , IMultiLineTextField , INumberField , IXMLField , 
-    IBooleanField , ICalculatedField , IDateTimeField , ICurrencyField , IUserField , ILookupField , IChoiceField , 
-    IMultiChoiceField , IDepLookupField , ILocationField, IURLField } from './columnTypes';
-
-import { MyFieldDef, changes, cBool, cCalcN, cCalcT, cChoice, cMChoice, cCurr, cDate, cLocal, cLook, cDLook, 
-	cMText, cText, cNumb, cURL, cUser, cMUser, minInfinity, maxInfinity } from './columnTypes';
+import { Views, IViews } from "@pnp/sp/presets/all";
 
 import { IMyView, IViewField, Eq, Ne, Lt, Gt, Leq, Geq, IsNull, IsNotNull, Contains, MyOperator, BeginsWith } from './viewTypes';
 

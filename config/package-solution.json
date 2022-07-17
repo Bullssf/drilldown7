@@ -1,6 +1,14 @@
 {
   "$schema": "https://developer.microsoft.com/json-schemas/spfx-build/package-solution.schema.json",
   "solution": {
+    "features": [
+      {
+        "title": "drilldown-7 Feature",
+        "description": "The feature that activates elements of the drilldown-7 solution.",
+        "id": "509ac071-6525-4ea3-b81c-4ba3c5c3c8c2",
+        "version": "1.2.0.11"
+      }
+    ],
     "name": "Drilldown7 Unique functionality to drill down on data",
     "id": "bdcf72e6-9215-4cba-9b02-892e5eab42f8",
     "version": "1.2.0.11",

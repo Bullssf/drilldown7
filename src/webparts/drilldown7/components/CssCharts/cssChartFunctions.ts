@@ -1,4 +1,4 @@
-import { toAbsoluteUrl } from '@pnp/sp';
+
 import { ICSSChartSettings, ICSSChartData, ICSSChartTypes, CSSChartTypes, ISeriesSort } from '../IReUsableInterfaces';
 
 import { IRefinerLayer, IRefiners, IItemRefiners, IRefinerStats, RefineRuleValues,

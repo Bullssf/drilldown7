@@ -28,5 +28,18 @@ build.configureWebpack.mergeConfig({
   }
 });
 
+var getTasks = build.rig.getTasks;
+build.rig.getTasks = function () {
+  var result = getTasks.call(build.rig);
+
+  result.set('serve', result.get('serve-deprecated'));
+
+  return result;
+};
+
+// ********* ADDED ******* per https://pnp.github.io/pnpjs/getting-started/
+// disable tslint
+build.tslintCmd.enabled = false;
+// ********* ADDED *******
 
 build.initialize(require('gulp'));

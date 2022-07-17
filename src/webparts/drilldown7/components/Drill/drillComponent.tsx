@@ -6,14 +6,7 @@ import { CompoundButton, Stack, IStackTokens, elementContains, initializeIcons, 
 import { SearchBox } from 'office-ui-fabric-react/lib/SearchBox';
 import { Pivot, PivotItem, IPivotItemProps, PivotLinkFormat, PivotLinkSize,} from 'office-ui-fabric-react/lib/Pivot';
 
-import { sp } from "@pnp/sp";
-import { Web, Lists } from "@pnp/sp/presets/all"; //const projectWeb = Web(useProjectWeb);
-
-import { IWebAddResult, IWebInfo, IWeb, } from "@pnp/sp/webs/types";
-
 import "@pnp/sp/webs";
-
-import { IContentsListInfo, IMyListInfo, IServiceLog, IContentsLists } from '../../../../services/listServices/listTypes'; //Import view arrays for Time list
 
 import { ITheTime, } from '@mikezimm/npmfunctions/dist/Services/Time/Interfaces';
 import { weekday3,  } from '@mikezimm/npmfunctions/dist/Services/Time/dayLabels';

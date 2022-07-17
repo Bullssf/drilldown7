@@ -1,5 +1,5 @@
 
-import { sp, Views, IViews, IViewInfo } from "@pnp/sp/presets/all";
+import { Views, IViews, IViewInfo } from "@pnp/sp/presets/all";
 
 import { IMyFieldTypes, IBaseField , ITextField , IMultiLineTextField , INumberField , IXMLField , 
     IBooleanField , ICalculatedField , IDateTimeField , ICurrencyField , IUserField , ILookupField , IChoiceField , 

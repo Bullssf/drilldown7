@@ -7,6 +7,10 @@ import {
 } from '@microsoft/sp-property-pane';
 import { BaseClientSideWebPart } from '@microsoft/sp-webpart-base';
 
+import { spfi, SPFx } from "@pnp/sp";
+import "@pnp/sp/webs";
+import "@pnp/sp/lists";
+
 import { Web, IList, IItem } from "@pnp/sp/presets/all";
 
 import * as strings from 'Drilldown7WebPartStrings';
@@ -35,8 +39,6 @@ import { doesObjectExistInArrayInt, doesObjectExistInArray, compareArrays, getKe
 } from '@mikezimm/npmfunctions/dist/Services/Arrays/checks';
 
 import { getHelpfullError } from '@mikezimm/npmfunctions/dist/Services/Logging/ErrorHandler';
-
-import { sp } from '@pnp/sp';
 
 import { propertyPaneBuilder } from '../../services/propPane/PropPaneBuilder';
 import { getAllItems } from '../../services/propPane/PropPaneFunctions';
@@ -238,8 +240,13 @@ export default class Drilldown7WebPart extends BaseClientSideWebPart<IDrilldown7
 */
 
   //Added for Get List Data:  https://www.youtube.com/watch?v=b9Ymnicb1kc
-  public onInit():Promise<void> {
-    return super.onInit().then(_ => {
+  // public onInit():Promise<void> {
+  protected async onInit(): Promise<void> {
+    
+    await super.onInit();
+    const sp = spfi().using(SPFx(this.context));
+
+    // return super.onInit().then(_ => {
       
       /**
        * DD Provider: Step 3 - add / update OnInit
@@ -285,10 +292,13 @@ export default class Drilldown7WebPart extends BaseClientSideWebPart<IDrilldown7
 
       this._getListDefintions(true, true);
       //console.log('window.location',window.location);
-      sp.setup({
-        spfxContext: this.context
-      });
-    });
+
+      // spfi().using(SPFx({pageContext: context.pageContext}));
+      // const sp = spfi().using(SPFx(this.context));
+      // sp.setup({
+      //   spfxContext: this.context
+      // });
+    // });
   }
 
 
@@ -785,7 +795,7 @@ export default class Drilldown7WebPart extends BaseClientSideWebPart<IDrilldown7
   }
 
   private async UpdateTitles(): Promise<boolean> {
-
+    const sp = spfi().using(SPFx(this.context));
     let listName = this.properties.parentListTitle ? this.properties.parentListTitle : 'ParentListTitle';
     const list = sp.web.lists.getByTitle(listName);
     const r = await list.fields();
