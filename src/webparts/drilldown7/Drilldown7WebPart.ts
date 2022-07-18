@@ -1040,7 +1040,7 @@ export default class Drilldown7WebPart extends BaseClientSideWebPart<IDrilldown7
 
       let thisListWeb = Web( parentWeb );
       let thisListObject : any = thisListWeb.lists.getByTitle(listTitle);
-      thisListObject.expand('RootFolder, ParentWeb').select('Title,RootFolder/ServerRelativeUrl, ParentWeb/Url').get().then( (response) => {
+      thisListObject.expand('RootFolder, ParentWeb').select('Title,RootFolder/ServerRelativeUrl, ParentWeb/Url')().then( (response) => {
           let tenantURL = response.ParentWeb.Url.substring(0, response.ParentWeb.Url.indexOf('/sites/') );
           this.properties.parentListURL = tenantURL + response.RootFolder.ServerRelativeUrl;
           this.context.propertyPane.refresh();

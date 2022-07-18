@@ -1,4 +1,7 @@
-import { Web, IList, IItem, IWeb } from "@pnp/sp/presets/all";
+
+import { spfi, SPFx } from "@pnp/sp";
+import { Web } from "@pnp/sp/webs";
+
 
 import "@pnp/sp/sites";
 
@@ -17,7 +20,7 @@ import { mergeAriaAttributeValues } from "office-ui-fabric-react";
 //runAsync is an idea that is not currently being used.
 export async function getAllItems( configWebURL: string, propsListName: string, thisProps: string[], restFilter: string, runAsync: boolean ): Promise<any[]>{
 
-    //lists.getById(listGUID).webs.orderBy("Title", true).get().then(function(result) {
+    //lists.getById(listGUID).webs.orderBy("Title", true)().then(function(result) {
     //let allItems : IDrillItemInfo[] = await sp.web.webs.get();
 
     let thisListObject = null;
@@ -30,11 +33,14 @@ export async function getAllItems( configWebURL: string, propsListName: string, 
     //console.log('selecting these props: ' ,selectProps );
 
     try {
-        thisListObject = Web(configWebURL);
+
+        // Create a new instance of Queryable
+        thisListObject = spfi( configWebURL ).using(SPFx(this.context));
+        // thisListObject = Web(configWebURL);
         if ( restFilter.length > 1 ) {
-            theseProps = await thisListObject.lists.getByTitle(propsListName).items.filter(restFilter).orderBy('Title',false).top(300).get();
+            theseProps = await thisListObject.lists.getByTitle(propsListName).items.filter(restFilter).orderBy('Title',false).top(300)();
         } else {
-            theseProps = await thisListObject.lists.getByTitle(propsListName).items.orderBy('Title',false).top(300).get();
+            theseProps = await thisListObject.lists.getByTitle(propsListName).items.orderBy('Title',false).top(300)();
         }
         //console.log('Found theseProps: ' ,theseProps );
 
@@ -60,7 +66,7 @@ export async function getAllItems( configWebURL: string, propsListName: string, 
 
         /*
         } else {  //if ( !runAsync ) {
-            theseProps = thisListObject.lists.getByTitle(propsListName).items.orderBy('Title',false).top(300).get().then((response) => {
+            theseProps = thisListObject.lists.getByTitle(propsListName).items.orderBy('Title',false).top(300)().then((response) => {
                 theseProps.map( i => {  //Loop through all items
                     let iProps = {};
                     selectProps.map( p => { //Loop through all select props

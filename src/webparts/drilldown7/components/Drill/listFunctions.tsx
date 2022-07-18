@@ -149,7 +149,7 @@ export function getAppropriateViewProp ( OrigViewDefs: ICustViewDef[], currentWi
 export async function updateReactListItem( webUrl: string, listName: string, Id: number, thisButtonObject : IQuickButton, sourceUserInfo: IUser, panelItem: IDrillItemInfo ): Promise<void>{
 
 
-    //lists.getById(listGUID).webs.orderBy("Title", true).get().then(function(result) {
+    //lists.getById(listGUID).webs.orderBy("Title", true)().then(function(result) {
     //let allItems : IDrillItemInfo[] = await sp.web.webs.get();
 
     let currentTime = new Date().toLocaleString();

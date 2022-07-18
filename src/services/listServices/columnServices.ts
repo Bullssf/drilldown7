@@ -123,7 +123,7 @@ export async function addTheseFields( steps : changes[], readOnly: boolean, myLi
             if ( skipTryField != true ) {
                 try {
 
-                    //const checkField = await listFields.getByInternalNameOrTitle(f.name).get();
+                    //const checkField = await listFields.getByInternalNameOrTitle(f.name)();
                     //statusLog = notify(statusLog, step, f,  'Checked', 'Found', checkField);
 
                     //Assuming that if I'm creating a column, it's an object with .name value.

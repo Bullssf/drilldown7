@@ -64,7 +64,7 @@ export async function getAllItems( drillList: IDrillList, addTheseItemsToState: 
 
     } else {
         drillList.sourceUserInfo = sourceUserInfo;
-        //lists.getById(listGUID).webs.orderBy("Title", true).get().then(function(result) {
+        //lists.getById(listGUID).webs.orderBy("Title", true)().then(function(result) {
         //let allItems : IDrillItemInfo[] = await sp.web.webs.get();
 
         let thisListWeb = Web(drillList.webURL);

@@ -1,5 +1,5 @@
-//Updated Jan 5, 2020 per https://pnp.github.io/pnpjs/getting-started/
-import { Web } from "@pnp/sp/presets/all";
+import { spfi, SPFx } from "@pnp/sp";
+import { Web } from "@pnp/sp/webs";
 
 export function getBrowser(validTypes,changeSiteIcon){
 
@@ -31,7 +31,7 @@ export function saveAnalytics (theProps,theState) {
         let endTime = theState.endTime;
 
         //Updated Jan 5, 2020 per https://pnp.github.io/pnpjs/getting-started/
-        const web = Web(theProps.analyticsWeb);
+        const web = Web(theProps.analyticsWeb);spfi( theProps.analyticsWeb ).using(SPFx(this.context));
 
         const delta = endTime.now - startTime.now;
         //alert(delta);
