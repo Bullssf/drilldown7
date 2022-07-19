@@ -47,9 +47,9 @@ export function tricksTable( repoLinks: IRepoLinks ) {
         ? makeCenteredBoldSpan('true') 
         : makeCenteredBoldSpan (<a href={ window.location + hasSearchParams + gulpParam1 }>Activate!</a> ) ;
 
-    table.rows.push( [ makeCenteredSpan('scenario'), makeCenteredSpan('dev'), hasScenarioDev,    <span>Opens up additional options - 'Rails Off' meaning limited safety checks. </span>] );
+    table.rows.push( [ makeCenteredSpan('scenario'), makeCenteredSpan('dev'), hasScenarioDev,    <span>Opens up additional options - &apos;Rails Off&apos; meaning limited safety checks. </span>] );
     table.rows.push( [ makeCenteredSpan('gulp serve'), makeCenteredSpan('dev'), hasGulp,    <span>Adds param to Url to use gulp serve code instead of published code</span>] );
-    table.rows.push( [ makeCenteredSpan('allowOtherSites'), makeCenteredSpan('true'), hasAllowOther,   <span>Allows you to do some 'Rails Off' functions on other sites { '' } </span>] );
+    table.rows.push( [ makeCenteredSpan('allowOtherSites'), makeCenteredSpan('true'), hasAllowOther,   <span>Allows you to do some &apos;Rails Off&apos; functions on other sites { '' } </span>] );
     table.rows.push( [ makeCenteredSpan('clearParams'), makeCenteredSpan( `${hasSearch}` ), bareLink,   <span>Reload without any parameters (everything after the ? in the url ) </span>] );
 
     // table.rows.push( [ makeCenteredSpan('crazy'), makeCenteredSpan('true'), hasCrazy,   <span>Opens up additional even more options - 'DO NOT USE UNLESS YOU KNOW WHAT YOU ARE DOING'.</span>] );

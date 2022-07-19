@@ -4,7 +4,7 @@ import * as React from 'react';
 
 import { ChoiceGroup, IChoiceGroupOption } from 'office-ui-fabric-react/lib/ChoiceGroup';
 
-export function createAdvancedContentChoices( selectedKey: string, _onChange){
+export function createAdvancedContentChoices( selectedKey: string, onChange){
 
   let options : IChoiceGroupOption[] = [];
   let choiceSpacer = '\u00A0\u00A0';
@@ -23,7 +23,7 @@ export function createAdvancedContentChoices( selectedKey: string, _onChange){
       styles={{ flexContainer: { display: "flex" , paddingLeft: 30} }}
       selectedKey={ selectedKey }
       options={options}
-      onChange={_onChange}
+      onChange={onChange}
       label='' 
       required={true}
     />
@@ -41,7 +41,7 @@ Entry Type Choices need to match these:  \src\services\propPane\WebPartSettingsP
 
 */
 
-export function creatEntryTypeChoices(selectedKey: string, _onChange){
+export function creatEntryTypeChoices(selectedKey: string, onChange){
 
   let options : IChoiceGroupOption[] = [];
   let choiceSpacer = '\u00A0\u00A0';
@@ -59,14 +59,14 @@ export function creatEntryTypeChoices(selectedKey: string, _onChange){
       styles={{ flexContainer: { display: "flex" , paddingLeft: 30} }}
       selectedKey={ selectedKey }
       options={options}
-      onChange={_onChange}
+      onChange={onChange}
       label="Time entry mode"
       required={true}
     />
   );
 }
 
-export function creatChartChoices( selectedKey: string, _onChange){
+export function creatChartChoices( selectedKey: string, onChange){
 
   let options : IChoiceGroupOption[] = [];
   let choiceSpacer = '\u00A0\u00A0';
@@ -87,7 +87,7 @@ export function creatChartChoices( selectedKey: string, _onChange){
       styles={{ flexContainer: { display: "flex" , paddingRight: 30} }}
       selectedKey={ selectedKey }
       options={options}
-      onChange={_onChange}
+      onChange={onChange}
       label='' 
       required={true}
     />
@@ -96,7 +96,7 @@ export function creatChartChoices( selectedKey: string, _onChange){
 
 
 
-export function creatInfoChoices( selectedKey: string, _onChange){
+export function creatInfoChoices( selectedKey: string, onChange){
 
   let options : IChoiceGroupOption[] = [];
   let choiceSpacer = '\u00A0\u00A0';
@@ -118,7 +118,7 @@ export function creatInfoChoices( selectedKey: string, _onChange){
       styles={{ flexContainer: { display: "flex" , paddingLeft: 30} }}
       selectedKey={ selectedKey }
       options={options}
-      onChange={_onChange}
+      onChange={onChange}
       label='' 
       required={true}
     />

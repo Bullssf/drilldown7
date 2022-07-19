@@ -1,14 +1,10 @@
 import * as React from 'react';
-import { BaseComponent } from 'office-ui-fabric-react/lib/Utilities';
 import { CommandBarButton, IButtonProps, } from 'office-ui-fabric-react/lib/Button';
-import { CommandBar, ICommandBarItemProps } from 'office-ui-fabric-react/lib/CommandBar';
 import { ResizeGroup } from 'office-ui-fabric-react/lib/ResizeGroup';
 import { OverflowSet } from 'office-ui-fabric-react/lib/OverflowSet';
-import { Checkbox } from 'office-ui-fabric-react/lib/Checkbox';
 import { IContextualMenuItem } from 'office-ui-fabric-react/lib/ContextualMenu';
-import { Dropdown, IDropdownOption } from 'office-ui-fabric-react/lib/Dropdown';
+import { IDropdownOption } from 'office-ui-fabric-react/lib/Dropdown';
 import { mergeStyleSets } from 'office-ui-fabric-react';
-import { IRenderFunction } from 'office-ui-fabric-react/lib/Utilities';
 
 
 //import * as stylesImport from './ResizeGroup.Example.scss';
@@ -214,7 +210,7 @@ public componentDidUpdate(prevProps){
 }
 
   public render(): JSX.Element {
-    const { numberOfItems, cachingEnabled, buttonsChecked, short, onGrowDataEnabled } = this.state;
+    const { short, onGrowDataEnabled } = this.state;
     //const dataToRender = generateData(numberOfItems, cachingEnabled, buttonsChecked);
     const commandsToRender = generateData( this.props.items , this.props.checkedItem, this.props.cachingEnabled, this.props.showRefinerCounts, this.props.onClick );
 
@@ -324,48 +320,48 @@ public componentDidUpdate(prevProps){
     return { primary, overflow, cacheKey };
   }
 
-  private _onCachingEnabledChanged = (_: React.FormEvent<HTMLElement | HTMLInputElement>, checked: boolean): void => {
-    this.setState({ cachingEnabled: checked });
-  }
+  // private _onCachingEnabledChanged = (_: React.FormEvent<HTMLElement | HTMLInputElement>, checked: boolean): void => {
+  //   this.setState({ cachingEnabled: checked });
+  // }
 
-  private _onGrowDataEnabledChanged = (_: React.FormEvent<HTMLElement | HTMLInputElement>, checked: boolean): void => {
-    this.setState({ onGrowDataEnabled: checked });
-  }
+  // private _onGrowDataEnabledChanged = (_: React.FormEvent<HTMLElement | HTMLInputElement>, checked: boolean): void => {
+  //   this.setState({ onGrowDataEnabled: checked });
+  // }
 
-  private _onButtonsCheckedChanged = (_: React.FormEvent<HTMLElement | HTMLInputElement>, checked: boolean): void => {
-    this.setState({ buttonsChecked: checked });
-  }
+  // private _onButtonsCheckedChanged = (_: React.FormEvent<HTMLElement | HTMLInputElement>, checked: boolean): void => {
+  //   this.setState({ buttonsChecked: checked });
+  // }
 
-  private _onNumberOfItemsChanged = (event: React.FormEvent<HTMLDivElement>, option: IDropdownOption): void => {
-    this.setState({ numberOfItems: parseInt(option.text, 10) });
-  }
+  // private _onNumberOfItemsChanged = (event: React.FormEvent<HTMLDivElement>, option: IDropdownOption): void => {
+  //   this.setState({ numberOfItems: parseInt(option.text, 10) });
+  // }
 
   
-  private _sampleOnClick = (item): void => {
-    //This sends back the correct pivot category which matches the category on the tile.
-    let e: any = event;
-    alert('Hi! you clicked: ' +  e.target.innerText );
+//   private _sampleOnClick = (item): void => {
+//     //This sends back the correct pivot category which matches the category on the tile.
+//     let e: any = event;
+//     alert('Hi! you clicked: ' +  e.target.innerText );
 
-    console.log('searchForItems: e',e);
+//     console.log('searchForItems: e',e);
 
-  /*  This confirms the text is possible to get as  e.target.innerText
+//   /*  This confirms the text is possible to get as  e.target.innerText
 
-    for ( let c of e.target.innerText ) {
-      console.log('e.target.innerText: ', c);
-    }
+//     for ( let c of e.target.innerText ) {
+//       console.log('e.target.innerText: ', c);
+//     }
 
-    */
-    /* These had various degress of success finding the text of the button.
-    console.log('', e.target.innerText.length, e.target.innerText );
+//     */
+//     /* These had various degress of success finding the text of the button.
+//     console.log('', e.target.innerText.length, e.target.innerText );
 
-    console.log('lastElementChild.textContext', e.target.parentElement.lastElementChild.textContext);
-    console.log('lastElementChild.textContext', e.target.nextSibling.textContext);
-    console.log('searchForItems: item', item);
-    console.log('searchForItems: this', this);
-*/
-    //Be sure to pass item.props.itemKey to get filter value
+//     console.log('lastElementChild.textContext', e.target.parentElement.lastElementChild.textContext);
+//     console.log('lastElementChild.textContext', e.target.nextSibling.textContext);
+//     console.log('searchForItems: item', item);
+//     console.log('searchForItems: this', this);
+// */
+//     //Be sure to pass item.props.itemKey to get filter value
 
-  }
+//   }
 
   private _updateStateOnPropsChange() {
     //console.log('commandBar Prop changed!', this.props.checkedItem );

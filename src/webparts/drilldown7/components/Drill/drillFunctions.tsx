@@ -1,40 +1,33 @@
-import { Web, IList, IItem } from "@pnp/sp/presets/all";
 
 import "@pnp/sp/webs";
 import "@pnp/sp/clientside-pages/web";
 import "@pnp/sp/site-users/web";
 
+import { spfi } from "@pnp/sp";
 
 import { IDrillItemInfo } from '@mikezimm/npmfunctions/dist/WebPartInterfaces/DrillDown/IDrillItem';
 
-import { IDrillList, pivCats } from  './drillComponent';
+import { IDrillList, } from  './drillComponent';
 
 import { makeTheTimeObject } from '@mikezimm/npmfunctions/dist/Services/Time/timeObject';
 import { monthStr3 } from '@mikezimm/npmfunctions/dist/Services/Time/monthLabels';
 import { getBestTimeDelta, getAge } from '@mikezimm/npmfunctions/dist/Services/Time/deltas';
 
-import { doesObjectExistInArray } from '@mikezimm/npmfunctions/dist/Services/Arrays/checks';
 import { addItemToArrayIfItDoesNotExist, } from '@mikezimm/npmfunctions/dist/Services/Arrays/manipulation';
 import { sortKeysByOtherKey, } from '@mikezimm/npmfunctions/dist/Services/Arrays/sorting';
 
 import { getHelpfullError } from '@mikezimm/npmfunctions/dist/Services/Logging/ErrorHandler';
 
-import { IViewLog, addTheseViews } from '../../../../services/listServices/viewServices'; //Import view arrays for Time list
-
-import { IAnyArray } from  '../../../../services/listServices/listServices';
 import { DoNotExpandFuncColumns, convertArrayToLC } from  '../../../../services/getInterface';
 
 import { getDetailValueType, ITypeStrings } from '@mikezimm/npmfunctions/dist/Services/typeServices';
 
 import { ensureUserInfo } from '@mikezimm/npmfunctions/dist/Services/Users/userServices';
 
-import { mergeAriaAttributeValues } from "office-ui-fabric-react";
-
-import { IRefinerLayer, IRefiners, IItemRefiners, IRefinerStats, RefineRuleValues,
-    IRefinerRules, IRefinerStatType, RefinerStatTypes, IRefinerStat } from '@mikezimm/npmfunctions/dist/Refiners/IRefiners';
+import { IRefinerLayer,  IItemRefiners,  RefineRuleValues,
+    IRefinerStatType, RefinerStatTypes,  } from '@mikezimm/npmfunctions/dist/Refiners/IRefiners';
 
 import { IUser } from '@mikezimm/npmfunctions/dist/Services/Users/IUserInterfaces';
-import { IQuickButton } from '@mikezimm/npmfunctions/dist/QuickCommands/IQuickCommands';
 
 import { createItemFunctionProp,  } from '../../../../services/parse'; //Main function to update item
 
@@ -46,6 +39,8 @@ import { createItemFunctionProp,  } from '../../../../services/parse'; //Main fu
 //   Y888P  Y88888P    YP    YP   YP Y88888P Y88888P Y888888P    YP    Y88888P YP  YP  YP `8888Y' 
 //                                                                                                
 //        
+
+
 
 // This is what it was before I split off the other part
 export async function getAllItems( drillList: IDrillList, addTheseItemsToState: any, setProgress: any, markComplete: any ): Promise<void>{
@@ -67,7 +62,8 @@ export async function getAllItems( drillList: IDrillList, addTheseItemsToState: 
         //lists.getById(listGUID).webs.orderBy("Title", true)().then(function(result) {
         //let allItems : IDrillItemInfo[] = await sp.web.webs.get();
 
-        let thisListWeb = Web(drillList.webURL);
+        let sp = spfi(drillList.webURL);
+        let thisListWeb = sp.web;
         let selColumns = drillList.selectColumnsStr;
 
         //Needed to add these to select columns as well as say it's a library

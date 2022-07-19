@@ -2,9 +2,9 @@
 
 import * as React from 'react';
 
-import { Slider, ISliderProps } from 'office-ui-fabric-react/lib/Slider';
+import { Slider, } from 'office-ui-fabric-react/lib/Slider';
 
-export function createSlider(maxTime , timeSliderInc, timeSliderValue, _onChange){
+export function createSlider(maxTime , timeSliderInc, timeSliderValue, onChange){
 
   return (
     <div style={{minWidth: 400, }}>
@@ -17,7 +17,7 @@ export function createSlider(maxTime , timeSliderInc, timeSliderValue, _onChange
       valueFormat={value => `${value} mins`}
       showValue 
       originFromZero
-      onChange={_onChange}
+      onChange={onChange}
      />
 
     </div>

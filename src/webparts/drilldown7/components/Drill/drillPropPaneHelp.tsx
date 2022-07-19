@@ -1,11 +1,8 @@
 import * as React from 'react';
 
-import { Pivot, PivotItem, IPivotItemProps, PivotLinkFormat, PivotLinkSize,} from 'office-ui-fabric-react/lib/Pivot';
+import { Pivot, PivotItem, PivotLinkFormat, PivotLinkSize,} from 'office-ui-fabric-react/lib/Pivot';
 
-import { IQuickCommands } from '@mikezimm/npmfunctions/dist/QuickCommands/IQuickCommands';
-
-import { IRefinerRulesStrs, IRefinerRulesInts, IRefinerRulesNums, IRefinerRulesTime, IRefinerRulesUser, IRefinerRulesEXPE, IRefinerRulesNone } from '@mikezimm/npmfunctions/dist/Refiners/IRefiners';
-import { RefinerRulesStrs, RefinerRulesInts, RefinerRulesNums, RefinerRulesTime, RefinerRulesUser, RefinerRulesEXPE, RefinerRulesNone } from '@mikezimm/npmfunctions/dist/Refiners/IRefiners';
+import { RefinerRulesStrs, RefinerRulesInts, RefinerRulesNums, RefinerRulesTime, RefinerRulesUser,  } from '@mikezimm/npmfunctions/dist/Refiners/IRefiners';
 
 import { gitRepoDrillDownSmall } from '@mikezimm/npmfunctions/dist/Links/LinksRepos';
 
@@ -110,7 +107,7 @@ export const WebPartHelpElement = <div>
       >
       <PivotItem headerText={ 'Refiner Columns' } > 
         <div className={ stylesD.helpContent}>
-          <div className={ stylesD.topic}>Setting the Refiner 'Column Value'</div>
+          <div className={ stylesD.topic}>Setting the Refiner &apos;Column Value&apos;</div>
           <div><mark><b>NOTE:</b></mark> ColumnNames in this webpart <b>MUST BE Internal Column names</b>.</div>
           <div><b>Internal Column names</b> ARE NOT the Column Titles you see. { LinkFindInternalName }</div>
           <div className={ stylesD.topic}>Simple column types (Text, Date, Number, Single/Multi Select Choice)</div>
@@ -119,18 +116,18 @@ export const WebPartHelpElement = <div>
 
           {/* <div>User columns (Single/Multi) on the main list (can not be part of lookup column)</div> */}
 
-          <div className={ stylesD.topic}>User columns (Single/Multi) on the main list (can not be part of lookup column)</div>
-          <div><b>UserColumnName/Title</b> - /Title shows the person's Name</div>
+          <div className={ stylesD.topic}>User columns (Single&#47;Multi) on the main list (can not be part of lookup column)</div>
+          <div><b>UserColumnName&#47;Title</b> - &#47;Title shows the person&apos;s Name</div>
           <div>See the Users tab in this page for more information on using User columns</div>
 
-          <div className={ stylesD.topic}>Lookup columns (Single/Multi) - that are brought in under the LookupColumn</div>
-          <div><b>LookupColumnName/Title</b> - /Title shows the Title field from the lookup item</div>
-          <div><b>LookupColumnName/OtherField</b> - /OtherField is the InternalColumnName of the lookup column from the other list</div>
+          <div className={ stylesD.topic}>Lookup columns (Single&#47;Multi) - that are brought in under the LookupColumn</div>
+          <div><b>LookupColumnName&#47;Title</b> - &#47;Title shows the Title field from the lookup item</div>
+          <div><b>LookupColumnName&#47;OtherField</b> - &#47;OtherField is the InternalColumnName of the lookup column from the other list</div>
 
           <div className={ stylesD.topic} style={{ textDecoration: 'underline'}}>Example with real column names</div> 
-          <div style={{ paddingTop: '8px'}}>Say you have a lookup column like 'CustomerPlant' which has a Title column (Plant name) and Country column (where it is located)</div>
-          <div>To show Customer Plant Title, use <b>CustomerPlant/Title</b></div>
-          <div>To show Customer Plant Country, use <b>CustomerPlant/Country</b></div>
+          <div style={{ paddingTop: '8px'}}>Say you have a lookup column like &apos;CustomerPlant&apos; which has a Title column (Plant name) and Country column (where it is located)</div>
+          <div>To show Customer Plant Title, use <b>CustomerPlant&#47;Title</b></div>
+          <div>To show Customer Plant Country, use <b>CustomerPlant&#47;Country</b></div>
         </div>
       </PivotItem>
     
@@ -140,8 +137,8 @@ export const WebPartHelpElement = <div>
             <div>The goal of String functions are to make strings shorter for both <b>refiners</b> and <b>views</b>.</div>
             <div>Can be applied to columns to modify the values for this webpart - like an ad-hoc calculated column but more.</div>
             <div>For example, lets say you want to show the initials of the Editor (Modified By)</div>
-            <div>To get the full name of the editor, use <b>Editor/Title</b></div>
-            <div>To get their initials instead, use <b>Editor/Title<span style={{color: 'green'}}>/Initials</span></b></div>
+            <div>To get the full name of the editor, use <b>Editor&#47;Title</b></div>
+            <div>To get their initials instead, use <b>Editor&#47;Title<span style={{color: 'green'}}>/Initials</span></b></div>
 
             <div style={{ display: 'flex' }}>
                 <div style={ padRight40 }><div className={ stylesD.topic}>Split before character</div><ul>
@@ -160,7 +157,7 @@ export const WebPartHelpElement = <div>
                   { DoNotExpandLinkColumns.map( rule => <li>{ '/' + rule }</li> ) }
                 </ul></div>
             </div>
-            <div>Note:  at this time, 'TrimB42ndDot', 'FirstAcronym', 'SecondAcronym' are not implimented :( </div>
+            <div>Note:  at this time, &apos;TrimB42ndDot&apos;, &apos;FirstAcronym&apos;, &apos;SecondAcronym&apos; are not implimented :( </div>
         </div>
       </PivotItem>
 {/* 
@@ -189,8 +186,8 @@ export const WebPartHelpElement = <div>
         <div className={ stylesD.helpContent}>
             <div className={ stylesD.topic}>Rules are like calculated columns without the work - Only applies to refiners.</div>
             <div><b>Example:</b>  If you have a date column, actual dates or times are not good refiners because they typically will have to many values to choose from.<br/>
-            However if you apply a rule like 'groupByYears', it will bucket all your items into years based on the values in the column.<br/></div>
-            <div><b>NOTE:</b>  The web part only shows refiners based on the items it intially reads in. So in the case of 'groupByYears', <b>you will not see a year if there are no items for that year</b>.</div>
+            However if you apply a rule like &apos;groupByYears&apos;, it will bucket all your items into years based on the values in the column.<br/></div>
+            <div><b>NOTE:</b>  The web part only shows refiners based on the items it intially reads in. So in the case of &apos;groupByYears&apos;, <b>you will not see a year if there are no items for that year</b>.</div>
             <div><b>parseBy...</b> will take a string column and create Refiners by splitting the string by commas and semi-colons.</div>
             <div><b>groupBy...</b> will take number or date column values and group them into larger buckets.</div>
             <div>Generally speaking, only select one per refiner.</div>
@@ -270,15 +267,15 @@ export const WebPartHelpElement = <div>
                   <li><b>primaryField:</b> InternalColumnName</li>
                   <li><b>title:</b> Title above the chart</li>
                   <li><b>stat:</b> What math operation you want to do on the primaryField</li>
-                  <div>Available stats: 'sum' , 'avg' , 'max' , 'min' , 'count', 'daysAgo' , 'monthsAgo' , 'eval'</div>
+                  <div>Available stats: &apos;sum&apos; , &apos;avg&apos; , &apos;max&apos; , &apos;min&apos; , &apos;count&apos;, &apos;daysAgo&apos; , &apos;monthsAgo&apos; , &apos;eval&apos;</div>
 
                   <li><b>chartTypes:</b> Differnt types of charts you toggle through when you click on the chart bars.</li>
-                  <div>Available types: 'pareto-asc' | 'pareto-dec' | 'pareto-labels' | 'stacked-column-labels' | 'stacked-column-dec' | 'stacked-column-asc' | 'kpi-tiles'</div>
+                  <div>Available types: &apos;pareto-asc&apos; | &apos;pareto-dec&apos; | &apos;pareto-labels&apos; | &apos;stacked-column-labels&apos; | &apos;stacked-column-dec&apos; | &apos;stacked-column-asc&apos; | &apos;kpi-tiles&apos;</div>
                   <div>The best advice for the types is just try some and see what they do :)</div>
                 </ul>
                 <div className={ stylesD.topic}>The example shown here will:</div>
                 <ol>
-                  <li>get the field called 'Id'</li>
+                  <li>get the field called &apos;Id&apos;</li>
                   <li>get a count of the items (broken down by your refiner categories)</li>
                   <li>first show a pareto chart decending by the count (highest total count per refiner on top)</li>
                   <li>If you click on a bar in the chart, it will toggle between a pareto chart and a stacked Horizontal bar chart</li>
@@ -305,7 +302,7 @@ export const WebPartHelpElement = <div>
                 <li>Must follow this minimum structure.</li>
                 <li><mark>NOTE: </mark> <b>Quotes</b> are required per the example. <br/>All column names and view properties are <b>Case Sensitive</b>!</li>
                 <li>Quick Commands structure is made up of an array of buttons, view fields may not yet be supported.</li>
-                <li>the "buttons" is an array of rows.  Each row can have specific command buttons in it</li>
+                <li>the &quot;buttons&quot; is an array of rows.  Each row can have specific command buttons in it</li>
                 <li>A typical button is made up of these common properites</li>
                 <ul>
                   <li><b>label:</b> Button text</li>

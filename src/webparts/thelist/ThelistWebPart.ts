@@ -17,10 +17,6 @@ import {
   DynamicDataSharedDepth
 } from '@microsoft/sp-webpart-base';
 
-import { Placeholder, IPlaceholderProps } from "@pnp/spfx-controls-react/lib/Placeholder";
-
-import { JSON_Edit_Link } from '../../services/propPane/zReusablePropPane';
-
 /**
  * DD Subscriber: Step 0 - import from sp-dynamic-data
  */

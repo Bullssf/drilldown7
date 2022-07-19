@@ -2,10 +2,10 @@
 import * as React from 'react';
 import { Icon  } from 'office-ui-fabric-react/lib/Icon';
 
-import { Web, IList, IItem, } from "@pnp/sp/presets/all";
-import { Link, ILinkProps } from 'office-ui-fabric-react';
+import { Web, } from "@pnp/sp/presets/all";
+import { Link, } from 'office-ui-fabric-react';
 
-import { Pivot, PivotItem, IPivotItemProps} from 'office-ui-fabric-react/lib/Pivot';
+import { Pivot, PivotItem, } from 'office-ui-fabric-react/lib/Pivot';
 
 import ReactJson from "react-json-view";
 
@@ -25,19 +25,13 @@ import { getHelpfullError } from '@mikezimm/npmfunctions/dist/Services/Logging/E
 
 import { buildConfirmDialog, IMyDialogProps } from '@mikezimm/npmfunctions/dist/Elements/dialogBox'; 
 
-import stylesL from '../ListView/listView.module.scss';
-import { ListView, IViewField, SelectionMode, GroupOrder, IGrouping, } from "@pnp/spfx-controls-react/lib/ListView";
-import { IGroup } from 'office-ui-fabric-react/lib/components/DetailsList';
+
+import { ListView, IViewField, SelectionMode, IGrouping, } from "@pnp/spfx-controls-react/lib/ListView";
 
 import { mergeStyles } from 'office-ui-fabric-react/lib/Styling';
-import { Fabric, Stack, IStackTokens, initializeIcons } from 'office-ui-fabric-react';
+import { Fabric, Stack, IStackTokens,  } from 'office-ui-fabric-react';
 import { Panel, PanelType } from 'office-ui-fabric-react/lib/Panel';
 import { PrimaryButton, DefaultButton } from 'office-ui-fabric-react/lib/Button';
-
-
-import { Dialog, DialogType, DialogFooter, IDialogProps } 	from 'office-ui-fabric-react/lib/Dialog';
-import { Button, ButtonType, } 			from 'office-ui-fabric-react/lib/Button';
-import { Label } 			from 'office-ui-fabric-react/lib/Label';
 
 import { updateReactListItem } from './listFunctions';
 
@@ -109,7 +103,7 @@ const NoCommandsInfo = <div>
         <p>Command buttons can be created to make simple item changes like: 
             <ol >
                 <li>Set status to Complete</li>
-                <li>Put today's date in Completed Date column</li>
+                <li>Put today&apos;s date in Completed Date column</li>
                 <li>Add current user's name into Completed By column</li>
             </ol>
         </p>
@@ -117,38 +111,38 @@ const NoCommandsInfo = <div>
     </div>;
 
 
-const stackFormRowTokens: IStackTokens = { childrenGap: 10 };
+// const stackFormRowTokens: IStackTokens = { childrenGap: 10 };
 
-const iconClassAction = mergeStyles({
-  fontSize: 18,
-  fontWeight: "bolder",
-  color: "black",
-  //margin: '0px 2px',
-  paddingRight: '10px',
-  verticalAlign: 'bottom',
-});
+// const iconClassAction = mergeStyles({
+//   fontSize: 18,
+//   fontWeight: "bolder",
+//   color: "black",
+//   //margin: '0px 2px',
+//   paddingRight: '10px',
+//   verticalAlign: 'bottom',
+// });
 
-const iconClassInfo = mergeStyles({
-  fontSize: 18,
-  //margin: '0px 2px',
-  paddingRight: '10px',
-  verticalAlign: 'bottom',
-});
+// const iconClassInfo = mergeStyles({
+//   fontSize: 18,
+//   //margin: '0px 2px',
+//   paddingRight: '10px',
+//   verticalAlign: 'bottom',
+// });
 
 
 export default class ReactListItems extends React.Component<IReactListItemsProps, IReactListItemsState> {
 
-    private createAttachPanel () {
-        return null;
-    }
+    // private _createAttachPanel () {
+    //     return null;
+    // }
 
     /**
-     * createPanelAttachments is identical on ActionNews and Drilldown7 except panelItem interface
+     * _createPanelAttachments is identical on ActionNews and Drilldown7 except panelItem interface
      * @param thisId 
      * @param panelItem 
      */
 
-    private async createPanelAttachments( thisId: any, panelItem: IDrillItemInfo ): Promise<void>{
+    private async _createPanelAttachments( thisId: any, panelItem: IDrillItemInfo ): Promise<void>{
 
         let thisListWeb = Web(this.props.webURL);
         let thisListObject = thisListWeb.lists.getByTitle( this.props.listName );
@@ -182,7 +176,7 @@ export default class ReactListItems extends React.Component<IReactListItemsProps
 
     }
 
-    private delim = '|||';
+    private _delim = '|||';
 
     /**
      * 
@@ -190,7 +184,7 @@ export default class ReactListItems extends React.Component<IReactListItemsProps
      * @param item 
      * @param sourceUserInfo  //This is just passed in in order to allow for user targeted b.showWhenEvalTrue checks
      */
-    private createPanelButtons ( quickCommands: IQuickCommands, item: IDrillItemInfo , sourceUserInfo: IUser ) {
+    private _createPanelButtons ( quickCommands: IQuickCommands, item: IDrillItemInfo , sourceUserInfo: IUser ) {
 
         let allButtonRows : any[] = [];
 
@@ -204,16 +198,16 @@ export default class ReactListItems extends React.Component<IReactListItemsProps
 
                 //2022-01-18:  Added Try catch when testing and found my typed in quick command had error.
                 try {
-                    buildAllButtonsTest = eval( quickCommands.showWhenEvalTrue );
+                    buildAllButtonsTest = eval( quickCommands.showWhenEvalTrue );  // eslint-disable-line no-eval
                 
                     if ( buildAllButtonsTest === true ) {
                         //build all the buttons ( subject to individual button checks )
                     } else { buildAllButtonsTest = false; }
                 } catch (e) {
                     let errMessage = getHelpfullError(e, false, false);
-                    console.log(`ERROR:  createPanelButtons: quickCommands.showWhenEvalTrue !!!`, quickCommands.showWhenEvalTrue);
-                    console.log(`ERROR:  createPanelButtons: quickCommands.showWhenEvalTrue Error Details`, errMessage);
-                    alert(`createPanelButtons: quickCommands.showWhenEvalTrue error !!! Check the console for details:   ${quickCommands.showWhenEvalTrue}`);
+                    console.log(`ERROR:  _createPanelButtons: quickCommands.showWhenEvalTrue !!!`, quickCommands.showWhenEvalTrue);
+                    console.log(`ERROR:  _createPanelButtons: quickCommands.showWhenEvalTrue Error Details`, errMessage);
+                    alert(`_createPanelButtons: quickCommands.showWhenEvalTrue error !!! Check the console for details:   ${quickCommands.showWhenEvalTrue}`);
                 }
 
             }
@@ -237,23 +231,23 @@ export default class ReactListItems extends React.Component<IReactListItemsProps
 
                                 //2022-01-18:  Added Try catch when testing and found my typed in quick command had error.
                                 try {
-                                    let buildButtonTest = eval( b.showWhenEvalTrue );
+                                    let buildButtonTest = eval( b.showWhenEvalTrue ); // eslint-disable-line no-eval
                                     if ( buildButtonTest === true ) {
                                         //build all the buttons
                                     } else { buildThisButton = false; }
                                 } catch (e) {
                                     let errMessage = getHelpfullError(e, false, false);
-                                    console.log(`createPanelButtons: b[${i}].showWhenEvalTrue error !!!`, b.showWhenEvalTrue);
-                                    console.log(`createPanelButtons: b[${i}].showWhenEvalTrue Error Details`, errMessage);
+                                    console.log(`_createPanelButtons: b[${i}].showWhenEvalTrue error !!!`, b.showWhenEvalTrue);
+                                    console.log(`_createPanelButtons: b[${i}].showWhenEvalTrue Error Details`, errMessage);
 
-                                    alert(`createPanelButtons: quickCommands.showWhenEvalTrue error !!! Check the console for details:   ${quickCommands.showWhenEvalTrue}`);
+                                    alert(`_createPanelButtons: quickCommands.showWhenEvalTrue error !!! Check the console for details:   ${quickCommands.showWhenEvalTrue}`);
                                 }
                                 
                             }
                             
                             if ( buildThisButton === true ) {
                                 let icon = b.icon ? { iconName: b.icon } : null;
-                                let buttonID = ['ButtonID', r, i , item.Id].join(this.delim);
+                                let buttonID = ['ButtonID', r, i , item.Id].join(this._delim);
                                 let buttonTitle = b.label;
                                 let thisButton = b.primary === true ?
                                     <div id={ buttonID } title={ buttonTitle } ><PrimaryButton text={b.label} iconProps= { icon } onClick={this._panelButtonClicked.bind(this)} disabled={b.disabled} checked={b.checked} /></div>:
@@ -293,7 +287,7 @@ export default class ReactListItems extends React.Component<IReactListItemsProps
 
     }
 
-    private covertFieldInfoToIViewFields( parentListFieldTitles: [] , fieldsToShow: string[] ) {
+    private _covertFieldInfoToIViewFields( parentListFieldTitles: [] , fieldsToShow: string[] ) {
 
         /**
          * This is the export format required:
@@ -323,12 +317,12 @@ export default class ReactListItems extends React.Component<IReactListItemsProps
             }
         }
 
-        console.log('covertFieldInfoToIViewFields - viewFields', viewFields);
+        console.log('_covertFieldInfoToIViewFields - viewFields', viewFields);
         return viewFields;
 
     }
 
-    private handleExpandedFieldInfoToIViewFields( viewFields?: IViewField[] ) {
+    private _handleExpandedFieldInfoToIViewFields( viewFields?: IViewField[] ) {
         //Before this line was added, I think it was mutating props causing double render
         viewFields = JSON.parse(JSON.stringify( viewFields ));
         viewFields.map( vf => {
@@ -340,7 +334,7 @@ export default class ReactListItems extends React.Component<IReactListItemsProps
 
     }  
 
-    private createBlankDialog() {
+    private _createBlankDialog() {
 
         let myDialog: IMyDialogProps = {
             title: '',
@@ -375,9 +369,9 @@ export default class ReactListItems extends React.Component<IReactListItemsProps
 
         let viewFields : IViewField[] = [];
         if ( this.props.viewFields.length > 0 ) { 
-            viewFields = this.handleExpandedFieldInfoToIViewFields( this.props.viewFields );
+            viewFields = this._handleExpandedFieldInfoToIViewFields( this.props.viewFields );
         } else { 
-            viewFields = this.covertFieldInfoToIViewFields( parentListFieldTitles , [] );
+            viewFields = this._covertFieldInfoToIViewFields( parentListFieldTitles , [] );
         }
 
         let groupByFields : IGrouping[] = [];
@@ -400,7 +394,7 @@ export default class ReactListItems extends React.Component<IReactListItemsProps
           panelAttachments: [],
           lastAttachId: null,
           clickedAttach: false,
-          myDialog: this.createBlankDialog(),
+          myDialog: this._createBlankDialog(),
           pickedCommand: null,
           panelWidth: PanelType.medium,
         };
@@ -479,7 +473,7 @@ export default class ReactListItems extends React.Component<IReactListItemsProps
              *                                                              
              */
 
-            let toggles = !this.state.showPanel ? null : <div style={{ float: 'right' }}> { makeToggles(this.getPageToggles( this.state.panelWidth )) } </div>;
+            let toggles = !this.state.showPanel ? null : <div style={{ float: 'right' }}> { makeToggles(this._getPageToggles( this.state.panelWidth )) } </div>;
 
             let fullPanel = null;
             if ( this.state.showPanel === true && this.state.panelId ) {
@@ -501,7 +495,7 @@ export default class ReactListItems extends React.Component<IReactListItemsProps
                         <PivotItem headerText="Commands" itemKey= "Commands"><div>
                                 <div id='20pxSpacer' style={{ height: '20px'}}></div>
                                 { attachments }
-                                { this.createPanelButtons( this.props.quickCommands, this.state.panelItem, this.props.sourceUserInfo ) }
+                                { this._createPanelButtons( this.props.quickCommands, this.state.panelItem, this.props.sourceUserInfo ) }
                             </div>
                         </PivotItem>
                         <PivotItem headerText="Details" itemKey= "Details">
@@ -578,7 +572,7 @@ export default class ReactListItems extends React.Component<IReactListItemsProps
                 style={{ paddingRight: 20, whiteSpace: 'nowrap', float: 'right', paddingTop: 0, cursor: 'pointer', fontSize: 'smaller',background: 'transparent' }}>
                     <span style={{ background: 'transparent' }} className={ stylesInfo.listLink }>Go to list</span></div>;
 
-            if ( barText != null ) {
+            if ( barText !== null ) {
                 webTitle =<div className={ [stylesInfo.infoHeading, stylesInfo.innerShadow].join(' ') }><span style={{ paddingLeft: 20, whiteSpace: 'nowrap' }}>( { this.props.items.length }  ) Items in: { barText }</span>{ listLink }</div>;
 
             
@@ -644,9 +638,9 @@ export default class ReactListItems extends React.Component<IReactListItemsProps
         let parentListFieldTitles = this.props.parentListFieldTitles !== undefined && this.props.parentListFieldTitles !== null ? JSON.parse(this.props.parentListFieldTitles) : '';
 
         if ( this.props.viewFields.length > 0 ) { 
-            viewFields = this.handleExpandedFieldInfoToIViewFields( this.props.viewFields );
+            viewFields = this._handleExpandedFieldInfoToIViewFields( this.props.viewFields );
         } else { 
-            viewFields = this.covertFieldInfoToIViewFields( parentListFieldTitles , [] );
+            viewFields = this._covertFieldInfoToIViewFields( parentListFieldTitles , [] );
         }
    
         let groupByFields : IGrouping[] = [];
@@ -708,15 +702,15 @@ export default class ReactListItems extends React.Component<IReactListItemsProps
         this.completeThisQuickUpdate( this.state.panelId.toString(), thisButtonObject );
 
         this.setState({
-            myDialog: this.createBlankDialog(),
+            myDialog: this._createBlankDialog(),
         });
 
     }
 
     private async startThisQuickUpdate ( thisID: string ) {
 
-        let buttonID = thisID.split(this.delim);
-        //let buttonID = ['ButtonID', r, i , item.Id].join(this.delim);
+        let buttonID = thisID.split(this._delim);
+        //let buttonID = ['ButtonID', r, i , item.Id].join(this._delim);
         let buttonRow = buttonID[1];
         let buttonIndex = buttonID[2];
         let itemId = buttonID[3];
@@ -735,7 +729,7 @@ export default class ReactListItems extends React.Component<IReactListItemsProps
                     //Attempt to update item:
                     if ( thisButtonObject.confirm && thisButtonObject.confirm.length > 0 ) { 
 
-                        let myDialog = this.createBlankDialog();
+                        let myDialog = this._createBlankDialog();
                         myDialog.title = "Are you sure you want to make this update?";
                         myDialog.dialogMessage = thisButtonObject.confirm + '';
                         myDialog.confirmButton = thisButtonObject.label + '';
@@ -793,7 +787,7 @@ export default class ReactListItems extends React.Component<IReactListItemsProps
      */
     private _closeDialog = () => {
         this.setState({
-            myDialog: this.createBlankDialog(),
+            myDialog: this._createBlankDialog(),
         });
     }
 
@@ -836,7 +830,7 @@ export default class ReactListItems extends React.Component<IReactListItemsProps
                     clickedAttach = true;
                 }
     
-                this.createPanelAttachments(thisID, panelItem );
+                this._createPanelAttachments(thisID, panelItem );
     
                 let canShowAPanel = thisID === null || thisID === undefined || panelItem === null ? false : true;
                 let showFullPanel = canShowAPanel === true && clickedAttach !== true ? true : false;
@@ -921,13 +915,13 @@ export default class ReactListItems extends React.Component<IReactListItemsProps
      *                                                                   
      */
 
-    private getPageToggles( showStats ) {
+    private _getPageToggles( showStats ) {
 
         let togRefinerCounts = {
             //label: <span style={{ color: 'red', fontWeight: 900}}>Rails Off!</span>,
             label: <span>Panel width</span>,
             key: 'togggleWidth',
-            _onChange: this.updatePanelWidth.bind(this),
+            _onChange: this._updatePanelWidth.bind(this),
             checked: this.state.panelWidth === PanelType.medium ? false : true,
             onText: 'Wide',
             offText: 'Medium',
@@ -952,7 +946,7 @@ export default class ReactListItems extends React.Component<IReactListItemsProps
 
     }
 
-    private updatePanelWidth() {
+    private _updatePanelWidth() {
         this.setState({
             panelWidth: this.state.panelWidth === PanelType.medium ? PanelType.large : PanelType.medium,
         });

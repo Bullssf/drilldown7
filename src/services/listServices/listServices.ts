@@ -13,7 +13,7 @@ import { IMyFieldTypes, IBaseField , ITextField , IMultiLineTextField , INumberF
     IBooleanField , ICalculatedField , IDateTimeField , ICurrencyField , IUserField , ILookupField , IChoiceField ,
     IMultiChoiceField , IDepLookupField , ILocationField } from './columnTypes';
 
-import { MyFieldDef, changes, cBool, cCalcT, cCalcN, cChoice, cMChoice, cCurr, cDate, cLocal, cLook, cDLook,
+import { IMyFieldDef, changes, cBool, cCalcT, cCalcN, cChoice, cMChoice, cCurr, cDate, cLocal, cLook, cDLook,
     cMText, cText, cNumb, cURL, cUser, cMUser } from './columnTypes';
 
 import { doesObjectExistInArray,compareArrays, ICompareResult, } from '@mikezimm/npmfunctions/dist/Services/Arrays/checks';

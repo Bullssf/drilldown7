@@ -1,6 +1,4 @@
 
-import { ICSSChartDD,  } from '../../drilldown7/components/IReUsableInterfaces';
-
 import { IListViewDDDrillDown } from '@mikezimm/npmfunctions/dist/Views/IDrillViews';
   
 import { WebPartContext } from '@microsoft/sp-webpart-base';

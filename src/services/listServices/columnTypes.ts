@@ -13,7 +13,7 @@ import { IListInfo } from './listTypes';
 export const minInfinity: number = -1.7976931348623157e+308;
 export const maxInfinity = -1 * minInfinity ;
 
-export interface MyListDef {
+export interface IMyListDef {
 title: string;
 desc?: string; 
 template?: number;
@@ -21,56 +21,56 @@ enableContentTypes?: boolean;
 additionalSettings?: Partial<IListInfo>;
 }
 
-export interface MyFieldDef {
+export interface IMyFieldDef {
     kind: number;
     type: string;
     vType: string;
     label: string;
 }
 
-export const cCount : MyFieldDef =    {    kind : null,    type : null , vType: 'Counter', label: 'Counter'};
+export const cCount : IMyFieldDef =    {    kind : null,    type : null , vType: 'Counter', label: 'Counter'};
 
-export const cInt : MyFieldDef =    {    kind : null,    type : null , vType: 'Integer', label: 'Number'};
+export const cInt : IMyFieldDef =    {    kind : null,    type : null , vType: 'Integer', label: 'Number'};
 
-export const cText : MyFieldDef =    {    kind : 2,    type : 'SP.FieldText' , vType: 'Text', label: 'Text'};
+export const cText : IMyFieldDef =    {    kind : 2,    type : 'SP.FieldText' , vType: 'Text', label: 'Text'};
 
-export const cMText : MyFieldDef =   {    kind : 3,    type : 'SP.FieldMultiLineText' , vType: '', label: 'Text'};
+export const cMText : IMyFieldDef =   {    kind : 3,    type : 'SP.FieldMultiLineText' , vType: '', label: 'Text'};
 
-export const cDate : MyFieldDef =    {    kind : 4,    type : 'SP.FieldDateTime' , vType: 'DateTime', label: 'Date'};
+export const cDate : IMyFieldDef =    {    kind : 4,    type : 'SP.FieldDateTime' , vType: 'DateTime', label: 'Date'};
 
-export const cChoice : MyFieldDef =  {    kind :6 ,    type : 'SP.FieldChoice'  , vType: 'Text', label: 'Choice'};
+export const cChoice : IMyFieldDef =  {    kind :6 ,    type : 'SP.FieldChoice'  , vType: 'Text', label: 'Choice'};
 
-export const cLook : MyFieldDef =    {    kind : 7,    type : 'SP.FieldCreationInformation'  , vType: '', label: '9'};
+export const cLook : IMyFieldDef =    {    kind : 7,    type : 'SP.FieldCreationInformation'  , vType: '', label: '9'};
 
-export const cDLook : MyFieldDef =    {    kind : 7,    type : 'SP.FieldCreationInformation'  , vType: '', label: '9'};
+export const cDLook : IMyFieldDef =    {    kind : 7,    type : 'SP.FieldCreationInformation'  , vType: '', label: '9'};
 
-export const cBool : MyFieldDef =    {    kind :8 ,    type : 'SP.Field'  , vType: 'Boolean', label: 'Boolean'};
+export const cBool : IMyFieldDef =    {    kind :8 ,    type : 'SP.Field'  , vType: 'Boolean', label: 'Boolean'};
 
-export const cNumb : MyFieldDef =    {    kind : 9,    type : 'SP.FieldNumber'  , vType: 'Number', label: 'Number'};
+export const cNumb : IMyFieldDef =    {    kind : 9,    type : 'SP.FieldNumber'  , vType: 'Number', label: 'Number'};
 
-export const cCurr : MyFieldDef =    {    kind : 10,    type : 'SP.FieldCurrency'  , vType: '', label: 'Curr'};
+export const cCurr : IMyFieldDef =    {    kind : 10,    type : 'SP.FieldCurrency'  , vType: '', label: 'Curr'};
 
-export const cURL : MyFieldDef =     {    kind : 11,    type : 'SP.FieldUrl'  , vType: '', label: 'URL'};
+export const cURL : IMyFieldDef =     {    kind : 11,    type : 'SP.FieldUrl'  , vType: '', label: 'URL'};
 
-export const cMChoice : MyFieldDef = {    kind :15 ,    type : 'SP.FieldMultiChoice'  , vType: '', label: 'Choice'};
+export const cMChoice : IMyFieldDef = {    kind :15 ,    type : 'SP.FieldMultiChoice'  , vType: '', label: 'Choice'};
 
-export const cCalcN : MyFieldDef =    {    kind : 17,    type : 'SP.FieldCalculated'  , vType: 'Number', label: 'Calculated'};
+export const cCalcN : IMyFieldDef =    {    kind : 17,    type : 'SP.FieldCalculated'  , vType: 'Number', label: 'Calculated'};
 
-export const cCalcT : MyFieldDef =    {    kind : 17,    type : 'SP.FieldCalculated'  , vType: 'Text', label: 'Calculated'};
+export const cCalcT : IMyFieldDef =    {    kind : 17,    type : 'SP.FieldCalculated'  , vType: 'Text', label: 'Calculated'};
 
-export const cUser : MyFieldDef =    {    kind : 20,    type : 'SP.FieldUser'  , vType: 'Integer', label: 'User'};
+export const cUser : IMyFieldDef =    {    kind : 20,    type : 'SP.FieldUser'  , vType: 'Integer', label: 'User'};
 
-export const cMUser : MyFieldDef =    {    kind : 20,    type : 'SP.FieldUserMulti'  , vType: '', label: 'User'}; //This may be SP.FieldUserMulti or may not ????... but this is required for the function in columnServices.ts to catch this option.
+export const cMUser : IMyFieldDef =    {    kind : 20,    type : 'SP.FieldUserMulti'  , vType: '', label: 'User'}; //This may be SP.FieldUserMulti or may not ????... but this is required for the function in columnServices.ts to catch this option.
 
-export const cLocal : MyFieldDef =   {    kind : 33,    type : 'SP.FieldLocation'  , vType: '', label: 'Loc'};
+export const cLocal : IMyFieldDef =   {    kind : 33,    type : 'SP.FieldLocation'  , vType: '', label: 'Loc'};
 
-export const cModStatus : MyFieldDef =   {    kind : 23,    type : 'SP.FieldChoice'  , vType: '', label: 'ModStatus'}; 
+export const cModStatus : IMyFieldDef =   {    kind : 23,    type : 'SP.FieldChoice'  , vType: '', label: 'ModStatus'}; 
 
-export const cSLook : MyFieldDef =   {    kind : 7,    type : 'SP.FieldLookup'  , vType: '', label: 'Lookup'}; 
+export const cSLook : IMyFieldDef =   {    kind : 7,    type : 'SP.FieldLookup'  , vType: '', label: 'Lookup'}; 
 
-export const cComputed : MyFieldDef =   {    kind : 12,    type : 'SP.FieldComputed'  , vType: '', label: 'Computed'}; 
+export const cComputed : IMyFieldDef =   {    kind : 12,    type : 'SP.FieldComputed'  , vType: '', label: 'Computed'}; 
 
-export const myFieldDefs : MyFieldDef[] = [cCount, cInt, cText, cMText, cDate, cChoice, cLook, cDLook, cBool, cNumb, cCurr, cURL, cMChoice, cCalcN, cCalcT, cUser, cMUser, cLocal, cSLook, cComputed, cModStatus];
+export const IMyFieldDefs : IMyFieldDef[] = [cCount, cInt, cText, cMText, cDate, cChoice, cLook, cDLook, cBool, cNumb, cCurr, cURL, cMChoice, cCalcN, cCalcT, cUser, cMUser, cLocal, cSLook, cComputed, cModStatus];
 
 export type IMyFieldTypes = IBaseField | ITextField | IMultiLineTextField | INumberField | IXMLField | 
     IBooleanField | ICalculatedField | IDateTimeField | ICurrencyField | IUserField | ILookupField | IChoiceField | 
@@ -87,7 +87,7 @@ export type IMyFieldTypes = IBaseField | ITextField | IMultiLineTextField | INum
 export type changes = 'create' | 'changes1' | 'changes2' | 'changes3' | 'changesFinal' | 'setForm';
 
 export interface IBaseField extends Partial<IFieldInfo>{
-    fieldType: MyFieldDef;
+    fieldType: IMyFieldDef;
     name: string;  //Will be Title of list unless title is specified
 
     onCreateProps?: IFieldCreationProperties;  //Initial Properties at time of creating field

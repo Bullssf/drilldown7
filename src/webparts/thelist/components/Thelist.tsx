@@ -3,14 +3,12 @@ import styles from '../../drilldown7/components/Contents/contents.module.scss';
 import stylesD from '../../drilldown7/components/Drill/drillComponent.module.scss';
 import { IThelistProps } from './IThelistProps';
 import { IThelistState } from './IThelistState';
-import { escape } from '@microsoft/sp-lodash-subset';
-
 /**
  *  TITLE:  For Webpart Title component
 */
 import { WebPartTitle } from "@pnp/spfx-controls-react/lib/WebPartTitle";
 
-import { IGrouping, IViewField } from "@pnp/spfx-controls-react/lib/ListView";
+import { IGrouping, } from "@pnp/spfx-controls-react/lib/ListView";
 
 import { getAppropriateViewFields, getAppropriateViewGroups, getAppropriateViewProp 
   } from '../../drilldown7/components/Drill/listFunctions';
@@ -147,7 +145,7 @@ public componentDidUpdate(prevProps){
           currentViewGroups =  getAppropriateViewGroups( viewDefs , this.state.WebpartWidth );
         }
   
-        let noItemsMessage = !searchedItems || searchedItems.length === 0 ? 'NO ITEMS FOUND' : '';
+        // let noItemsMessage = !searchedItems || searchedItems.length === 0 ? 'NO ITEMS FOUND' : '';
 
         if ( viewDefs ) {
           reactListItems = searchedItems.length === 0 ? <div>NO ITEMS FOUND</div> : <ReactListItems 

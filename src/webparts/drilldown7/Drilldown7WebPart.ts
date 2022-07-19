@@ -219,14 +219,14 @@ export default class Drilldown7WebPart extends BaseClientSideWebPart<IDrilldown7
   private _filterBy: any;
 
   //For FPS options
-  private fpsPageDone: boolean = false;
-  private fpsPageArray: any[] = null;
-  private minQuickLaunch: boolean = false;
+  private _fpsPageDone: boolean = false;
+  private _fpsPageArray: any[] = null;
+  private _minQuickLaunch: boolean = false;
 
   //For FPS Banner
-  private forceBanner = true ;
-  private modifyBannerTitle = true ;
-  private modifyBannerStyle = true ;
+  private _forceBanner = true ;
+  private _modifyBannerTitle = true ;
+  private _modifyBannerStyle = true ;
 
 /***
 *          .d88b.  d8b   db d888888b d8b   db d888888b d888888b 
@@ -465,7 +465,7 @@ export default class Drilldown7WebPart extends BaseClientSideWebPart<IDrilldown7
     links.trickyEmails.map( getsTricks => {
       if ( this.context.pageContext.user.loginName && this.context.pageContext.user.loginName.toLowerCase().indexOf( getsTricks ) > -1 ) { showTricks = true ; }   } ); 
 
-    let bannerTitle = this.modifyBannerTitle === true && this.properties.bannerTitle && this.properties.bannerTitle.length > 0 ? this.properties.bannerTitle : `Drilldown`;
+    let bannerTitle = this._modifyBannerTitle === true && this.properties.bannerTitle && this.properties.bannerTitle.length > 0 ? this.properties.bannerTitle : `Drilldown`;
     let bannerStyle: ICurleyBraceCheck = getReactCSSFromString( 'bannerStyle', this.properties.bannerStyle, {background: "#7777",fontWeight:600, fontSize: 'larger', height: '43px'} );
     let showBannerGear = this.properties.showBannerGear === false ? false : true;
     
@@ -479,7 +479,7 @@ export default class Drilldown7WebPart extends BaseClientSideWebPart<IDrilldown7
       pageContext: this.context.pageContext,
       panelTitle: `Drilldown webpart - ${this.properties.parentListTitle}`,
       bannerWidth : this.domElement.clientWidth,
-      showBanner: this.forceBanner === true || this.properties.showBanner !== false ? true : false,
+      showBanner: this._forceBanner === true || this.properties.showBanner !== false ? true : false,
       showTricks: showTricks,
       showBannerGear: showBannerGear,
       showGoToHome: this.properties.showGoToHome === false ? false : true,
@@ -503,8 +503,8 @@ export default class Drilldown7WebPart extends BaseClientSideWebPart<IDrilldown7
 
 
     //Used with FPS Options Functions
-    this.setThisPageFormatting( this.properties.fpsPageStyle );
-    this.setQuickLaunch( this.properties.quickLaunchHide );
+    this._setThisPageFormatting( this.properties.fpsPageStyle );
+    this._setQuickLaunch( this.properties.quickLaunchHide );
 
 
     //Be sure to always pass down an actual URL if the webpart prop is empty at this point.
@@ -675,9 +675,9 @@ export default class Drilldown7WebPart extends BaseClientSideWebPart<IDrilldown7
         /**
          * DD Provider: Step 0 - add props to React Component to receive the switches and the handler.
          */
-        handleSwitch: this.handleSwitch,  //Commented out due to something causing viewFields names to get messed up (removed the / for expanded columns )
+        handleSwitch: this._handleSwitch,  //Commented out due to something causing viewFields names to get messed up (removed the / for expanded columns )
         // handleSwitch: null,
-        handleListPost: this.handleListPost,  //Commented out due to something causing viewFields names to get messed up (removed the / for expanded columns )
+        handleListPost: this._handleListPost,  //Commented out due to something causing viewFields names to get messed up (removed the / for expanded columns )
         // handleListPost: null,
 
       }
@@ -691,7 +691,7 @@ export default class Drilldown7WebPart extends BaseClientSideWebPart<IDrilldown7
    * 1) Set value of selected Switch on the internal property
    * 2) Tell anybody who subscribed, that property changed
    */
-  private handleSwitch = ( stats: IRefinerStat[], callBackID: string, refinerObj: IRefinerLayer, breadCrumb: string[] ) : void => {
+  private _handleSwitch = ( stats: IRefinerStat[], callBackID: string, refinerObj: IRefinerLayer, breadCrumb: string[] ) : void => {
 
     consoleRef( 'handleSwitch', refinerObj );
     let e = event;
@@ -713,7 +713,7 @@ export default class Drilldown7WebPart extends BaseClientSideWebPart<IDrilldown7
    * 1) Set value of selected Switch on the internal property
    * 2) Tell anybody who subscribed, that property changed
    */
-  private handleListPost = ( listProps : IListViewDDDrillDown ) : void => {
+  private _handleListPost = ( listProps : IListViewDDDrillDown ) : void => {
     consoleRef( 'handleListPost-No Object', null );
     console.log('this.props.viewDefs ~ 638 - handleListPost: callback listProps if any other webparts are listening', listProps );
     if ( this.properties.togOtherListview === true ) {
@@ -758,11 +758,11 @@ export default class Drilldown7WebPart extends BaseClientSideWebPart<IDrilldown7
    * Used with FPS Options Functions
    * @param quickLaunchHide 
    */
-  private setQuickLaunch( quickLaunchHide: boolean ) {
+  private _setQuickLaunch( quickLaunchHide: boolean ) {
 
-    if ( quickLaunchHide === true && this.minQuickLaunch === false ) {
+    if ( quickLaunchHide === true && this._minQuickLaunch === false ) {
       minimizeQuickLaunch( document , quickLaunchHide );
-      this.minQuickLaunch = true;
+      this._minQuickLaunch = true;
     }
 
   }
@@ -771,13 +771,13 @@ export default class Drilldown7WebPart extends BaseClientSideWebPart<IDrilldown7
    * Used with FPS Options Functions
    * @param fpsPageStyle 
    */
-  private setThisPageFormatting( fpsPageStyle: string ) {
+  private _setThisPageFormatting( fpsPageStyle: string ) {
     let fpsPage: IFPSPage = {
-      // Done: this.fpsPageDone, // 2022-03-28: Errored out in npmFunctions v1.0.199, removing for now
+      // Done: this._fpsPageDone, // 2022-03-28: Errored out in npmFunctions v1.0.199, removing for now
 
       // VVVV JUST SET THESE BY HAND TO MAKE ERRORS GO AWAY.  NEEDS UPDATING
       attempted: false,
-      title: 'setThisPageFormatting',
+      title: '_setThisPageFormatting',
       wpInstanceID: 'wpInstanceID',
       do: true,
       errors: null,
@@ -786,15 +786,15 @@ export default class Drilldown7WebPart extends BaseClientSideWebPart<IDrilldown7
 
 
       Style: fpsPageStyle,
-      Array: this.fpsPageArray,
+      Array: this._fpsPageArray,
     };
 
     fpsPage = setPageFormatting( this.domElement, fpsPage );
-    this.fpsPageArray = fpsPage.Array;
-    // this.fpsPageDone = fpsPage.Done;  // 2022-03-28: Errored out in npmFunctions v1.0.199, removing for now
+    this._fpsPageArray = fpsPage.Array;
+    // this._fpsPageDone = fpsPage.Done;  // 2022-03-28: Errored out in npmFunctions v1.0.199, removing for now
   }
 
-  private async UpdateTitles(): Promise<boolean> {
+  private async _UpdateTitles(): Promise<boolean> {
     const sp = spfi().using(SPFx(this.context));
     let listName = this.properties.parentListTitle ? this.properties.parentListTitle : 'ParentListTitle';
     const list = sp.web.lists.getByTitle(listName);
@@ -838,9 +838,9 @@ export default class Drilldown7WebPart extends BaseClientSideWebPart<IDrilldown7
   protected getPropertyPaneConfiguration(): IPropertyPaneConfiguration {
     return propertyPaneBuilder.getPropertyPaneConfiguration(
       this.properties,
-      this.UpdateTitles.bind(this),
+      this._UpdateTitles.bind(this),
       this._getListDefintions.bind(this),
-      this.forceBanner, this.modifyBannerTitle, this.modifyBannerStyle
+      this._forceBanner, this._modifyBannerTitle, this._modifyBannerStyle
       );
   }
 

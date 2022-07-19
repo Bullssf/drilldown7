@@ -3,7 +3,6 @@
 /**
 *  TITLE:  For Webpart Title component
 */
-import { DisplayMode } from '@microsoft/sp-core-library';
 
 export interface IThelistState {
 

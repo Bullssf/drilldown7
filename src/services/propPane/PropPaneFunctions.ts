@@ -23,7 +23,7 @@ export async function getAllItems( configWebURL: string, propsListName: string, 
     //lists.getById(listGUID).webs.orderBy("Title", true)().then(function(result) {
     //let allItems : IDrillItemInfo[] = await sp.web.webs.get();
 
-    let thisListObject = null;
+    let web = null;
 
     let theseProps : any[] = [];
     let returnProps: any[] = [];
@@ -34,13 +34,14 @@ export async function getAllItems( configWebURL: string, propsListName: string, 
 
     try {
 
-        // Create a new instance of Queryable
-        thisListObject = spfi( configWebURL ).using(SPFx(this.context));
+        let sp = spfi( configWebURL );
+        web = await sp.web();  // Also tried  web = sp.web;
+
         // thisListObject = Web(configWebURL);
         if ( restFilter.length > 1 ) {
-            theseProps = await thisListObject.lists.getByTitle(propsListName).items.filter(restFilter).orderBy('Title',false).top(300)();
+            theseProps = await web.lists.getByTitle(propsListName).items.filter(restFilter).orderBy('Title',false).top(300)();
         } else {
-            theseProps = await thisListObject.lists.getByTitle(propsListName).items.orderBy('Title',false).top(300)();
+            theseProps = await web.lists.getByTitle(propsListName).items.orderBy('Title',false).top(300)();
         }
         //console.log('Found theseProps: ' ,theseProps );
 

@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { IconButton, IIconProps, IContextualMenuProps, Stack, Link } from 'office-ui-fabric-react';
 
-const emojiIcon: IIconProps = { iconName: 'BarChartVerticalFill' };
+// const emojiIcon: IIconProps = { iconName: 'BarChartVerticalFill' };
 
 import styles from './CreateButtons.module.scss';
 
@@ -15,13 +15,13 @@ export const defCommandIconStyles = {
  },
 };
 
-export function createIconButton(iconName, titleText, _onClick, thisID,  iconStyles){
+export function createIconButton(iconName, titleText, onClick, thisID,  iconStyles){
 
-    if ( iconStyles == null ) { iconStyles = defCommandIconStyles ; }
+    if ( iconStyles === null ) { iconStyles = defCommandIconStyles ; }
 
     if ( iconName === 'Help' ) { iconStyles.icon.fontWeight = '900' ; }
 
-    if (thisID == null ) { thisID = Math.random().toString(36).substring(7);} else {
+    if (thisID === null ) { thisID = Math.random().toString(36).substring(7);} else {
 
       //2020-05-11:  Issue 44 Added so activity can have / or \ from partial URLs
       //First replace slashes with words so that they will go through and can be returned back to those values in the onclick url
@@ -44,7 +44,7 @@ export function createIconButton(iconName, titleText, _onClick, thisID,  iconSty
       //ariaLabel= { titleText } 
       disabled={false} 
       checked={false}
-      onClick={ _onClick }
+      onClick={ onClick }
       styles={ iconStyles }
       />
       </div>

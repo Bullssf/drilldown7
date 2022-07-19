@@ -10,7 +10,7 @@ import { IMyFieldTypes, IBaseField , ITextField , IMultiLineTextField , INumberF
     IMultiChoiceField , IDepLookupField , ILocationField, IURLField, cCount, cInt } from './columnTypes';
 
 import { cBool, cCalcN, cCalcT, cChoice, cMChoice, cCurr, cDate, cLocal, cLook, cDLook, 
-    cMText, cText, cNumb, cURL, cUser, cMUser, MyFieldDef, minInfinity, maxInfinity } from './columnTypes';
+    cMText, cText, cNumb, cURL, cUser, cMUser, IMyFieldDef, minInfinity, maxInfinity } from './columnTypes';
 
 // import { ootbID, ootbTitle, ootbEditor, ootbAuthor, ootbCreated, ootbModified, } from './columnsOOTB';
 

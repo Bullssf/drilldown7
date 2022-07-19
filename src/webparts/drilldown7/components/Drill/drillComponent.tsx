@@ -2,9 +2,9 @@ import * as React from 'react';
 import { WebPartContext } from '@microsoft/sp-webpart-base';
 import { DisplayMode, } from '@microsoft/sp-core-library';
 
-import { CompoundButton, Stack, IStackTokens, elementContains, initializeIcons, Icon, IIconStyles, getLanguage, FontWeights } from 'office-ui-fabric-react';
+import { Stack, IStackTokens, Icon, } from 'office-ui-fabric-react';
 import { SearchBox } from 'office-ui-fabric-react/lib/SearchBox';
-import { Pivot, PivotItem, IPivotItemProps, PivotLinkFormat, PivotLinkSize,} from 'office-ui-fabric-react/lib/Pivot';
+import { Pivot, PivotItem, } from 'office-ui-fabric-react/lib/Pivot';
 
 import "@pnp/sp/webs";
 
@@ -14,41 +14,26 @@ import { monthStr3 } from '@mikezimm/npmfunctions/dist/Services/Time/monthLabels
 
 import styles from '../Contents/contents.module.scss';
 
-import ButtonCompound from '../createButtons/ICreateButtons';
-import { IButtonProps, ISingleButtonProps, IButtonState } from "../createButtons/ICreateButtons";
-
 import { createIconButton , defCommandIconStyles} from "../createButtons/IconButton";
-
-import { createAdvancedContentChoices } from '../fields/choiceFieldBuilder';
 
 import { IContentsToggles, makeToggles } from '../fields/toggleFieldBuilder';
 
-import { IPickedList, IPickedWebBasic, IMyPivots, IPivot,  ILink, IMyProgress, IMyIcons, IMyFonts, IChartSeries, 
-    ICharNote, ICSSChartSettings, ICSSChartData, ICSSChartTypes, } from '../IReUsableInterfaces';
+import { IPickedList, IMyProgress, ICSSChartTypes, } from '../IReUsableInterfaces';
 
 import { ICustViewDef } from '@mikezimm/npmfunctions/dist/Views/IListViews';
 
 import { IUser } from '@mikezimm/npmfunctions/dist/Services/Users/IUserInterfaces';
-import { IQuickButton, IQuickCommands } from '@mikezimm/npmfunctions/dist/QuickCommands/IQuickCommands';
+import {  IQuickCommands } from '@mikezimm/npmfunctions/dist/QuickCommands/IQuickCommands';
 
 import { IListViewDDDrillDown } from '@mikezimm/npmfunctions/dist/Views/IDrillViews';
 
-import { gitRepoDrillDown } from '@mikezimm/npmfunctions/dist/Links/LinksRepos';
-
-import { IRefinerLayer, IRefiners, IItemRefiners, IRefinerStats, RefineRuleValues,
-    IRefinerRules, IRefinerStatType, RefinerStatTypes, IRefinerStat } from '@mikezimm/npmfunctions/dist/Refiners/IRefiners';
+import { IRefinerLayer, IRefinerRules, IRefinerStat } from '@mikezimm/npmfunctions/dist/Refiners/IRefiners';
 
 import { PageContext } from '@microsoft/sp-page-context';
 
 import { pivotOptionsGroup, } from '../../../../services/propPane';
 
-import { getExpandColumns, getKeysLike, getSelectColumns, getLinkColumns, getFuncColumns } from '../../../../services/getFunctions';
-
-import { DoNotExpandLinkColumns, DoNotExpandTrimB4, DoNotExpandTrimAfter, DoNotExpandTrimSpecial } from '../../../../services/getInterface';
-
-import { getHelpfullError } from '@mikezimm/npmfunctions/dist/Services/Logging/ErrorHandler';
-
-import MyDrillItems from './drillListView';
+import { getExpandColumns,  getSelectColumns, getLinkColumns, getFuncColumns } from '../../../../services/getFunctions';
 
 import ReactListItems from './reactListView';
 
@@ -62,9 +47,7 @@ import { ICMDItem } from './refiners/commandBar';
 
 import stylesD from './drillComponent.module.scss';
 import {  } from '../../../../services/listServices/viewTypes';
-import { ListView, IViewField, SelectionMode, GroupOrder, IGrouping } from "@pnp/spfx-controls-react/lib/ListView";
-
-import { unstable_renderSubtreeIntoContainer } from 'react-dom';
+import { IGrouping } from "@pnp/spfx-controls-react/lib/ListView";
 
 import Cssreactbarchart from '../CssCharts/Cssreactbarchart';
 
@@ -72,8 +55,6 @@ import {buildCountChartsObject ,  buildStatChartsArray} from '../CssCharts/cssCh
 
 import { getAppropriateViewFields, getAppropriateViewGroups, getAppropriateViewProp } from './listFunctions';
 import { WebPartHelpElement } from './drillPropPaneHelp';
-
-import { ProgressIndicator } from 'office-ui-fabric-react/lib/ProgressIndicator';
 
 /**
  * 2021-08-25 MZ:  Added for Banner
@@ -469,8 +450,8 @@ export default class DrillDown extends React.Component<IDrillDownProps, IDrillDo
      *                                                                                                                                
      */
 
-    private nearBannerElements = this.buildNearBannerElements();
-    private farBannerElements = this.buildFarBannerElements();
+    private nearBannerElements = this._buildNearBannerElements();
+    private farBannerElements = this._buildFarBannerElements();
     //DoNotExpandLinkColumns, DoNotExpandTrimB4, DoNotExpandTrimAfter, DoNotExpandTrimSpecial
 
 
@@ -598,7 +579,7 @@ export default class DrillDown extends React.Component<IDrillDownProps, IDrillDo
         defaultBannerCommandStyles.fontSize = 'normal';
         
         elements.push(<span style={{ paddingLeft: '20px' }} className={ '' } title={ 'Hide instructions based on webpart settings' }>
-          <Icon iconName='Hide3' onClick={ this.hideInstructions.bind(this) } style={ defaultBannerCommandStyles }></Icon></span>);
+          <Icon iconName='Hide3' onClick={ this._hideInstructions.bind(this) } style={ defaultBannerCommandStyles }></Icon></span>);
 
         return elements;
       }
@@ -877,8 +858,8 @@ export default class DrillDown extends React.Component<IDrillDownProps, IDrillDo
         };
 
         
-        this.nearBannerElements = this.buildNearBannerElements();
-        this.farBannerElements = this.buildFarBannerElements();
+        this.nearBannerElements = this._buildNearBannerElements();
+        this.farBannerElements = this._buildFarBannerElements();
 
     // because our event handler needs access to the component, bind 
     //  the component to the function so it can get access to the
@@ -888,7 +869,7 @@ export default class DrillDown extends React.Component<IDrillDownProps, IDrillDo
     }
 
     
-  private buildNearBannerElements() {
+  private _buildNearBannerElements() {
     //See banner/NearAndFarSample.js for how to build this.
     let elements = [];
     // defaultBannerCommandStyles.fontWeight = 'bolder';
@@ -898,7 +879,7 @@ export default class DrillDown extends React.Component<IDrillDownProps, IDrillDo
     return elements;
   }
 
-  private buildFarBannerElements() {
+  private _buildFarBannerElements() {
       //See banner/NearAndFarSample.js for how to build this.
       // minimizeTiles= { this.minimizeTiles.bind(this) }
       // searchMe= { this.searchMe.bind(this) }
@@ -1049,12 +1030,12 @@ public componentDidUpdate(prevProps){
         // let farBannerElementsArray = [];
         let farBannerElementsArray = [...this.farBannerElements,
             // <Icon iconName={layoutIcon} onClick={ this.toggleLayout.bind(this) } style={ defaultBannerCommandStyles }></Icon>,
-            <Icon iconName='BookAnswers' onClick={ this.forceInstructions.bind(this) } style={ defaultBannerCommandStyles }></Icon>,
-            // <Icon iconName='Hide3' onClick={ this.hideInstructions.bind(this) } style={ defaultBannerCommandStyles }></Icon>,
+            <Icon iconName='BookAnswers' onClick={ this._forceInstructions.bind(this) } style={ defaultBannerCommandStyles }></Icon>,
+            // <Icon iconName='Hide3' onClick={ this._hideInstructions.bind(this) } style={ defaultBannerCommandStyles }></Icon>,
         ];
         if ( this.props.displayMode === DisplayMode.Edit ) {
             farBannerElementsArray.push( 
-                <Icon iconName='OpenEnrollment' onClick={ this.togglePropsHelp.bind(this) } style={ defaultBannerCommandStyles }></Icon>
+                <Icon iconName='OpenEnrollment' onClick={ this._togglePropsHelp.bind(this) } style={ defaultBannerCommandStyles }></Icon>
         );
         }
 
@@ -1216,8 +1197,8 @@ public componentDidUpdate(prevProps){
 
                 } else if ( this.state.style === 'commandBar' ) {
 
-                    let pinCmd1 = createIconButton('Pin','Pin ' + this.state.refiners[1] + ' to top, Alt-Click to move DOWNOne level.',this.changeRefinerOrder1.bind(this), null, null );
-                    let pinCmd2 = createIconButton('Pin','Pin ' + this.state.refiners[2] + ' to top, Alt-Click to move UP One level.',this.changeRefinerOrder2.bind(this), null, null );
+                    let pinCmd1 = createIconButton('Pin','Pin ' + this.state.refiners[1] + ' to top, Alt-Click to move DOWNOne level.',this._changeRefinerOrder1.bind(this), null, null );
+                    let pinCmd2 = createIconButton('Pin','Pin ' + this.state.refiners[2] + ' to top, Alt-Click to move UP One level.',this._changeRefinerOrder2.bind(this), null, null );
                     let pinSpanStyle = { paddingLeft: '8px', height: '0px' } ;
 
                     thisIsRefiner0 = showRefiner0 ? <div><ResizeGroupOverflowSetExample
@@ -1440,7 +1421,7 @@ public componentDidUpdate(prevProps){
                         */
 
 
-                    let toggles = <div style={{ float: 'right' }}> { makeToggles(this.getPageToggles( statCharts.length > 0 ? true : false )) } </div>;
+                    let toggles = <div style={{ float: 'right' }}> { makeToggles(this._getPageToggles( statCharts.length > 0 ? true : false )) } </div>;
 
                     let messages : any[] = [];
                     if ( this.state.WebpartWidth > 800 ) { 
@@ -1545,35 +1526,35 @@ public componentDidUpdate(prevProps){
 
     }   //End Public Render
 
-    private getAllItemsCall( viewDefs: ICustViewDef[], refiners: string[] ) {
+    private _getAllItemsCall( viewDefs: ICustViewDef[], refiners: string[] ) {
 
         /**
          * This is copied from constructor when you have to call the data in case something changed.
          */
 
-        let drillList = this.createDrillList(this.props.webURL, this.props.listName, false, refiners, this.state.rules, this.props.stats, viewDefs, this.props.toggles.togOtherChartpart, '', false, this.props.language, 'getAllItemsCall', this.state.drillList.itteration );
+        let drillList = this.createDrillList(this.props.webURL, this.props.listName, false, refiners, this.state.rules, this.props.stats, viewDefs, this.props.toggles.togOtherChartpart, '', false, this.props.language, '_getAllItemsCall', this.state.drillList.itteration );
         let errMessage = drillList.refinerRules === undefined ? 'Invalid Rule set: ' +  this.state.rules : '';
         if ( drillList.refinerRules === undefined ) { drillList.refinerRules = [[],[],[]] ; } 
 
-        let result : any = getAllItems( drillList, this.addTheseItemsToState.bind(this), this.setProgress.bind(this), null );
+        let result : any = getAllItems( drillList, this._addTheseItemsToState.bind(this), this._setProgress.bind(this), null );
 
     }
 
-    private addTheseItemsToState( drillList: IDrillList, allItems , errMessage : string, refinerObj: IRefinerLayer ) {
+    private _addTheseItemsToState( drillList: IDrillList, allItems , errMessage : string, refinerObj: IRefinerLayer ) {
         consoleRef( 'addTheseItems1REF', refinerObj );
         consoleMe( 'addTheseItems1' , allItems, drillList );
         //let newFilteredItems : IDrillItemInfo[] = this.getNewFilteredItems( '', this.state.searchMeta, allItems, 0 );
         let pivotCats : any = [];
         let cmdCats : any = [];
-        pivotCats.push ( refinerObj.childrenKeys.map( r => { return this.createThisPivotCat(r,'',0); }));
+        pivotCats.push ( refinerObj.childrenKeys.map( r => { return this._createThisPivotCat(r,'',0); }));
         let countTree: number[] = refinerObj.childrenObjs.map( o => { return o.itemCount; }) ;
 
-        cmdCats.push ( this.convertRefinersToCMDs( ['All'],  refinerObj.childrenKeys, countTree, 0 , 0, refinerObj) );
+        cmdCats.push ( this._convertRefinersToCMDs( ['All'],  refinerObj.childrenKeys, countTree, 0 , 0, refinerObj) );
 
         if ( allItems.length < 300 ) {
-            console.log('addTheseItemsToState allItems: ', allItems);
+            console.log('_addTheseItemsToState allItems: ', allItems);
         } {
-            console.log('addTheseItemsToState allItems: QTY: ', allItems.length );
+            console.log('_addTheseItemsToState allItems: QTY: ', allItems.length );
         }
 
         let maxRefinersToShow = 1;
@@ -1646,10 +1627,10 @@ public componentDidUpdate(prevProps){
         consoleRef( 'addTheseItems2REF', refinerObj );
         consoleMe( 'addTheseItems2' , allItems, drillList );
 
-        console.log('addTheseItemsToState: props',this.props );
-        console.log('addTheseItemsToState: refinerObj',refinerObj );
-        console.log('addTheseItemsToState: drillList',drillList );
-        console.log('addTheseItemsToState: refinerStats', drillList.refinerStats );
+        console.log('_addTheseItemsToState: props',this.props );
+        console.log('_addTheseItemsToState: refinerObj',refinerObj );
+        console.log('_addTheseItemsToState: drillList',drillList );
+        console.log('_addTheseItemsToState: refinerStats', drillList.refinerStats );
 
         this.setState({
             allItems: allItems,
@@ -1675,7 +1656,7 @@ public componentDidUpdate(prevProps){
         return true;
     }
 
-    private createThisPivotCat ( title, desc, order ) {
+    private _createThisPivotCat ( title, desc, order ) {
 
         let pivCat : IMyPivCat = {
             title: title,
@@ -1700,7 +1681,7 @@ public componentDidUpdate(prevProps){
  */
 
  //Can't use this
-    private findMatchtingElementTextOriginal(arr: string[], item: any ) {
+    private _findMatchtingElementTextOriginal(arr: string[], item: any ) {
 
         let hasItemKey = item.props && item.props.itemKey ? true : false ;
         let hasTargetInnerText = item.target && item.target.innerText ? true : false;
@@ -1721,7 +1702,7 @@ public componentDidUpdate(prevProps){
         return '';
     }
 
-    private findCountOfAriaLabel( item: any ) {
+    private _findCountOfAriaLabel( item: any ) {
         let result = '';
         if ( item === null ) { return result; }
         let isValue = false;
@@ -1742,7 +1723,7 @@ public componentDidUpdate(prevProps){
                 result = searchText.substring(openPar + 1, closePar);
                 isValue = /^\d+$/.test(result);
 
-                console.log('findCountOfAriaLabel:', result, isValue );
+                console.log('_findCountOfAriaLabel:', result, isValue );
             } else {
                 console.log ('Did not find numbers between ()' );
             }
@@ -1778,7 +1759,7 @@ public componentDidUpdate(prevProps){
 
     public _getValidCountFromClickItem( item, validText: string) {
         if ( this.state.showRefinerCounts === true ) {
-            let countOf = this.findCountOfAriaLabel( item );
+            let countOf = this._findCountOfAriaLabel( item );
             validText = validText.replace(' ('+countOf+')','');
         }
         return validText;
@@ -1796,20 +1777,20 @@ public componentDidUpdate(prevProps){
     }
 
 
-    private getClickInfo ( e , item ) {
+    private _getClickInfo ( e , item ) {
 
         //This sends back the correct pivot category which matches the category on the tile.
         let validText = this.findMatchtingElementText( item );
-        this.consoleClick( 'getClickInfo1 - validText' , validText );
+        this._consoleClick( '_getClickInfo1 - validText' , validText );
         validText = this._getValidCountFromClickItem( item, validText );
-        this.consoleClick( 'getClickInfo2 - validText' , validText );
+        this._consoleClick( '_getClickInfo2 - validText' , validText );
         let clickInfo = {
             isAltClick : e.altKey,
             isShfitClick : e.shiftKey,
             isCtrlClick : e.ctrlKey,
             validText : validText,
         };
-        this.consoleClick( 'getClickInfo - clickInfo' , clickInfo );
+        this._consoleClick( '_getClickInfo - clickInfo' , clickInfo );
 
 
         return clickInfo;
@@ -1818,9 +1799,9 @@ public componentDidUpdate(prevProps){
     //This function works great for Pivots, not neccessarily anything with icons.
     public _onSearchForMetaCmd0 = (item): void => {
         let e: any = event;
-        let clickInfo = this.getClickInfo( e, item );
+        let clickInfo = this._getClickInfo( e, item );
         if ( clickInfo.isAltClick === '!Value' ) {
-            this.changeRefinerOrder('refiner0', clickInfo.validText ) ;
+            this._changeRefinerOrder('refiner0', clickInfo.validText ) ;
         } else {
             this.searchForItems( this.state.searchText, [clickInfo.validText], 0, 'meta' );
         }
@@ -1832,9 +1813,9 @@ public componentDidUpdate(prevProps){
 
     public _onSearchForMetaCmd1= (item): void => {
         let e: any = event;
-        let clickInfo = this.getClickInfo( e, item );
+        let clickInfo = this._getClickInfo( e, item );
         if ( clickInfo.isAltClick === '!Value' ) {
-            this.changeRefinerOrder('refiner1', clickInfo.validText ) ;
+            this._changeRefinerOrder('refiner1', clickInfo.validText ) ;
         } else {
             this._onSearchForMeta1(clickInfo.validText);
         }
@@ -1866,9 +1847,9 @@ public componentDidUpdate(prevProps){
 
     public _onSearchForMetaCmd2= (item): void => {
         let e: any = event;
-        let clickInfo = this.getClickInfo( e, item );
+        let clickInfo = this._getClickInfo( e, item );
         if ( clickInfo.isAltClick === '!Value' ) {
-            this.changeRefinerOrder('refiner2', clickInfo.validText ) ;
+            this._changeRefinerOrder('refiner2', clickInfo.validText ) ;
         } else {
             this._onSearchForMeta2(clickInfo.validText);
         }
@@ -1894,19 +1875,19 @@ public componentDidUpdate(prevProps){
     this.searchForItems( this.state.searchText, newMeta, 2, 'meta' );
   }
 
-    private changeRefinerOrder1() { 
+    private _changeRefinerOrder1() { 
         let e: any = event;
-        let clickInfo = this.getClickInfo( e, null );
-        this.changeRefinerOrder( 'refiner1', clickInfo );
+        let clickInfo = this._getClickInfo( e, null );
+        this._changeRefinerOrder( 'refiner1', clickInfo );
     }
 
-    private changeRefinerOrder2() {
+    private _changeRefinerOrder2() {
         let e: any = event;
-        let clickInfo = this.getClickInfo( e, null );
-        this.changeRefinerOrder( 'refiner2', clickInfo );  
+        let clickInfo = this._getClickInfo( e, null );
+        this._changeRefinerOrder( 'refiner2', clickInfo );  
     }
 
-  private changeRefinerOrder( newLeadRefiner: string, clickInfo ) {
+  private _changeRefinerOrder( newLeadRefiner: string, clickInfo ) {
 
     let refiners: string[] = [];
     let refinersOrig: string[] = JSON.parse(JSON.stringify( this.state.refiners ));
@@ -1930,7 +1911,7 @@ public componentDidUpdate(prevProps){
 
     let stateRefinerInstructions: string[] = [];
 
-    this.consoleClick( 'changeRefinerOrder - newOrder' , newOrder );
+    this._consoleClick( 'changeRefinerOrder - newOrder' , newOrder );
     
     newOrder.map( i => { 
         refiners.push( refinersOrig[i] );
@@ -1938,7 +1919,7 @@ public componentDidUpdate(prevProps){
         stateRefinerInstructions.push( `${this.state.drillList.refinerInstructions[i]}` ); // Put this in quotes to insure it is not a direct pointer to the current drillList instructions
     });
 
-    this.consoleClick( 'changeRefinerOrder - refiners', refiners );
+    this._consoleClick( 'changeRefinerOrder - refiners', refiners );
 
     /**
      * 2022-01-17:  Added this to see if this gets mutated and breaks on refresh items.  
@@ -1953,7 +1934,7 @@ public componentDidUpdate(prevProps){
     let errMessage = drillList.refinerRules === undefined ? 'Invalid Rule set: ' +  this.state.rules : '';
     if ( drillList.refinerRules === undefined ) { drillList.refinerRules = [[],[],[]] ; }
 
-    processAllItems( this.state.allItems, errMessage, drillList, this.addTheseItemsToState.bind(this), this.setProgress.bind(this), null );
+    processAllItems( this.state.allItems, errMessage, drillList, this._addTheseItemsToState.bind(this), this._setProgress.bind(this), null );
 
   }
 
@@ -2047,8 +2028,8 @@ public componentDidUpdate(prevProps){
         let refinerMulit = refinerTreeObj.multiTree;
         let sendCount = refinerCount;
 
-        pivotCats.push ( refinerTree[0].map( r => { return this.createThisPivotCat(r,'',0); })); // Recreate first layer of pivots
-        cmdCats.push ( this.convertRefinersToCMDs( newMeta, refinerTree[0], sendCount[0], layer, 0, refinerObj ));
+        pivotCats.push ( refinerTree[0].map( r => { return this._createThisPivotCat(r,'',0); })); // Recreate first layer of pivots
+        cmdCats.push ( this._convertRefinersToCMDs( newMeta, refinerTree[0], sendCount[0], layer, 0, refinerObj ));
 
         if ( newMeta.length === 1 && newMeta[0] === 'All'){  //For some reason this was giving False when it should be true: if ( newMeta === ['All'] ) { }
             //Nothing is needed.
@@ -2060,13 +2041,13 @@ public componentDidUpdate(prevProps){
         } else { // Add new layer
 
             if ( refinerTree.length > 1 ) { 
-                pivotCats.push ( refinerTree[1].map( r => { return this.createThisPivotCat(r,'',0); })); // Recreate first layer of pivots
-                cmdCats.push ( this.convertRefinersToCMDs( newMeta, refinerTree[1], sendCount[1], layer, 1, refinerObj));
+                pivotCats.push ( refinerTree[1].map( r => { return this._createThisPivotCat(r,'',0); })); // Recreate first layer of pivots
+                cmdCats.push ( this._convertRefinersToCMDs( newMeta, refinerTree[1], sendCount[1], layer, 1, refinerObj));
             }
 
             if ( refinerTree.length > 2 ) {
-                pivotCats.push ( refinerTree[2].map( r => { return this.createThisPivotCat(r,'',0); })); // Recreate first layer of pivots
-                cmdCats.push ( this.convertRefinersToCMDs( newMeta, refinerTree[2], sendCount[2], layer, 2, refinerObj));
+                pivotCats.push ( refinerTree[2].map( r => { return this._createThisPivotCat(r,'',0); })); // Recreate first layer of pivots
+                cmdCats.push ( this._convertRefinersToCMDs( newMeta, refinerTree[2], sendCount[2], layer, 2, refinerObj));
             }
         }
     } else {
@@ -2079,9 +2060,9 @@ public componentDidUpdate(prevProps){
         refinerObj = buildRefinersObject(newFilteredItems, this.state.drillList );
         pivotCats = [];
         cmdCats = [];
-        pivotCats.push ( refinerObj.childrenKeys.map( r => { return this.createThisPivotCat(r,'',0); }));
+        pivotCats.push ( refinerObj.childrenKeys.map( r => { return this._createThisPivotCat(r,'',0); }));
         let countTree: number[] = this.state.refinerObj.childrenObjs.map( o => { return o.itemCount; }) ;
-        cmdCats.push ( this.convertRefinersToCMDs( ['All'],  refinerObj.childrenKeys, countTree, 0 , 0 , refinerObj) );
+        cmdCats.push ( this._convertRefinersToCMDs( ['All'],  refinerObj.childrenKeys, countTree, 0 , 0 , refinerObj) );
     }
 
     if ( this.props.toggles.togOtherListview === true ) {
@@ -2138,7 +2119,7 @@ public componentDidUpdate(prevProps){
 
     consoleMe( 'searchForItems2: ' + text , this.state.allItems, this.state.drillList );
     consoleRef( 'searchForItems2: ' + text , refinerObj );
-    this.consoleClick('searchForItems2: cmdCats', cmdCats );
+    this._consoleClick('searchForItems2: cmdCats', cmdCats );
     this.setState({
       searchedItems: newFilteredItems,
       searchCount: searchCount,
@@ -2200,7 +2181,7 @@ public componentDidUpdate(prevProps){
     * @param label : longer label used in Progress Indicator and hover card
     * @param description 
     */
-   private setProgress(progressHidden: boolean, page: 'E' | 'C' | 'V' | 'I', current: number , ofThese: number, color: string, icon: string, logLabel: string, label: string, description: string, ref: string = null ){
+   private _setProgress(progressHidden: boolean, page: 'E' | 'C' | 'V' | 'I', current: number , ofThese: number, color: string, icon: string, logLabel: string, label: string, description: string, ref: string = null ){
     let thisTime = new Date().toLocaleTimeString();
     const percentComplete = ofThese !== 0 ? current/ofThese : 0;
 
@@ -2248,7 +2229,7 @@ public componentDidUpdate(prevProps){
 
         consoleMe( '_reloadOnUpdate' , this.state.allItems, this.state.drillList );
 
-        this.getAllItemsCall( viewDefs, this.state.refiners );
+        this._getAllItemsCall( viewDefs, this.state.refiners );
 
         let delay = hasError === true ? 10000 : this.state.quickCommands.successBanner;
 
@@ -2264,7 +2245,7 @@ public componentDidUpdate(prevProps){
          * After deeper testing, adding this to getBestFitView solved it but that was getting called a lot so I'm just doing it once in the render
          */
         let viewDefs: ICustViewDef[] = JSON.parse(JSON.stringify(this.props.viewDefs));
-        this.getAllItemsCall( viewDefs, this.props.refiners );
+        this._getAllItemsCall( viewDefs, this.props.refiners );
     }
 
     /**
@@ -2274,7 +2255,7 @@ public componentDidUpdate(prevProps){
      * @param layer  - this is the layer that was clicked on?
      * @param refLayer - this is the layer of this particular control
      */
-    private convertRefinersToCMDs( newMeta: string[], refiners: string[], thisCount: number[], layer: number, refLayer: number, refinerObj: IRefinerLayer ) {
+    private _convertRefinersToCMDs( newMeta: string[], refiners: string[], thisCount: number[], layer: number, refLayer: number, refinerObj: IRefinerLayer ) {
         let result = [];
 
         //Get sum of array of numbers:  https://codeburst.io/javascript-arrays-finding-the-minimum-maximum-sum-average-values-f02f1b0ce332
@@ -2363,20 +2344,20 @@ public componentDidUpdate(prevProps){
           onLinkClick= { onLinkClick }  //{this.specialClick.bind(this)}
           selectedKey={ setPivot }
           headersOnly={true}>
-            {this.getRefinerPivots(layer)}
+            {this._getRefinerPivots(layer)}
         </Pivot>;
         return pivotWeb;
       }
 
-      private getRefinerPivots(layer) {
+      private _getRefinerPivots(layer) {
 
         let thesePivots = [ ];
         if ( this.state.pivotCats.length === 0 ) {
-            thesePivots = [this.buildFilterPivot( pivCats.all )];
+            thesePivots = [this._buildFilterPivot( pivCats.all )];
         } else  {
-            thesePivots = [this.buildFilterPivot( pivCats.all )];
+            thesePivots = [this._buildFilterPivot( pivCats.all )];
             if ( layer <= this.state.pivotCats.length - 1 ) {
-                thesePivots = thesePivots.concat(this.state.pivotCats[layer].map( pC => { return this.buildFilterPivot( pC ) ; }) ) ;
+                thesePivots = thesePivots.concat(this.state.pivotCats[layer].map( pC => { return this._buildFilterPivot( pC ) ; }) ) ;
             }
 
         }
@@ -2385,7 +2366,7 @@ public componentDidUpdate(prevProps){
 
       }
 
-    private buildFilterPivot(pivCat: IMyPivCat) {
+    private _buildFilterPivot(pivCat: IMyPivCat) {
 
         if ( pivCat === undefined || pivCat === null ) {
             let p = <PivotItem 
@@ -2420,30 +2401,30 @@ public componentDidUpdate(prevProps){
  *                                                                   
  */
 
-    private togglePropsHelp(){
+    private _togglePropsHelp(){
         let newState = this.state.showPropsHelp === true ? false : true;
         this.setState( { showPropsHelp: newState });
 
     }
-    private hideInstructions(){
+    private _hideInstructions(){
         let newState = this.state.whenToShowItems === 0 ? this.props.showItems.whenToShowItems : 0;
         this.setState( { whenToShowItems: newState, instructionsHidden: 'hide' });
 
     }
 
-    private forceInstructions(){
+    private _forceInstructions(){
         let newState = this.state.whenToShowItems === 0 ? this.props.showItems.whenToShowItems : 0;
         this.setState( { whenToShowItems: newState, instructionsHidden: 'force' });
 
     }
 
-    private getPageToggles( showStats ) {
+    private _getPageToggles( showStats ) {
 
         let togRefinerCounts = {
             //label: <span style={{ color: 'red', fontWeight: 900}}>Rails Off!</span>,
             label: <span>Refiner Counts</span>,
             key: 'togggleCount',
-            _onChange: this.updateRefinerCount.bind(this),
+            _onChange: this._updateRefinerCount.bind(this),
             checked: this.state.showRefinerCounts === true ? true : false,
             onText: '',
             offText: '',
@@ -2455,7 +2436,7 @@ public componentDidUpdate(prevProps){
             //label: <span style={{ color: 'red', fontWeight: 900}}>Rails Off!</span>,
             label: <span>Count Charts</span>,
             key: 'togggleCountChart',
-            _onChange: this.updateTogggleCountChart.bind(this),
+            _onChange: this._updateTogggleCountChart.bind(this),
             checked: this.state.showCountChart === true ? true : false,
             onText: '',
             offText: '',
@@ -2467,7 +2448,7 @@ public componentDidUpdate(prevProps){
             //label: <span style={{ color: 'red', fontWeight: 900}}>Rails Off!</span>,
             label: <span>Stat Charts</span>,
             key: 'togggleStats',
-            _onChange: this.updateTogggleStats.bind(this),
+            _onChange: this._updateTogggleStats.bind(this),
             checked: this.state.showStats === true ? true : false,
             onText: '',
             offText: '',
@@ -2479,7 +2460,7 @@ public componentDidUpdate(prevProps){
             //label: <span style={{ color: 'red', fontWeight: 900}}>Rails Off!</span>,
             label: <span>Style</span>,
             key: 'togggleRefinerStyle',
-            _onChange: this.updateTogggleRefinerStyle.bind(this),
+            _onChange: this._updateTogggleRefinerStyle.bind(this),
             checked: this.state.style === 'pivot' ? true : false,
             onText: 'Pivot',
             offText: 'CommandBar',
@@ -2513,26 +2494,26 @@ public componentDidUpdate(prevProps){
 
     }
 
-    private updateTogggleCountChart() {
+    private _updateTogggleCountChart() {
         this.setState({
             showCountChart: !this.state.showCountChart,
           });
     }
 
     
-    private updateTogggleStats() {
+    private _updateTogggleStats() {
         this.setState({
             showStats: !this.state.showStats,
           });
     }
 
-    private updateRefinerCount() {
+    private _updateRefinerCount() {
         this.setState({
             showRefinerCounts: !this.state.showRefinerCounts,
           });
     }
 
-    private updateTogggleView() {
+    private _updateTogggleView() {
 
         let viewType : IViewType = 'MZ';
         if (this.state.viewType === 'MZ') { viewType = 'React'; }
@@ -2541,7 +2522,7 @@ public componentDidUpdate(prevProps){
         });
     }
 
-    private updateTogggleRefinerStyle() {
+    private _updateTogggleRefinerStyle() {
 
         let newStyle : IRefinerStyles = null;
 
@@ -2568,7 +2549,7 @@ public componentDidUpdate(prevProps){
       } //End toggleTips  
 
       
-    private consoleClick( location: string, info: any ) {
+    private _consoleClick( location: string, info: any ) {
 
         return; //Not needed for now.
 

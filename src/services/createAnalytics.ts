@@ -31,7 +31,9 @@ export function saveAnalytics (theProps,theState) {
         let endTime = theState.endTime;
 
         //Updated Jan 5, 2020 per https://pnp.github.io/pnpjs/getting-started/
-        const web = Web(theProps.analyticsWeb);spfi( theProps.analyticsWeb ).using(SPFx(this.context));
+
+        let sp = spfi(theProps.analyticsWeb);
+        let web = sp.web;
 
         const delta = endTime.now - startTime.now;
         //alert(delta);
@@ -99,7 +101,8 @@ export function saveAnalyticsX (theTime) {
     let currentTime = theTime;
     
     //Updated Jan 5, 2020 per https://pnp.github.io/pnpjs/getting-started/
-    const web = Web('https://mcclickster.sharepoint.com/sites/Templates/SiteAudit/');
+    let sp = spfi('https://mcclickster.sharepoint.com/sites/Templates/SiteAudit/');
+    let web = sp.web;
 
     web.lists.getByTitle(analyticsList).items.add({
         'Title': 'Pivot-Tiles x1asdf',
