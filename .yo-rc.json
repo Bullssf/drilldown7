@@ -2,7 +2,7 @@
   "@microsoft/generator-sharepoint": {
     "isCreatingSolution": false,
     "environment": "spo",
-    "version": "1.11.0",
+    "version": "1.14.0",
     "libraryName": "drilldown-7",
     "libraryId": "bdcf72e6-9215-4cba-9b02-892e5eab42f8",
     "packageManager": "npm",

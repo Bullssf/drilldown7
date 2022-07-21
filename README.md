@@ -75,6 +75,16 @@ Clone project in github desktop - as folder drilldown714
 Delete package-lock.json
 Update dependancies from ALVFinMan - v14 project that works
 
+npm install
+npm install @pnp/sp @pnp/graph --save
+npm install @pnp/spfx-controls-react --save --save-exact
+npm install @pnp/spfx-property-controls
+npm install webpack-bundle-analyzer --save-dev
+
+
+
+
+
 npm install @pnp/logging @pnp/common @pnp/odata @pnp/sp --save
 npm install @pnp/sp
 npm install @pnp/spfx-controls-react --save --save-exact

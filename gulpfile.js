@@ -28,5 +28,4 @@ build.configureWebpack.mergeConfig({
   }
 });
 
-
 build.initialize(require('gulp'));
