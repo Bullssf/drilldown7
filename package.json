@@ -21,19 +21,16 @@
     "@pnp/spfx-controls-react": "3.7.2",
     "@pnp/spfx-property-controls": "3.6.0",
     "office-ui-fabric-react": "7.174.1",
-
     "@pnp/common": "^2.11.0",
     "@pnp/graph": "^2.0.10",
     "@pnp/logging": "^2.11.0",
     "@pnp/odata": "^2.11.0",
     "@pnp/sp": "^2.11.0",
-
     "react": "16.13.1",
     "react-dom": "16.13.1",
     "react-json-view": "^1.21.3"
   },
   "devDependencies": {
-
     "@types/react": "16.9.51",
     "@types/react-dom": "16.9.8",
     "@microsoft/sp-build-web": "1.14.0",
@@ -43,12 +40,9 @@
     "gulp": "~4.0.2",
     "ajv": "~5.2.2",
     "@types/webpack-env": "1.13.1",
-
     "@types/chai": "3.4.34",
     "@types/es6-promise": "0.0.33",
     "@types/mocha": "2.2.38",
-
     "webpack-bundle-analyzer": "^3.9.0"
-
   }
 }
