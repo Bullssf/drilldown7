@@ -78,7 +78,7 @@ Update dependancies from ALVFinMan - v14 project that works
 npm install
 npm install @pnp/sp @pnp/graph --save
 npm install @pnp/spfx-controls-react --save --save-exact
-npm install @pnp/spfx-property-controls
+npm install @pnp/spfx-property-controls --save --save-exact
 npm install webpack-bundle-analyzer --save-dev
 
 
