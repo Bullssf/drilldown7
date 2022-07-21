@@ -68,6 +68,24 @@ After installing webpack analyzer, be sure to update the gulpfile.js so it actua
 
 ---
 
+
+## v1.11-14 upgrade
+```
+Clone project in github desktop - as folder drilldown714
+Delete package-lock.json
+Update dependancies from ALVFinMan - v14 project that works
+
+npm install @pnp/logging @pnp/common @pnp/odata @pnp/sp --save
+npm install @pnp/sp
+npm install @pnp/spfx-controls-react --save --save-exact
+npm install webpack-bundle-analyzer --save-dev
+
+After installing webpack analyzer, be sure to update the gulpfile.js so it actually builds the map.
+
+---
+
+
+
 ## Minimal Path to Awesome
 
 - Clone this repository
