@@ -20,7 +20,7 @@ import {
   
   import * as links from '@mikezimm/npmfunctions/dist/Links/LinksRepos';   //              { links.gitRepoDrilldown7WebPart.issues }
   
-  import { IDrilldown7WebPartProps } from '../../webparts/drilldown7/Drilldown7WebPart';
+  import { IDrilldown7WebPartProps } from '../../webparts/drilldown7/IDrilldown7WebPartProps';
   
   import { buildKeyText, refinerRuleItems } from '@mikezimm/npmfunctions/dist/Refiners/functions';
   /*

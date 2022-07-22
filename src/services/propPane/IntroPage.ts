@@ -23,7 +23,7 @@ import { pivotOptionsGroup} from './index';
 import { FPSOptionsGroup, FPSBanner2Group } from '@mikezimm/npmfunctions/dist/Services/PropPane/FPSOptionsGroup';
 import * as links from '@mikezimm/npmfunctions/dist/Links/LinksRepos';   //              { links.gitRepoDrilldown7WebPart.issues }
 import { createLink } from '@mikezimm/npmfunctions/dist/Links/CreateLinks';
-import { IDrilldown7WebPartProps } from '../../webparts/drilldown7/Drilldown7WebPart';
+import { IDrilldown7WebPartProps } from '../../webparts/drilldown7/IDrilldown7WebPartProps';
 
 import { buildKeyText, refinerRuleItems } from '@mikezimm/npmfunctions/dist/Refiners/functions';
 

@@ -80,7 +80,8 @@ export function getAppropriateViewFields ( OrigViewDefs: ICustViewDef[], current
 
     if ( viewDefs ) {
 
-        result = getBestFitView( viewDefs, currentWidth ).viewFields;
+        let viewFields: any[] = getBestFitView( viewDefs, currentWidth ).viewFields ;
+        result = viewFields as IViewField[];
     
         let avgWidth = result.length > 0 ? currentWidth/result.length : 100;
         let completeResult = result.map( f => {
