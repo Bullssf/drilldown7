@@ -1,13 +1,6 @@
 import * as React from 'react';
 
-import styles from '../banner/SinglePage/InfoPane.module.scss';
-
-//import { IHelpTableRow, IHelpTable, IPageContent, ISinglePageProps } from '../Component/ISinglePageProps';
-import { IHelpTableRow, IHelpTable, IPageContent, ISinglePageProps } from '../banner/SinglePage/ISinglePageProps';
-
 import { IRepoLinks } from '@mikezimm/npmfunctions/dist/Links/CreateLinks';
-
-import { convertIssuesMarkdownStringToSpan } from '@mikezimm/npmfunctions/dist/Elements/Markdown';
 
 export function errorsContent( repoLinks: IRepoLinks ) {
 
@@ -31,7 +24,7 @@ export function errorsContent( repoLinks: IRepoLinks ) {
 
     thisPage = <div>
         <h2></h2>
-        <table className={styles.infoTable} style={{ width: '100%' }}>
+        <table className={ 'single-page-info-table' } style={{ width: '100%' }}>
             <tr><th style={{ minWidth: '200px' }}>Issue</th><th>Links</th><th>Notes</th></tr>
             { messageRows }
         </table>
@@ -49,7 +42,7 @@ export function errorsContent( repoLinks: IRepoLinks ) {
 */
 
     let html1 =
-        <div className={ styles.infoPane }>
+        <div className={ 'single-page-info-pane' }>
             { thisPage }
         </div>;
         

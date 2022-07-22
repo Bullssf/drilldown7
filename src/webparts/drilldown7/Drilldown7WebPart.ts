@@ -6,6 +6,10 @@ import {
   PropertyPaneTextField
 } from '@microsoft/sp-property-pane';
 import { BaseClientSideWebPart } from '@microsoft/sp-webpart-base';
+import {   
+  ThemeProvider,
+  ThemeChangedEventArgs,
+  IReadonlyTheme } from '@microsoft/sp-component-base';
 
 import { Web, IList, IItem } from "@pnp/sp/presets/all";
 
@@ -14,21 +18,60 @@ import DrillDown from './components/Drill/drillComponent';
 import { IDrillDownProps, IWhenToShowItems } from './components/Drill/drillComponent';
 import { consoleRef } from './components/Drill/drillFunctions';
 
-import { PageContext } from '@microsoft/sp-page-context';
-
 import { makeTheTimeObject } from '@mikezimm/npmfunctions/dist/Services/Time/timeObject';
 
 import * as links from '@mikezimm/npmfunctions/dist/Links/LinksRepos';
 
 require('../../services/GrayPropPaneAccordions.css');
+export const repoLink: IRepoLinks = links.gitRepoDrillDownSmall;
+
+import { _LinkIsValid } from '@mikezimm/npmfunctions/dist/Links/AllLinks';
+
+import { importProps, } from '@mikezimm/npmfunctions/dist/Services/PropPane/ImportFunctions';
+
+import { sortStringArray, sortObjectArrayByStringKey, sortNumberArray, sortObjectArrayByNumberKey, sortKeysByOtherKey 
+} from '@mikezimm/npmfunctions/dist/Services/Arrays/sorting';
+
+import { IBuildBannerSettings , buildBannerProps, IMinWPBannerProps } from '@mikezimm/npmfunctions/dist/HelpPanelOnNPM/onNpm/BannerSetup';
+
+import { buildExportProps, buildFPSAnalyticsProps } from './BuildExportProps';
+
+import { setExpandoRamicMode } from '@mikezimm/npmfunctions/dist/Services/DOM/FPSExpandoramic';
+import { getUrlVars } from '@mikezimm/npmfunctions/dist/Services/Logging/LogFunctions';
+
+//encodeDecodeString(this.props.libraryPicker, 'decode')
+import { encodeDecodeString, } from "@mikezimm/npmfunctions/dist/Services/Strings/urlServices";
+
+import { verifyAudienceVsUser } from '@mikezimm/npmfunctions/dist/Services/Users/CheckPermissions';
+
+import { bannerThemes, bannerThemeKeys, makeCSSPropPaneString, createBannerStyleStr, createBannerStyleObj } from '@mikezimm/npmfunctions/dist/HelpPanelOnNPM/onNpm/defaults';
+
+import { IRepoLinks } from '@mikezimm/npmfunctions/dist/Links/CreateLinks';
+
+import { IWebpartHistory, IWebpartHistoryItem2 } from '@mikezimm/npmfunctions/dist/Services/PropPane/WebPartHistoryInterface';
+import { createWebpartHistory, ITrimThis, updateWebpartHistory, upgradeV1History } from '@mikezimm/npmfunctions/dist/Services/PropPane/WebPartHistoryFunctions';
+
+import { saveAnalytics3 } from '@mikezimm/npmfunctions/dist/Services/Analytics/analytics2';
+import { IZLoadAnalytics, IZSentAnalytics, } from '@mikezimm/npmfunctions/dist/Services/Analytics/interfaces';
+
+import { getSiteInfo, getWebInfoIncludingUnique } from '@mikezimm/npmfunctions/dist/Services/Sites/getSiteInfo';
+import { IFPSUser } from '@mikezimm/npmfunctions/dist/Services/Users/IUserInterfaces';
+import { getFPSUser } from '@mikezimm/npmfunctions/dist/Services/Users/FPSUser';
 
 import { createStyleFromString, getReactCSSFromString, ICurleyBraceCheck } from '@mikezimm/npmfunctions/dist/Services/PropPane/StringToReactCSS';
-import { IWebpartBannerProps, IWebpartBannerState } from './components/HelpPanel/banner/onNpm/bannerProps';
+import { IWebpartBannerProps } from '@mikezimm/npmfunctions/dist/HelpPanelOnNPM/onNpm/bannerProps';
 
-import { setPageFormatting } from '@mikezimm/npmfunctions/dist/Services/DOM/FPSFormatFunctions';
-import { IFPSPage } from '@mikezimm/npmfunctions/dist/Services/DOM/FPSInterfaces';
+import { setPageFormatting, } from '@mikezimm/npmfunctions/dist/Services/DOM/FPSFormatFunctions';
 
+import { IFPSPage, } from '@mikezimm/npmfunctions/dist/Services/DOM/FPSInterfaces';
+import { createFPSWindowProps, initializeFPSSection, initializeFPSPage, webpartInstance, initializeMinimalStyle } from '@mikezimm/npmfunctions/dist/Services/DOM/FPSDocument';
+import { IFPSWindowProps, IFPSSection, IFPSSectionStyle } from '@mikezimm/npmfunctions/dist/Services/DOM/FPSInterfaces';
+import { setSectionStyles } from '@mikezimm/npmfunctions/dist/Services/DOM/setAllSectionStyles';
+import { minimizeHeader } from '@mikezimm/npmfunctions/dist/Services/DOM/minimzeHeader';
+import { minimizeToolbar } from '@mikezimm/npmfunctions/dist/Services/DOM/minimzeToolbar';
 import { minimizeQuickLaunch } from '@mikezimm/npmfunctions/dist/Services/DOM/quickLaunch';
+
+import { replaceHandleBars } from '@mikezimm/npmfunctions/dist/Services/Strings/handleBars';
 
 //Checks
 import { doesObjectExistInArrayInt, doesObjectExistInArray, compareArrays, getKeySummary, getKeyChanges
@@ -43,7 +86,6 @@ import { getAllItems } from '../../services/propPane/PropPaneFunctions';
 
 import { IMyProgress,  ICSSChartDD } from './components/IReUsableInterfaces';
 
-
 import { IListViewDDDrillDown } from '@mikezimm/npmfunctions/dist/Views/IDrillViews';
 import { ICustViewDef, } from '@mikezimm/npmfunctions/dist/Views/IListViews';
 
@@ -52,154 +94,31 @@ import { IQuickButton, IQuickCommands, IQuickField } from '@mikezimm/npmfunction
 import { IRefinerLayer, IRefiners, IItemRefiners, IRefinerStats, RefineRuleValues,
   IRefinerRules, IRefinerStatType, RefinerStatTypes, IRefinerStat } from '@mikezimm/npmfunctions/dist/Refiners/IRefiners';
 
+  import { visitorPanelInfo } from './components/VisitorPanel/PanelComponent';
+
+import { exportIgnoreProps, importBlockProps, } from './IDrilldown7WebPartProps';
+import { css } from 'office-ui-fabric-react';
+import { PreConfiguredProps } from './PreConfiguredSettings';
+import { getThisSitesPreConfigProps, IConfigurationProp, ISitePreConfigProps, IPreConfigSettings, IAllPreConfigSettings } from '@mikezimm/npmfunctions/dist/PropPaneHelp/PreConfigFunctions';
+
 /**
  * DD Provider: Step 1 - import from sp-dynamic-data
  */
 import { IDynamicDataCallables, IDynamicDataPropertyDefinition} from '@microsoft/sp-dynamic-data';
 
 import { IGrouping, IViewField } from "@pnp/spfx-controls-react/lib/ListView";
+import { IDrilldown7WebPartProps } from './IDrilldown7WebPartProps';
 
-import { ICssChartProps } from '../cssChart/components/ICssChartProps';
 
 require('../../services/propPane/GrayPropPaneAccordions.css');
-
-export interface IDrilldown7WebPartProps {
-
-  description: string;
-
-  // 0 - Context
-  pageContext: PageContext;
-
-
-  // 1 - Analytics options
-  useListAnalytics: boolean;
-  analyticsWeb?: string;
-  analyticsList?: string;
-  stressMultiplier?: number;
-
-  
-    
-  //General settings for Banner Options group
-  // export interface IWebpartBannerProps {
-    bannerTitle: string;
-    bannerStyle: string;
-    showBanner: boolean;
-    
-    showGoToHome: boolean;  //defaults to true
-    showGoToParent: boolean;  //defaults to true
-
-    bannerHoverEffect: boolean;
-    showTricks: boolean;
-  // }
-
-  //General settings for FPS Options group
-  searchShow: boolean;
-  fpsPageStyle: string;
-  fpsContainerMaxWidth: string;
-  quickLaunchHide: boolean;
-  showBannerGear: boolean;
-  uniqueId: string;
-
-  // 2 - Source and destination list information
-  createVerifyLists: boolean;
-  parentListTitle: string;
-  parentListWeb: string;
-  parentListURL?: string;
-  hideFolders: boolean;
-  language: string; //local language list data is saved in (needed to properly sort refiners)
-
-  refiner0: string;
-  refiner1: string;
-  refiner2: string;
-
-  rules0def: string;
-  rules1def: string;
-  rules2def: string;
-
-  rules0: string[];
-  rules1: string[];
-  rules2: string[];
-
-  togRefinerCounts: boolean;
-  togCountChart: boolean;
-  togStats: boolean;
-  togOtherListview:  boolean;
-  togOtherChartpart:  boolean;
-  includeListLink: boolean;
-  fetchCount: number;
-  fetchCountMobile: number;
-  restFilter: string;
-
-  showCatCounts: boolean;
-  showSummary: boolean;
-
-  stats: string;
-
-  newMap?: any[];
-
-  showDisabled?: boolean;  //This will show disabled refiners for DaysOfWeek/Months when the day or month has no data
-  updateRefinersOnTextSearch?: boolean;
-
-  parentListFieldTitles: string;
-
-  onlyActiveParents: boolean;
-
-  quickCommands?: string;
-
-  // 3 - General how accurate do you want this to be
-
-  // 4 - Info Options
-
-  // 5 - UI Defaults
-
-  viewWidth1: number;
-  viewWidth2: number;
-  viewWidth3: number;
-
-  viewJSON1: string;
-  viewJSON2: string;
-  viewJSON3: string;
-
-  includeDetails: boolean;
-  includeAttach: boolean;
-
-  groupByFields: string;
-
-  // 6 - User Feedback:
-  progress: IMyProgress;
-
-  whenToShowItems: IWhenToShowItems;
-  minItemsForHide: number;
-  instructionIntro: string;
-  refinerInstruction1: string;
-  refinerInstruction2: string;
-  refinerInstruction3: string;
-
-
-  // 7 - TBD
-
-  // 9 - Other web part options
-  webPartScenario: string; //DEV, TEAM, CORP
-  definitionToggle: boolean;
-  listDefinition: any; //Picked list defintion :  Title
-
-  advancedPivotStyles: boolean;
-  pivotSize: string;
-  pivotFormat: string;
-  pivotOptions: string;
-  pivotTab: string;
-
-  /**
-   * DD Provider: Step 0 - add this.properties.switches to WebPartProps
-   */
-  cssChartProps?: ICssChartProps;
-  listProps?: any;
-}
 
   /**
    * DD Provider: Step 2 - add impliments IDynamicDataCallables
    */
 export default class Drilldown7WebPart extends BaseClientSideWebPart<IDrilldown7WebPartProps>  implements IDynamicDataCallables {
+
+  private _isDarkTheme: boolean = false;
+  private _environmentMessage: string = '';
 
     /**
    * DD Provider: Step 6 - (9:51) add _selectedSwitch to be the placeholder for what was selected
@@ -220,11 +139,56 @@ export default class Drilldown7WebPart extends BaseClientSideWebPart<IDrilldown7
   private fpsPageDone: boolean = false;
   private fpsPageArray: any[] = null;
   private minQuickLaunch: boolean = false;
+  private minHideToolbar: boolean = false;
 
   //For FPS Banner
   private forceBanner = true ;
   private modifyBannerTitle = true ;
   private modifyBannerStyle = true ;
+
+  
+  //Common FPS variables
+
+  private sitePresets : ISitePreConfigProps = null;
+
+  private _unqiueId;
+  private validDocsContacts: string = '';
+
+  private trickyApp = 'FPS PageInfo';
+  private wpInstanceID: any = webpartInstance( this.trickyApp );
+
+  private FPSUser: IFPSUser = null;
+
+  private urlParameters: any = {};
+
+  private  expandoDefault = false;
+  private filesList: any = [];
+
+  private exitPropPaneChanged = false;
+
+  private expandoErrorObj = {
+
+  };
+
+  //ADDED FOR WEBPART HISTORY:  
+  private thisHistoryInstance: IWebpartHistoryItem2 = null;
+
+  private importErrorMessage = '';
+    
+  // private performance : ILoadPerformanceALVFM = null;
+  private bannerProps: IWebpartBannerProps = null;
+
+  private beAReader: boolean = false; //2022-04-07:  Intent of this is a one-time per instance to 'become a reader' level user.  aka, hide banner buttons that reader won't see
+
+  private _themeProvider: ThemeProvider;
+  private _themeVariant: IReadonlyTheme | undefined;
+
+  private analyticsWasExecuted: boolean = false;
+
+  private _handleThemeChangedEvent(args: ThemeChangedEventArgs): void {
+    this._themeVariant = args.theme;
+    this.render();
+  }
 
 /***
 *          .d88b.  d8b   db d888888b d8b   db d888888b d888888b 
@@ -288,7 +252,113 @@ export default class Drilldown7WebPart extends BaseClientSideWebPart<IDrilldown7
       sp.setup({
         spfxContext: this.context
       });
+
+      
+
+      /***
+     *     .d88b.  d8b   db      d888888b d8b   db d888888b d888888b      d8888b. db   db  .d8b.  .d8888. d88888b      .d888b. 
+     *    .8P  Y8. 888o  88        `88'   888o  88   `88'   `~~88~~'      88  `8D 88   88 d8' `8b 88'  YP 88'          VP  `8D 
+     *    88    88 88V8o 88         88    88V8o 88    88       88         88oodD' 88ooo88 88ooo88 `8bo.   88ooooo         odD' 
+     *    88    88 88 V8o88         88    88 V8o88    88       88         88~~~   88~~~88 88~~~88   `Y8b. 88~~~~~       .88'   
+     *    `8b  d8' 88  V888        .88.   88  V888   .88.      88         88      88   88 88   88 db   8D 88.          j88.    
+     *     `Y88P'  VP   V8P      Y888888P VP   V8P Y888888P    YP         88      YP   YP YP   YP `8888Y' Y88888P      888888D 
+     *                                                                                                                         
+     *                                                                                                                         
+     */
+
+      //NEED TO APPLY THIS HERE as well as follow-up in render for it to not visibly change
+      this.presetCollectionDefaults();
+
+      this.properties.pageLayout =  this.context['_pageLayoutType']?this.context['_pageLayoutType'] : this.context['_pageLayoutType'];
+
+      // DEFAULTS SECTION:  Performance   <<< ================================================================
+      // this.performance = startPerformInit( this.displayMode, false );
+
+      // DEFAULTS SECTION:  FPSUser
+
+
+      // (property) BaseClientSideWebPart<IAlvFinManWebPartProps>.context: WebPartContext
+      // {@inheritDoc @microsoft/sp-component-base#BaseComponent.context}
+
+      // Argument of type 'import("C:/Users/dev/Documents/GitHub/ALVFinMan7/node_modules/@microsoft/sp-webpart-base/dist/index-internal").WebPartContext' is not assignable to parameter of type 'import("C:/Users/dev/Documents/GitHub/ALVFinMan7/node_modules/@mikezimm/npmfunctions/node_modules/@microsoft/sp-webpart-base/dist/index-internal").WebPartContext'.
+      //   Types have separate declarations of a private property '_domElement'.ts(2345)
+      //Typed this.context as any to remove above error
+      this.FPSUser = getFPSUser( this.context as any, links.trickyEmails, this.trickyApp ) ;
+      console.log( 'FPSUser: ', this.FPSUser );
+
+
+      // // DEFAULTS SECTION:  Expandoramic   <<< ================================================================
+      // this.expandoDefault = this.properties.expandoDefault === true && this.properties.enableExpandoramic === true && this.displayMode === DisplayMode.Read ? true : false;
+      // if ( this.urlParameters.Mode === 'Edit' ) { this.expandoDefault = false; }
+      // let expandoStyle: any = {};
+
+      // //2022-04-07:  Could use the function for parsing JSON for this... check npmFunctions
+      // try {
+      //   expandoStyle = JSON.parse( this.properties.expandoStyle );
+
+      // } catch(e) {
+      //   console.log('Unable to expandoStyle: ', this.properties.expandoStyle);
+      // }
+
+      // let padding = this.properties.expandoPadding ? this.properties.expandoPadding : 20;
+      // setExpandoRamicMode( this.context.domElement, this.expandoDefault, expandoStyle,  false, false, padding, this.properties.pageLayout  );
+      this.properties.showRepoLinks = false;
+      this.properties.showExport = false;
+      this.properties.enableExpandoramic = false; //Always hide expandoramic for PageInfo Web Part
+      this.properties.showBanner = true; //Always show banner
+
+      // DEFAULTS SECTION:  Banner   <<< ================================================================
+      //This updates unlocks styles only when bannerStyleChoice === custom.  Rest are locked in the ui.
+      if ( this.properties.bannerStyleChoice === 'custom' ) { this.properties.lockStyles = false ; } else { this.properties.lockStyles = true; }
+
+      if ( this.properties.bannerHoverEffect === undefined ) { this.properties.bannerHoverEffect = false; }
+
+      let defBannerTheme = 'corpDark1';
+      if ( this.context.pageContext.site.serverRelativeUrl.toLowerCase().indexOf( '/sites/lifenet') === 0 ) {
+          defBannerTheme = 'corpWhite1'; }
+
+      if ( !this.properties.bannerStyle ) { this.properties.bannerStyle = createBannerStyleStr( defBannerTheme, 'banner') ; }
+
+      if ( !this.properties.bannerCmdStyle ) { 
+
+        //Adjust the default size down compared to PinMe buttons which are primary functions in the web part
+        let bannerCmdStyle = createBannerStyleStr( defBannerTheme, 'cmd').replace('"fontSize":20,', '"fontSize":16,') ;
+        bannerCmdStyle = bannerCmdStyle.replace('"marginRight":"9px"', '"marginRight":"0px"') ;
+        bannerCmdStyle = bannerCmdStyle.replace('"padding":"7px"', '"padding":"7px 4px"') ;
+
+        this.properties.bannerCmdStyle = bannerCmdStyle;
+
+       }
+
+      // DEFAULTS SECTION:  Panel   <<< ================================================================
+      if ( !this.properties.fullPanelAudience || this.properties.fullPanelAudience.length === 0 ) {
+        this.properties.fullPanelAudience = 'Page Editors';
+      }
+      if ( !this.properties.documentationLinkDesc || this.properties.documentationLinkDesc.length === 0 ) {
+        this.properties.documentationLinkDesc = 'Documentation';
+      }
+
+
+      // DEFAULTS SECTION:  webPartHistory   <<< ================================================================
+      //Preset this on existing installations
+      // if ( this.properties.forceReloadScripts === undefined || this.properties.forceReloadScripts === null ) {
+      //   this.properties.forceReloadScripts = false;
+      // }
+      //ADDED FOR WEBPART HISTORY:  This sets the webpartHistory
+      this.thisHistoryInstance = createWebpartHistory( 'onInit' , 'new', this.context.pageContext.user.displayName );
+      let priorHistory : IWebpartHistoryItem2[] = this.properties.webpartHistory ? upgradeV1History( this.properties.webpartHistory ).history : [];
+      this.properties.webpartHistory = {
+        thisInstance: this.thisHistoryInstance,
+        history: priorHistory,
+      };
+
+      //Have to insure selectedProperties always is an array from AdvancedPagePropertiesWebPart.ts
+      // if ( !this.properties.selectedProperties ) { this.properties.selectedProperties = []; }
+
+      this.renderCustomStyles( false );
+
     });
+    
   }
 
 
@@ -439,62 +509,120 @@ export default class Drilldown7WebPart extends BaseClientSideWebPart<IDrilldown7
 
   public render(): void {
 
-    let errMessage = '';    
+    
     /***
-     *    d8888b.  .d8b.  d8b   db d8b   db d88888b d8888b. 
-     *    88  `8D d8' `8b 888o  88 888o  88 88'     88  `8D 
-     *    88oooY' 88ooo88 88V8o 88 88V8o 88 88ooooo 88oobY' 
-     *    88~~~b. 88~~~88 88 V8o88 88 V8o88 88~~~~~ 88`8b   
-     *    88   8D 88   88 88  V888 88  V888 88.     88 `88. 
-     *    Y8888P' YP   YP VP   V8P VP   V8P Y88888P 88   YD 
-     *                                                      
-     *                                                      
-     */
-
-    let showTricks = false;
-    links.trickyEmails.map( getsTricks => {
-      if ( this.context.pageContext.user.loginName && this.context.pageContext.user.loginName.toLowerCase().indexOf( getsTricks ) > -1 ) { showTricks = true ; }   } ); 
-
-    let bannerTitle = this.modifyBannerTitle === true && this.properties.bannerTitle && this.properties.bannerTitle.length > 0 ? this.properties.bannerTitle : `Drilldown`;
-    let bannerStyle: ICurleyBraceCheck = getReactCSSFromString( 'bannerStyle', this.properties.bannerStyle, {background: "#7777",fontWeight:600, fontSize: 'larger', height: '43px'} );
-    let showBannerGear = this.properties.showBannerGear === false ? false : true;
-    
-    let anyContext: any = this.context;
-    console.log('_pageLayoutType:', anyContext._pageLayoutType );
-    console.log('pageLayoutType:', anyContext.pageLayoutType );
+ *    d8888b. d88888b d8b   db d8888b. d88888b d8888b. 
+ *    88  `8D 88'     888o  88 88  `8D 88'     88  `8D 
+ *    88oobY' 88ooooo 88V8o 88 88   88 88ooooo 88oobY' 
+ *    88`8b   88~~~~~ 88 V8o88 88   88 88~~~~~ 88`8b   
+ *    88 `88. 88.     88  V888 88  .8D 88.     88 `88. 
+ *    88   YD Y88888P VP   V8P Y8888D' Y88888P 88   YD 
+ *                                                     
+ *                                                     
+ */
 
 
-    let bannerProps: IWebpartBannerProps = {
-    
-      pageContext: this.context.pageContext,
-      panelTitle: `Drilldown webpart - ${this.properties.parentListTitle}`,
-      bannerWidth : this.domElement.clientWidth,
-      showBanner: this.forceBanner === true || this.properties.showBanner !== false ? true : false,
-      showTricks: showTricks,
-      showBannerGear: showBannerGear,
-      showGoToHome: this.properties.showGoToHome === false ? false : true,
-      showGoToParent: this.properties.showGoToParent === false ? false : true,
-      // onHomePage: anyContext._pageLayoutType === 'Home' ? true : false,
-      onHomePage: this.context.pageContext.legacyPageContext.isWebWelcomePage === true ? true : false,
-      hoverEffect: this.properties.bannerHoverEffect === false ? false : true,
-      title: bannerStyle.errMessage !== '' ? bannerStyle.errMessage : bannerTitle ,
-      bannerReactCSS: bannerStyle.errMessage === '' ? bannerStyle.parsed : { background: "yellow", color: "red", },
-      gitHubRepo: links.gitRepoDrillDownSmall,
-      farElements: [],
-      nearElements: [],
-      earyAccess: false,
-      wideToggle: true,
+  /***
+   *    d8888b. d88888b d8b   db d8888b. d88888b d8888b.       .o88b.  .d8b.  db      db      .d8888. 
+   *    88  `8D 88'     888o  88 88  `8D 88'     88  `8D      d8P  Y8 d8' `8b 88      88      88'  YP 
+   *    88oobY' 88ooooo 88V8o 88 88   88 88ooooo 88oobY'      8P      88ooo88 88      88      `8bo.   
+   *    88`8b   88~~~~~ 88 V8o88 88   88 88~~~~~ 88`8b        8b      88~~~88 88      88        `Y8b. 
+   *    88 `88. 88.     88  V888 88  .8D 88.     88 `88.      Y8b  d8 88   88 88booo. 88booo. db   8D 
+   *    88   YD Y88888P VP   V8P Y8888D' Y88888P 88   YD       `Y88P' YP   YP Y88888P Y88888P `8888Y' 
+   *                                                                                                  
+   *           Source:   PivotTiles 1.5.2.6                                                                                
+   */
+   this.renderCustomStyles();
 
-    };
-    //close #129:  This makes the maxWidth added in fps options apply to banner as well.
-    if ( this.properties.fpsContainerMaxWidth && this.properties.fpsContainerMaxWidth.length > 0 ) {
-      bannerProps.bannerReactCSS.maxWidth = this.properties.fpsContainerMaxWidth;
-    }
+   //Preset infoElement to question mark circle for this particular web part if it's not specificed - due to pin icon being important and usage in pinned location
+   if ( !this.properties.infoElementChoice ) { this.properties.infoElementChoice = 'IconName=Unknown'; }  //May not be normally needed if in the presets
+   if ( !this.properties.infoElementText ) { this.properties.infoElementText = 'Question mark circle'; }  //May not be normally needed if in the presets
+
+   this._unqiueId = this.context.instanceId;
+
+   // quickRefresh is used for SecureScript for when caching html file.  <<< ================================================================
+   let renderAsReader = this.displayMode === DisplayMode.Read && this.beAReader === true ? true : false;
+
+   // if ( this.properties.documentationIsValid !== true ) { errMessage += ' Invalid Support Doc Link: ' + ( this.properties.documentationLinkUrl ? this.properties.documentationLinkUrl : 'Empty.  ' ) ; this.validDocsContacts += 'DocLink,'; }
+   // if ( !this.properties.supportContacts || this.properties.supportContacts.length < 1 ) { errMessage += ' Need valid Support Contacts' ; this.validDocsContacts += 'Contacts,'; }
+
+   let errorObjArray :  any[] =[];
+
+    let errMessage = '';    
+
+    /***
+      *    d8888b.  .d8b.  d8b   db d8b   db d88888b d8888b. 
+      *    88  `8D d8' `8b 888o  88 888o  88 88'     88  `8D 
+      *    88oooY' 88ooo88 88V8o 88 88V8o 88 88ooooo 88oobY' 
+      *    88~~~b. 88~~~88 88 V8o88 88 V8o88 88~~~~~ 88`8b   
+      *    88   8D 88   88 88  V888 88  V888 88.     88 `88. 
+      *    Y8888P' YP   YP VP   V8P VP   V8P Y88888P 88   YD 
+      *                                                      
+      *                                                      
+      */
+
+     let replacePanelWarning = `Anyone with lower permissions than '${this.properties.fullPanelAudience}' will ONLY see this content in panel`;
+
+     console.log('mainWebPart: buildBannerSettings ~ 387',   );
+ 
+     let buildBannerSettings : IBuildBannerSettings = {
+ 
+       FPSUser: this.FPSUser,
+       //this. related info
+       context: this.context as any,
+       clientWidth: ( this.domElement.clientWidth - ( this.displayMode === DisplayMode.Edit ? 250 : 0) ),
+       exportProps: buildExportProps( this.properties, this.wpInstanceID, this.context.pageContext.web.serverRelativeUrl ),
+ 
+       //Webpart related info
+       panelTitle: 'FPS Page Info',
+       modifyBannerTitle: this.modifyBannerTitle,
+       repoLinks: repoLink,
+ 
+       //Hard-coded Banner settings on webpart itself
+       forceBanner: this.forceBanner,
+       earyAccess: false,
+       wideToggle: false,
+       expandAlert: false,
+       expandConsole: false,
+ 
+       replacePanelWarning: replacePanelWarning,
+       //Error info
+       errMessage: errMessage,
+       errorObjArray: errorObjArray, //In the case of Pivot Tiles, this is manualLinks[],
+       expandoErrorObj: this.expandoErrorObj,
+ 
+       beAUser: renderAsReader,
+       showBeAUserIcon: false,
+ 
+     };
+ 
+     // console.log('mainWebPart: showTricks ~ 322',   );
+     let showTricks: any = false;
+     links.trickyEmails.map( getsTricks => {
+       if ( this.context.pageContext.user && this.context.pageContext.user.loginName && this.context.pageContext.user.loginName.toLowerCase().indexOf( getsTricks ) > -1 ) { 
+         showTricks = true ;
+         this.properties.showRepoLinks = true; //Always show these users repo links
+       }
+       } );
+ 
+     // console.log('mainWebPart: verifyAudienceVsUser ~ 341',   );
+     this.properties.showBannerGear = verifyAudienceVsUser( this.FPSUser , showTricks, this.properties.homeParentGearAudience, null, renderAsReader );
+ 
+     let bannerSetup = buildBannerProps( this.properties , this.FPSUser, buildBannerSettings, showTricks, renderAsReader, this.displayMode );
+ 
+     errMessage = bannerSetup.errMessage;
+     this.bannerProps = bannerSetup.bannerProps;
+     let expandoErrorObj = bannerSetup.errorObjArray;
+ 
+     this.bannerProps.enableExpandoramic = false; //Hard code this option for FPS PageInfo web part only because of PinMe option
+
+     // console.log('mainWebPart: visitorPanelInfo ~ 405',   );
+     this.properties.replacePanelHTML = visitorPanelInfo( this.properties, );
+ 
+     this.bannerProps.replacePanelHTML = this.properties.replacePanelHTML;
 
 
-    //Used with FPS Options Functions
-    this.setThisPageFormatting( this.properties.fpsPageStyle );
-    this.setQuickLaunch( this.properties.quickLaunchHide );
+
 
 
     //Be sure to always pass down an actual URL if the webpart prop is empty at this point.
@@ -568,7 +696,12 @@ export default class Drilldown7WebPart extends BaseClientSideWebPart<IDrilldown7
         pageContext: this.context.pageContext,
         wpContext: this.context,
         displayMode: this.displayMode,
-        bannerProps: bannerProps,
+        
+        bannerProps: this.bannerProps,
+
+        webpartHistory: this.properties.webpartHistory,
+
+        sitePresets: this.sitePresets,
 
         errMessage: errMessage,
 
@@ -741,47 +874,6 @@ export default class Drilldown7WebPart extends BaseClientSideWebPart<IDrilldown7
 
   protected get dataVersion(): Version {
     return Version.parse('1.0');
-  }
-
-
-  /**
-   * Used with FPS Options Functions
-   * @param quickLaunchHide 
-   */
-  private setQuickLaunch( quickLaunchHide: boolean ) {
-
-    if ( quickLaunchHide === true && this.minQuickLaunch === false ) {
-      minimizeQuickLaunch( document , quickLaunchHide );
-      this.minQuickLaunch = true;
-    }
-
-  }
-
-  /**
-   * Used with FPS Options Functions
-   * @param fpsPageStyle 
-   */
-  private setThisPageFormatting( fpsPageStyle: string ) {
-    let fpsPage: IFPSPage = {
-      // Done: this.fpsPageDone, // 2022-03-28: Errored out in npmFunctions v1.0.199, removing for now
-
-      // VVVV JUST SET THESE BY HAND TO MAKE ERRORS GO AWAY.  NEEDS UPDATING
-      attempted: false,
-      title: 'setThisPageFormatting',
-      wpInstanceID: 'wpInstanceID',
-      do: true,
-      errors: null,
-      success: null,
-      // ^^^^ JUST SET THESE BY HAND TO MAKE ERRORS GO AWAY.  NEEDS UPDATING
-
-
-      Style: fpsPageStyle,
-      Array: this.fpsPageArray,
-    };
-
-    fpsPage = setPageFormatting( this.domElement, fpsPage );
-    this.fpsPageArray = fpsPage.Array;
-    // this.fpsPageDone = fpsPage.Done;  // 2022-03-28: Errored out in npmFunctions v1.0.199, removing for now
   }
 
   private async UpdateTitles(): Promise<boolean> {
@@ -1072,4 +1164,114 @@ export default class Drilldown7WebPart extends BaseClientSideWebPart<IDrilldown7
     }
     this.render();
   }
+
+
+  private presetCollectionDefaults() {
+    
+    this.sitePresets = getThisSitesPreConfigProps( PreConfiguredProps, this.properties, this.context.pageContext.web.serverRelativeUrl );
+
+    this.sitePresets.presets.map( setting => {
+      if ( this.properties[setting.prop] === setting.value ) { 
+        setting.status = 'valid';
+
+      } else if ( this.properties[setting.prop] === undefined || this.properties[setting.prop] === null ) { //Changed from just !this... because if value was 'false' it would set to true
+        this.properties[setting.prop] = setting.value ;
+        setting.status = 'preset';
+
+      }
+    });
+
+    this.sitePresets.forces.map( setting => {
+      if ( this.properties[setting.prop] === setting.value ) { 
+        setting.status = 'valid';
+
+      } else if ( !this.properties[setting.prop] ) { 
+        this.properties[setting.prop] = setting.value ;
+        setting.status = 'preset';
+
+      } else if ( this.properties[setting.prop] !== setting.value ) { 
+        this.properties[setting.prop] = setting.value ;
+        setting.status = 'changed';
+
+      }
+
+    });
+
+    console.log('Preset props used:', this.sitePresets );
+
+  }
+
+
+  /***
+ *    d88888b d8888b. .d8888.       .d88b.  d8888b. d888888b d888888b  .d88b.  d8b   db .d8888. 
+ *    88'     88  `8D 88'  YP      .8P  Y8. 88  `8D `~~88~~'   `88'   .8P  Y8. 888o  88 88'  YP 
+ *    88ooo   88oodD' `8bo.        88    88 88oodD'    88       88    88    88 88V8o 88 `8bo.   
+ *    88~~~   88~~~     `Y8b.      88    88 88~~~      88       88    88    88 88 V8o88   `Y8b. 
+ *    88      88      db   8D      `8b  d8' 88         88      .88.   `8b  d8' 88  V888 db   8D 
+ *    YP      88      `8888Y'       `Y88P'  88         YP    Y888888P  `Y88P'  VP   V8P `8888Y' 
+ *                                                                                              
+ *                                                                                              
+ */
+
+   private renderCustomStyles( doHeadings: boolean = true ) {
+
+    //Used with FPS Options Functions
+    this.setQuickLaunch( this.properties.quickLaunchHide );
+    minimizeHeader( document, this.properties.pageHeaderHide, false, true );
+    this.setThisPageFormatting( this.properties.fpsPageStyle );
+    this.setToolbar( this.properties.toolBarHide );
+    this.updateSectionStyles( );
+  }
+
+  /**
+   * Used with FPS Options Functions
+   * @param quickLaunchHide 
+   */
+   private setQuickLaunch( quickLaunchHide: boolean ) {
+    if ( quickLaunchHide === true && this.minQuickLaunch === false ) {
+      minimizeQuickLaunch( document , quickLaunchHide );
+      this.minQuickLaunch = true;
+    }
+  }
+
+  /**
+   * Used with FPS Options Functions
+   * @param quickLaunchHide 
+   */
+  private setToolbar( hideToolbar: boolean ) {
+
+      if(this.displayMode == DisplayMode.Read && this.urlParameters.tool !== 'true' ){
+        let value = hideToolbar === true ? 'none' : null;
+        let toolBarStyle: IFPSSectionStyle = initializeMinimalStyle( 'Miminze Toolbar', this.wpInstanceID, 'display', value );
+        minimizeToolbar( document, toolBarStyle, false, true );
+        this.minHideToolbar = true;
+      }
+
+  }
+
+  /**
+   * Used with FPS Options Functions
+   * @param fpsPageStyle 
+   */
+  private setThisPageFormatting( fpsPageStyle: string ) {
+
+    let fpsPage: IFPSPage = initializeFPSPage( this.wpInstanceID, this.fpsPageDone, fpsPageStyle, this.fpsPageArray  );
+    fpsPage = setPageFormatting( this.domElement, fpsPage );
+    this.fpsPageArray = fpsPage.Array;
+    this.fpsPageDone = fpsPage.do;
+
+  }
+
+
+  private updateSectionStyles( ) {
+
+    let allSectionMaxWidth = this.properties.allSectionMaxWidthEnable !== true ? null : this.properties.allSectionMaxWidth;
+    let allSectionMargin = this.properties.allSectionMarginEnable !== true ? null : this.properties.allSectionMargin;
+    let sectionStyles = initializeFPSSection( this.wpInstanceID, allSectionMaxWidth, allSectionMargin,  );
+
+    setSectionStyles( document, sectionStyles, true, true );
+
+  }
+
+
 }

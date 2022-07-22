@@ -1,13 +1,5 @@
 import * as React from 'react';
 
-import * as fpsAppIcons from '@mikezimm/npmfunctions/dist/Icons/standardExStorage';
-
-import { Icon  } from 'office-ui-fabric-react/lib/Icon';
-
-import { buildAppWarnIcon, buildClickableIcon } from '@mikezimm/npmfunctions/dist/Icons/stdIconsBuildersV02';
-
-import * as StdIcons from '@mikezimm/npmfunctions/dist/Icons/iconNames';
-
 import { IRepoLinks } from '@mikezimm/npmfunctions/dist/Links/CreateLinks';
 
 import { convertIssuesMarkdownStringToSpan } from '@mikezimm/npmfunctions/dist/Elements/Markdown';

@@ -1,6 +1,8 @@
 import * as React from 'react';
 
 import { Pivot, PivotItem, IPivotItemProps, PivotLinkFormat, PivotLinkSize,} from 'office-ui-fabric-react/lib/Pivot';
+import { Icon, IIconProps } from 'office-ui-fabric-react/lib/Icon';
+import { defaultBannerCommandStyles, } from "@mikezimm/npmfunctions/dist/HelpPanelOnNPM/onNpm/defaults";
 
 import { IQuickCommands } from '@mikezimm/npmfunctions/dist/QuickCommands/IQuickCommands';
 
@@ -9,9 +11,11 @@ import { RefinerRulesStrs, RefinerRulesInts, RefinerRulesNums, RefinerRulesTime,
 
 import { gitRepoDrillDownSmall } from '@mikezimm/npmfunctions/dist/Links/LinksRepos';
 
-import { DoNotExpandLinkColumns, DoNotExpandTrimB4, DoNotExpandTrimAfter, DoNotExpandTrimWords, DoNotExpandTrimSpecial } from '../../../../services/getInterface';
+import { BannerHelp, FPSBasicHelp, FPSExpandHelp, ImportHelp, SinglePageAppHelp, VisitorHelp } from '@mikezimm/npmfunctions/dist/PropPaneHelp/FPSCommonOnNpm';
 
-import stylesD from './drillComponent.module.scss';
+import {HandleBarReplacements } from '@mikezimm/npmfunctions/dist/Services/Strings/handleBars';
+
+import { DoNotExpandLinkColumns, DoNotExpandTrimB4, DoNotExpandTrimAfter, DoNotExpandTrimWords, DoNotExpandTrimSpecial } from '../../../../services/getInterface';
 
 import ReactJson from "react-json-view";
 
@@ -97,7 +101,11 @@ const LinkFindInternalName = <a href="https://tomriha.com/what-is-sharepoint-col
 const padRight15: React.CSSProperties = { paddingRight: '15px' };
 const padRight40: React.CSSProperties = { paddingRight: '40px' };
 
-export const WebPartHelpElement = <div>
+const tenantServiceRequestURL = `https://servicenow.${window.location.hostname}.com/`;
+
+export function WebPartHelpElement ( preSetsContent: any ) {
+
+  const ele = <div style={{ overflowX: 'scroll' }}>
   <Pivot 
           linkFormat={PivotLinkFormat.links}
           linkSize={PivotLinkSize.normal}
@@ -109,25 +117,25 @@ export const WebPartHelpElement = <div>
       //   selectedKey={ null }
       >
       <PivotItem headerText={ 'Refiner Columns' } > 
-        <div className={ stylesD.helpContent}>
-          <div className={ stylesD.topic}>Setting the Refiner 'Column Value'</div>
+        <div className={ 'fps-pph-content' }>
+          <div className={ 'fps-pph-topic' }>Setting the Refiner 'Column Value'</div>
           <div><mark><b>NOTE:</b></mark> ColumnNames in this webpart <b>MUST BE Internal Column names</b>.</div>
           <div><b>Internal Column names</b> ARE NOT the Column Titles you see. { LinkFindInternalName }</div>
-          <div className={ stylesD.topic}>Simple column types (Text, Date, Number, Single/Multi Select Choice)</div>
+          <div className={ 'fps-pph-topic' }>Simple column types (Text, Date, Number, Single/Multi Select Choice)</div>
           <div><b>InternalColumnName</b> - Nothing special require for these column types</div>
           {/* <div><b>UserColumnName/Title</b> - /Title shows the person's Name</div> */}
 
           {/* <div>User columns (Single/Multi) on the main list (can not be part of lookup column)</div> */}
 
-          <div className={ stylesD.topic}>User columns (Single/Multi) on the main list (can not be part of lookup column)</div>
+          <div className={ 'fps-pph-topic' }>User columns (Single/Multi) on the main list (can not be part of lookup column)</div>
           <div><b>UserColumnName/Title</b> - /Title shows the person's Name</div>
           <div>See the Users tab in this page for more information on using User columns</div>
 
-          <div className={ stylesD.topic}>Lookup columns (Single/Multi) - that are brought in under the LookupColumn</div>
+          <div className={ 'fps-pph-topic' }>Lookup columns (Single/Multi) - that are brought in under the LookupColumn</div>
           <div><b>LookupColumnName/Title</b> - /Title shows the Title field from the lookup item</div>
           <div><b>LookupColumnName/OtherField</b> - /OtherField is the InternalColumnName of the lookup column from the other list</div>
 
-          <div className={ stylesD.topic} style={{ textDecoration: 'underline'}}>Example with real column names</div> 
+          <div className={ 'fps-pph-topic' } style={{ textDecoration: 'underline'}}>Example with real column names</div> 
           <div style={{ paddingTop: '8px'}}>Say you have a lookup column like 'CustomerPlant' which has a Title column (Plant name) and Country column (where it is located)</div>
           <div>To show Customer Plant Title, use <b>CustomerPlant/Title</b></div>
           <div>To show Customer Plant Country, use <b>CustomerPlant/Country</b></div>
@@ -135,8 +143,8 @@ export const WebPartHelpElement = <div>
       </PivotItem>
     
       <PivotItem headerText={ 'String Functions' } > 
-        <div className={ stylesD.helpContent}>
-            <div className={ stylesD.topic}>String Functions are like calculated columns without the work.</div>
+        <div className={ 'fps-pph-content' }>
+            <div className={ 'fps-pph-topic' }>String Functions are like calculated columns without the work.</div>
             <div>The goal of String functions are to make strings shorter for both <b>refiners</b> and <b>views</b>.</div>
             <div>Can be applied to columns to modify the values for this webpart - like an ad-hoc calculated column but more.</div>
             <div>For example, lets say you want to show the initials of the Editor (Modified By)</div>
@@ -144,19 +152,19 @@ export const WebPartHelpElement = <div>
             <div>To get their initials instead, use <b>Editor/Title<span style={{color: 'green'}}>/Initials</span></b></div>
 
             <div style={{ display: 'flex' }}>
-                <div style={ padRight40 }><div className={ stylesD.topic}>Split before character</div><ul>
+                <div style={ padRight40 }><div className={ 'fps-pph-topic' }>Split before character</div><ul>
                   { DoNotExpandTrimB4.map( rule => <li>{ '/' + rule }</li> ) }
                 </ul></div>
-                <div style={ padRight40 }><div className={ stylesD.topic}>Split after character</div><ul>
+                <div style={ padRight40 }><div className={ 'fps-pph-topic' }>Split after character</div><ul>
                   { DoNotExpandTrimAfter.map( rule => <li>{ '/' + rule }</li> ) }
                 </ul></div>
-                <div style={ padRight40 }><div className={ stylesD.topic}>Words</div><ul>
+                <div style={ padRight40 }><div className={ 'fps-pph-topic' }>Words</div><ul>
                   { DoNotExpandTrimWords.map( rule => <li>{ '/' + rule }</li> ) }
                 </ul></div>
-                <div style={ padRight40 }><div className={ stylesD.topic}>Initials</div><ul>
+                <div style={ padRight40 }><div className={ 'fps-pph-topic' }>Initials</div><ul>
                   { DoNotExpandTrimSpecial.map( rule => <li>{ '/' + rule }</li> ) }
                 </ul></div>
-                <div style={ padRight40 }><div className={ stylesD.topic}>Link columns</div><ul>
+                <div style={ padRight40 }><div className={ 'fps-pph-topic' }>Link columns</div><ul>
                   { DoNotExpandLinkColumns.map( rule => <li>{ '/' + rule }</li> ) }
                 </ul></div>
             </div>
@@ -165,29 +173,29 @@ export const WebPartHelpElement = <div>
       </PivotItem>
 {/* 
       <PivotItem headerText={ 'String Functions' } > 
-        <div className={ stylesD.helpContent}>
-            <div className={ stylesD.topic}>String Functions are like calculated columns without the work.</div>
+        <div className={ 'fps-pph-content' }>
+            <div className={ 'fps-pph-topic' }>String Functions are like calculated columns without the work.</div>
             <div>The goal of String functions are to make strings shorter for both <b>refiners</b> and <b>views</b>.</div>
             <div>Can be applied to columns to modify the values for this webpart - like an ad-hoc calculated column but more.</div>
             <div>For example, lets say you want to show the initials of the Editor (Modified By)</div>
             <div>To get the full name of the editor, use <b>Editor/Title</b></div>
             <div>To get their initials instead, use <b>Editor/Title<span style={{color: 'green'}}>/Initials</span></b></div>
 
-            <div className={ stylesD.topic}>Splitting text Before a character</div>
+            <div className={ 'fps-pph-topic' }>Splitting text Before a character</div>
             <div> /{ DoNotExpandTrimB4.join(', /') } </div>
-            <div className={ stylesD.topic}>Splitting text After a character</div>
+            <div className={ 'fps-pph-topic' }>Splitting text After a character</div>
             <div> /{ DoNotExpandTrimAfter.join(', /') } </div>
-            <div className={ stylesD.topic}>Words and initials</div>
+            <div className={ 'fps-pph-topic' }>Words and initials</div>
             <div> /{ DoNotExpandTrimSpecial.join(', /') } </div>
 
-            <div className={ stylesD.topic}>Getting link columns</div>
+            <div className={ 'fps-pph-topic' }>Getting link columns</div>
             <div> /{ DoNotExpandLinkColumns.join(', /') } </div>
         </div>
       </PivotItem> */}
 
       <PivotItem headerText={ 'Refiner Rules' } > 
-        <div className={ stylesD.helpContent}>
-            <div className={ stylesD.topic}>Rules are like calculated columns without the work - Only applies to refiners.</div>
+        <div className={ 'fps-pph-content' }>
+            <div className={ 'fps-pph-topic' }>Rules are like calculated columns without the work - Only applies to refiners.</div>
             <div><b>Example:</b>  If you have a date column, actual dates or times are not good refiners because they typically will have to many values to choose from.<br/>
             However if you apply a rule like 'groupByYears', it will bucket all your items into years based on the values in the column.<br/></div>
             <div><b>NOTE:</b>  The web part only shows refiners based on the items it intially reads in. So in the case of 'groupByYears', <b>you will not see a year if there are no items for that year</b>.</div>
@@ -195,19 +203,19 @@ export const WebPartHelpElement = <div>
             <div><b>groupBy...</b> will take number or date column values and group them into larger buckets.</div>
             <div>Generally speaking, only select one per refiner.</div>
             <div style={{ display: 'flex' }}>
-                <div style={ padRight15 }><div className={ stylesD.topic}>Number rules</div><ul>
+                <div style={ padRight15 }><div className={ 'fps-pph-topic' }>Number rules</div><ul>
                   { RefinerRulesNums.map( rule => <li>{ rule }</li> ) }
                 </ul></div>
-                <div style={ padRight15 }><div className={ stylesD.topic}>Integer rules</div><ul>
+                <div style={ padRight15 }><div className={ 'fps-pph-topic' }>Integer rules</div><ul>
                   { RefinerRulesInts.map( rule => <li>{ rule }</li> ) }
                 </ul></div>
-                <div style={ padRight15 }><div className={ stylesD.topic}>String rules</div><ul>
+                <div style={ padRight15 }><div className={ 'fps-pph-topic' }>String rules</div><ul>
                   { RefinerRulesStrs.map( rule => <li>{ rule }</li> ) }
                 </ul></div>
-                <div style={ padRight15 }><div className={ stylesD.topic}>Time rules</div><ul>
+                <div style={ padRight15 }><div className={ 'fps-pph-topic' }>Time rules</div><ul>
                   { RefinerRulesTime.map( rule => <li>{ rule }</li> ) }
                 </ul></div>
-                <div style={ padRight15 }><div className={ stylesD.topic}>User rules</div><ul>
+                <div style={ padRight15 }><div className={ 'fps-pph-topic' }>User rules</div><ul>
                   { RefinerRulesUser.map( rule => <li>{ rule }</li> ) }
                 </ul></div>
             </div>
@@ -215,16 +223,16 @@ export const WebPartHelpElement = <div>
       </PivotItem>
 
       <PivotItem  headerText={ 'Views' } >
-        <div className={ stylesD.helpContent}>
+        <div className={ 'fps-pph-content' }>
           <div>Views are how  you define your list view in the web part.</div>
           <div>The easiest way to get started, is to unlock our Pre-Configured List definitions in page 1 of properties.  Then select one of the pre-configured lists. Or contact your local SharePoint team if you have a good candidate for a company wide template.</div>
           <div style={{ display: 'flex' }}>
             <div>
-              <div className={ stylesD.topic}>Sample view</div>
+              <div className={ 'fps-pph-topic' }>Sample view</div>
               { putObjectIntoJSON( SampleViewJSON ) }
             </div>
             <div>
-              <div className={ stylesD.topic}>About view structure</div>
+              <div className={ 'fps-pph-topic' }>About view structure</div>
               <ul>
                 <li>A view definition is an array of view fields.</li>
                 <li>A view field defines how you want each column to look.</li>
@@ -246,8 +254,8 @@ export const WebPartHelpElement = <div>
       </PivotItem>
 
       <PivotItem  headerText={ 'Stats' } >
-        <div className={ stylesD.helpContent}>
-          <div className={ stylesD.topic}>Stats are basic kpi style charts embeded into the webpart</div>
+        <div className={ 'fps-pph-content' }>
+          <div className={ 'fps-pph-topic' }>Stats are basic kpi style charts embeded into the webpart</div>
           <ul>
             <li>If you want basic KPI charts (like counting items) with little effort, these are for you!</li>
             <li>These are not intended for anything advanced.  Use PowerBI or other alternatives for that.</li>
@@ -257,11 +265,11 @@ export const WebPartHelpElement = <div>
           </ul>
           <div style={{ display: 'flex' }}>
             <div>
-              <div className={ stylesD.topic}>Sample Chart property</div>
+              <div className={ 'fps-pph-topic' }>Sample Chart property</div>
               { putObjectIntoJSON( SampleCharts ) }
             </div>
             <div>
-              <div className={ stylesD.topic}>About Charts structure</div>
+              <div className={ 'fps-pph-topic' }>About Charts structure</div>
               <ul>
                 <li>Must follow this minimum structure.</li>
                 <li>Charts structure is made up of an array of charts ( even if you only have one ).</li>
@@ -276,7 +284,7 @@ export const WebPartHelpElement = <div>
                   <div>Available types: 'pareto-asc' | 'pareto-dec' | 'pareto-labels' | 'stacked-column-labels' | 'stacked-column-dec' | 'stacked-column-asc' | 'kpi-tiles'</div>
                   <div>The best advice for the types is just try some and see what they do :)</div>
                 </ul>
-                <div className={ stylesD.topic}>The example shown here will:</div>
+                <div className={ 'fps-pph-topic' }>The example shown here will:</div>
                 <ol>
                   <li>get the field called 'Id'</li>
                   <li>get a count of the items (broken down by your refiner categories)</li>
@@ -291,16 +299,16 @@ export const WebPartHelpElement = <div>
       </PivotItem>
 
       <PivotItem  headerText={ 'Commands' } >
-        <div className={ stylesD.helpContent}>
-          <div className={ stylesD.topic}>Commands are buttons that can do updates to your list.</div>
+        <div className={ 'fps-pph-content' }>
+          <div className={ 'fps-pph-topic' }>Commands are buttons that can do updates to your list.</div>
           <div>Commands can be simple or advanced.  Please join ShareLab if you want some help or have questions.</div>
           <div style={{ display: 'flex' }}>
             <div>
-              <div className={ stylesD.topic}>Sample Command</div>
+              <div className={ 'fps-pph-topic' }>Sample Command</div>
               { putObjectIntoJSON( SampleCommands ) }
             </div>
             <div>
-              <div className={ stylesD.topic}>About Commands structure</div>
+              <div className={ 'fps-pph-topic' }>About Commands structure</div>
               <ul>
                 <li>Must follow this minimum structure.</li>
                 <li><mark>NOTE: </mark> <b>Quotes</b> are required per the example. <br/>All column names and view properties are <b>Case Sensitive</b>!</li>
@@ -325,22 +333,22 @@ export const WebPartHelpElement = <div>
       </PivotItem>
 
       <PivotItem  headerText={ 'Users' } >
-        <div className={ stylesD.helpContent}>
-          <div className={ stylesD.topic}>Properties you can get from a Single/Multi User Column.</div>
+        <div className={ 'fps-pph-content' }>
+          <div className={ 'fps-pph-topic' }>Properties you can get from a Single/Multi User Column.</div>
 
           <div style={{ display: 'flex' }}>
 
 
-            <div style={ padRight15 }><div className={ stylesD.topic}>Valid User Props</div><ul>
+            <div style={ padRight15 }><div className={ 'fps-pph-topic' }>Valid User Props</div><ul>
               { UserColumnRestPropertiesSPO.map( rule => <li>{ rule }</li> ) }
               </ul></div>
 
-            <div style={ padRight15 }><div className={ stylesD.topic}>May not work in SPO</div><ul>
+            <div style={ padRight15 }><div className={ 'fps-pph-topic' }>May not work in SPO</div><ul>
                 { UserColumnRestPropertiesSPONOTWORK.map( rule => <li>{ rule }</li> ) }
                 </ul></div>
 
             <div>
-              <div className={ stylesD.topic}>Sample User Props</div>
+              <div className={ 'fps-pph-topic' }>Sample User Props</div>
               <ul>
                 <li><b>Title</b> ~ John Smith</li>
                 <li><b>Name</b> ~ i:0#.f|membership|john.smith@fps.com</li>
@@ -357,5 +365,19 @@ export const WebPartHelpElement = <div>
           <a href="https://sharepoint.stackexchange.com/a/272687" target="_blank">source:  stack exchange</a>
         </div>
       </PivotItem>
-  </Pivot>
-</div>;
+      { VisitorHelp }
+      { BannerHelp }
+      { FPSBasicHelp }
+      { FPSExpandHelp }
+      { SinglePageAppHelp }
+      { ImportHelp }
+      { !preSetsContent ? null : 
+        <PivotItem headerText={ null } itemIcon='Badge'>
+          { preSetsContent }
+          </PivotItem>
+      }
+    </Pivot>
+  </div>;
+
+  return ele;
+}

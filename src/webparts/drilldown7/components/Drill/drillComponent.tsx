@@ -78,20 +78,24 @@ import Cssreactbarchart from '../CssCharts/Cssreactbarchart';
 import {buildCountChartsObject ,  buildStatChartsArray} from '../CssCharts/cssChartFunctions';
 
 import { getAppropriateViewFields, getAppropriateViewGroups, getAppropriateViewProp } from './listFunctions';
-import { WebPartHelpElement } from './drillPropPaneHelp';
+import { WebPartHelpElement } from '../PropPaneHelp/drillPropPaneHelp';
 
 import { ProgressIndicator } from 'office-ui-fabric-react/lib/ProgressIndicator';
 
-/**
- * 2021-08-25 MZ:  Added for Banner
- */
-import WebpartBanner from "../HelpPanel/banner/component";
-import { IWebpartBannerProps, } from "../HelpPanel/banner/onNpm/bannerProps";
-import { defaultBannerCommandStyles, } from "../HelpPanel/banner/onNpm/defaults";
+import { IWebpartBannerProps, } from '@mikezimm/npmfunctions/dist/HelpPanelOnNPM/onNpm/bannerProps';
+
+import WebpartBanner from "@mikezimm/npmfunctions/dist/HelpPanelOnNPM/banner/onLocal/component";
+
+import { getWebPartHelpElement } from '../PropPaneHelp/PropPaneHelp';
+
+import { getBannerPages, IBannerPages } from '../HelpPanel/AllContent';
 
 import { IDrillItemInfo } from '@mikezimm/npmfunctions/dist/WebPartInterfaces/DrillDown/IDrillItem';
+import { defaultBannerCommandStyles } from '@mikezimm/npmfunctions/dist/HelpPanelOnNPM/onNpm/defaults';
 
+import { IWebpartHistory, IWebpartHistoryItem2, } from '@mikezimm/npmfunctions/dist/Services/PropPane/WebPartHistoryInterface';
 
+import { ISitePreConfigProps, } from '@mikezimm/npmfunctions/dist/PropPaneHelp/PreConfigFunctions';
 
 export type IRefinerStyles = 'pivot' | 'commandBar' | 'other';
 
@@ -247,6 +251,11 @@ export interface IDrillDownProps {
     displayMode: DisplayMode;
 
     bannerProps: IWebpartBannerProps;
+
+    //ADDED FOR WEBPART HISTORY:
+    webpartHistory: IWebpartHistory;
+
+    sitePresets : ISitePreConfigProps;
 
     errMessage: string;
 
@@ -475,6 +484,8 @@ export default class DrillDown extends React.Component<IDrillDownProps, IDrillDo
      *                                                                                                                                
      *                                                                                                                                
      */
+     private WebPartHelpElement = getWebPartHelpElement( this.props.sitePresets );
+     private contentPages : IBannerPages = getBannerPages( this.props.bannerProps );
 
     private nearBannerElements = this.buildNearBannerElements();
     private farBannerElements = this.buildFarBannerElements();
@@ -911,11 +922,18 @@ export default class DrillDown extends React.Component<IDrillDownProps, IDrillDo
       // searchMe= { this.searchMe.bind(this) }
       // showAll= { this.showAll.bind(this) }
 
-      return [
-        // <Icon iconName='BookAnswers' onClick={ this.toggleInstructions.bind(this) } style={ defaultBannerCommandStyles }></Icon>,
-        // <Icon iconName='ChromeMinimize' onClick={ this.minimizeTiles.bind(this) } style={ defaultBannerCommandStyles }></Icon>,
-        // <Icon iconName='ClearFilter' onClick={ this.showAll.bind(this) } style={ defaultBannerCommandStyles }></Icon>,
-      ];
+      let farElements: any[] = [];
+
+      if ( this.props.bannerProps.showTricks === true ) {
+        farElements.push( null );
+      }
+      return farElements;
+
+    //   return [
+    //     // <Icon iconName='BookAnswers' onClick={ this.toggleInstructions.bind(this) } style={ defaultBannerCommandStyles }></Icon>,
+    //     // <Icon iconName='ChromeMinimize' onClick={ this.minimizeTiles.bind(this) } style={ defaultBannerCommandStyles }></Icon>,
+    //     // <Icon iconName='ClearFilter' onClick={ this.showAll.bind(this) } style={ defaultBannerCommandStyles }></Icon>,
+    //   ];
     }
 
   public componentDidMount() {
@@ -990,6 +1008,13 @@ public componentDidUpdate(prevProps){
 
     public render(): React.ReactElement<IDrillDownProps> {
 
+        const {
+            bannerProps,
+            // isDarkTheme,
+            // environmentMessage,
+            // hasTeamsContext,
+            // userDisplayName,
+          } = this.props;
 
         let x = 1;
         if ( x === 1 ) {
@@ -1059,35 +1084,68 @@ public componentDidUpdate(prevProps){
             <Icon iconName='BookAnswers' onClick={ this.forceInstructions.bind(this) } style={ defaultBannerCommandStyles }></Icon>,
             // <Icon iconName='Hide3' onClick={ this.hideInstructions.bind(this) } style={ defaultBannerCommandStyles }></Icon>,
         ];
-        if ( this.props.displayMode === DisplayMode.Edit ) {
-            farBannerElementsArray.push( 
-                <Icon iconName='OpenEnrollment' onClick={ this.togglePropsHelp.bind(this) } style={ defaultBannerCommandStyles }></Icon>
-        );
-        }
+        // if ( this.props.displayMode === DisplayMode.Edit ) {
+        //     farBannerElementsArray.push( 
+        //         <Icon iconName='OpenEnrollment' onClick={ this.togglePropsHelp.bind(this) } style={ defaultBannerCommandStyles }></Icon>
+        // );
+        // }
 
         //Exclude the props.bannerProps.title if the webpart is narrow to make more responsive
-        let bannerTitle = this.props.bannerProps.bannerWidth < 900 ? '' : `${this.props.bannerProps.title} - ${''}`;
+        let bannerTitle = bannerProps.bannerWidth < 900 ? '' : `${bannerProps.title} - ${''}`;
         if ( bannerTitle === '' ) { bannerTitle = 'Pivot Tiles' ; }
 
         let Banner = <WebpartBanner 
-            showBanner={ this.props.bannerProps.showBanner }
-            bannerWidth={ this.props.bannerProps.bannerWidth }
-            pageContext={ this.props.bannerProps.pageContext }
+
+            displayMode={ bannerProps.displayMode }
+            WebPartHelpElement={ this.WebPartHelpElement }
+            forceNarrowStyles= { false }
+            contentPages= { this.contentPages }
+            feedbackEmail= { bannerProps.feedbackEmail }
+            FPSUser={ bannerProps.FPSUser }
+            exportProps={ bannerProps.exportProps }
+            showBanner={ bannerProps.showBanner }
+            // Adding this to adjust expected width for when prop pane could be opened
+            bannerWidth={ ( bannerProps.bannerWidth ) }
+            pageContext={ bannerProps.pageContext }
+            pageLayout={ bannerProps.pageLayout }
             title ={ bannerTitle }
-            panelTitle = { this.props.bannerProps.panelTitle }
-            bannerReactCSS={ this.props.bannerProps.bannerReactCSS }
-            bannerCommandStyles={ defaultBannerCommandStyles }
-            showTricks={ this.props.bannerProps.showTricks }
-            showGoToParent={ this.props.bannerProps.showGoToParent }
-            showGoToHome={ this.props.bannerProps.showGoToHome }
-            onHomePage={ this.props.bannerProps.onHomePage }
-            showBannerGear={ this.props.bannerProps.showBannerGear }
-            hoverEffect={ this.props.bannerProps.hoverEffect }
-            gitHubRepo={ this.props.bannerProps.gitHubRepo }
-            earyAccess={ this.props.bannerProps.earyAccess }
-            wideToggle={ this.props.bannerProps.wideToggle }
+            panelTitle = { bannerProps.panelTitle }
+            infoElement = { bannerProps.infoElement }
+            bannerReactCSS={ bannerProps.bannerReactCSS }
+            bannerCmdReactCSS={ defaultBannerCommandStyles }
+            showTricks={ bannerProps.showTricks }
+            showGoToParent={ bannerProps.showGoToParent }
+            showGoToHome={ bannerProps.showGoToHome }
+            onHomePage={ bannerProps.onHomePage }
+
+            webpartHistory={ this.props.webpartHistory }
+
+            showBannerGear={ bannerProps.showBannerGear }
+
+            showFullPanel={ bannerProps.showFullPanel }
+            replacePanelHTML={ bannerProps.replacePanelHTML }
+            replacePanelWarning={ bannerProps.replacePanelWarning }
+
+            hoverEffect={ bannerProps.hoverEffect }
+            gitHubRepo={ bannerProps.gitHubRepo }
+            earyAccess={ bannerProps.earyAccess }
+            wideToggle={ bannerProps.wideToggle }
             nearElements = { this.nearBannerElements }
             farElements = { farBannerElementsArray }
+
+            showRepoLinks={ bannerProps.showRepoLinks }
+            showExport={ bannerProps.showExport }
+            //2022-02-17:  Added these for expandoramic mode
+            domElement = { bannerProps.domElement }
+            enableExpandoramic = { bannerProps.enableExpandoramic }
+            expandoDefault = { bannerProps.expandoDefault }
+            expandoStyle = { bannerProps.expandoStyle}
+            expandAlert = { bannerProps.expandAlert }
+            expandConsole = { bannerProps.expandConsole }
+            expandoPadding = { bannerProps.expandoPadding }
+            beAUser = { bannerProps.beAUser }
+            showBeAUserIcon = { bannerProps.showBeAUserIcon }
+            beAUserFunction={ bannerProps.beAUserFunction }
 
         ></WebpartBanner>;
 
