@@ -476,21 +476,50 @@ export default class DrillDown extends React.Component<IDrillDownProps, IDrillDo
 
     
     /***
-     *    d8888b.  .d8b.  d8b   db d8b   db d88888b d8888b.      d88888b db      d88888b .88b  d88. d88888b d8b   db d888888b .d8888. 
-     *    88  `8D d8' `8b 888o  88 888o  88 88'     88  `8D      88'     88      88'     88'YbdP`88 88'     888o  88 `~~88~~' 88'  YP 
-     *    88oooY' 88ooo88 88V8o 88 88V8o 88 88ooooo 88oobY'      88ooooo 88      88ooooo 88  88  88 88ooooo 88V8o 88    88    `8bo.   
-     *    88~~~b. 88~~~88 88 V8o88 88 V8o88 88~~~~~ 88`8b        88~~~~~ 88      88~~~~~ 88  88  88 88~~~~~ 88 V8o88    88      `Y8b. 
-     *    88   8D 88   88 88  V888 88  V888 88.     88 `88.      88.     88booo. 88.     88  88  88 88.     88  V888    88    db   8D 
-     *    Y8888P' YP   YP VP   V8P VP   V8P Y88888P 88   YD      Y88888P Y88888P Y88888P YP  YP  YP Y88888P VP   V8P    YP    `8888Y' 
-     *                                                                                                                                
-     *                                                                                                                                
-     */
+ *    d8b   db d88888b  .d8b.  d8888b.      d88888b  .d8b.  d8888b.      d88888b db      d88888b 
+ *    888o  88 88'     d8' `8b 88  `8D      88'     d8' `8b 88  `8D      88'     88      88'     
+ *    88V8o 88 88ooooo 88ooo88 88oobY'      88ooo   88ooo88 88oobY'      88ooooo 88      88ooooo 
+ *    88 V8o88 88~~~~~ 88~~~88 88`8b        88~~~   88~~~88 88`8b        88~~~~~ 88      88~~~~~ 
+ *    88  V888 88.     88   88 88 `88.      88      88   88 88 `88.      88.     88booo. 88.     
+ *    VP   V8P Y88888P YP   YP 88   YD      YP      YP   YP 88   YD      Y88888P Y88888P Y88888P 
+ *                                                                                               
+ *                                                                                               
+ */
      private WebPartHelpElement = getWebPartHelpElement( this.props.sitePresets );
      private contentPages : IBannerPages = getBannerPages( this.props.bannerProps );
 
     private nearBannerElements = this.buildNearBannerElements();
     private farBannerElements = this.buildFarBannerElements();
-    //DoNotExpandLinkColumns, DoNotExpandTrimB4, DoNotExpandTrimAfter, DoNotExpandTrimSpecial
+
+    private buildNearBannerElements() {
+        //See banner/NearAndFarSample.js for how to build this.
+        let elements = [];
+        // defaultBannerCommandStyles.fontWeight = 'bolder';
+        // elements.push(<div style={{ paddingRight: null }} className={ '' } title={ title}>
+        //   <Icon iconName='WindDirection' onClick={ this.jumpToParentSite.bind(this) } style={ defaultBannerCommandStyles }></Icon>
+        // </div>);
+        return elements;
+    }
+
+    private buildFarBannerElements() {
+        //See banner/NearAndFarSample.js for how to build this.
+        // minimizeTiles= { this.minimizeTiles.bind(this) }
+        // searchMe= { this.searchMe.bind(this) }
+        // showAll= { this.showAll.bind(this) }
+
+        let farElements: any[] = [];
+
+        if ( this.props.bannerProps.showTricks === true ) {
+            farElements.push( null );
+        }
+        return farElements;
+
+        //   return [
+        //     // <Icon iconName='BookAnswers' onClick={ this.toggleInstructions.bind(this) } style={ defaultBannerCommandStyles }></Icon>,
+        //     // <Icon iconName='ChromeMinimize' onClick={ this.minimizeTiles.bind(this) } style={ defaultBannerCommandStyles }></Icon>,
+        //     // <Icon iconName='ClearFilter' onClick={ this.showAll.bind(this) } style={ defaultBannerCommandStyles }></Icon>,
+        //   ];
+    }
 
 
     /***
@@ -906,36 +935,6 @@ export default class DrillDown extends React.Component<IDrillDownProps, IDrillDo
 
     }
 
-    
-  private buildNearBannerElements() {
-    //See banner/NearAndFarSample.js for how to build this.
-    let elements = [];
-    // defaultBannerCommandStyles.fontWeight = 'bolder';
-    // elements.push(<div style={{ paddingRight: null }} className={ '' } title={ title}>
-    //   <Icon iconName='WindDirection' onClick={ this.jumpToParentSite.bind(this) } style={ defaultBannerCommandStyles }></Icon>
-    // </div>);
-    return elements;
-  }
-
-  private buildFarBannerElements() {
-      //See banner/NearAndFarSample.js for how to build this.
-      // minimizeTiles= { this.minimizeTiles.bind(this) }
-      // searchMe= { this.searchMe.bind(this) }
-      // showAll= { this.showAll.bind(this) }
-
-      let farElements: any[] = [];
-
-      if ( this.props.bannerProps.showTricks === true ) {
-        farElements.push( null );
-      }
-      return farElements;
-
-    //   return [
-    //     // <Icon iconName='BookAnswers' onClick={ this.toggleInstructions.bind(this) } style={ defaultBannerCommandStyles }></Icon>,
-    //     // <Icon iconName='ChromeMinimize' onClick={ this.minimizeTiles.bind(this) } style={ defaultBannerCommandStyles }></Icon>,
-    //     // <Icon iconName='ClearFilter' onClick={ this.showAll.bind(this) } style={ defaultBannerCommandStyles }></Icon>,
-    //   ];
-    }
 
   public componentDidMount() {
     this._updateStateOnPropsChange();
@@ -1057,11 +1056,6 @@ public componentDidUpdate(prevProps){
             }) }
         </div>;
         
-        
-        let propsHelp = <div className={ this.state.showPropsHelp !== true ? stylesD.bannerHide : stylesD.helpPropsShow  }>
-            { WebPartHelpElement }
-        </div>;
-
         let createBanner = this.state.quickCommands !== null && this.state.quickCommands.successBanner > 0 ? true : false;
         let bannerMessage = createBanner === false ? null : <div style={{ width: '100%'}} 
             className={ [ stylesD.bannerStyles,  this.state.bannerMessage === null ? stylesD.bannerHide : stylesD.bannerShow ].join(' ') }>
@@ -1539,7 +1533,6 @@ public componentDidUpdate(prevProps){
                             <div className={stylesD.drillDown}>
                                 {  /* <div className={styles.floatRight}>{ toggleTipsButton }</div> */ }
                                 <div className={ this.state.errMessage === '' ? styles.hideMe : styles.showErrorMessage  }>{ errMessage } </div>
-                                { propsHelp }
                                 {  /* <p><mark>Check why picking Assists does not show Help as a chapter even though it's the only chapter...</mark></p> */ }
                                 <Stack horizontal={true} wrap={true} horizontalAlign={"space-between"} verticalAlign= {"center"} tokens={stackPageTokens}>{/* Stack for Buttons and Webs */}
                                     { searchBox } { toggles } 
@@ -1573,7 +1566,6 @@ public componentDidUpdate(prevProps){
 
                     if ( this.state.allItems.length === 0 ) {
                         thisPage = <div style={{ paddingBottom: 30 }}className={styles.contents}>
-                        { propsHelp }
                         { errMessage }
                         { drillListErrors }
                         </div>;

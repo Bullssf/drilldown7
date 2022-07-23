@@ -15,11 +15,11 @@ import { RefinerRulesStrs, RefinerRulesInts, RefinerRulesNums, RefinerRulesTime,
 
 import { gitRepoDrillDownSmall } from '@mikezimm/npmfunctions/dist/Links/LinksRepos';
 
-import { BannerHelp, FPSBasicHelp, FPSExpandHelp, ImportHelp, SinglePageAppHelp, VisitorHelp, SitePresetsInfo } from '@mikezimm/npmfunctions/dist/PropPaneHelp/FPSCommonOnNpm';
+import { BannerHelp, FPSBasicHelp, FPSExpandHelp, ImportHelp, SinglePageAppHelp, VisitorHelp, PinMeHelp, SitePresetsInfo } from '@mikezimm/npmfunctions/dist/PropPaneHelp/FPSCommonOnNpm';
 
 import {HandleBarReplacements } from '@mikezimm/npmfunctions/dist/Services/Strings/handleBars';
 
-import { DoNotExpandLinkColumns, DoNotExpandTrimB4, DoNotExpandTrimAfter, DoNotExpandTrimWords, DoNotExpandTrimSpecial } from '../../../../services/getInterface';
+import { DoNotExpandLinkColumns, DoNotExpandTrimB4, DoNotExpandTrimAfter, DoNotExpandTrimWords, DoNotExpandTrimSpecial } from '../../../services/getInterface';
 
 import ReactJson from "react-json-view";
 
@@ -371,6 +371,7 @@ export function getWebPartHelpElement ( sitePresets : ISitePreConfigProps ) {
           <a href="https://sharepoint.stackexchange.com/a/272687" target="_blank">source:  stack exchange</a>
         </div>
       </PivotItem>
+      { PinMeHelp }
       { VisitorHelp }
       { BannerHelp }
       { FPSBasicHelp }
