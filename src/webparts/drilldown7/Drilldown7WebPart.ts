@@ -94,7 +94,7 @@ import { IQuickButton, IQuickCommands, IQuickField } from '@mikezimm/npmfunction
 import { IRefinerLayer, IRefiners, IItemRefiners, IRefinerStats, RefineRuleValues,
   IRefinerRules, IRefinerStatType, RefinerStatTypes, IRefinerStat } from '@mikezimm/npmfunctions/dist/Refiners/IRefiners';
 
-  import { visitorPanelInfo } from './components/VisitorPanel/PanelComponent';
+import { visitorPanelInfo } from '@mikezimm/npmfunctions/dist/CoreFPS/VisitorPanelComponent';
 
 import { exportIgnoreProps, importBlockProps, } from './IDrilldown7WebPartProps';
 import { css } from 'office-ui-fabric-react';
@@ -617,7 +617,7 @@ export default class Drilldown7WebPart extends BaseClientSideWebPart<IDrilldown7
      this.bannerProps.enableExpandoramic = false; //Hard code this option for FPS PageInfo web part only because of PinMe option
 
      // console.log('mainWebPart: visitorPanelInfo ~ 405',   );
-     this.properties.replacePanelHTML = visitorPanelInfo( this.properties, );
+     this.properties.replacePanelHTML = visitorPanelInfo( this.properties, repoLink, '', '' );
  
      this.bannerProps.replacePanelHTML = this.properties.replacePanelHTML;
 
