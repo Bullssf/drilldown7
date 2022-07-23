@@ -1,5 +1,5 @@
 import { IPropertyFieldGroupOrPerson } from "@pnp/spfx-property-controls/lib/PropertyFieldPeoplePicker";
-import { IDrilldown7WebPartProps } from "./IDrilldown7WebPartProps";
+import { IDrilldown7WebPartProps } from "../IDrilldown7WebPartProps";
 
 import { IPreConfigSettings, IAllPreConfigSettings } from '@mikezimm/npmfunctions/dist/PropPaneHelp/PreConfigFunctions';
 import { encrptMeOriginalTest } from '@mikezimm/npmfunctions/dist/HelpPanelOnNPM/onNpm/logTest';
