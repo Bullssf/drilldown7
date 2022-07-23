@@ -45,8 +45,8 @@
   */
 
 
-import { IDrilldown7WebPartProps } from './IDrilldown7WebPartProps';
-import { exportIgnoreProps, importBlockProps, } from './IDrilldown7WebPartProps';
+import { IDrilldown7WebPartProps } from '../IDrilldown7WebPartProps';
+import { exportIgnoreProps, importBlockProps, } from '../IDrilldown7WebPartProps';
 
 import { changeVisitor, changeExpando, changeBanner, changefpsOptions1, changefpsOptions2, exportIgnorePropsFPS, importBlockPropsFPS,  } from '@mikezimm/npmfunctions/dist/WebPartInterfaces/ImportProps';
 
@@ -93,7 +93,7 @@ import { changeBannerBasics, changeBannerNav, changeBannerTheme, changeBannerOth
  * @returns exportObject
  */
 
-import {  changeWebPartStyles, changeRelated1 } from './IDrilldown7WebPartProps';
+import {  changeWebPartStyles, changeRelated1 } from '../IDrilldown7WebPartProps';
 
  export function buildExportProps( wpProps : IDrilldown7WebPartProps, wpInstanceID: string, currentWeb: string, ) {
     let exportStructure :any = {};

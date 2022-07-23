@@ -34,7 +34,7 @@ import { sortStringArray, sortObjectArrayByStringKey, sortNumberArray, sortObjec
 
 import { IBuildBannerSettings , buildBannerProps, IMinWPBannerProps } from '@mikezimm/npmfunctions/dist/HelpPanelOnNPM/onNpm/BannerSetup';
 
-import { buildExportProps, buildFPSAnalyticsProps } from './BuildExportProps';
+import { buildExportProps, buildFPSAnalyticsProps } from './CoreFPS/BuildExportProps';
 
 import { setExpandoRamicMode } from '@mikezimm/npmfunctions/dist/Services/DOM/FPSExpandoramic';
 import { getUrlVars } from '@mikezimm/npmfunctions/dist/Services/Logging/LogFunctions';
@@ -98,7 +98,7 @@ import { IRefinerLayer, IRefiners, IItemRefiners, IRefinerStats, RefineRuleValue
 
 import { exportIgnoreProps, importBlockProps, } from './IDrilldown7WebPartProps';
 import { css } from 'office-ui-fabric-react';
-import { PreConfiguredProps } from './PreConfiguredSettings';
+import { PreConfiguredProps } from './CoreFPS/PreConfiguredSettings';
 import { getThisSitesPreConfigProps, IConfigurationProp, ISitePreConfigProps, IPreConfigSettings, IAllPreConfigSettings } from '@mikezimm/npmfunctions/dist/PropPaneHelp/PreConfigFunctions';
 
 /**
