@@ -7,6 +7,8 @@ import * as devLinks from '@mikezimm/npmfunctions/dist/Links/LinksDevDocs';
 
 import { IRepoLinks } from '@mikezimm/npmfunctions/dist/Links/CreateLinks';
 
+import { createAboutRow } from '@mikezimm/npmfunctions/dist/CoreFPS/BannerPageMisc';
+
 import { convertIssuesMarkdownStringToSpan } from '@mikezimm/npmfunctions/dist/Elements/Markdown';
 
 export const panelVersionNumber = '2022-04-04 -  1.2.0.11'; //Added to show in panel
@@ -67,13 +69,3 @@ export function aboutTable( repoLinks: IRepoLinks, showRepoLinks: boolean ) {
 
 }
 
-export function createAboutRow( date: string, version: string, focus: any, repoLinks: IRepoLinks | null ) {
-
-    let fullFocus = convertIssuesMarkdownStringToSpan( focus, repoLinks );
-
-    let tds = [<span style={{whiteSpace: 'nowrap'}} >{ date }</span>, 
-        <span style={{whiteSpace: 'nowrap'}} >{ version }</span>, 
-        <span>{ fullFocus }</span>,] ;
-
-    return tds;
-}

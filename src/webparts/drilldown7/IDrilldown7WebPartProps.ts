@@ -11,6 +11,7 @@ import { IWebpartHistory, IWebpartHistoryItem2, } from '@mikezimm/npmfunctions/d
 
 
 import { exportIgnorePropsFPS, importBlockPropsFPS } from '@mikezimm/npmfunctions/dist/WebPartInterfaces/ImportProps';
+import { IMinWPBannerProps } from "@mikezimm/npmfunctions/dist/HelpPanelOnNPM/onNpm/BannerSetup";
 
   //Specific for this web part
   export const exportIgnorePropsThis = [ ];
@@ -33,15 +34,12 @@ import { exportIgnorePropsFPS, importBlockPropsFPS } from '@mikezimm/npmfunction
 
   export const changeWebPartStyles = [ 'h1Style', 'h2Style' ,'h3Style' , 'pageInfoStyle', 'tocStyle', 'propsStyle' ];
 
-
-
-export interface IDrilldown7WebPartProps {
+export interface IDrilldown7WebPartProps extends IMinWPBannerProps {
 
     description: string;
   
     // 0 - Context
     pageContext: PageContext;
-  
   
     // 1 - Analytics options
     useListAnalytics: boolean;
@@ -144,95 +142,5 @@ export interface IDrilldown7WebPartProps {
     cssChartProps?: ICssChartProps;
     listProps?: any;
 
-
-    
-
-
-
-
-/**
- * Copied these from FPS PageInfo
- */
-
-    feedbackEmail: string;
-
-    //Needed for Expandoramic and PinMenu
-    pageLayout: ISupportedHost ;// like SinglePageApp etc... this.context[_pageLayout];
-
-    showBannerGear: boolean;
-    uniqueId: string;
-
-    //2022-02-17:  Added these for expandoramic mode
-    enableExpandoramic: boolean;
-    expandoDefault: boolean;
-    expandoStyle: any;
-    expandoPadding: number;
-    expandoAudience: IExpandAudiences;
-
-    // expandAlert: boolean;
-    // expandConsole: boolean;
-    //2022-02-17:  END additions for expandoramic mode
-
-    // Section 15
-    //General settings for Banner Options group
-    // export interface IWebpartBannerProps {
-
-    //[ 'showBanner', 'bannerTitle', 'showGoToHome', 'showGoToParent', 'homeParentGearAudience', 'bannerStyleChoice', 'bannerStyle', 'bannerCmdStyle', 'bannerHoverEffect', 'showRepoLinks', 'showExport' ];
-    showBanner: boolean;
-    bannerTitle: string;
-
-    infoElementChoice: string;
-    infoElementText: string;
-
-    showGoToHome: boolean;  //defaults to true
-    showGoToParent: boolean;  //defaults to true
-    homeParentGearAudience: IExpandAudiences;
-
-    bannerStyleChoice: string;
-    bannerStyle: string;
-    bannerCmdStyle: string;
-    lockStyles: boolean;
-
-    bannerHoverEffect: boolean;
-    showRepoLinks: boolean;
-    showExport: boolean;
-
-    fpsImportProps: string;
-
-    fullPanelAudience : IExpandAudiences;
-    replacePanelHTML : any;  //This is the jsx sent to panel for User controled information (aka what reader will see when clicking 'info' button)
-
-    //These are added for the minimum User Panel component ( which turns into the replacePanelHTML component )
-    panelMessageDescription1: string; //
-    panelMessageSupport: string;
-    panelMessageDocumentation: string;
-    panelMessageIfYouStill: string;
-    documentationLinkDesc: string;
-    documentationLinkUrl: string;
-    documentationIsValid: boolean;
-    supportContacts: IPropertyFieldGroupOrPerson[];
-
-    //ADDED FOR WEBPART HISTORY:  
-    webpartHistory: IWebpartHistory;
-
-
-    showTricks: boolean;
-
-    // }
-
-    //Section 16 - FPS Options group
-    searchShow: boolean;
-    fpsPageStyle: string;
-    fpsContainerMaxWidth: string;
-    quickLaunchHide: boolean;
-
-    //FPS Options part II
-    pageHeaderHide: boolean;
-    allSectionMaxWidthEnable: boolean;
-    allSectionMaxWidth: number;
-    allSectionMarginEnable: boolean;
-    allSectionMargin: number;
-    toolBarHide: boolean;
-
-    
+   
   }

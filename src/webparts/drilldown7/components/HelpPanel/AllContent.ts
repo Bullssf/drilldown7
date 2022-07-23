@@ -1,30 +1,20 @@
 
-import { whyContent } from './Whyme';  //2022-01-31: Added Pivot Tiles
-import { aboutTable } from './About';
-import { gettingStartedContent } from './GettingStarted';
-import { errorsContent } from './Errors';
-import { advancedContent } from './Advanced';
-import { futureContent } from './FuturePlans';
-import { basicsContent } from './Basics';
-import { tricksTable } from './Tricks';
-import { getRandomTip, webParTips } from './Tips';
 import { IWebpartBannerProps } from '@mikezimm/npmfunctions/dist/HelpPanelOnNPM/onNpm/bannerProps';
+import { IBannerPages } from '@mikezimm/npmfunctions/dist/HelpPanelOnNPM/onNpm/bannerProps';
 
-//this is on npm
-export interface IBannerPages {
+import { tricksTable } from '@mikezimm/npmfunctions/dist/CoreFPS/ReusaableTricks';
 
-	whyContent: any;
-	aboutTable: any;
-	gettingStartedContent: any;
-	errorsContent: any;
-	advancedContent: any;
-	futureContent: any;
-	basicsContent: any;
-	tricksTable: any;
-	getRandomTip: any;
-	webParTips: any[];
+import { aboutTable } from './About';
+import { advancedContent } from './Advanced';
 
-}
+import { basicsContent } from './Basics';
+import { errorsContent } from './Errors';
+
+import { futureContent } from './FuturePlans';
+import { gettingStartedContent } from './GettingStarted';
+
+import { getRandomTip, webParTips } from './Tips';
+import { whyContent } from './Whyme';  //2022-01-31: Added Pivot Tiles
 
 export function getBannerPages ( bannerProps: IWebpartBannerProps ) {
 
@@ -36,7 +26,10 @@ export function getBannerPages ( bannerProps: IWebpartBannerProps ) {
         advancedContent:  advancedContent( bannerProps.gitHubRepo),
         futureContent:  futureContent( bannerProps.gitHubRepo),
         basicsContent: basicsContent( bannerProps.gitHubRepo),
-        tricksTable:  tricksTable( bannerProps.gitHubRepo),
+
+        // tricksTable( showScenario, showTool, showGulp, showAllowOther, showCrazy, showCreate ); all booleans
+        tricksTable:  tricksTable( true, true, true, false, false, false ),
+
         getRandomTip:  getRandomTip( bannerProps.gitHubRepo),
         webParTips:  webParTips,
     };

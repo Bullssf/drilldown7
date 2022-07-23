@@ -78,7 +78,6 @@ import Cssreactbarchart from '../CssCharts/Cssreactbarchart';
 import {buildCountChartsObject ,  buildStatChartsArray} from '../CssCharts/cssChartFunctions';
 
 import { getAppropriateViewFields, getAppropriateViewGroups, getAppropriateViewProp } from './listFunctions';
-import { WebPartHelpElement } from '../PropPaneHelp/drillPropPaneHelp';
 
 import { ProgressIndicator } from 'office-ui-fabric-react/lib/ProgressIndicator';
 
@@ -86,9 +85,11 @@ import { IWebpartBannerProps, } from '@mikezimm/npmfunctions/dist/HelpPanelOnNPM
 
 import WebpartBanner from "@mikezimm/npmfunctions/dist/HelpPanelOnNPM/banner/onLocal/component";
 
-import { getWebPartHelpElement } from '../PropPaneHelp/PropPaneHelp';
+import { IBannerPages } from '@mikezimm/npmfunctions/dist/HelpPanelOnNPM/onNpm/bannerProps';
 
-import { getBannerPages, IBannerPages } from '../HelpPanel/AllContent';
+import { getWebPartHelpElement } from '../../CoreFPS/PropPaneHelp';
+
+import { getBannerPages, } from '../HelpPanel/AllContent';
 
 import { IDrillItemInfo } from '@mikezimm/npmfunctions/dist/WebPartInterfaces/DrillDown/IDrillItem';
 import { defaultBannerCommandStyles } from '@mikezimm/npmfunctions/dist/HelpPanelOnNPM/onNpm/defaults';
