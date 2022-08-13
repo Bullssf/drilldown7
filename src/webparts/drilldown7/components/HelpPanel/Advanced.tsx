@@ -1,7 +1,5 @@
 import * as React from 'react';
 
-import styles from '../banner/SinglePage/InfoPane.module.scss';
-
 import * as devLinks from '@mikezimm/npmfunctions/dist/Links/LinksDevDocs';
 
 import { IRepoLinks } from '@mikezimm/npmfunctions/dist/Links/CreateLinks';
@@ -10,6 +8,8 @@ import { convertIssuesMarkdownStringToSpan } from '@mikezimm/npmfunctions/dist/E
 
 export function advancedContent( repoLinks: IRepoLinks ) {
 
+//Returning null because it should be in the prop pane helper now
+return null;
 
 
 /**
@@ -55,25 +55,6 @@ export function advancedContent( repoLinks: IRepoLinks ) {
     </div>;
 
 return { html1: thisPage };
-
-let messageRows = [];
- 
-// messageRows.push( <tr><td></td><td></td><td></td></tr> );
-messageRows.push( <tr><td>Open Site Admin Permissions</td><td>CTRL-Click <strong>Admins</strong> tab</td><td>Only available to Site Admins when in <strong>Groups</strong> or <strong>Permissions</strong> tabs.</td></tr> );
-let rows: Element[] = [];
-
-    messageRows.push( <tr></tr> );
-
-    thisPage = <div>
-        <h2></h2>
-        <table className={styles.infoTable} style={{ width: '100%' }}>
-            <tr><th>Info</th><th>Example</th><th>Details</th></tr>
-            { messageRows }
-        </table>
-    </div>;
-
-
-    return { html1: thisPage };
 
 }
   

@@ -13,7 +13,7 @@ import { IContentsListInfo, IMyListInfo, IServiceLog, IContentsLists } from '../
 
 import { IDrillItemInfo } from '@mikezimm/npmfunctions/dist/WebPartInterfaces/DrillDown/IDrillItem';
 
-import { IDrillList, pivCats } from  './drillComponent';
+import { IDrillList, } from  './IDrillProps';
 
 
 import { changes, IMyFieldTypes } from '../../../../services/listServices/columnTypes'; //Import view arrays for Time list
@@ -167,6 +167,7 @@ export function processAllItems( allItems : IDrillItemInfo[], errMessage: string
              */
             if ( drillList.selectColumns.length > 0 ) {
                 drillList.selectColumns.map( expCol => {
+                    if ( expCol ) { expCol = expCol.trim(); }
                     if (expCol.indexOf('/') > -1 ) {
                         let oldCol = expCol.split('/');
                         let newProp = oldCol.join('');
@@ -320,8 +321,14 @@ export function processAllItems( allItems : IDrillItemInfo[], errMessage: string
                     item[msColumnStr] = item[msColumnNoSlash][0];
                     if ( typeof item[msColumnStr] === 'number'  ) { item[msColumnStr] = item[msColumnStr].toString(); }
                 } else {
+
                     //Added number to this join because numbers can be joined into a string.
-                    if (  typeof item[msColumnNoSlash][0] === 'string' || typeof item[msColumnNoSlash][0] === 'number' ) {
+
+                    //Added this first if for https://github.com/mikezimm/drilldown7/issues/136
+                    if (  item[msColumnNoSlash].length === 0 ) {
+                        item [msColumnStr ] = drillList.emptyRefiner ;
+
+                    } else if (  typeof item[msColumnNoSlash][0] === 'string' || typeof item[msColumnNoSlash][0] === 'number' ) {
                         item [msColumnStr ] = item[msColumnNoSlash].join('; ');
 
                     } else {
@@ -762,10 +769,18 @@ export function getItemRefiners( drillList: IDrillList, item: IDrillItemInfo ) {
 
                 if ( Array.isArray( fieldValue ) === true ) {
                     itemRefiners['lev' + i] = [];
-                    fieldValue.map( singleValue => {
-                        let possibleValue = getRefinerFromField( singleValue , thisRuleSet , drillList.emptyRefiner );
-                        itemRefiners['lev' + i] = addItemToArrayIfItDoesNotExist( itemRefiners['lev' + i] , possibleValue[0] );
-                    });
+
+                    //Added this first if for https://github.com/mikezimm/drilldown7/issues/136
+                    if ( fieldValue.length === 0 ) {
+                        itemRefiners['lev' + i] = [drillList.emptyRefiner];
+
+                    } else {
+                        fieldValue.map( singleValue => {
+                            let possibleValue = getRefinerFromField( singleValue , thisRuleSet , drillList.emptyRefiner );
+                            itemRefiners['lev' + i] = addItemToArrayIfItDoesNotExist( itemRefiners['lev' + i] , possibleValue[0] );
+                        });
+                    }
+
                     
                 } else {
                     itemRefiners['lev' + i] = getRefinerFromField( fieldValue , thisRuleSet , drillList.emptyRefiner );

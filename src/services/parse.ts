@@ -19,7 +19,8 @@ import { GetFirstWord, GetLastWord } from '@mikezimm/npmfunctions/dist/Services/
  */
 
 
-import { getDetailValueType } from '@mikezimm/npmfunctions/dist/Services/typeServices';
+import { getDetailValueType } from '../webparts/drilldown7/fpsReferences';
+import { truncate } from '@microsoft/sp-lodash-subset';
 
 export const DidNotTrim = 'NothingChanged';
 
@@ -186,30 +187,68 @@ export function createItemFunctionProp ( staticColumn: string, item: any, defaul
       
       //Hanlde FirstWord
       } else if ( rightSideLC === 'FirstWord'.toLowerCase() ) {
-        singleItemValue = GetFirstWord( trimmedItem, false, false );
-  
+        singleItemValue = GetFirstWord( trimmedItem, false, false, false );
+
+      //Hanlde FirstWord
+      } else if ( rightSideLC === 'FirstWord2C'.toLowerCase() ) {
+        singleItemValue = GetFirstWord( trimmedItem, false, false, false );
+        singleItemValue = singleItemValue.substring(0,2);
+
+      //Hanlde FirstWord
+      } else if ( rightSideLC === 'FirstWord3C'.toLowerCase() ) {
+        singleItemValue = GetFirstWord( trimmedItem, false, false, false );
+        singleItemValue = singleItemValue.substring(0,3);
+
+      //Hanlde FirstWord
+      } else if ( rightSideLC === 'FirstWord4C'.toLowerCase() ) {
+        singleItemValue = GetFirstWord( trimmedItem, false, false, false );
+        singleItemValue = singleItemValue.substring(0,4);
+
+              //Hanlde FirstWord
+      } else if ( rightSideLC === 'FirstWordNoNum2C'.toLowerCase() ) {
+        singleItemValue = GetFirstWord( trimmedItem, false, false, true );
+        singleItemValue = singleItemValue.substring(0,2);
+
+      //Hanlde FirstWord
+      } else if ( rightSideLC === 'FirstWordNoNum3C'.toLowerCase() ) {
+        singleItemValue = GetFirstWord( trimmedItem, false, false, true );
+        singleItemValue = singleItemValue.substring(0,3);
+
+      //Hanlde FirstWord
+      } else if ( rightSideLC === 'FirstWordNoNum4C'.toLowerCase() ) {
+        singleItemValue = GetFirstWord( trimmedItem, false, false, true );
+        singleItemValue = singleItemValue.substring(0,4);
+
+      //Hanlde FirstWord
+      } else if ( rightSideLC === 'FirstWordNoNum'.toLowerCase() ) {
+        singleItemValue = GetFirstWord( trimmedItem, false, false, true );
+
       //Hanlde LastWord
       } else if ( rightSideLC === 'LastWord'.toLowerCase() ) {
-        singleItemValue = GetLastWord( trimmedItem, false, false  );
+        singleItemValue = GetLastWord( trimmedItem, false, false, false );
+
+      //Hanlde LastWord
+    } else if ( rightSideLC === 'LastWordNoNum'.toLowerCase() ) {
+      singleItemValue = GetLastWord( trimmedItem, false, false, true );
 
       //Hanlde FirstWord
       } else if ( rightSideLC === 'FirstLetter'.toLowerCase() ) {
-        singleItemValue = GetFirstWord( trimmedItem, false, true );
+        singleItemValue = GetFirstWord( trimmedItem, false, true, false );
 
       } else if ( rightSideLC === 'FirstLetterAsCap'.toLowerCase() ) {
-        singleItemValue = GetFirstWord( trimmedItem, true, true );
+        singleItemValue = GetFirstWord( trimmedItem, true, true, false );
 
       } else if ( rightSideLC === 'FirstInFirst'.toLowerCase() ) {
-        singleItemValue = GetFirstWord( trimmedItem, false, true  );
+        singleItemValue = GetFirstWord( trimmedItem, false, true, false  );
 
       } else if ( rightSideLC === 'FirstInFirstAsCap'.toLowerCase() ) {
-        singleItemValue = GetFirstWord( trimmedItem, true, true  );
+        singleItemValue = GetFirstWord( trimmedItem, true, true, false  );
 
       } else if ( rightSideLC === 'FirstInLast'.toLowerCase() ) {
-        singleItemValue = GetLastWord( trimmedItem, false, true );
+        singleItemValue = GetLastWord( trimmedItem, false, true, false );
   
       } else if ( rightSideLC === 'FirstInLastAsCap'.toLowerCase() ) {
-        singleItemValue = GetLastWord( trimmedItem, true, true );
+        singleItemValue = GetLastWord( trimmedItem, true, true, false );
   
       } else if ( rightSideLC === 'Initials'.toLowerCase() ) {
         singleItemValue = getInitials( trimmedItem, false, false ); 
@@ -387,7 +426,7 @@ export function TrimAfterThis( str: string, parser: string ) {
  * @param str 
  * 
  */
-export function GetFirstWord( str: string, asCaps: boolean, justInitial: boolean ) {
+export function GetFirstWord( str: string, asCaps: boolean, justInitial: boolean, removeDigits: boolean ) {
 
   if ( !str ) { return str; }
   if ( typeof str !== 'string' ) { return str; }
@@ -401,6 +440,11 @@ export function GetFirstWord( str: string, asCaps: boolean, justInitial: boolean
   } else {
       newValue = newValue.split(/\W/gm)[0] ;
   }
+
+  if ( removeDigits === true ) {
+    newValue = newValue.replace(/[0-9]/g,'');
+  }
+
   if ( justInitial === true ) { newValue = newValue.charAt(0) ; }
 
   if ( asCaps === true ) {
@@ -427,7 +471,7 @@ export function GetFirstWord( str: string, asCaps: boolean, justInitial: boolean
  * This will get the LAST 'word' consisting of letters and/or numbers, even if the last word is only 1 char/digit
  * @param str 
  */
-export function GetLastWord( str: string, asCaps: boolean, justInitial: boolean  ) {
+export function GetLastWord( str: string, asCaps: boolean, justInitial: boolean, removeDigits: boolean  ) {
 
   if ( !str ) { return str; }
   if ( typeof str !== 'string' ) { return str; }
@@ -441,9 +485,13 @@ export function GetLastWord( str: string, asCaps: boolean, justInitial: boolean 
   } else {
       newValue = newValue.split(/\W/gm)[0] ;
   }
-  
-  if ( justInitial === true ) { newValue = newValue.charAt(0) ; }
 
+  if ( removeDigits === true ) {
+    newValue = newValue.replace(/[0-9]/g,'');
+  }
+
+  if ( justInitial === true ) { newValue = newValue.charAt(0) ; }
+  
   if ( asCaps === true ) {
     newValue = newValue.toLocaleUpperCase();
   }

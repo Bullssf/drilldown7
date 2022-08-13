@@ -1,8 +1,7 @@
 
-import { ICSSChartDD } from '../../drilldown7/components/IReUsableInterfaces';
+import { ICSSChartDD } from '../../drilldown7/fpsReferences';
 
-import { IRefinerLayer, IRefiners, IItemRefiners, IRefinerStats, RefineRuleValues,
-  IRefinerRules, IRefinerStatType, RefinerStatTypes, IRefinerStat } from '@mikezimm/npmfunctions/dist/Refiners/IRefiners';
+import { IRefinerLayer, IRefinerStat } from '../../drilldown7/fpsReferences';
 
 //For Webpart Title component
 import { DisplayMode } from '@microsoft/sp-core-library';

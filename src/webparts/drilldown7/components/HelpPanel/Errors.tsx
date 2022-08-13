@@ -1,13 +1,6 @@
 import * as React from 'react';
 
-import styles from '../banner/SinglePage/InfoPane.module.scss';
-
-//import { IHelpTableRow, IHelpTable, IPageContent, ISinglePageProps } from '../Component/ISinglePageProps';
-import { IHelpTableRow, IHelpTable, IPageContent, ISinglePageProps } from '../banner/SinglePage/ISinglePageProps';
-
 import { IRepoLinks } from '@mikezimm/npmfunctions/dist/Links/CreateLinks';
-
-import { convertIssuesMarkdownStringToSpan } from '@mikezimm/npmfunctions/dist/Elements/Markdown';
 
 export function errorsContent( repoLinks: IRepoLinks ) {
 
@@ -15,6 +8,9 @@ export function errorsContent( repoLinks: IRepoLinks ) {
     let messageRows = [];
 
     messageRows.push( <tr><td>Refiner just shows "All"</td><td>  </td><td>Refiner Rule must be compatible with the refiner.  For instance, you can't have a date rule for a person field.</td></tr> );
+    messageRows.push( <tr><td></td><td>  </td><td>Check for extra 'space' characters in the refiner string.  NOTE as of #135, removing all spaces from refiners and viewField 'name' and 'linkPropertyName' strings before passing to react component.</td></tr> );
+
+
     messageRows.push( <tr><td>Dates formatted as <b>YYYY-MM</b></td><td>  </td><td><b>Any Calc or Choice column values</b> that could be interpreted as a Date, should use <b>Refiner Rule: groupByString</b>.  If not, it will convert it to a UTC date which may be shifted from the expected YYYY-MM</td></tr> );
     messageRows.push( <tr><td>List says x Items but is empty</td><td>  </td><td>Make sure List Views are set up with fields</td></tr> );
     messageRows.push( <tr><td>Refiner Summary Stack order</td><td>  </td><td>When you have refiner in date format MMM or DDD (like Jan Feb Mar), refiners are sorted in logical order but stacked bar chart is sorted alphabetically.  Given this is not used as much, adds a lot of complexity, it is not on the roadmap to correct.</td></tr> );
@@ -28,7 +24,7 @@ export function errorsContent( repoLinks: IRepoLinks ) {
 
     thisPage = <div>
         <h2></h2>
-        <table className={styles.infoTable} style={{ width: '100%' }}>
+        <table className={ 'single-page-info-table' } style={{ width: '100%' }}>
             <tr><th style={{ minWidth: '200px' }}>Issue</th><th>Links</th><th>Notes</th></tr>
             { messageRows }
         </table>
@@ -46,7 +42,7 @@ export function errorsContent( repoLinks: IRepoLinks ) {
 */
 
     let html1 =
-        <div className={ styles.infoPane }>
+        <div className={ 'single-page-info-pane' }>
             { thisPage }
         </div>;
         

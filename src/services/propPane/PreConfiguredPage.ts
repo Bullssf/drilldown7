@@ -17,12 +17,11 @@ import {
   import * as strings from 'Drilldown7WebPartStrings';
   import { pivotOptionsGroup} from './index';
   
-  
   import * as links from '@mikezimm/npmfunctions/dist/Links/LinksRepos';   //              { links.gitRepoDrilldown7WebPart.issues }
   
-  import { IDrilldown7WebPartProps } from '../../webparts/drilldown7/Drilldown7WebPart';
+  import { IDrilldown7WebPartProps } from '../../webparts/drilldown7/IDrilldown7WebPartProps';
   
-  import { buildKeyText, refinerRuleItems } from '@mikezimm/npmfunctions/dist/Refiners/functions';
+  import { buildKeyText, refinerRuleItems } from '../../webparts/drilldown7/fpsReferences';
   /*
   
     // 1 - Analytics options

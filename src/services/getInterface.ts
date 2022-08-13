@@ -17,15 +17,18 @@
 
     // InitialsAsCaps, 1nitials, 1nitialsAsCaps
 
-  export type ITrimSpecial = 'FirstWord' | 'LastWord' | 'FirstLetter' | 'FirstLetterAsCap' | 'FirstNumber' | 'Initials' | 'InitialsAsCaps' | 'InitialsD' | 'InitialsAsCapsD' | 'FirstInFirst' | 'FirstInLast'  | 'FirstInFirstAsCap' | 'FirstInLastAsCap' | 'FirstAcronym' | 'SecondAcronym';
+  export type ITrimWords = 'FirstWord' | 'FirstWordNoNum' | 'FirstWord2C' | 'FirstWord3C' |  'FirstWord4C' | 'FirstWordNoNum2C' | 'FirstWordNoNum3C' |  'FirstWordNoNum4C' | 'LastWord' | 'LastWordNoNum' ;
+  export const DoNotExpandTrimWords : ITrimWords[] = [ 'FirstWord', 'FirstWordNoNum', 'FirstWord2C' , 'FirstWord3C' , 'FirstWord4C', 'FirstWordNoNum2C' , 'FirstWordNoNum3C' , 'FirstWordNoNum4C' ,'LastWord', 'LastWordNoNum' , ];
   
-  export const DoNotExpandTrimSpecial : ITrimSpecial[] = [ 'FirstWord', 'LastWord', 'FirstLetter', 'FirstLetterAsCap', 'FirstNumber', 'Initials', 'InitialsAsCaps', 'InitialsD', 'InitialsAsCapsD', 'FirstInFirst', 'FirstInLast', 'FirstInFirstAsCap', 'FirstInLastAsCap', 'FirstAcronym', 'SecondAcronym', ];
+  export type ITrimSpecial = 'FirstLetter' | 'FirstLetterAsCap' | 'FirstNumber' | 'Initials' | 'InitialsAsCaps' | 'InitialsD' | 'InitialsAsCapsD' | 'FirstInFirst' | 'FirstInLast'  | 'FirstInFirstAsCap' | 'FirstInLastAsCap' | 'FirstAcronym' | 'SecondAcronym';
+  
+  export const DoNotExpandTrimSpecial : ITrimSpecial[] = [  'FirstLetter', 'FirstLetterAsCap', 'FirstNumber', 'Initials', 'InitialsAsCaps', 'InitialsD', 'InitialsAsCapsD', 'FirstInFirst', 'FirstInLast', 'FirstInFirstAsCap', 'FirstInLastAsCap', 'FirstAcronym', 'SecondAcronym', ];
 
-  export type ITrimFunctions = ITrimB4 | ITrimAfter | ITrimSpecial;
+  export type ITrimFunctions = ITrimB4 | ITrimAfter | ITrimWords | ITrimSpecial;
 
-  export type IDoNotExpandColumns = ITrimLink | ITrimB4 | ITrimAfter | ITrimSpecial;
+  export type IDoNotExpandColumns = ITrimLink | ITrimB4 | ITrimAfter | ITrimWords | ITrimSpecial;
 
-   export const DoNotExpandFuncColumns : ITrimFunctions[] = [ ...DoNotExpandTrimB4, ...DoNotExpandTrimAfter, ...DoNotExpandTrimSpecial ];
+   export const DoNotExpandFuncColumns : ITrimFunctions[] = [ ...DoNotExpandTrimB4, ...DoNotExpandTrimAfter, ...DoNotExpandTrimWords, ...DoNotExpandTrimSpecial ];
 
    export const DoNotExpandColumns : string[] = [ ...DoNotExpandLinkColumns, ...DoNotExpandFuncColumns ];
 

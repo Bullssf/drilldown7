@@ -3,21 +3,22 @@ import styles from './Cssreactbarchart.module.scss';
 import { ICssreactbarchartProps, ICssreactbarchartState } from './ICssreactbarchartProps';
 
 import { getRandomInt, getRandomChance, getRandomFromArray, randomDate, generateVals, generateTitles }
-    from '@mikezimm/npmfunctions/dist/Services/randomServices';
+    from '../../fpsReferences';
 
 import { sortStringArray, sortObjectArrayByStringKey, sortNumberArray, sortObjectArrayByNumberKey, sortKeysByOtherKey 
-} from '@mikezimm/npmfunctions/dist/Services/Arrays/sorting';
+} from '../../fpsReferences';
 
 //Manipulation
 import { expandArray, spliceCopyArray, addItemToArrayIfItDoesNotExist, convertNumberArrayToRelativePercents,
   removeItemFromArrayOnce, removeItemFromArrayAll, updateNextOpenIndex 
-  } from '@mikezimm/npmfunctions/dist/Services/Arrays/manipulation';
+  } from '../../fpsReferences';
 
-import { ICSSChartSettings, ICSSChartData, ICSSChartTypes, CSSChartTypes, ISeriesSort } from '../IReUsableInterfaces';
+import { ICSSChartSettings, ICSSChartData } from '../Drill/IDrillProps';
+import { ICSSChartTypes, ISeriesSort, CSSChartTypes } from '../../fpsReferences';
 
 import stylesC from './cssChart.module.scss';
 
-import { ColorsBlue, ColorsBrown, ColorsGray, ColorsGreen, ColorsRed } from '@mikezimm/npmfunctions/dist/CSSCharts/themes';
+import { ColorsBlue, ColorsBrown, ColorsGray, ColorsGreen, ColorsRed } from '../../fpsReferences';
 
 /***
  *    d888888b d8b   db d888888b d88888b d8888b. d88888b  .d8b.   .o88b. d88888b .d8888. 
