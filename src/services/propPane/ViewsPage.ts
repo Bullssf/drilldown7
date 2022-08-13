@@ -15,16 +15,9 @@ import {
   
   import { JSON_Edit_Link } from './zReusablePropPane';
 
-  import { PropertyFieldMultiSelect } from '@pnp/spfx-property-controls/lib/PropertyFieldMultiSelect';
-  
-  import * as strings from 'Drilldown7WebPartStrings';
-  import { pivotOptionsGroup} from './index';
-  
-  import * as links from '@mikezimm/npmfunctions/dist/Links/LinksRepos';   //              { links.gitRepoDrilldown7WebPart.issues }
-  
   import { IDrilldown7WebPartProps } from '../../webparts/drilldown7/IDrilldown7WebPartProps';
 
-  import { buildKeyText, refinerRuleItems } from '@mikezimm/npmfunctions/dist/Refiners/functions';
+  import { buildKeyText, refinerRuleItems } from '../../webparts/drilldown7/fpsReferences';
   
   export class ViewsPage {
     public getPropertyPanePage(webPartProps: IDrilldown7WebPartProps ): IPropertyPanePage {

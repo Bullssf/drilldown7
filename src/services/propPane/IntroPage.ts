@@ -20,12 +20,11 @@ import { PropertyFieldMultiSelect } from '@pnp/spfx-property-controls/lib/Proper
 import * as strings from 'Drilldown7WebPartStrings';
 import { pivotOptionsGroup} from './index';
 
-import { FPSOptionsGroup, FPSBanner2Group } from '@mikezimm/npmfunctions/dist/Services/PropPane/FPSOptionsGroup';
+import { FPSOptionsGroup, FPSBanner2Group } from '../../webparts/drilldown7/fpsReferences';
 import * as links from '@mikezimm/npmfunctions/dist/Links/LinksRepos';   //              { links.gitRepoDrilldown7WebPart.issues }
-import { createLink } from '@mikezimm/npmfunctions/dist/Links/CreateLinks';
-import { IDrilldown7WebPartProps } from '../../webparts/drilldown7/IDrilldown7WebPartProps';
 
-import { buildKeyText, refinerRuleItems } from '@mikezimm/npmfunctions/dist/Refiners/functions';
+import { IDrilldown7WebPartProps } from '../../webparts/drilldown7/IDrilldown7WebPartProps';
+import { buildKeyText, refinerRuleItems } from '../../webparts/drilldown7/fpsReferences';
 
 /*
 

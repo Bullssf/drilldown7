@@ -19,7 +19,7 @@ import { GetFirstWord, GetLastWord } from '@mikezimm/npmfunctions/dist/Services/
  */
 
 
-import { getDetailValueType } from '@mikezimm/npmfunctions/dist/Services/typeServices';
+import { getDetailValueType } from '../webparts/drilldown7/fpsReferences';
 import { truncate } from '@microsoft/sp-lodash-subset';
 
 export const DidNotTrim = 'NothingChanged';

@@ -1,4 +1,4 @@
-import { ICSSChartSettings, ICSSChartData, ICSSChartTypes } from '../IReUsableInterfaces';
+import { ICSSChartSettings, ICSSChartData } from '../Drill/IDrillProps';
 
 export interface ICssreactbarchartProps {
   chartData?: ICSSChartData[];

@@ -5,18 +5,8 @@ import { IPreConfigSettings, IAllPreConfigSettings } from '@mikezimm/npmfunction
 import { encrptMeOriginalTest } from '@mikezimm/npmfunctions/dist/HelpPanelOnNPM/onNpm/logTest';
 import { ContALVFMContent, ContALVFMWebP } from '@mikezimm/npmfunctions/dist/HelpPanelOnNPM/onNpm/constants';
 
-const FinancialManualContacts: IPropertyFieldGroupOrPerson = {
-    id: '1',
-    description: '',
-    fullName: 'Financial Manual Support team',
-    login: '',
-    email: `ae57524a.${window.location.hostname}.onmicrosoft.com@amer.teams.ms`,
-    // jobTitle?: string;
-    // initials?: string;
-    imageUrl: null,
-};
-
 export const ForceEverywhere : IPreConfigSettings = {
+    source: 'ForceEverywhere',
     location: '*',
     props: {
         // relatedStyle: '',
@@ -36,6 +26,7 @@ export const ForceEverywhere : IPreConfigSettings = {
 };
 
 export const PresetEverywhere : IPreConfigSettings = {
+    source: 'PresetEverywhere',
     location: '*',
     props: {
 
@@ -70,6 +61,7 @@ export const PresetEverywhere : IPreConfigSettings = {
 };
 
 export const ForceFinancialManualColl : IPreConfigSettings = {
+    source: 'ForceFinancialManualColl',
     location: '/sites/financemanual/',
     props: {
         // Web part styling props that are not preset in manifest.json
@@ -79,6 +71,7 @@ export const ForceFinancialManualColl : IPreConfigSettings = {
 };
 
 export const ForceFinancialManualSubSite : IPreConfigSettings = {
+    source: 'ForceFinancialManualSubSite',
     location: '/sites/financemanual/manual/',
     props: {
 
@@ -86,6 +79,7 @@ export const ForceFinancialManualSubSite : IPreConfigSettings = {
 };
 
 export const PresetFinancialManual : IPreConfigSettings = {
+    source: 'PresetFinancialManual',
     location: '/sites/financemanual/',
     props: {
         homeParentGearAudience: 'Everyone',
@@ -93,6 +87,7 @@ export const PresetFinancialManual : IPreConfigSettings = {
 };
 
 export const PresetSomeRandomSite : IPreConfigSettings = {
+    source: 'PresetSomeRandomSite',
     location: '/sites/SomeRandomSite/',
     props: {
         homeParentGearAudience: 'Some Test Value',

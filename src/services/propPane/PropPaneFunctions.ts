@@ -7,7 +7,7 @@ import "@pnp/sp/clientside-pages/web";
 import { ClientsideWebpart } from "@pnp/sp/clientside-pages";
 import { CreateClientsidePage, PromotedState, ClientsidePageLayoutType, ClientsideText,  } from "@pnp/sp/clientside-pages";
 
-import { getHelpfullError } from '@mikezimm/npmfunctions/dist/Services/Logging/ErrorHandler';
+import { getHelpfullError } from '../../webparts/drilldown7/fpsReferences';
 
 import { IViewLog, addTheseViews } from '../../services/listServices/viewServices'; //Import view arrays for Time list
 

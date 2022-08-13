@@ -1,6 +1,6 @@
-import { IDrillDownState } from '../Drill/drillComponent';
+import { IDrillDownState } from '../Drill/IDrillProps';
 
-import { IDrillDownProps } from '../Drill/drillComponent';
+import { IDrillDownProps } from '../Drill/IDrillProps';
 
 import { IFieldDef } from '@mikezimm/npmfunctions/dist/Fields/Interfaces';
 

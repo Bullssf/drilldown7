@@ -1,40 +1,43 @@
 
 import { PageContext } from '@microsoft/sp-page-context';
-import { IMyProgress,  ICSSChartDD } from './components/IReUsableInterfaces';
-import { IDrillDownProps, IWhenToShowItems } from './components/Drill/drillComponent';
+import { IMyProgress, } from './fpsReferences';
+import { IWhenToShowItems } from './components/Drill/IDrillProps';
 import { ICssChartProps } from '../cssChart/components/ICssChartProps';
-import { IExpandAudiences } from "@mikezimm/npmfunctions/dist/Services/PropPane/FPSOptionsExpando";
-import { ISupportedHost } from "@mikezimm/npmfunctions/dist/Services/PropPane/FPSInterfaces";
 
-import { IPropertyFieldGroupOrPerson } from "@pnp/spfx-property-controls/lib/PropertyFieldPeoplePicker";
-import { IWebpartHistory, IWebpartHistoryItem2, } from '@mikezimm/npmfunctions/dist/Services/PropPane/WebPartHistoryInterface';
+/***
+ * NOTE:  All imports in here Must be imported directly from npmFunctions, not the fpsPreferences
+ * Or else it will get into an endless loop because these values are imported into fpsPreferences
+ * 
+ */
+ import { exportIgnorePropsFPS, } from '@mikezimm/npmfunctions/dist/HelpPanelOnNPM/onNpm/BannerInterface';
+ import { importBlockPropsFPS } from '@mikezimm/npmfunctions/dist/HelpPanelOnNPM/onNpm/BannerInterface';
+ 
+ import { IMinBannerUIProps, IMinPinMeProps, IMinPandoramicProps, IMinBannerThemeProps, IMinCustomHelpProps, 
+   IMinPageStyleProps, IMinBannerUtilityProps, IMinFPSLegacyProps } from "@mikezimm/npmfunctions/dist/HelpPanelOnNPM/onNpm/BannerInterface";
 
+   
+//Specific for this web part
+export const exportIgnorePropsThis : string[] = [ ];
 
-import { exportIgnorePropsFPS, importBlockPropsFPS } from '@mikezimm/npmfunctions/dist/WebPartInterfaces/ImportProps';
-import { IMinWPBannerProps } from "@mikezimm/npmfunctions/dist/HelpPanelOnNPM/onNpm/BannerSetup";
+export const exportIgnoreProps : string[] = [ ...exportIgnorePropsFPS, ...exportIgnorePropsThis  ];
 
-  //Specific for this web part
-  export const exportIgnorePropsThis = [ ];
+//These props will not be imported even if they are in one of the change arrays above (fail-safe)
+//This was done so user could not manually insert specific props to over-right fail-safes built in to the webpart
 
-  export const exportIgnoreProps = [ ...exportIgnorePropsFPS, ...exportIgnorePropsThis  ];
+//Specific for this web part
+export const importBlockPropsThis : string[] = [ 'showSomeProps' ];
 
-  //These props will not be imported even if they are in one of the change arrays above (fail-safe)
-  //This was done so user could not manually insert specific props to over-right fail-safes built in to the webpart
+export const importBlockProps : string[] = [ ...importBlockPropsFPS, ...importBlockPropsThis ];
 
-  //Specific for this web part
-  export const importBlockPropsThis = [ 'showSomeProps' ];
+export const changePropertyGroupX : string[] = [ 'showSomeProps', 'showCustomProps' , 'showOOTBProps' , 'showApprovalProps' , 'propsTitleField', 'propsExpanded', 'selectedProperties' ];
 
-  export const importBlockProps = [ ...importBlockPropsFPS, ...importBlockPropsThis ];
+// export interface IFpsCore114BannerWebPartProps extends IMinWPBannerProps {
+  /**
+   * Extend with portions of FPS Props that are needed
+   * 
+   */
 
-  //This will be in npmFunctions > Services/PropPane/FPSOptionsExpando in next release.
-  //  export type IExpandAudiences = 'Site Admins' | 'Site Owners' | 'Page Editors' | 'WWWone';
-
-
-  export const changeRelated1 = [ 'related1heading', 'related1showItems' , 'related1isExpanded' , 'related1web' , 'related1listTitle', 'related1restFilter', 'related1linkProp', 'related1displayProp', 'relatedStyle' ];
-
-  export const changeWebPartStyles = [ 'h1Style', 'h2Style' ,'h3Style' , 'pageInfoStyle', 'tocStyle', 'propsStyle' ];
-
-export interface IDrilldown7WebPartProps extends IMinWPBannerProps {
+  export interface IDrilldown7WebPartProps  extends IMinBannerUIProps, IMinPinMeProps, IMinPandoramicProps, IMinBannerThemeProps, IMinCustomHelpProps, IMinPageStyleProps, IMinBannerUtilityProps, IMinFPSLegacyProps {
 
     description: string;
   

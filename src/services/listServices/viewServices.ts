@@ -13,9 +13,9 @@ import { IMyView, IViewField, Eq, Ne, Lt, Gt, Leq, Geq, IsNull, IsNotNull, Conta
 
 import { IListInfo, IMyListInfo, IServiceLog, notify, getXMLObjectFromString } from './listTypes';
 
-import { doesObjectExistInArray } from '@mikezimm/npmfunctions/dist/Services/Arrays/checks';
+import { doesObjectExistInArray } from '../../webparts/drilldown7/fpsReferences';
 
-import { getHelpfullError } from '@mikezimm/npmfunctions/dist/Services/Logging/ErrorHandler';
+import { getHelpfullError } from '../../webparts/drilldown7/fpsReferences';
 
 import "@pnp/sp/webs";
 import "@pnp/sp/lists";

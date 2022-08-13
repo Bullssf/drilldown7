@@ -11,7 +11,7 @@ import { defaultBannerCommandStyles, } from "@mikezimm/npmfunctions/dist/HelpPan
 import { IQuickCommands } from '@mikezimm/npmfunctions/dist/QuickCommands/IQuickCommands';
 
 import { IRefinerRulesStrs, IRefinerRulesInts, IRefinerRulesNums, IRefinerRulesTime, IRefinerRulesUser, IRefinerRulesEXPE, IRefinerRulesNone } from '@mikezimm/npmfunctions/dist/Refiners/IRefiners';
-import { RefinerRulesStrs, RefinerRulesInts, RefinerRulesNums, RefinerRulesTime, RefinerRulesUser, RefinerRulesEXPE, RefinerRulesNone } from '@mikezimm/npmfunctions/dist/Refiners/IRefiners';
+import { RefinerRulesStrs, RefinerRulesInts, RefinerRulesNums, RefinerRulesTime, RefinerRulesUser, RefinerRulesEXPE, RefinerRulesNone } from '../fpsReferences';
 
 import { gitRepoDrillDownSmall } from '@mikezimm/npmfunctions/dist/Links/LinksRepos';
 

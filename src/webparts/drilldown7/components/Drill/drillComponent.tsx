@@ -2,6 +2,9 @@ import * as React from 'react';
 import { WebPartContext } from '@microsoft/sp-webpart-base';
 import { DisplayMode, } from '@microsoft/sp-core-library';
 
+import { IDrillDownProps, IDrillDownState, IDrillList, IViewType, IRefinerStyles, RefinerChartTypes } from './IDrillProps';
+import { pivCats } from './IDrillProps';
+
 import { CompoundButton, Stack, IStackTokens, elementContains, initializeIcons, Icon, IIconStyles, getLanguage, FontWeights } from 'office-ui-fabric-react';
 import { SearchBox } from 'office-ui-fabric-react/lib/SearchBox';
 import { Pivot, PivotItem, IPivotItemProps, PivotLinkFormat, PivotLinkSize,} from 'office-ui-fabric-react/lib/Pivot';
@@ -21,17 +24,11 @@ import { monthStr3 } from '@mikezimm/npmfunctions/dist/Services/Time/monthLabels
 
 import styles from '../Contents/contents.module.scss';
 
-import ButtonCompound from '../createButtons/ICreateButtons';
-import { IButtonProps, ISingleButtonProps, IButtonState } from "../createButtons/ICreateButtons";
-
 import { createIconButton , defCommandIconStyles} from "../createButtons/IconButton";
-
-import { createAdvancedContentChoices } from '../fields/choiceFieldBuilder';
 
 import { IContentsToggles, makeToggles } from '../fields/toggleFieldBuilder';
 
-import { IPickedList, IPickedWebBasic, IMyPivots, IPivot,  ILink, IMyProgress, IMyIcons, IMyFonts, IChartSeries, 
-    ICharNote, ICSSChartSettings, ICSSChartData, ICSSChartTypes, } from '../IReUsableInterfaces';
+import { IMyProgress, ICSSChartTypes, IMyPivCat } from '../../fpsReferences';
 
 import { ICustViewDef } from '@mikezimm/npmfunctions/dist/Views/IListViews';
 
@@ -69,19 +66,13 @@ import { ICMDItem } from './refiners/commandBar';
 
 import stylesD from './drillComponent.module.scss';
 import {  } from '../../../../services/listServices/viewTypes';
-import { ListView, IViewField, SelectionMode, GroupOrder, IGrouping } from "@pnp/spfx-controls-react/lib/ListView";
-
-import { unstable_renderSubtreeIntoContainer } from 'react-dom';
+import { IGrouping } from "@pnp/spfx-controls-react/lib/ListView";
 
 import Cssreactbarchart from '../CssCharts/Cssreactbarchart';
 
 import {buildCountChartsObject ,  buildStatChartsArray} from '../CssCharts/cssChartFunctions';
 
 import { getAppropriateViewFields, getAppropriateViewGroups, getAppropriateViewProp } from './listFunctions';
-
-import { ProgressIndicator } from 'office-ui-fabric-react/lib/ProgressIndicator';
-
-import { IWebpartBannerProps, } from '@mikezimm/npmfunctions/dist/HelpPanelOnNPM/onNpm/bannerProps';
 
 import WebpartBanner from "@mikezimm/npmfunctions/dist/HelpPanelOnNPM/banner/onLocal/component";
 
@@ -94,370 +85,6 @@ import { getBannerPages, } from '../HelpPanel/AllContent';
 import { IDrillItemInfo } from '@mikezimm/npmfunctions/dist/WebPartInterfaces/DrillDown/IDrillItem';
 import { defaultBannerCommandStyles } from '@mikezimm/npmfunctions/dist/HelpPanelOnNPM/onNpm/defaults';
 
-import { IWebpartHistory, IWebpartHistoryItem2, } from '@mikezimm/npmfunctions/dist/Services/PropPane/WebPartHistoryInterface';
-
-import { ISitePreConfigProps, } from '@mikezimm/npmfunctions/dist/PropPaneHelp/PreConfigFunctions';
-
-export type IRefinerStyles = 'pivot' | 'commandBar' | 'other';
-
-/***
- *    d888888b      d8888b. d8888b. d888888b db      db      db      d888888b .d8888. d888888b 
- *      `88'        88  `8D 88  `8D   `88'   88      88      88        `88'   88'  YP `~~88~~' 
- *       88         88   88 88oobY'    88    88      88      88         88    `8bo.      88    
- *       88         88   88 88`8b      88    88      88      88         88      `Y8b.    88    
- *      .88.        88  .8D 88 `88.   .88.   88booo. 88booo. 88booo.   .88.   db   8D    88    
- *    Y888888P      Y8888D' 88   YD Y888888P Y88888P Y88888P Y88888P Y888888P `8888Y'    YP    
- *                                                                                             
- *                                                                                             
- */
-
-  export interface IDrillList extends Partial<IPickedList> {
-    itteration: number;
-    location: string;
-
-    language: string; // used for sorting items/refiners with local language
-    title: string;
-    name?: string;
-    guid?: string;
-    fetchCount: number;
-    fetchCountMobile: number;
-    restFilter: string;
-    hideFolders: boolean;
-    isLibrary?: boolean;
-    hasAttach: boolean;
-    webURL?: string;
-    togStats: boolean;
-    parentListURL?: string;
-    contextUserInfo?: IUser;  //For site you are on ( aka current page context )
-    sourceUserInfo?: IUser;   //For site where the list is stored
-
-    refinerInstructions: string[];
-
-    refiners: string[]; //String of Keys representing the static name of the column used for drill downs
-    emptyRefiner: string;
-    refinerRules: IRefinerRules[][];
-    refinerStats: IRefinerStat[];
-    viewDefs: ICustViewDef[];
-    staticColumns: string[];
-    selectColumns: string[];
-    expandColumns: string[];
-    staticColumnsStr: string;
-    selectColumnsStr: string;
-    expandColumnsStr: string;
-    linkColumnsStr: string;
-    multiSelectColumns: string[];
-    linkColumns: string[];
-    funcColumns: string[];
-    funcColumnsActual: string[];    
-    removeFromSelect: string[];
-
-    errors: any[];
-
-  }
-
-/***
- *    d888888b      d8888b. d888888b db    db  .o88b.  .d8b.  d888888b .d8888. 
- *      `88'        88  `8D   `88'   88    88 d8P  Y8 d8' `8b `~~88~~' 88'  YP 
- *       88         88oodD'    88    Y8    8P 8P      88ooo88    88    `8bo.   
- *       88         88~~~      88    `8b  d8' 8b      88~~~88    88      `Y8b. 
- *      .88.        88        .88.    `8bd8'  Y8b  d8 88   88    88    db   8D 
- *    Y888888P      88      Y888888P    YP     `Y88P' YP   YP    YP    `8888Y' 
- *                                                                             
- *                                                                             
- */
-
-export interface IMyPivCat {
-    title: string;
-    desc: string;
-    order: number;
-    count: number;
-}
-
-export const pivCats = {
-    all: {title: 'All', desc: '', order: 1, count: null },
-    newWebs: {title: 'New' , desc: '', order: 1, count: null },
-    recCreate:  {title: 'RecentlyCreated' , desc: '', order: 1, count: null },
-    oldCreate: {title: 'Old', desc: '', order: 9, count: null  },
-    recUpdate: {title: 'RecentlyUpdated', desc: '', order: 9, count: null  },
-    oldUpdate: {title: 'Stale', desc: '', order: 9, count: null  },
-};
-
-/***
- *    d888888b      d8888b. d8888b. d888888b db      db      d8888b.  .d88b.  db   d8b   db d8b   db      d8888b. d8888b.  .d88b.  d8888b. .d8888. 
- *      `88'        88  `8D 88  `8D   `88'   88      88      88  `8D .8P  Y8. 88   I8I   88 888o  88      88  `8D 88  `8D .8P  Y8. 88  `8D 88'  YP 
- *       88         88   88 88oobY'    88    88      88      88   88 88    88 88   I8I   88 88V8o 88      88oodD' 88oobY' 88    88 88oodD' `8bo.   
- *       88         88   88 88`8b      88    88      88      88   88 88    88 Y8   I8I   88 88 V8o88      88~~~   88`8b   88    88 88~~~     `Y8b. 
- *      .88.        88  .8D 88 `88.   .88.   88booo. 88booo. 88  .8D `8b  d8' `8b d8'8b d8' 88  V888      88      88 `88. `8b  d8' 88      db   8D 
- *    Y888888P      Y8888D' 88   YD Y888888P Y88888P Y88888P Y8888D'  `Y88P'   `8b8' `8d8'  VP   V8P      88      88   YD  `Y88P'  88      `8888Y' 
- *                                                                                                                                                 
- *                                                                                                                                                 
- */
-export type IWhenToShowItems = 0 | 1 | 2 | 3;
-
-export type IViewType = 'React' | 'MZ' | 'Other' ;
-
-/**
- * ## Property Pane updates:
-Page owner can set:
-- min Refiner level required to hide instructions: whenToShowItems
-- minItemsForHide to avoid instructions ( in case count is below this hide instructions )
-- First line of instruction text
-- Instruction text for each refiner to be clicked
-- If nothing is touched, it will  do it's best to tell the user what to do.
-
-## Logic should be:
-
-- If the item count is greater than minItemsForHide && user has not clicked enough refiners, ONLY instructions are shown.
-- If instructions are shown, user can always 'Hide' them via button in instructions div.
-- This setting sticks unless the user clicks on certain things that trigger a reload of the data.
-- At any time the user can press the "Instructions" button in the right side of banner element to show instructions.
-
-## Properties Added this the code
-
-```js
-//Added to webpart props and property pane:
-  whenToShowItems: IWhenToShowItems;
-  minItemsForHide: number;
-  instructionIntro: string;
-  refinerInstruction1: string;
-  refinerInstruction2: string;
-  refinerInstruction3: string;
-
-//Added to IDrillDownProps
-    showItems: {
-        whenToShowItems: IWhenToShowItems;
-        minItemsForHide: number;
-        instructionIntro: string;
-        refinerInstruction1: string;
-        refinerInstruction2: string;
-        refinerInstruction3: string;
-    };
-
-//Added to IDrillDownSTATE
-    whenToShowItems: IWhenToShowItems;
-    instructionsHidden: 'force' | 'hide' | 'dynamic';
-```
-
-
-![image](https://user-images.githubusercontent.com/49648086/159371801-c2977995-6abe-4ade-8cd8-2932b538ab58.png)
-
- */
-export interface IDrillDownProps {
-    // 0 - Context
-    description: string;
-    
-    pageContext: PageContext;
-    wpContext: WebPartContext;
-
-    displayMode: DisplayMode;
-
-    bannerProps: IWebpartBannerProps;
-
-    //ADDED FOR WEBPART HISTORY:
-    webpartHistory: IWebpartHistory;
-
-    sitePresets : ISitePreConfigProps;
-
-    errMessage: string;
-
-    allowOtherSites?: boolean; //default is local only.  Set to false to allow provisioning parts on other sites.
-
-    allowRailsOff?: boolean;
-    allowSettings?: boolean;
-
-    tenant: string;
-    urlVars: {};
-    today: ITheTime;
-    WebpartElement: HTMLElement;   //Size courtesy of https://www.netwoven.com/2018/11/13/resizing-of-spfx-react-web-parts-in-different-scenarios/
-
-    webURL?: string;
-    parentListURL?: string;
-    hideFolders: boolean;
-
-    listName : string;
-    language: string; //local language list data is saved in (needed to properly sort refiners)
-    
-    allLoaded: boolean;
-
-    toggles: {
-        togRefinerCounts: boolean;
-        togCountChart: boolean;
-        togStats: boolean;
-        togOtherListview:  boolean;
-        togOtherChartpart:  boolean;
-    };
-
-    performance: {
-        fetchCount: number;
-        fetchCountMobile: number;
-        restFilter: string;
-    };
-
-    showItems: {
-        whenToShowItems: IWhenToShowItems;
-        minItemsForHide: number;
-        instructionIntro: string;
-        refinerInstructions: string[];
-    };
-
-    quickCommands?: IQuickCommands;
-
-    viewType?: IViewType;
-    viewDefs?: ICustViewDef[];
-    parentListFieldTitles: string;
-
-    // 1 - Analytics options
-    useListAnalytics: boolean;
-    analyticsWeb?: string;
-    analyticsList?: string;
-
-    // 2 - Source and destination list information
-
-    refiners: string[]; //String of Keys representing the static name of the column used for drill downs
-    showDisabled?: boolean;  //This will show disabled refiners for DaysOfWeek/Months when the day or month has no data
-    updateRefinersOnTextSearch?: boolean;
-
-    showRefinerCounts?: boolean;
-    showCountChart?: boolean;
-
-    /**    
-     * 'parseBySemiColons' |
-     * 'groupBy10s' |  'groupBy100s' |  'groupBy1000s' |  'groupByMillions' |
-     * 'groupByDays' |  'groupByMonths' |  'groupByYears' |
-     * 'groupByUsers' | 
-     * 
-     * rules string formatted as JSON : [ string[] ]  =  [['parseBySemiColons''groupByMonths'],['groupByMonths'],['groupByUsers']]
-     * [ ['parseBySemiColons''groupByMonths'],
-     * ['groupByMonths'],
-     * ['groupByUsers'] ]
-     * 
-    */
-
-    // 6 - User Feedback:
-    progress: IMyProgress;
-
-    rules: string;
-    stats: string;
-
-    WebpartHeight?:  number;    //Size courtesy of https://www.netwoven.com/2018/11/13/resizing-of-spfx-react-web-parts-in-different-scenarios/
-    WebpartWidth?:   number;    //Size courtesy of https://www.netwoven.com/2018/11/13/resizing-of-spfx-react-web-parts-in-different-scenarios/
-
-    pivotSize: string;
-    pivotFormat: string;
-    pivotOptions: string;
-    pivotTab: string;  //May not be needed because we have projectMasterPriority
-
-    /**
-     * 2020-09-08:  Add for dynamic data refiners.   onRefiner0Selected  -- callback to update main web part dynamic data props.
-     */
-    onRefiner0Selected?: any;
-
-    style: IRefinerStyles; //RefinerStyle
-
-    //For DD
-    handleSwitch: any;
-    handleListPost: any;
-
-}
-
-/***
- *    d888888b      .d8888. d888888b  .d8b.  d888888b 
- *      `88'        88'  YP `~~88~~' d8' `8b `~~88~~' 
- *       88         `8bo.      88    88ooo88    88    
- *       88           `Y8b.    88    88~~~88    88    
- *      .88.        db   8D    88    88   88    88    
- *    Y888888P      `8888Y'    YP    YP   YP    YP    
- *                                                    
- *                                                    
- */
-
-export type IStatType = 'sum' | 'max' | 'mini' | 'range' | '';
-
-export interface IStat {
-    prop: string;
-    label: string;
-    type: IStatType;
-    val1?: any;
-    val2?: any;
-    result?: string;
-}
-
-/***
- *    d888888b      d8888b. d8888b. d888888b db      db      d8888b.  .d88b.  db   d8b   db d8b   db      .d8888. d888888b  .d8b.  d888888b d88888b 
- *      `88'        88  `8D 88  `8D   `88'   88      88      88  `8D .8P  Y8. 88   I8I   88 888o  88      88'  YP `~~88~~' d8' `8b `~~88~~' 88'     
- *       88         88   88 88oobY'    88    88      88      88   88 88    88 88   I8I   88 88V8o 88      `8bo.      88    88ooo88    88    88ooooo 
- *       88         88   88 88`8b      88    88      88      88   88 88    88 Y8   I8I   88 88 V8o88        `Y8b.    88    88~~~88    88    88~~~~~ 
- *      .88.        88  .8D 88 `88.   .88.   88booo. 88booo. 88  .8D `8b  d8' `8b d8'8b d8' 88  V888      db   8D    88    88   88    88    88.     
- *    Y888888P      Y8888D' 88   YD Y888888P Y88888P Y88888P Y8888D'  `Y88P'   `8b8' `8d8'  VP   V8P      `8888Y'    YP    YP   YP    YP    Y88888P 
- *                                                                                                                                                  
- *                                                                                                                                                  
- */
-export const RefinerChartTypes : ICSSChartTypes[] = ['stacked-column-labels', 'pareto-dec'];
-
-export interface IDrillDownState {
-
-    allowOtherSites?: boolean; //default is local only.  Set to false to allow provisioning parts on other sites.
-
-    webURL?: string;
-
-    allLoaded: boolean;
-
-    showPropsHelp: boolean;
-    bannerMessage: any;
-
-    showTips: boolean;
-
-    showRefinerCounts: boolean;
-    showCountChart: boolean;
-    showStats: boolean;
-
-    currentPage: string;
-    searchCount: number;
-
-    searchText: string;
-    searchMeta: string[];
-
-    whenToShowItems: IWhenToShowItems;
-    instructionsHidden: 'force' | 'hide' | 'dynamic';
-
-    // refinerInstructions: string[];
-
-    searchedItems: IDrillItemInfo[];
-    stats: IStat[];
-    first20searchedItems: IDrillItemInfo[];
-
-    progress: IMyProgress;
-
-    quickCommands: IQuickCommands;
-
-    allItems: IDrillItemInfo[];
-
-    viewType?: IViewType;
-
-    meta: string[];
-
-    errMessage: string | JSX.Element;
-
-    drillList: IDrillList;
-
-    WebpartHeight?:  number;    //Size courtesy of https://www.netwoven.com/2018/11/13/resizing-of-spfx-react-web-parts-in-different-scenarios/
-    WebpartWidth?:   number;    //Size courtesy of https://www.netwoven.com/2018/11/13/resizing-of-spfx-react-web-parts-in-different-scenarios/
-
-    rules: string;
-    refiners: string[]; //String of Keys representing the static name of the column used for drill downs
-    maxRefinersToShow: number;
-    refinerObj: IRefinerLayer;
-    showDisabled?: boolean;  //This will show disabled refiners for DaysOfWeek/Months when the day or month has no data
-
-    pivotCats: IMyPivCat[][];
-    cmdCats: ICMDItem[][];
-
-    style: IRefinerStyles; //RefinerStyle
-
-    groupByFields: IGrouping[];
-
-    
-}
 
 
 /***
@@ -777,9 +404,9 @@ export default class DrillDown extends React.Component<IDrillDownProps, IDrillDo
             name: name,
             guid: '',
             contextUserInfo: {
-                LoginName: this.props.pageContext.user.loginName,
-                Title: this.props.pageContext.user.displayName,
-                email: this.props.pageContext.user.email,
+                LoginName: this.props.bannerProps.pageContext.user.loginName,
+                Title: this.props.bannerProps.pageContext.user.displayName,
+                email: this.props.bannerProps.pageContext.user.email,
             },
             sourceUserInfo: stateSourceUserInfo === true ? this.state.drillList.sourceUserInfo : null,
             fetchCount: this.props.performance.fetchCount,
@@ -867,6 +494,10 @@ export default class DrillDown extends React.Component<IDrillDownProps, IDrillDo
         }
 
         this.state = { 
+
+            showDevHeader: false,
+            lastStateChange: '', 
+            analyticsWasExecuted: false,
 
             //Size courtesy of https://www.netwoven.com/2018/11/13/resizing-of-spfx-react-web-parts-in-different-scenarios/
             WebpartHeight: this.props.WebpartElement.getBoundingClientRect().height ,
@@ -1843,7 +1474,8 @@ public componentDidUpdate(prevProps){
     }
     public _searchForText = (item): void => {
         //This sends back the correct pivot category which matches the category on the tile.
-        this.searchForItems( item, this.state.searchMeta, 0, 'text' );
+        let searchString = item && item.target && item.target.value ? item.target.value : '';
+        this.searchForItems( searchString, this.state.searchMeta, 0, 'text' );
     }
 
     //This function works great for Pivots, not neccessarily anything with icons.
@@ -2597,7 +2229,7 @@ public componentDidUpdate(prevProps){
         this.setState({
             viewType : viewType,
         });
-    }
+    } //
 
     private updateTogggleRefinerStyle() {
 
