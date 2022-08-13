@@ -11,7 +11,7 @@ import { createAboutRow } from '@mikezimm/npmfunctions/dist/CoreFPS/BannerPageMi
 
 import { convertIssuesMarkdownStringToSpan } from '@mikezimm/npmfunctions/dist/Elements/Markdown';
 
-export const panelVersionNumber = '2022-04-04 -  1.2.0.11'; //Added to show in panel
+export const panelVersionNumber = '2022-08-13 -  1.3.0.0'; //Added to show in panel
 
 export function aboutTable( repoLinks: IRepoLinks, showRepoLinks: boolean ) {
 
@@ -20,6 +20,9 @@ export function aboutTable( repoLinks: IRepoLinks, showRepoLinks: boolean ) {
         headers: ['Date','Version','Focus'],
         rows: [],
     };
+
+    table.rows.push( createAboutRow('2022-08-13','1.3.0.0'  ,'', showRepoLinks === true ? repoLinks : null ) );
+
 
     table.rows.push( createAboutRow('2022-04-04','1.2.0.11'  ,'#135, #137 - Assist in refiner typos, #136 - Show Unknown items tab for when multiselect column is empty.  #139 - trim functions', showRepoLinks === true ? repoLinks : null ) );
 
