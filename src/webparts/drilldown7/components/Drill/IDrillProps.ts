@@ -1,4 +1,4 @@
-import { IFPSCoreReactComponentProps, IFPSCoreReactComponentState } from '../../fpsReferences';
+import { IFPSCorePinMeReactComponentProps, IFPSCorePinMeReactComponentState } from '../../fpsReferences';
 
 import { IGrouping } from "@pnp/spfx-controls-react/lib/ListView";
 
@@ -168,7 +168,7 @@ Page owner can set:
  * Extends IFPSCorePinMeReactComponentProps with all basics required for FPS Banner
  */
 
-export interface IDrillDownProps extends IFPSCoreReactComponentProps {
+export interface IDrillDownProps extends IFPSCorePinMeReactComponentProps {
 
     
     /**
@@ -366,7 +366,7 @@ export const RefinerChartTypes : ICSSChartTypes[] = ['stacked-column-labels', 'p
  * Extends IFPSCoreReactComponentState with all basics required for FPS Banner
  */
 
-export interface IDrillDownState extends IFPSCoreReactComponentState {
+export interface IDrillDownState extends IFPSCorePinMeReactComponentState {
 
     allowOtherSites?: boolean; //default is local only.  Set to false to allow provisioning parts on other sites.
 

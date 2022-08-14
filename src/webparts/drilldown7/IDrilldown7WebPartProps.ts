@@ -1,6 +1,6 @@
 
 import { PageContext } from '@microsoft/sp-page-context';
-import { IMyProgress, } from './fpsReferences';
+import { IMyProgress } from '@mikezimm/npmfunctions/dist/ReusableInterfaces/IMyInterfaces';
 import { IWhenToShowItems } from './components/Drill/IDrillProps';
 import { ICssChartProps } from '../cssChart/components/ICssChartProps';
 

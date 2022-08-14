@@ -195,7 +195,7 @@ require('@mikezimm/npmfunctions/dist/Services/PropPane/GrayPropPaneAccordions.cs
 require('@mikezimm/npmfunctions/dist/Services/DOM/PinMe/FPSPinMe.css');
 require('@mikezimm/npmfunctions/dist/HeadingCSS/FPSHeadings.css');
 require('@mikezimm/npmfunctions/dist/PropPaneHelp/PropPanelHelp.css');
-
+require('@mikezimm/npmfunctions/dist/Performance/styles.css');
 
 
 
@@ -768,6 +768,13 @@ export default class Drilldown7WebPart extends BaseClientSideWebPart<IDrilldown7
         // handleSwitch: null,
         handleListPost: this.handleListPost,  //Commented out due to something causing viewFields names to get messed up (removed the / for expanded columns )
         // handleListPost: null,
+
+        fpsPinMenu: {
+          defPinState: 'disabled',
+          forcePinState: true,
+          domElement: this.context.domElement,
+          pageLayout: this.properties.pageLayout,
+        }
 
       }
     );

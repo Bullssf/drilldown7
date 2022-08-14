@@ -315,7 +315,7 @@ export { changePinMe,  } from '@mikezimm/npmfunctions/dist/HelpPanelOnNPM/onNpm/
 
 
 // from src\webparts\fpsCore115Banner\components\IFpsCore115BannerProps.ts
-export { IFPSCoreReactComponentProps, IFPSCoreReactComponentState } from '@mikezimm/npmfunctions/dist/CoreFPS/ReactComponentProps';
+export { IFPSCorePinMeReactComponentProps, IFPSCorePinMeReactComponentState } from '@mikezimm/npmfunctions/dist/CoreFPS/ReactComponentProps';
 
 // from src\webparts\fpsCore115Banner\components\HelpPanel\About.tsx
 
