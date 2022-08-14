@@ -1,26 +1,26 @@
 import * as React from 'react';
-import { WebPartContext } from '@microsoft/sp-webpart-base';
-import { DisplayMode, } from '@microsoft/sp-core-library';
+// import { WebPartContext } from '@microsoft/sp-webpart-base';
+// import { DisplayMode, } from '@microsoft/sp-core-library';
 
 import { IDrillDownProps, IDrillDownState, IDrillList, IViewType, IRefinerStyles, RefinerChartTypes } from './IDrillProps';
 import { pivCats } from './IDrillProps';
 
-import { CompoundButton, Stack, IStackTokens, elementContains, initializeIcons, Icon, IIconStyles, getLanguage, FontWeights } from 'office-ui-fabric-react';
+import { Stack, IStackTokens, Icon, } from 'office-ui-fabric-react';
 import { SearchBox } from 'office-ui-fabric-react/lib/SearchBox';
-import { Pivot, PivotItem, IPivotItemProps, PivotLinkFormat, PivotLinkSize,} from 'office-ui-fabric-react/lib/Pivot';
+import { Pivot, PivotItem, } from 'office-ui-fabric-react/lib/Pivot';
 
-import { sp } from "@pnp/sp";
-import { Web, Lists } from "@pnp/sp/presets/all"; //const projectWeb = Web(useProjectWeb);
+// import { sp } from "@pnp/sp";
+// import { Web, Lists } from "@pnp/sp/presets/all"; //const projectWeb = Web(useProjectWeb);
 
-import { IWebAddResult, IWebInfo, IWeb, } from "@pnp/sp/webs/types";
+// import { IWebAddResult, IWebInfo, IWeb, } from "@pnp/sp/webs/types";
 
 import "@pnp/sp/webs";
 
-import { IContentsListInfo, IMyListInfo, IServiceLog, IContentsLists } from '../../../../services/listServices/listTypes'; //Import view arrays for Time list
+// import { IContentsListInfo, IMyListInfo, IServiceLog, IContentsLists } from '../../../../services/listServices/listTypes'; //Import view arrays for Time list
 
-import { ITheTime, } from '@mikezimm/npmfunctions/dist/Services/Time/Interfaces';
-import { weekday3,  } from '@mikezimm/npmfunctions/dist/Services/Time/dayLabels';
-import { monthStr3 } from '@mikezimm/npmfunctions/dist/Services/Time/monthLabels';
+// import { ITheTime, } from '@mikezimm/npmfunctions/dist/Services/Time/Interfaces';
+import { weekday3,  } from '../../fpsReferences';
+import { monthStr3 } from '../../fpsReferences';
 
 import styles from '../Contents/contents.module.scss';
 
@@ -32,27 +32,26 @@ import { IMyProgress, ICSSChartTypes, IMyPivCat } from '../../fpsReferences';
 
 import { ICustViewDef } from '@mikezimm/npmfunctions/dist/Views/IListViews';
 
-import { IUser } from '@mikezimm/npmfunctions/dist/Services/Users/IUserInterfaces';
-import { IQuickButton, IQuickCommands } from '@mikezimm/npmfunctions/dist/QuickCommands/IQuickCommands';
+// import { IUser } from '@mikezimm/npmfunctions/dist/Services/Users/IUserInterfaces';
+import { IQuickCommands } from '../../fpsReferences';
 
-import { IListViewDDDrillDown } from '@mikezimm/npmfunctions/dist/Views/IDrillViews';
+import { IListViewDDDrillDown } from '../../fpsReferences';
 
-import { gitRepoDrillDown } from '@mikezimm/npmfunctions/dist/Links/LinksRepos';
+// import { gitRepoDrillDown } from '@mikezimm/npmfunctions/dist/Links/LinksRepos';
 
-import { IRefinerLayer, IRefiners, IItemRefiners, IRefinerStats, RefineRuleValues,
-    IRefinerRules, IRefinerStatType, RefinerStatTypes, IRefinerStat } from '@mikezimm/npmfunctions/dist/Refiners/IRefiners';
+import { IRefinerLayer, IRefinerRules, IRefinerStat } from '../../fpsReferences';
 
-import { PageContext } from '@microsoft/sp-page-context';
+// import { PageContext } from '@microsoft/sp-page-context';
 
-import { pivotOptionsGroup, } from '../../../../services/propPane';
+import { pivotOptionsGroup, } from '../../fpsReferences';
 
-import { getExpandColumns, getKeysLike, getSelectColumns, getLinkColumns, getFuncColumns } from '../../../../services/getFunctions';
+import { getExpandColumnsV2, getSelectColumnsV2, getLinkColumnsV2, getFuncColumnsV2 } from '../../../../services/getFunctionsV2';
 
-import { DoNotExpandLinkColumns, DoNotExpandTrimB4, DoNotExpandTrimAfter, DoNotExpandTrimSpecial } from '../../../../services/getInterface';
+// import { DoNotExpandLinkColumns, DoNotExpandTrimB4, DoNotExpandTrimAfter, DoNotExpandTrimSpecial } from '../../../../services/getInterface';
 
-import { getHelpfullError } from '@mikezimm/npmfunctions/dist/Services/Logging/ErrorHandler';
+// import { getHelpfullError } from '@mikezimm/npmfunctions/dist/Services/Logging/ErrorHandler';
 
-import MyDrillItems from './drillListView';
+// import MyDrillItems from './drillListView';
 
 import ReactListItems from './reactListView';
 
@@ -65,7 +64,7 @@ import ResizeGroupOverflowSetExample from './refiners/commandBar';
 import { ICMDItem } from './refiners/commandBar';
 
 import stylesD from './drillComponent.module.scss';
-import {  } from '../../../../services/listServices/viewTypes';
+// import {  } from '../../../../services/listServices/viewTypes';
 import { IGrouping } from "@pnp/spfx-controls-react/lib/ListView";
 
 import Cssreactbarchart from '../CssCharts/Cssreactbarchart';
@@ -345,10 +344,10 @@ export default class DrillDown extends React.Component<IDrillDownProps, IDrillDo
             });
         }
 
-        let expColumns = getExpandColumns(allColumns);
-        let selColumns = getSelectColumns(allColumns);
-        let linkColumns = getLinkColumns(allColumns);
-        let funcColumns = getFuncColumns(allColumns);
+        let expColumns = getExpandColumnsV2(allColumns);
+        let selColumns = getSelectColumnsV2(allColumns);
+        let linkColumns = getLinkColumnsV2(allColumns);
+        let funcColumns = getFuncColumnsV2(allColumns);
 
         selColumns.length > 0 ? selectCols += "," + allColumns.join(",") : selectCols = selectCols;
         if (expColumns.length > 0) { expandThese = expColumns.join(","); }

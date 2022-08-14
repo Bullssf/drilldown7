@@ -1,14 +1,14 @@
 import * as React from 'react';
-import { BaseComponent } from 'office-ui-fabric-react/lib/Utilities';
+// import { BaseComponent } from 'office-ui-fabric-react/lib/Utilities';
 import { CommandBarButton, IButtonProps, } from 'office-ui-fabric-react/lib/Button';
-import { CommandBar, ICommandBarItemProps } from 'office-ui-fabric-react/lib/CommandBar';
+// import { CommandBar, ICommandBarItemProps } from 'office-ui-fabric-react/lib/CommandBar';
 import { ResizeGroup } from 'office-ui-fabric-react/lib/ResizeGroup';
 import { OverflowSet } from 'office-ui-fabric-react/lib/OverflowSet';
-import { Checkbox } from 'office-ui-fabric-react/lib/Checkbox';
+// import { Checkbox } from 'office-ui-fabric-react/lib/Checkbox';
 import { IContextualMenuItem } from 'office-ui-fabric-react/lib/ContextualMenu';
 import { Dropdown, IDropdownOption } from 'office-ui-fabric-react/lib/Dropdown';
 import { mergeStyleSets } from 'office-ui-fabric-react';
-import { IRenderFunction } from 'office-ui-fabric-react/lib/Utilities';
+// import { IRenderFunction } from 'office-ui-fabric-react/lib/Utilities';
 
 
 //import * as stylesImport from './ResizeGroup.Example.scss';
@@ -80,14 +80,14 @@ export interface ICMDItem {
   data?: number;
 }
 
-function  _functionOnClick(item){
-    //This sends back the correct pivot category which matches the category on the tile.
-    let e: any = event;
-    alert('Hi! you clicked: ' +  e.target.innerText );
+// function  _functionOnClick(item){
+//     //This sends back the correct pivot category which matches the category on the tile.
+//     let e: any = event;
+//     alert('Hi! you clicked: ' +  e.target.innerText );
 
-    console.log('searchForItems: e',e);
-    console.log('item', item);
-}
+//     console.log('searchForItems: e',e);
+//     console.log('item', item);
+// }
 
 function generateData(items: ICMDItem[], checkedItem: string, cachingEnabled: boolean, showRefinerCounts: boolean, onClick: any): IOverflowData {
   const dataItems = [];

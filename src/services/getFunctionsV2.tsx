@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import { DoNotExpandLinkColumns, DoNotExpandColumns, DoNotExpandFuncColumns } from './getInterface';
+import { DoNotExpandLinkColumns, DoNotExpandColumns, DoNotExpandFuncColumns } from './getInterfaceV2';
 
 /**
  * 2020-09-28:  getFunctions.ts intro
@@ -36,7 +36,7 @@ import { DoNotExpandLinkColumns, DoNotExpandColumns, DoNotExpandFuncColumns } fr
  * @param findOp 
  */
 
-  export function getKeysLike(thisProps,findMe,findOp){
+  export function getKeysLikeV2(thisProps,findMe,findOp){
     //Sample call:  getKeysLike(this.props,"col","begins")
     //console.log('FoundProps that ' + findOp + ' with ' + findMe);
     //console.log(thisProps);
@@ -76,7 +76,7 @@ import { DoNotExpandLinkColumns, DoNotExpandColumns, DoNotExpandFuncColumns } fr
     *  
     */
 
-  export function getSelectColumns(lookupColumns : string[], DoNotExpandColumnsIn: string[] = DoNotExpandColumns ){
+  export function getSelectColumnsV2(lookupColumns : string[], DoNotExpandColumnsIn: string[] = DoNotExpandColumns ){
 
     let baseSelectColumns = [];
     let DoNotExpandColumnsLC = DoNotExpandColumnsIn.map( item => { return item.toLowerCase(); } ) ;
@@ -122,7 +122,7 @@ import { DoNotExpandLinkColumns, DoNotExpandColumns, DoNotExpandFuncColumns } fr
     return baseSelectColumns;
   }
 
-  export function getLinkColumns(lookupColumns : string[], DoNotExpandColumnsIn: string[] = DoNotExpandLinkColumns ){
+  export function getLinkColumnsV2(lookupColumns : string[], DoNotExpandColumnsIn: string[] = DoNotExpandLinkColumns ){
 
     let baseLinkColumns = [];
     let DoNotExpandLinkColumnsLC = DoNotExpandColumnsIn.map( item => { return item.toLowerCase(); } ) ;
@@ -143,7 +143,7 @@ import { DoNotExpandLinkColumns, DoNotExpandColumns, DoNotExpandFuncColumns } fr
     return baseLinkColumns;
   }
 
-  export function getFuncColumns(lookupColumns : string[], DoNotExpandColumnsIn: string[] = DoNotExpandFuncColumns ){
+  export function getFuncColumnsV2(lookupColumns : string[], DoNotExpandColumnsIn: string[] = DoNotExpandFuncColumns ){
 
     let allFuncColumns = [];
     let funcErrors = [];
@@ -164,7 +164,7 @@ import { DoNotExpandLinkColumns, DoNotExpandColumns, DoNotExpandFuncColumns } fr
 
               //This extra if-then is required because there could be 2 functions pointing to the same actual column
               if ( actualFuncColumns.indexOf( leftSide ) < 0 ) { actualFuncColumns.push( leftSide ); }
-              
+
             }
           }
 
@@ -192,7 +192,7 @@ import { DoNotExpandLinkColumns, DoNotExpandColumns, DoNotExpandFuncColumns } fr
    //column 'names' that are special and do not get expanded:
 
 
-  export function getExpandColumns(lookupColumns : string[] , DoNotExpandColumnsIn: string[] = DoNotExpandColumns ){
+  export function getExpandColumnsV2(lookupColumns : string[] , DoNotExpandColumnsIn: string[] = DoNotExpandColumns ){
 
     let baseExpandColumns = [];
     let DoNotExpandColumnsLC = DoNotExpandColumnsIn.map( item => { return item.toLowerCase(); } ) ;

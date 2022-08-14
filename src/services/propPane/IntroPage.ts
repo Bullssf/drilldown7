@@ -1,30 +1,30 @@
-import {
-  IPropertyPanePage,
-  PropertyPaneLabel,
-  IPropertyPaneLabelProps,
-  PropertyPaneHorizontalRule,
-  PropertyPaneTextField, IPropertyPaneTextFieldProps,
-  PropertyPaneLink, IPropertyPaneLinkProps,
-  PropertyPaneDropdown, IPropertyPaneDropdownProps,
-  IPropertyPaneDropdownOption,PropertyPaneToggle,
-  IPropertyPaneConfiguration,
-  PropertyPaneButton,
-  PropertyPaneButtonType,
-  PropertyPaneSlider,
-} from '@microsoft/sp-property-pane';
+// import {
+//   IPropertyPanePage,
+//   PropertyPaneLabel,
+//   IPropertyPaneLabelProps,
+//   PropertyPaneHorizontalRule,
+//   PropertyPaneTextField, IPropertyPaneTextFieldProps,
+//   PropertyPaneLink, IPropertyPaneLinkProps,
+//   PropertyPaneDropdown, IPropertyPaneDropdownProps,
+//   IPropertyPaneDropdownOption,PropertyPaneToggle,
+//   IPropertyPaneConfiguration,
+//   PropertyPaneButton,
+//   PropertyPaneButtonType,
+//   PropertyPaneSlider,
+// } from '@microsoft/sp-property-pane';
 
-import { JSON_Edit_Link, ValidLocalLanguages } from './zReusablePropPane';
+// import { JSON_Edit_Link, ValidLocalLanguages } from './zReusablePropPane';
 
-import { PropertyFieldMultiSelect } from '@pnp/spfx-property-controls/lib/PropertyFieldMultiSelect';
+// import { PropertyFieldMultiSelect } from '@pnp/spfx-property-controls/lib/PropertyFieldMultiSelect';
 
-import * as strings from 'Drilldown7WebPartStrings';
-import { pivotOptionsGroup} from './index';
+// import * as strings from 'Drilldown7WebPartStrings';
+// import { pivotOptionsGroup} from './index';
 
-import { FPSOptionsGroup, FPSBanner2Group } from '../../webparts/drilldown7/fpsReferences';
-import * as links from '@mikezimm/npmfunctions/dist/Links/LinksRepos';   //              { links.gitRepoDrilldown7WebPart.issues }
+// import { FPSOptionsGroup, FPSBanner2Group } from '../../webparts/drilldown7/fpsReferences';
+// import * as links from '@mikezimm/npmfunctions/dist/Links/LinksRepos';   //              { links.gitRepoDrilldown7WebPart.issues }
 
-import { IDrilldown7WebPartProps } from '../../webparts/drilldown7/IDrilldown7WebPartProps';
-import { buildKeyText, refinerRuleItems } from '../../webparts/drilldown7/fpsReferences';
+// import { IDrilldown7WebPartProps } from '../../webparts/drilldown7/IDrilldown7WebPartProps';
+// import { buildKeyText, refinerRuleItems } from '../../webparts/drilldown7/fpsReferences';
 
 /*
 
@@ -77,8 +77,8 @@ import { buildKeyText, refinerRuleItems } from '../../webparts/drilldown7/fpsRef
 
     */
 
-export class IntroPage {
-  public getPropertyPanePage(webPartProps: IDrilldown7WebPartProps, _onClickUpdateTitles, _getListDefintions, forceBanner: boolean, modifyBannerTitle: boolean, modifyBannerStyle: boolean ): IPropertyPanePage {
+// export class IntroPage {
+//   public getPropertyPanePage(webPartProps: IDrilldown7WebPartProps, _onClickUpdateTitles, _getListDefintions, forceBanner: boolean, modifyBannerTitle: boolean, modifyBannerStyle: boolean ): IPropertyPanePage {
 
 
     // let ruleChoices = refinerRuleItems();
@@ -99,13 +99,13 @@ export class IntroPage {
 
     // if ( webPartProps.rules2 && ( webPartProps.rules2.indexOf('groupByDayOfWeek') > -1 ||  webPartProps.rules2.indexOf('groupByMonthsMMM') > -1 ) ) { showDisabled = true;}
 
-    return <IPropertyPanePage>
-    { // <page1>
-      header: {
-        description: strings.PropertyPaneAbout
-      },
-      displayGroupsAsAccordion: true,
-      groups: [
+    // return <IPropertyPanePage>
+    // { // <page1>
+    //   header: {
+    //     description: strings.PropertyPaneAbout
+    //   },
+    //   displayGroupsAsAccordion: true,
+    //   groups: [
         // { groupName: 'Web Part Info',
         //   isCollapsed: true ,
         //   groupFields: [
@@ -379,11 +379,11 @@ export class IntroPage {
 
         // ]},  // this group
 
-        FPSBanner2Group( forceBanner , modifyBannerTitle, modifyBannerStyle, webPartProps.showBanner, null, true ),
-        FPSOptionsGroup( true, true, true, true ), // this group
+//         FPSBanner2Group( forceBanner , modifyBannerTitle, modifyBannerStyle, webPartProps.showBanner, null, true ),
+//         FPSOptionsGroup( true, true, true, true ), // this group
 
-        ]}; // Groups
-  } // getPropertyPanePage()
-}
+//         ]}; // Groups
+//   } // getPropertyPanePage()
+// }
 
-export let introPage = new IntroPage();
+// export let introPage = new IntroPage();

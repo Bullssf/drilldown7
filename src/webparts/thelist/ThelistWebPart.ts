@@ -30,7 +30,7 @@ import * as strings from 'ThelistWebPartStrings';
 import Thelist from './components/Thelist';
 import { IThelistProps } from './components/IThelistProps';
 
-require('../../services/propPane/GrayPropPaneAccordions.css');
+require('@mikezimm/npmfunctions/dist/Services/PropPane/GrayPropPaneAccordions.css');
 
 export interface IThelistWebPartProps {
   description: string;

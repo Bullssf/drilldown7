@@ -37,14 +37,8 @@ import DrillDown from './components/Drill/drillComponent';
 import { IDrillDownProps, IWhenToShowItems } from './components/Drill/IDrillProps';
 import { consoleRef } from './components/Drill/drillFunctions';
 
-import { buildPreConfigGroup } from './PropPaneGroups/PreConfigSetup';
-import {  } from './PropPaneGroups/';
-import {  } from './PropPaneGroups/';
-import {  } from './PropPaneGroups/';
-import {  } from './PropPaneGroups/';
-import {  } from './PropPaneGroups/';
-import {  } from './PropPaneGroups/';
-import {  } from './PropPaneGroups/';
+
+
 
 /***
  *    d88888b d8888b. .d8888.      d8888b. d8888b. d88888b .d8888. d88888b d888888b .d8888. 
@@ -135,6 +129,22 @@ import { mainWebPartRenderBannerSetup } from '@mikezimm/npmfunctions/dist/HelpPa
   *    USED FOR PROPERTY PANE GROUPS
   */
  
+
+  import { buildYourListGroup } from './PropPaneGroups/Page1/ListInfo';
+  import { buildPreConfigGroup } from './PropPaneGroups/Page1/PreConfigSetup';
+  import { buildPerformanceGroup } from './PropPaneGroups/Page1/Performance';
+  import { buildRefinerGroup } from './PropPaneGroups/Page1/Refiners';
+  import { buildTogglesGroup } from './PropPaneGroups/Page1/Toggles';
+
+
+  import { buildRefinerInstructionsGroup } from './PropPaneGroups/Page2/RefinerInstructions';
+  import { buildCustomizeGroup } from './PropPaneGroups/Page2/Customize';
+  import { buildListGroupingGroup } from './PropPaneGroups/Page2/Grouping';
+  import { buildViewTogglesGroup } from './PropPaneGroups/Page2/ViewToggles';
+  import { buildStatsGroup } from './PropPaneGroups/Page2/StatsGroup';
+  import { buildViewGroupFields } from './PropPaneGroups/Page2/Views';
+
+  
  import { WebPartInfoGroup, } from './fpsReferences';
  import { FPSOptionsGroupBasic, } from './fpsReferences';
  import { FPSBanner4BasicGroup, FPSBanner3NavGroup, FPSBanner3ThemeGroup } from './fpsReferences';
@@ -200,7 +210,7 @@ import { getHelpfullError } from './fpsReferences';
 
 import { sp } from '@pnp/sp';
 
-import { propertyPaneBuilder } from '../../services/propPane/PropPaneBuilder';
+// import { propertyPaneBuilder } from '../../services/propPane/PropPaneBuilder';
 import { getAllItems } from '../../services/propPane/PropPaneFunctions';
 
 import { ICSSChartDD } from './fpsReferences';
@@ -218,15 +228,6 @@ import { IRefinerLayer, RefineRuleValues, IRefinerStat } from './fpsReferences';
 import { IDynamicDataCallables, IDynamicDataPropertyDefinition} from '@microsoft/sp-dynamic-data';
 
 import { IGrouping, IViewField } from "@pnp/spfx-controls-react/lib/ListView";
-import { buildYourListGroup } from './PropPaneGroups/Page1/ListInfo';
-import { buildPerformanceGroup } from './PropPaneGroups/Performance';
-import { buildRefinerGroup } from './PropPaneGroups/Refiners';
-import { buildTogglesGroup } from './PropPaneGroups/Toggles';
-import { buildRefinerInstructionsGroup } from './PropPaneGroups/Page2/RefinerInstructions';
-import { buildCustomizeGroup } from './PropPaneGroups/Page2/Customize';
-import { buildListGroupingGroup } from './PropPaneGroups/Page2/Grouping';
-import { buildViewGroupFields } from './PropPaneGroups/Page2/BlankGroup copy 4';
-
 
 
 
@@ -934,6 +935,8 @@ export default class Drilldown7WebPart extends BaseClientSideWebPart<IDrilldown7
             buildPerformanceGroup( this.properties, ),
             buildRefinerGroup( this.properties, ),
             buildTogglesGroup( this.properties ),
+            
+            FPSBanner3VisHelpGroup( this.context, this.onPropertyPaneFieldChanged, this.properties ),
             FPSBanner4BasicGroup( this._forceBanner , this._modifyBannerTitle, this.properties.showBanner, this.properties.infoElementChoice === 'Text' ? true : false, true, true ),
             FPSBanner3NavGroup(), 
             FPSBanner3ThemeGroup( this._modifyBannerStyle, this.properties.showBanner, this.properties.lockStyles, ),
@@ -957,7 +960,10 @@ export default class Drilldown7WebPart extends BaseClientSideWebPart<IDrilldown7
             buildViewGroupFields( 'Wide', 1),
             buildViewGroupFields( 'Medium', 2),
             buildViewGroupFields( 'Small', 3),
-            
+
+            buildViewTogglesGroup( ),
+            buildStatsGroup( ),
+
             // FPSOptionsExpando( this.properties.enableExpandoramic, this.properties.enableExpandoramic,null, null ),
   
             FPSImportPropsGroup, // this group

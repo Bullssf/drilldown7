@@ -19,18 +19,18 @@ import { whyContent } from './Whyme';  //2022-01-31: Added Pivot Tiles
 export function getBannerPages ( bannerProps: IWebpartBannerProps ) {
 
     let result : IBannerPages = {
-        whyContent:  whyContent( bannerProps.gitHubRepo),
-        aboutTable:  aboutTable( bannerProps.gitHubRepo, bannerProps.showRepoLinks ),
-        gettingStartedContent:  gettingStartedContent( bannerProps.gitHubRepo),
-        errorsContent:  errorsContent( bannerProps.gitHubRepo),
-        advancedContent:  advancedContent( bannerProps.gitHubRepo),
-        futureContent:  futureContent( bannerProps.gitHubRepo),
-        basicsContent: basicsContent( bannerProps.gitHubRepo),
+        whyContent:  whyContent( ),
+        aboutTable:  aboutTable( bannerProps.showRepoLinks ),
+        gettingStartedContent:  gettingStartedContent( ),
+        errorsContent:  errorsContent( ),
+        advancedContent:  advancedContent( ),
+        futureContent:  futureContent( ),
+        basicsContent: basicsContent( ),
 
         // tricksTable( showScenario, showTool, showGulp, showAllowOther, showCrazy, showCreate ); all booleans
         tricksTable:  tricksTable( true, true, true, false, false, false ),
 
-        getRandomTip:  getRandomTip( bannerProps.gitHubRepo),
+        getRandomTip:  getRandomTip( ),
         webParTips:  webParTips,
     };
 

@@ -1,53 +1,52 @@
-import { Web, IList, IItem } from "@pnp/sp/presets/all";
+import { Web, } from "@pnp/sp/presets/all";
 
-import { sp } from "@pnp/sp";
+// import { sp } from "@pnp/sp";
 
 import "@pnp/sp/webs";
 import "@pnp/sp/clientside-pages/web";
 import "@pnp/sp/site-users/web";
 
-import { ClientsideWebpart } from "@pnp/sp/clientside-pages";
-import { CreateClientsidePage, PromotedState, ClientsidePageLayoutType, ClientsideText,  } from "@pnp/sp/clientside-pages";
+// import { ClientsideWebpart } from "@pnp/sp/clientside-pages";
+// import { CreateClientsidePage, PromotedState, ClientsidePageLayoutType, ClientsideText,  } from "@pnp/sp/clientside-pages";
 
-import { IContentsListInfo, IMyListInfo, IServiceLog, IContentsLists } from '../../../../services/listServices/listTypes'; //Import view arrays for Time list
+// import { IContentsListInfo, IMyListInfo, IServiceLog, IContentsLists } from '../../../../services/listServices/listTypes'; //Import view arrays for Time list
 
 import { IDrillItemInfo } from '@mikezimm/npmfunctions/dist/WebPartInterfaces/DrillDown/IDrillItem';
 
 import { IDrillList, } from  './IDrillProps';
 
 
-import { changes, IMyFieldTypes } from '../../../../services/listServices/columnTypes'; //Import view arrays for Time list
+// import { changes, IMyFieldTypes } from '../../../../services/listServices/columnTypes'; //Import view arrays for Time list
 
-import { IMyView,  } from '../../../../services/listServices/viewTypes'; //Import view arrays for Time list
+// import { IMyView,  } from '../../../../services/listServices/viewTypes'; //Import view arrays for Time list
 
-import { addTheseItemsToList, addTheseItemsToListInBatch } from '../../../../services/listServices/listServices';
+// import { addTheseItemsToList, addTheseItemsToListInBatch } from '../../../../services/listServices/listServices';
 
 import { makeTheTimeObject } from '@mikezimm/npmfunctions/dist/Services/Time/timeObject';
 import { monthStr3 } from '@mikezimm/npmfunctions/dist/Services/Time/monthLabels';
 import { getBestTimeDelta, getAge } from '@mikezimm/npmfunctions/dist/Services/Time/deltas';
 
-import { doesObjectExistInArray } from '@mikezimm/npmfunctions/dist/Services/Arrays/checks';
+// import { doesObjectExistInArray } from '@mikezimm/npmfunctions/dist/Services/Arrays/checks';
 import { addItemToArrayIfItDoesNotExist, } from '@mikezimm/npmfunctions/dist/Services/Arrays/manipulation';
 import { sortKeysByOtherKey, } from '@mikezimm/npmfunctions/dist/Services/Arrays/sorting';
 
 import { getHelpfullError } from '@mikezimm/npmfunctions/dist/Services/Logging/ErrorHandler';
 
-import { IViewLog, addTheseViews } from '../../../../services/listServices/viewServices'; //Import view arrays for Time list
+// import { IViewLog, addTheseViews } from '../../../../services/listServices/viewServices'; //Import view arrays for Time list
 
-import { IAnyArray } from  '../../../../services/listServices/listServices';
-import { DoNotExpandFuncColumns, convertArrayToLC } from  '../../../../services/getInterface';
+// import { IAnyArray } from  '../../../../services/listServices/listServices';
+import { DoNotExpandFuncColumns, convertArrayToLC } from  '../../../../services/getInterfaceV2';
 
 import { getDetailValueType, ITypeStrings } from '@mikezimm/npmfunctions/dist/Services/typeServices';
 
 import { ensureUserInfo } from '@mikezimm/npmfunctions/dist/Services/Users/userServices';
 
-import { mergeAriaAttributeValues } from "office-ui-fabric-react";
+// import { mergeAriaAttributeValues } from "office-ui-fabric-react";
 
-import { IRefinerLayer, IRefiners, IItemRefiners, IRefinerStats, RefineRuleValues,
-    IRefinerRules, IRefinerStatType, RefinerStatTypes, IRefinerStat } from '@mikezimm/npmfunctions/dist/Refiners/IRefiners';
+import { IRefinerLayer, IItemRefiners, RefineRuleValues, IRefinerStatType, RefinerStatTypes,  } from '../../fpsReferences';
 
 import { IUser } from '@mikezimm/npmfunctions/dist/Services/Users/IUserInterfaces';
-import { IQuickButton } from '@mikezimm/npmfunctions/dist/QuickCommands/IQuickCommands';
+// import { IQuickButton } from '@mikezimm/npmfunctions/dist/QuickCommands/IQuickCommands';
 
 import { createItemFunctionProp,  } from '../../../../services/parse'; //Main function to update item
 
@@ -1209,9 +1208,9 @@ export function consoleRef( location: string, refiners: IRefinerLayer ) {
 
     return; //Not needed for now.
 
-    let refiners2 = JSON.parse(JSON.stringify(refiners));
+    // let refiners2 = JSON.parse(JSON.stringify(refiners));
 
-    console.log('Error#94: - Refiners', refiners2 );
+    // console.log('Error#94: - Refiners', refiners2 );
 
 }
 
@@ -1219,22 +1218,22 @@ export function consoleMe( location: string, obj: any, drillList: IDrillList ) {
 
     return; //Not needed for now.
 
-    let testId = 179;
-    let testItem = obj && obj[testId] ? true : false;
-    let testRef = testItem && obj[testId].refiners ? true : false;
-    let testLev = testRef && obj[testId].refiners.level1 ? true : false;
-    let tbdNote = 'null';
-    if ( testLev === true ) { tbdNote = 'Level found' ; }
-    else if ( testRef === true ) { tbdNote = 'Refiner found' ; }
-    else if ( testItem === true ) { tbdNote = 'Item found' ; }
+    // let testId = 179;
+    // let testItem = obj && obj[testId] ? true : false;
+    // let testRef = testItem && obj[testId].refiners ? true : false;
+    // let testLev = testRef && obj[testId].refiners.level1 ? true : false;
+    // let tbdNote = 'null';
+    // if ( testLev === true ) { tbdNote = 'Level found' ; }
+    // else if ( testRef === true ) { tbdNote = 'Refiner found' ; }
+    // else if ( testItem === true ) { tbdNote = 'Item found' ; }
 
-    let pasteMe =  obj && obj[testId] && obj[testId].refiners ? obj[testId].refiners.lev1 : tbdNote ;
-    obj = JSON.parse(JSON.stringify(obj));
-    let drillListX = JSON.parse(JSON.stringify(drillList));
+    // let pasteMe =  obj && obj[testId] && obj[testId].refiners ? obj[testId].refiners.lev1 : tbdNote ;
+    // obj = JSON.parse(JSON.stringify(obj));
+    // let drillListX = JSON.parse(JSON.stringify(drillList));
 
-    let itteration = drillList.itteration;
-    console.log('Error#94:', itteration, location, pasteMe, drillListX );
+    // let itteration = drillList.itteration;
+    // console.log('Error#94:', itteration, location, pasteMe, drillListX );
 
-    return;
+    // return;
 
 }

@@ -19,24 +19,46 @@ import {
     // PropertyPaneSlider
 } from '@microsoft/sp-property-pane';
 
-// import * as strings from 'Drilldown7WebPartStrings';
+import * as strings from 'Drilldown7WebPartStrings';
 // import { IDrilldown7WebPartProps } from '../IDrilldown7WebPartProps';
-// import { ValidLocalLanguages } from '../../fpsReferences';  //JSON_Edit_Link, 
+import { ValidLocalLanguages } from '../fpsReferences';  //JSON_Edit_Link, 
 
-export function buildListGroupingGroup( ) {
+export function buildBlankGroup( ) {
 
 // let theListChoices : IPropertyPaneDropdownOption[] = [];
 
   var groupFields: IPropertyPaneField<any>[] = [];
 
   groupFields.push(
-    PropertyPaneTextField('groupByFields', {
-      label: 'Group by Fields',
-      description: 'Semi-colon separated Static Column names',
-      }));
+    
+  );
+
+  groupFields.push(
+    
+  );
+
+  groupFields.push(
+    
+  );
+
+  groupFields.push(
+    
+  );
+
+  groupFields.push(
+    
+  );
+
+  groupFields.push(
+    
+  );
+
+  groupFields.push(
+    
+  );
 
   const ExportThisGroup: IPropertyPaneGroup = {
-    groupName: `List Grouping`,
+    groupName: `Your list info`,
     isCollapsed: true,
     groupFields: groupFields
   };

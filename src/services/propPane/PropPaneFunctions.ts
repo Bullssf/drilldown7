@@ -1,18 +1,18 @@
-import { Web, IList, IItem, IWeb } from "@pnp/sp/presets/all";
+import { Web, } from "@pnp/sp/presets/all";
 import { sp } from "@pnp/sp";
 import "@pnp/sp/sites";
 
 import "@pnp/sp/webs";
 import "@pnp/sp/clientside-pages/web";
-import { ClientsideWebpart } from "@pnp/sp/clientside-pages";
-import { CreateClientsidePage, PromotedState, ClientsidePageLayoutType, ClientsideText,  } from "@pnp/sp/clientside-pages";
+// import { ClientsideWebpart } from "@pnp/sp/clientside-pages";
+// import { CreateClientsidePage, PromotedState, ClientsidePageLayoutType, ClientsideText,  } from "@pnp/sp/clientside-pages";
 
 import { getHelpfullError } from '../../webparts/drilldown7/fpsReferences';
 
-import { IViewLog, addTheseViews } from '../../services/listServices/viewServices'; //Import view arrays for Time list
+// import { IViewLog, addTheseViews } from '../../services/listServices/viewServices'; //Import view arrays for Time list
 
-import { IAnyArray } from  '../../services/listServices/listServices';
-import { mergeAriaAttributeValues } from "office-ui-fabric-react";
+// import { IAnyArray } from  '../../services/listServices/listServices';
+// import { mergeAriaAttributeValues } from "office-ui-fabric-react";
 
 //runAsync is an idea that is not currently being used.
 export async function getAllItems( configWebURL: string, propsListName: string, thisProps: string[], restFilter: string, runAsync: boolean ): Promise<any[]>{

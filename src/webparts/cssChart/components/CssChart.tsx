@@ -7,7 +7,7 @@ import { escape } from '@microsoft/sp-lodash-subset';
 
 import Cssreactbarchart from '../../drilldown7/components/CssCharts/Cssreactbarchart';
 
-import {buildCountChartsObject ,  buildStatChartsArray} from '../../drilldown7/components/CssCharts/cssChartFunctions';
+import { buildCountChartsObject ,  buildStatChartsArray} from '../../drilldown7/components/CssCharts/cssChartFunctions';
 
 //For Webpart Title component
 import { WebPartTitle } from "@pnp/spfx-controls-react/lib/WebPartTitle";

@@ -37,6 +37,7 @@ export { IUser } from '@mikezimm/npmfunctions/dist/Services/Users/IUserInterface
 export { IQuickCommands } from '@mikezimm/npmfunctions/dist/QuickCommands/IQuickCommands';
 
 export { IRefinerLayer, IRefinerRules, IRefinerStat, RefineRuleValues } from '@mikezimm/npmfunctions/dist/Refiners/IRefiners';
+export { IRefiners, IItemRefiners, IRefinerStats, IRefinerStatType, RefinerStatTypes, } from '@mikezimm/npmfunctions/dist/Refiners/IRefiners';
 
 export { IDrillItemInfo } from '@mikezimm/npmfunctions/dist/WebPartInterfaces/DrillDown/IDrillItem';
 
@@ -55,6 +56,15 @@ export { buildKeyText, refinerRuleItems } from '@mikezimm/npmfunctions/dist/Refi
 
 export { RefinerRulesStrs, RefinerRulesInts, RefinerRulesNums, RefinerRulesTime, RefinerRulesUser, RefinerRulesEXPE, RefinerRulesNone } from '@mikezimm/npmfunctions/dist/Refiners/IRefiners';
 export { makeTheTimeObject } from '@mikezimm/npmfunctions/dist/Services/Time/timeObject';
+
+export { weekday3,  } from '@mikezimm/npmfunctions/dist/Services/Time/dayLabels';
+export { monthStr3 } from '@mikezimm/npmfunctions/dist/Services/Time/monthLabels';
+export { pivotOptionsGroup } from '@mikezimm/npmfunctions/dist/Services/PropPane/ReactPivotOptions';
+
+export { IMyFieldTypes } from '@mikezimm/npmfunctions/dist/Lists/columnTypes';
+export { changes, cBool, cCalcT, cCalcN, cChoice, cMChoice, cCurr, cDate, cLocal, cLook, cDLook,
+  cMText, cText, cNumb, cURL, cUser, cMUser } from '@mikezimm/npmfunctions/dist/Lists/columnTypes';
+
 
 export { IListViewDDDrillDown } from '@mikezimm/npmfunctions/dist/Views/IDrillViews';
 

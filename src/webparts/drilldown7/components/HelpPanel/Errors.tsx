@@ -1,8 +1,8 @@
 import * as React from 'react';
 
-import { IRepoLinks } from '@mikezimm/npmfunctions/dist/Links/CreateLinks';
+// import { IRepoLinks } from '@mikezimm/npmfunctions/dist/Links/CreateLinks';
 
-export function errorsContent( repoLinks: IRepoLinks ) {
+export function errorsContent( ) {
 
     let thisPage = null;
     let messageRows = [];

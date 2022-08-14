@@ -19,46 +19,29 @@ import {
     // PropertyPaneSlider
 } from '@microsoft/sp-property-pane';
 
-import * as strings from 'Drilldown7WebPartStrings';
+// import * as strings from 'Drilldown7WebPartStrings';
 // import { IDrilldown7WebPartProps } from '../IDrilldown7WebPartProps';
-import { ValidLocalLanguages } from '../../fpsReferences';  //JSON_Edit_Link, 
+import { JSON_Edit_Link } from '../../fpsReferences';  //JSON_Edit_Link, ValidLocalLanguages
 
-export function buildBlankGroup( ) {
+export function buildQuickCommandsGroup( ) {
 
 // let theListChoices : IPropertyPaneDropdownOption[] = [];
 
   var groupFields: IPropertyPaneField<any>[] = [];
 
   groupFields.push(
-    
+    JSON_Edit_Link
   );
 
   groupFields.push(
-    
-  );
-
-  groupFields.push(
-    
-  );
-
-  groupFields.push(
-    
-  );
-
-  groupFields.push(
-    
-  );
-
-  groupFields.push(
-    
-  );
-
-  groupFields.push(
-    
-  );
+    PropertyPaneTextField('quickCommands', {
+      label: 'Quick Command buttons',
+      description: 'Simple Button commands in Item pane',
+      multiline: true,
+    }));
 
   const ExportThisGroup: IPropertyPaneGroup = {
-    groupName: `Your list info`,
+    groupName: `Quick Commands`,
     isCollapsed: true,
     groupFields: groupFields
   };

@@ -2,10 +2,10 @@
  * Eventually this should be in npmFunctions, possibly under Services/Strings
  * 
  */
-import { DoNotExpandLinkColumns, DoNotExpandTrimB4, DoNotExpandTrimAfter, DoNotExpandTrimSpecial } from './getInterface';
-import { ITrimLink, ITrimB4, ITrimAfter, ITrimSpecial, IDoNotExpandColumns } from './getInterface';
-import { DoNotExpandFuncColumns, DoNotExpandColumns, } from './getInterface';
-import { convertArrayToLC, } from './getInterface';
+import { DoNotExpandLinkColumns, DoNotExpandTrimB4, DoNotExpandTrimAfter, DoNotExpandTrimSpecial } from './getInterfaceV2';
+import { ITrimLink, ITrimB4, ITrimAfter, ITrimSpecial, IDoNotExpandColumns } from './getInterfaceV2';
+import { DoNotExpandFuncColumns, DoNotExpandColumns, } from './getInterfaceV2';
+import { convertArrayToLC, } from './getInterfaceV2';
 
 /**
  *  Typical exports

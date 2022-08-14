@@ -26,11 +26,12 @@ import { DynamicProperty } from '@microsoft/sp-component-base';
 import * as strings from 'CssChartWebPartStrings';
 import CssChart from './components/CssChart';
 import { ICssChartProps } from './components/ICssChartProps';
-import { description } from '../drilldown7/components/ListView/ViewFields';
+// import { description } from '../drilldown7/components/ListView/ViewFields';
 
-import { JSON_Edit_Link } from '../../services/propPane/zReusablePropPane';
+import { JSON_Edit_Link } from '../../webparts/drilldown7/fpsReferences';
 
-require('../../services/propPane/GrayPropPaneAccordions.css');
+require('@mikezimm/npmfunctions/dist/Services/PropPane/GrayPropPaneAccordions.css');
+
 
 export interface ICssChartWebPartProps {
   description: string;
