@@ -2,16 +2,12 @@ import * as React from 'react';
 import styles from './Cssreactbarchart.module.scss';
 import { ICssreactbarchartProps, ICssreactbarchartState } from './ICssreactbarchartProps';
 
-import { getRandomInt, getRandomChance, getRandomFromArray, randomDate, generateVals, generateTitles }
-    from '../../fpsReferences';
+import { getRandomInt, getRandomFromArray, generateVals, generateTitles } from '../../fpsReferences';
 
-import { sortStringArray, sortObjectArrayByStringKey, sortNumberArray, sortObjectArrayByNumberKey, sortKeysByOtherKey 
-} from '../../fpsReferences';
+import { sortKeysByOtherKey  } from '../../fpsReferences';
 
 //Manipulation
-import { expandArray, spliceCopyArray, addItemToArrayIfItDoesNotExist, convertNumberArrayToRelativePercents,
-  removeItemFromArrayOnce, removeItemFromArrayAll, updateNextOpenIndex 
-  } from '../../fpsReferences';
+import { convertNumberArrayToRelativePercents, } from '../../fpsReferences';
 
 import { ICSSChartSettings, ICSSChartData } from '../Drill/IDrillProps';
 import { ICSSChartTypes, ISeriesSort, CSSChartTypes } from '../../fpsReferences';
@@ -53,8 +49,8 @@ export interface ISimpleData {
 
 export function makeChartSettings( qty: number, label: string, chartTypes : ICSSChartTypes[] = [] ) {
 
-  let randomNums = generateVals( qty, 35, 90 );
-  let randomTitles = generateTitles( label, qty );
+  // let randomNums = generateVals( qty, 35, 90 );
+  // let randomTitles = generateTitles( label, qty );
 
   if ( chartTypes === [] ) { chartTypes = CSSChartTypes; }
 

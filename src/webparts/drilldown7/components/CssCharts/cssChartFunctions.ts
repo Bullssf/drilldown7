@@ -1,4 +1,4 @@
-import { toAbsoluteUrl } from '@pnp/sp';
+// import { toAbsoluteUrl } from '@pnp/sp';
 import { ICSSChartSettings, ICSSChartData, } from '../Drill/IDrillProps';
 
 import { IRefinerLayer, IRefinerStat, ICSSChartTypes } from '../../fpsReferences';

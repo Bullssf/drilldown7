@@ -1,25 +1,25 @@
 //  >>>> ADD import additional controls/components
-import { Web } from "@pnp/sp/presets/all";
+// import { Web } from "@pnp/sp/presets/all";
 
-import { UrlFieldFormatType, Field } from "@pnp/sp/presets/all";
-import { IFieldAddResult, FieldTypes, IFieldInfo, IField, IFields,
-    ChoiceFieldFormatType,
-    DateTimeFieldFormatType, CalendarType, DateTimeFieldFriendlyFormatType,
-    FieldUserSelectionMode, IFieldCreationProperties, } from "@pnp/sp/fields/types";
+// import { UrlFieldFormatType, Field } from "@pnp/sp/presets/all";
+// import { IFieldAddResult, FieldTypes, IFieldInfo, IField, IFields,
+//     ChoiceFieldFormatType,
+//     DateTimeFieldFormatType, CalendarType, DateTimeFieldFriendlyFormatType,
+//     FieldUserSelectionMode, IFieldCreationProperties, } from "@pnp/sp/fields/types";
 
-import { IItemAddResult } from "@pnp/sp/items";
+// import { IItemAddResult } from "@pnp/sp/items";
 
-import { IMyFieldTypes, IBaseField , ITextField , IMultiLineTextField , INumberField , IXMLField ,
-    IBooleanField , ICalculatedField , IDateTimeField , ICurrencyField , IUserField , ILookupField , IChoiceField ,
-    IMultiChoiceField , IDepLookupField , ILocationField } from './columnTypes';
+// import { IMyFieldTypes, IBaseField , ITextField , IMultiLineTextField , INumberField , IXMLField ,
+//     IBooleanField , ICalculatedField , IDateTimeField , ICurrencyField , IUserField , ILookupField , IChoiceField ,
+//     IMultiChoiceField , IDepLookupField , ILocationField } from './columnTypes';
 
-import { MyFieldDef, changes, cBool, cCalcT, cCalcN, cChoice, cMChoice, cCurr, cDate, cLocal, cLook, cDLook,
-    cMText, cText, cNumb, cURL, cUser, cMUser } from './columnTypes';
+// import { MyFieldDef, changes, cBool, cCalcT, cCalcN, cChoice, cMChoice, cCurr, cDate, cLocal, cLook, cDLook,
+//     cMText, cText, cNumb, cURL, cUser, cMUser } from './columnTypes';
 
-import { doesObjectExistInArray,compareArrays, ICompareResult, } from '../../webparts/drilldown7/fpsReferences';
+import { compareArrays, ICompareResult, } from '../../webparts/drilldown7/fpsReferences';
 import {  stringifyKeyValue } from '../../webparts/drilldown7/fpsReferences';
 
-import { IListInfo, IMyListInfo, IServiceLog, notify } from './listTypes';
+import { IMyListInfo, IServiceLog, notify } from './listTypes';
 
 import { getHelpfullError } from '../../webparts/drilldown7/fpsReferences';
 

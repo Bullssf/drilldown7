@@ -3,14 +3,14 @@ import styles from '../../drilldown7/components/Contents/contents.module.scss';
 import stylesD from '../../drilldown7/components/Drill/drillComponent.module.scss';
 import { IThelistProps } from './IThelistProps';
 import { IThelistState } from './IThelistState';
-import { escape } from '@microsoft/sp-lodash-subset';
+// import { escape } from '@microsoft/sp-lodash-subset';
 
 /**
  *  TITLE:  For Webpart Title component
 */
 import { WebPartTitle } from "@pnp/spfx-controls-react/lib/WebPartTitle";
 
-import { IGrouping, IViewField } from "@pnp/spfx-controls-react/lib/ListView";
+import { IGrouping, } from "@pnp/spfx-controls-react/lib/ListView";
 
 import { getAppropriateViewFields, getAppropriateViewGroups, getAppropriateViewProp 
   } from '../../drilldown7/components/Drill/listFunctions';

@@ -209,12 +209,14 @@ export { IWebpartBannerProps } from '@mikezimm/npmfunctions/dist/HelpPanelOnNPM/
  export { FPSOptionsGroup, FPSBanner2Group, } from '@mikezimm/npmfunctions/dist/Services/PropPane/FPSOptionsGroup';
 
 
-export { WebPartInfoGroup, } from '@mikezimm/npmfunctions/dist/Services/PropPane/zReusablePropPane';
+export { WebPartInfoGroup, JSON_Edit_Link, ValidLocalLanguages } from '@mikezimm/npmfunctions/dist/Services/PropPane/zReusablePropPane';
 export { FPSOptionsGroupBasic, } from '@mikezimm/npmfunctions/dist/Services/PropPane/FPSOptionsGroup3';
 export { FPSBanner4BasicGroup,FPSBanner3NavGroup, FPSBanner3ThemeGroup } from '@mikezimm/npmfunctions/dist/Services/PropPane/FPSOptionsGroup3';
 export { FPSBanner3VisHelpGroup } from '@mikezimm/npmfunctions/dist/CoreFPS/FPSOptionsGroupVisHelp';
 export { FPSPinMePropsGroup } from '@mikezimm/npmfunctions/dist/Services/DOM/PinMe/FPSOptionsGroupPinMe';
 export { FPSOptionsExpando, } from '@mikezimm/npmfunctions/dist/Services/DOM/Expando/FPSOptionsExpando'; //expandAudienceChoicesAll
+
+
 
 
 /***

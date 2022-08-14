@@ -81,23 +81,23 @@ export class IntroPage {
   public getPropertyPanePage(webPartProps: IDrilldown7WebPartProps, _onClickUpdateTitles, _getListDefintions, forceBanner: boolean, modifyBannerTitle: boolean, modifyBannerStyle: boolean ): IPropertyPanePage {
 
 
-    let ruleChoices = refinerRuleItems();
-    let showDisabled = false;
+    // let ruleChoices = refinerRuleItems();
+    // let showDisabled = false;
 
     //let newMap = _getListDefintions(true);
 
-    let theListChoices : IPropertyPaneDropdownOption[] = [];
+    // let theListChoices : IPropertyPaneDropdownOption[] = [];
 
-    //Tried checking but for some reason this returns false when the promise for .newMap was actually resolved.
-    //if ( webPartProps.newMap && webPartProps.newMap.length > 0 ) {
-      theListChoices.push ( { key: 'na', text: 'na' } );
-      theListChoices = theListChoices.concat(  webPartProps.newMap.map( d => {
-        return { key: d.Title, text: d.Title };
-      }) );
+    // //Tried checking but for some reason this returns false when the promise for .newMap was actually resolved.
+    // //if ( webPartProps.newMap && webPartProps.newMap.length > 0 ) {
+    //   theListChoices.push ( { key: 'na', text: 'na' } );
+    //   theListChoices = theListChoices.concat(  webPartProps.newMap.map( d => {
+    //     return { key: d.Title, text: d.Title };
+    //   }) );
 
     //}
 
-    if ( webPartProps.rules2 && ( webPartProps.rules2.indexOf('groupByDayOfWeek') > -1 ||  webPartProps.rules2.indexOf('groupByMonthsMMM') > -1 ) ) { showDisabled = true;}
+    // if ( webPartProps.rules2 && ( webPartProps.rules2.indexOf('groupByDayOfWeek') > -1 ||  webPartProps.rules2.indexOf('groupByMonthsMMM') > -1 ) ) { showDisabled = true;}
 
     return <IPropertyPanePage>
     { // <page1>
@@ -106,37 +106,37 @@ export class IntroPage {
       },
       displayGroupsAsAccordion: true,
       groups: [
-        { groupName: 'Web Part Info',
-          isCollapsed: true ,
-          groupFields: [
-            PropertyPaneLabel('About Text', {
-              text: 'This webpart gets helps track your time using SharePoint :).'
-            }),
+        // { groupName: 'Web Part Info',
+        //   isCollapsed: true ,
+        //   groupFields: [
+        //     PropertyPaneLabel('About Text', {
+        //       text: 'This webpart gets helps track your time using SharePoint :).'
+        //     }),
 
-            PropertyPaneLink('About Link' , {
-              text: 'Github Repo:  ' + links.gitRepoDrillDown.desc ,
-              href: links.gitRepoDrillDown.href,
-              target: links.gitRepoDrillDown.target,
-            }),
-          ]
-        },
+        //     PropertyPaneLink('About Link' , {
+        //       text: 'Github Repo:  ' + links.gitRepoDrillDown.desc ,
+        //       href: links.gitRepoDrillDown.href,
+        //       target: links.gitRepoDrillDown.target,
+        //     }),
+        //   ]
+        // },
 
-        {  groupName: 'Get pre-configured setup',
-            isCollapsed: false ,
-            groupFields: [
-              PropertyPaneToggle('definitionToggle', {
-                label: 'Lock list defintion - prevents accidently reseting props!',
-                offText: 'Off',
-                onText: 'On',
-              }),
+        // {  groupName: 'Get pre-configured setup',
+        //     isCollapsed: false ,
+        //     groupFields: [
+        //       PropertyPaneToggle('definitionToggle', {
+        //         label: 'Lock list defintion - prevents accidently reseting props!',
+        //         offText: 'Off',
+        //         onText: 'On',
+        //       }),
 
-              PropertyPaneDropdown('listDefinition', <IPropertyPaneDropdownProps>{
-                label: 'Pre-defined setup choices',
-                options: theListChoices,
-                selectedKey: webPartProps.listDefinition != '' ? webPartProps.listDefinition : 'na',
-                disabled: webPartProps.definitionToggle,
-              }),
-            ]},
+        //       PropertyPaneDropdown('listDefinition', <IPropertyPaneDropdownProps>{
+        //         label: 'Pre-defined setup choices',
+        //         options: theListChoices,
+        //         selectedKey: webPartProps.listDefinition != '' ? webPartProps.listDefinition : 'na',
+        //         disabled: webPartProps.definitionToggle,
+        //       }),
+        //     ]},
                 
         // 2 - Source and destination list information
         // {  groupName: 'Create-Verify Lists',
@@ -195,64 +195,64 @@ export class IntroPage {
 
 
         // 2 - Source and destination list information    
-        { groupName: 'Your list info',
-        isCollapsed: true ,
-        groupFields: [
-          PropertyPaneTextField('parentListWeb', {
-              label: strings.FieldLabel_ParentListWeb
-          }),
-          PropertyPaneTextField('parentListTitle', {
-            label: strings.FieldLabel_ParentListTitle
-          }),
+        // { groupName: 'Your list info',
+        // isCollapsed: true ,
+        // groupFields: [
+        //   PropertyPaneTextField('parentListWeb', {
+        //       label: strings.FieldLabel_ParentListWeb
+        //   }),
+        //   PropertyPaneTextField('parentListTitle', {
+        //     label: strings.FieldLabel_ParentListTitle
+        //   }),
 
-          //https://docs.microsoft.com/en-us/previous-versions/windows/desktop/indexsrv/valid-locale-identifiers
-          PropertyPaneTextField('language', {
-            label: 'Langage list data and structure were created in',
-            description: 'Will impact sorting.  example:  en-us or es-es',
-          }),
-          ValidLocalLanguages,
+        //   //https://docs.microsoft.com/en-us/previous-versions/windows/desktop/indexsrv/valid-locale-identifiers
+        //   PropertyPaneTextField('language', {
+        //     label: 'Langage list data and structure were created in',
+        //     description: 'Will impact sorting.  example:  en-us or es-es',
+        //   }),
+        //   ValidLocalLanguages,
 
-          PropertyPaneToggle('hideFolders', {
-            label: 'Hide Folders',
-            offText: 'Show Folders',
-            onText: 'Hide Folders',
-          }),
+        //   PropertyPaneToggle('hideFolders', {
+        //     label: 'Hide Folders',
+        //     offText: 'Show Folders',
+        //     onText: 'Hide Folders',
+        //   }),
           
-        ]}, // this group
+        // ]}, // this group
 
-        { groupName: 'Performance Properties',
-        isCollapsed: true ,
-        groupFields: [
-          PropertyPaneSlider('fetchCount', {
-            label: 'Load this many items from PC',
-            min: 100,
-            max: 2000,
-            step: 100,
-            value: webPartProps.fetchCount,
-          }),
+        // { groupName: 'Performance Properties',
+        // isCollapsed: true ,
+        // groupFields: [
+        //   PropertyPaneSlider('fetchCount', {
+        //     label: 'Load this many items from PC',
+        //     min: 100,
+        //     max: 2000,
+        //     step: 100,
+        //     value: webPartProps.fetchCount,
+        //   }),
 
-          PropertyPaneSlider('fetchCountMobile', {
-            label: 'Load this many items',
-            min: 100,
-            max: 3000,
-            step: 100,
-            value: webPartProps.fetchCountMobile,
-            disabled: true,
-          }),
+        //   PropertyPaneSlider('fetchCountMobile', {
+        //     label: 'Load this many items',
+        //     min: 100,
+        //     max: 3000,
+        //     step: 100,
+        //     value: webPartProps.fetchCountMobile,
+        //     disabled: true,
+        //   }),
 
-          PropertyPaneTextField('restFilter', {
-            label: 'Rest filter to load only specific items.',
-            description: 'See Github Wiki for examples',
-            multiline: true,
-            value: webPartProps.restFilter,
-          }),
+        //   PropertyPaneTextField('restFilter', {
+        //     label: 'Rest filter to load only specific items.',
+        //     description: 'See Github Wiki for examples',
+        //     multiline: true,
+        //     value: webPartProps.restFilter,
+        //   }),
 
-          PropertyPaneToggle('updateRefinersOnTextSearch', {
-            label: 'Update Refiners on text search',
-            offText: 'No = Faster',
-            onText: 'Yes = Slower',
-          }),
-        ]}, // this group
+        //   PropertyPaneToggle('updateRefinersOnTextSearch', {
+        //     label: 'Update Refiners on text search',
+        //     offText: 'No = Faster',
+        //     onText: 'Yes = Slower',
+        //   }),
+        // ]}, // this group
 
 
         //updateRefinersOnTextSearch
@@ -273,51 +273,51 @@ export class IntroPage {
  */
 
 
-        // 2 - Source and destination list information    
-        { groupName: 'Your Refiner info',
-        isCollapsed: true ,
-        groupFields: [
-          PropertyPaneLabel('Notice', {
-            text: 'Enter STATIC Name of column, pick any advanced coversion rules.',
-          }),
-          PropertyPaneLabel('Notice', {
-            text: strings.FieldLabel_RulesFind,
-          }),
-          PropertyPaneTextField('refiner0', {
-              label: strings.FieldLabel_Refiner0,
-          }),
-          PropertyFieldMultiSelect('rules0', {
-            key: 'rules0',
-            label: strings.FieldLabel_Rule0,
-            options: ruleChoices,
-            selectedKeys: webPartProps.rules0,
-          }),
-          PropertyPaneTextField('refiner1', {
-            label: strings.FieldLabel_Refiner1
-          }),
-          PropertyFieldMultiSelect('rules1', {
-            key: 'rules1',
-            label: strings.FieldLabel_Rule1,
-            options: ruleChoices,
-            selectedKeys: webPartProps.rules1,
+        // // 2 - Source and destination list information    
+        // { groupName: 'Your Refiner info',
+        // isCollapsed: true ,
+        // groupFields: [
+        //   PropertyPaneLabel('Notice', {
+        //     text: 'Enter STATIC Name of column, pick any advanced coversion rules.',
+        //   }),
+        //   PropertyPaneLabel('Notice', {
+        //     text: strings.FieldLabel_RulesFind,
+        //   }),
+        //   PropertyPaneTextField('refiner0', {
+        //       label: strings.FieldLabel_Refiner0,
+        //   }),
+        //   PropertyFieldMultiSelect('rules0', {
+        //     key: 'rules0',
+        //     label: strings.FieldLabel_Rule0,
+        //     options: ruleChoices,
+        //     selectedKeys: webPartProps.rules0,
+        //   }),
+        //   PropertyPaneTextField('refiner1', {
+        //     label: strings.FieldLabel_Refiner1
+        //   }),
+        //   PropertyFieldMultiSelect('rules1', {
+        //     key: 'rules1',
+        //     label: strings.FieldLabel_Rule1,
+        //     options: ruleChoices,
+        //     selectedKeys: webPartProps.rules1,
 
-          }),
-          PropertyPaneTextField('refiner2', {
-            label: strings.FieldLabel_Refiner2
-          }),
-          PropertyFieldMultiSelect('rules2', {
-            key: 'rules2',
-            label: strings.FieldLabel_Rule2,
-            options: ruleChoices,
-            selectedKeys: webPartProps.rules2,
-          }),
-          PropertyPaneToggle('showDisabled', {
-            label: 'Show disabled GroupBy',
-            offText: '',
-            onText: '',
-            disabled: !showDisabled,
-          }),
-        ]}, // this group
+        //   }),
+        //   PropertyPaneTextField('refiner2', {
+        //     label: strings.FieldLabel_Refiner2
+        //   }),
+        //   PropertyFieldMultiSelect('rules2', {
+        //     key: 'rules2',
+        //     label: strings.FieldLabel_Rule2,
+        //     options: ruleChoices,
+        //     selectedKeys: webPartProps.rules2,
+        //   }),
+        //   PropertyPaneToggle('showDisabled', {
+        //     label: 'Show disabled GroupBy',
+        //     offText: '',
+        //     onText: '',
+        //     disabled: !showDisabled,
+        //   }),
+        // ]}, // this group
 /* */
 
 
@@ -341,43 +341,43 @@ export class IntroPage {
         //   ]}, // this group
 
                   // 9 - Other web part options
-        { groupName: 'Toggles',
-        isCollapsed: true ,
-        groupFields: [
-          PropertyPaneToggle('togOtherListview', {
-            label: 'Where to show items',
-            offText: 'This webpart',
-            onText: 'Other webpart',
-          }),
+        // { groupName: 'Toggles',
+        // isCollapsed: true ,
+        // groupFields: [
+        //   PropertyPaneToggle('togOtherListview', {
+        //     label: 'Where to show items',
+        //     offText: 'This webpart',
+        //     onText: 'Other webpart',
+        //   }),
 
-          PropertyPaneToggle('togRefinerCounts', { //togRefinerCounts, togCountChart, togStats, fetchCount, fetchCountMobile, restFilter
-            label: 'Show Counts on Refiners',
-            offText: 'No',
-            onText: 'Yes',
-          }),
+        //   PropertyPaneToggle('togRefinerCounts', { //togRefinerCounts, togCountChart, togStats, fetchCount, fetchCountMobile, restFilter
+        //     label: 'Show Counts on Refiners',
+        //     offText: 'No',
+        //     onText: 'Yes',
+        //   }),
 
-          PropertyPaneToggle('togCountChart', {
-            label: 'Show Refiner count Charts',
-            offText: 'No',
-            onText: 'Yes',
-          }),
+        //   PropertyPaneToggle('togCountChart', {
+        //     label: 'Show Refiner count Charts',
+        //     offText: 'No',
+        //     onText: 'Yes',
+        //   }),
           
-          PropertyPaneToggle('togOtherChartpart', {
-            label: 'Where to show Summary Charts',
-            offText: 'Default this webpart',
-            onText: 'Always other webpart',
-          }),
+        //   PropertyPaneToggle('togOtherChartpart', {
+        //     label: 'Where to show Summary Charts',
+        //     offText: 'Default this webpart',
+        //     onText: 'Always other webpart',
+        //   }),
           
 
-          PropertyPaneToggle('togStats', {
-            label: 'Show Statistics',
-            offText: 'No',
-            onText: 'Yes',
-          }),
+        //   PropertyPaneToggle('togStats', {
+        //     label: 'Show Statistics',
+        //     offText: 'No',
+        //     onText: 'Yes',
+        //   }),
 
 
 
-        ]},  // this group
+        // ]},  // this group
 
         FPSBanner2Group( forceBanner , modifyBannerTitle, modifyBannerStyle, webPartProps.showBanner, null, true ),
         FPSOptionsGroup( true, true, true, true ), // this group

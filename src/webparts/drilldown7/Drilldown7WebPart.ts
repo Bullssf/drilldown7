@@ -37,7 +37,14 @@ import DrillDown from './components/Drill/drillComponent';
 import { IDrillDownProps, IWhenToShowItems } from './components/Drill/IDrillProps';
 import { consoleRef } from './components/Drill/drillFunctions';
 
-
+import { buildPreConfigGroup } from './PropPaneGroups/PreConfigSetup';
+import {  } from './PropPaneGroups/';
+import {  } from './PropPaneGroups/';
+import {  } from './PropPaneGroups/';
+import {  } from './PropPaneGroups/';
+import {  } from './PropPaneGroups/';
+import {  } from './PropPaneGroups/';
+import {  } from './PropPaneGroups/';
 
 /***
  *    d88888b d8888b. .d8888.      d8888b. d8888b. d88888b .d8888. d88888b d888888b .d8888. 
@@ -211,6 +218,14 @@ import { IRefinerLayer, RefineRuleValues, IRefinerStat } from './fpsReferences';
 import { IDynamicDataCallables, IDynamicDataPropertyDefinition} from '@microsoft/sp-dynamic-data';
 
 import { IGrouping, IViewField } from "@pnp/spfx-controls-react/lib/ListView";
+import { buildYourListGroup } from './PropPaneGroups/Page1/ListInfo';
+import { buildPerformanceGroup } from './PropPaneGroups/Performance';
+import { buildRefinerGroup } from './PropPaneGroups/Refiners';
+import { buildTogglesGroup } from './PropPaneGroups/Toggles';
+import { buildRefinerInstructionsGroup } from './PropPaneGroups/Page2/RefinerInstructions';
+import { buildCustomizeGroup } from './PropPaneGroups/Page2/Customize';
+import { buildListGroupingGroup } from './PropPaneGroups/Page2/Grouping';
+import { buildViewGroupFields } from './PropPaneGroups/Page2/BlankGroup copy 4';
 
 
 
@@ -892,13 +907,64 @@ export default class Drilldown7WebPart extends BaseClientSideWebPart<IDrilldown7
   */
 
 
+  // protected getPropertyPaneConfiguration(): IPropertyPaneConfiguration {
+  //   return propertyPaneBuilder.getPropertyPaneConfiguration(
+  //     this.properties,
+  //     this.UpdateTitles.bind(this),
+  //     this._getListDefintions.bind(this),
+  //     this._forceBanner, this._modifyBannerTitle, this._modifyBannerStyle
+  //     );
+  // }
+
   protected getPropertyPaneConfiguration(): IPropertyPaneConfiguration {
-    return propertyPaneBuilder.getPropertyPaneConfiguration(
-      this.properties,
-      this.UpdateTitles.bind(this),
-      this._getListDefintions.bind(this),
-      this._forceBanner, this._modifyBannerTitle, this._modifyBannerStyle
-      );
+
+    // Log.Write(`getPropertyPaneConfiguration`);
+
+    return {
+      pages: [
+        {
+          // header: {
+          //   description: strings.PropertyPaneDescription
+          // },
+          displayGroupsAsAccordion: true, //DONT FORGET THIS IF PROP PANE GROUPS DO NOT EXPAND
+          groups: [
+            WebPartInfoGroup( repoLink, 'Best TOC and Page Info available :)' ),
+            buildPreConfigGroup( this.properties ), //End this group
+            buildYourListGroup( ),
+            buildPerformanceGroup( this.properties, ),
+            buildRefinerGroup( this.properties, ),
+            buildTogglesGroup( this.properties ),
+            FPSBanner4BasicGroup( this._forceBanner , this._modifyBannerTitle, this.properties.showBanner, this.properties.infoElementChoice === 'Text' ? true : false, true, true ),
+            FPSBanner3NavGroup(), 
+            FPSBanner3ThemeGroup( this._modifyBannerStyle, this.properties.showBanner, this.properties.lockStyles, ),
+
+            FPSOptionsGroupBasic( false, true, true, true, this.properties.allSectionMaxWidthEnable, true, this.properties.allSectionMarginEnable, true ), // this group
+            FPSOptionsExpando( this.properties.enableExpandoramic, this.properties.enableExpandoramic,null, null ),
+            // FPSOptionsExpando( this.properties.enableExpandoramic, this.properties.enableExpandoramic,null, null ),
+  
+            FPSImportPropsGroup, // this group
+          ]
+        },
+        {
+          // header: {
+          //   description: strings.PropertyPaneDescription
+          // },
+          displayGroupsAsAccordion: true, //DONT FORGET THIS IF PROP PANE GROUPS DO NOT EXPAND
+          groups: [
+            buildCustomizeGroup(  ),
+            buildRefinerInstructionsGroup( this.properties ),
+            buildListGroupingGroup( ),
+            buildViewGroupFields( 'Wide', 1),
+            buildViewGroupFields( 'Medium', 2),
+            buildViewGroupFields( 'Small', 3),
+            
+            // FPSOptionsExpando( this.properties.enableExpandoramic, this.properties.enableExpandoramic,null, null ),
+  
+            FPSImportPropsGroup, // this group
+          ]
+        }
+      ]
+    };
   }
 
   //Promise<IDrillItemInfo[]>

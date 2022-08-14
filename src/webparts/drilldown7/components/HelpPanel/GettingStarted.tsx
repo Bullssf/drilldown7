@@ -1,8 +1,8 @@
 import * as React from 'react';
 
-import { IRepoLinks } from '@mikezimm/npmfunctions/dist/Links/CreateLinks';
+// import { IRepoLinks } from '@mikezimm/npmfunctions/dist/Links/CreateLinks';
 
-export function gettingStartedContent( repoLinks: IRepoLinks ) {
+export function gettingStartedContent(  ) {
 
   let html1 = <div>
     <h2>First:  Create a Parent List or Library in your site</h2>
