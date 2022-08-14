@@ -1,12 +1,12 @@
 // import { IPropertyFieldGroupOrPerson } from "@pnp/spfx-property-controls/lib/PropertyFieldPeoplePicker";
 // import { IDrilldown7WebPartProps } from "../IDrilldown7WebPartProps";
 
-import { IPreConfigSettings, IAllPreConfigSettings } from '../fpsReferences';
+import { PresetFPSBanner, IPreConfigSettings, IAllPreConfigSettings,  } from '../fpsReferences';
 // import { encrptMeOriginalTest } from '@mikezimm/npmfunctions/dist/HelpPanelOnNPM/onNpm/logTest';
 // import { ContALVFMContent, ContALVFMWebP } from '@mikezimm/npmfunctions/dist/HelpPanelOnNPM/onNpm/constants';
 
-export const ForceEverywhere : IPreConfigSettings = {
-    source: 'ForceEverywhere',
+export const WPForceEverywhere : IPreConfigSettings = {
+    source: 'WPForceEverywhere',
     location: '*',
     props: {
         // relatedStyle: '',
@@ -25,8 +25,8 @@ export const ForceEverywhere : IPreConfigSettings = {
     }
 };
 
-export const PresetEverywhere : IPreConfigSettings = {
-    source: 'PresetEverywhere',
+export const WPPresetEverywhere : IPreConfigSettings = {
+    source: 'WPPresetEverywhere',
     location: '*',
     props: {
 
@@ -51,11 +51,11 @@ export const PresetEverywhere : IPreConfigSettings = {
         showGoToHome: true,
         showGoToParent: true,
 
-        // Banner Theme props that are not preset in manifest.json
-        bannerStyleChoice: 'corpDark1',
-        bannerStyle: '{\"color\":\"white\",\"backgroundColor\":\"#005495\",\"fontSize\":\"larger\",\"fontWeight\":600,\"fontStyle\":\"normal\",\"padding\":\"0px 10px\",\"height\":\"48px\",\"cursor\":\"pointer\"}',
-        bannerCmdStyle: '{\"color\":\"white\",\"backgroundColor\":\"#005495\",\"fontSize\":16,\"fontWeight\":\"normal\",\"fontStyle\":\"normal\",\"padding\":\"7px 4px\",\"marginRight\":\"0px\",\"borderRadius\":\"5px\",\"cursor\":\"pointer\"}',
-        lockStyles: true,
+         // Banner Theme props that are not preset in manifest.json
+         bannerStyleChoice: 'corpDark1',
+         bannerStyle: '{\"color\":\"white\",\"backgroundColor\":\"#005495\",\"fontSize\":\"larger\",\"fontWeight\":600,\"fontStyle\":\"normal\",\"padding\":\"0px 10px\",\"height\":\"48px\",\"cursor\":\"pointer\"}',
+         bannerCmdStyle: '{\"color\":\"white\",\"backgroundColor\":\"#005495\",\"fontSize\":16,\"fontWeight\":\"normal\",\"fontStyle\":\"normal\",\"padding\":\"7px 4px\",\"marginRight\":\"0px\",\"borderRadius\":\"5px\",\"cursor\":\"pointer\"}',
+         lockStyles: true,
         
     }
 };
@@ -95,6 +95,13 @@ export const PresetSomeRandomSite : IPreConfigSettings = {
 };
 
 export const PreConfiguredProps : IAllPreConfigSettings = {
-    forced: [ ForceEverywhere ],
-    preset: [ PresetEverywhere ],
+    //Forced over-ride presets.
+    //Forced and presets are applied in order of this array....
+    //  This means the final preset in the array takes precedance.
+
+    //For Forced, generally speaking put because this web part may have specific needs.
+    forced: [ WPForceEverywhere ],
+
+    //For Presets, Order should be:  PresetFPSBanner, WPPresetEverywhere, CUSTOM Sites,
+    preset: [ PresetFPSBanner, WPPresetEverywhere ],
 };
