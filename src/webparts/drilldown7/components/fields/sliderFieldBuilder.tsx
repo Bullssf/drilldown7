@@ -2,7 +2,7 @@
 
 import * as React from 'react';
 
-import { Slider, ISliderProps } from 'office-ui-fabric-react/lib/Slider';
+import { Slider, } from 'office-ui-fabric-react/lib/Slider';
 
 export function createSlider(maxTime , timeSliderInc, timeSliderValue, _onChange){
 

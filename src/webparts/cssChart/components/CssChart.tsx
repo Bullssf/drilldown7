@@ -3,7 +3,7 @@ import styles from './CssChart.module.scss';
 import { ICssChartProps } from './ICssChartProps';
 import { ICssChartState } from './ICssChartState';
 
-import { escape } from '@microsoft/sp-lodash-subset';
+// import { escape } from '@microsoft/sp-lodash-subset';
 
 import Cssreactbarchart from '../../drilldown7/components/CssCharts/Cssreactbarchart';
 

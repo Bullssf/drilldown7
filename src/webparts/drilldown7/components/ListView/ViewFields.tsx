@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import { ListView, IViewField, SelectionMode, GroupOrder, IGrouping } from "@pnp/spfx-controls-react/lib/ListView";
+import { IViewField, } from "@pnp/spfx-controls-react/lib/ListView";
 import { Icon } from 'office-ui-fabric-react/lib/Icon';
 
 export function covertFieldInfoToIViewFields( fieldInfo: any , fieldsToShow: string[] ) {

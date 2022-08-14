@@ -7,7 +7,7 @@ import { IDrillItemInfo } from '../../fpsReferences';
 import { buildPropsHoverCard } from '../../../../services/hoverCardService';
 
 import { mergeStyles } from 'office-ui-fabric-react/lib/Styling';
-import { Fabric, Stack, IStackTokens, initializeIcons } from 'office-ui-fabric-react';
+import { IStackTokens } from 'office-ui-fabric-react';
 
 
 import styles from '../Contents/listView.module.scss';

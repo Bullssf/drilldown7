@@ -9,35 +9,35 @@ import { Pivot, PivotItem, IPivotItemProps} from 'office-ui-fabric-react/lib/Piv
 
 import ReactJson from "react-json-view";
 
-import { IUser } from '@mikezimm/npmfunctions/dist/Services/Users/IUserInterfaces';
+import { IUser } from '../../fpsReferences';
 import { IQuickButton, IQuickCommands } from '@mikezimm/npmfunctions/dist/QuickCommands/IQuickCommands';
 import { gitRepoDrillDown } from '@mikezimm/npmfunctions/dist/Links/LinksRepos';
 
-import { IDrillItemInfo } from '@mikezimm/npmfunctions/dist/WebPartInterfaces/DrillDown/IDrillItem';
+import { IDrillItemInfo } from '../../fpsReferences';
 
 import { autoDetailsList } from '../../../../services/hoverCardService';
 
-import { doesObjectExistInArray } from '@mikezimm/npmfunctions/dist/Services/Arrays/checks';
+import { doesObjectExistInArray } from '../../fpsReferences';
 
 import { findParentElementPropLikeThis } from '@mikezimm/npmfunctions/dist/Elements/functions';
 
-import { getHelpfullError } from '@mikezimm/npmfunctions/dist/Services/Logging/ErrorHandler';
+import { getHelpfullError } from '../../fpsReferences';
 
 import { buildConfirmDialog, IMyDialogProps } from '@mikezimm/npmfunctions/dist/Elements/dialogBox'; 
 
 import stylesL from '../ListView/listView.module.scss';
 import { ListView, IViewField, SelectionMode, GroupOrder, IGrouping, } from "@pnp/spfx-controls-react/lib/ListView";
-import { IGroup } from 'office-ui-fabric-react/lib/components/DetailsList';
+// import { IGroup } from 'office-ui-fabric-react/lib/components/DetailsList';
 
 import { mergeStyles } from 'office-ui-fabric-react/lib/Styling';
-import { Fabric, Stack, IStackTokens, initializeIcons } from 'office-ui-fabric-react';
+import { Stack, IStackTokens } from 'office-ui-fabric-react';
 import { Panel, PanelType } from 'office-ui-fabric-react/lib/Panel';
 import { PrimaryButton, DefaultButton } from 'office-ui-fabric-react/lib/Button';
 
 
-import { Dialog, DialogType, DialogFooter, IDialogProps } 	from 'office-ui-fabric-react/lib/Dialog';
-import { Button, ButtonType, } 			from 'office-ui-fabric-react/lib/Button';
-import { Label } 			from 'office-ui-fabric-react/lib/Label';
+// import { Dialog, DialogType, DialogFooter, IDialogProps } 	from 'office-ui-fabric-react/lib/Dialog';
+// import { Button, ButtonType, } 			from 'office-ui-fabric-react/lib/Button';
+// import { Label } 			from 'office-ui-fabric-react/lib/Label';
 
 import { updateReactListItem } from './listFunctions';
 
@@ -45,7 +45,7 @@ import { IContentsToggles, makeToggles } from '../fields/toggleFieldBuilder';
 
 import styles from '../Contents/listView.module.scss';
 import stylesInfo from './InfoPane.module.scss';
-import { IView } from '@pnp/sp/views';
+// import { IView } from '@pnp/sp/views';
 
 export interface IReactListItemsProps {
     title?: string;

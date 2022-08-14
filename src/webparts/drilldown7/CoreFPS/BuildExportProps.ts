@@ -10,8 +10,8 @@
  *                                                                                                                                  
  */
 
- import * as React from 'react';
- import * as ReactDom from 'react-dom';
+//  import * as React from 'react';
+//  import * as ReactDom from 'react-dom';
 
  import "@pnp/sp/webs";
  import "@pnp/sp/site-groups/web";
@@ -27,7 +27,7 @@
   *                                                                                                                                                                              
   */
 
- import { createExportObject, } from '@mikezimm/npmfunctions/dist/Services/PropPane/ExportFunctions';
+ import { createExportObject, } from '../fpsReferences';
 
 
   /***
@@ -50,9 +50,9 @@ import { changeCustomHelp, changeExpando, changeBanner, changePageStyle, changef
 
 import { changeBannerBasics, changeBannerNav, changeBannerTheme, changeBannerUtility,  } from '../fpsReferences';
 
-import { changePinMe,  } from '../fpsReferences';
+// import { changePinMe,  } from '../fpsReferences';
 
-import { importBlockProps } from '../IDrilldown7WebPartProps';
+// import { importBlockProps } from '../IDrilldown7WebPartProps';
 
 /***
  *    d88888b db    db d8888b.  .d88b.  d8888b. d888888b      d8888b. d8888b.  .d88b.  d8888b. .d8888. 

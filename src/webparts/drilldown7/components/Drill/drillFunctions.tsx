@@ -11,7 +11,7 @@ import "@pnp/sp/site-users/web";
 
 // import { IContentsListInfo, IMyListInfo, IServiceLog, IContentsLists } from '../../../../services/listServices/listTypes'; //Import view arrays for Time list
 
-import { IDrillItemInfo } from '@mikezimm/npmfunctions/dist/WebPartInterfaces/DrillDown/IDrillItem';
+import { IDrillItemInfo } from '../../fpsReferences';
 
 import { IDrillList, } from  './IDrillProps';
 
@@ -22,15 +22,15 @@ import { IDrillList, } from  './IDrillProps';
 
 // import { addTheseItemsToList, addTheseItemsToListInBatch } from '../../../../services/listServices/listServices';
 
-import { makeTheTimeObject } from '@mikezimm/npmfunctions/dist/Services/Time/timeObject';
-import { monthStr3 } from '@mikezimm/npmfunctions/dist/Services/Time/monthLabels';
+import { makeTheTimeObject } from '../../fpsReferences';
+import { monthStr3 } from '../../fpsReferences';
 import { getBestTimeDelta, getAge } from '@mikezimm/npmfunctions/dist/Services/Time/deltas';
 
 // import { doesObjectExistInArray } from '@mikezimm/npmfunctions/dist/Services/Arrays/checks';
-import { addItemToArrayIfItDoesNotExist, } from '@mikezimm/npmfunctions/dist/Services/Arrays/manipulation';
-import { sortKeysByOtherKey, } from '@mikezimm/npmfunctions/dist/Services/Arrays/sorting';
+import { addItemToArrayIfItDoesNotExist, } from '../../fpsReferences';
+import { sortKeysByOtherKey, } from '../../fpsReferences';
 
-import { getHelpfullError } from '@mikezimm/npmfunctions/dist/Services/Logging/ErrorHandler';
+import { getHelpfullError } from '../../fpsReferences';
 
 // import { IViewLog, addTheseViews } from '../../../../services/listServices/viewServices'; //Import view arrays for Time list
 
@@ -45,7 +45,7 @@ import { ensureUserInfo } from '@mikezimm/npmfunctions/dist/Services/Users/userS
 
 import { IRefinerLayer, IItemRefiners, RefineRuleValues, IRefinerStatType, RefinerStatTypes,  } from '../../fpsReferences';
 
-import { IUser } from '@mikezimm/npmfunctions/dist/Services/Users/IUserInterfaces';
+import { IUser } from '../../fpsReferences';
 // import { IQuickButton } from '@mikezimm/npmfunctions/dist/QuickCommands/IQuickCommands';
 
 import { createItemFunctionProp,  } from '../../../../services/parse'; //Main function to update item

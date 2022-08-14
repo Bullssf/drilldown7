@@ -18,11 +18,8 @@ import { IMyPivCat } from '../../fpsReferences';
 
 import { ICMDItem } from './refiners/commandBar';
 
-import { IWebpartBannerProps, } from '../../fpsReferences';
-
 import { IDrillItemInfo } from '../../fpsReferences';
 
-import { ISitePreConfigProps, } from '../../fpsReferences';
 
 
 /***

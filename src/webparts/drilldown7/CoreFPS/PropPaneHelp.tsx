@@ -2,8 +2,6 @@ import * as React from 'react';
 
 require('@mikezimm/npmfunctions/dist/PropPaneHelp/PropPanelHelp.css');
 
-import { ISitePreConfigProps, } from '@mikezimm/npmfunctions/dist/PropPaneHelp/PreConfigFunctions';
-
 import { Pivot, PivotItem, PivotLinkFormat, PivotLinkSize,} from 'office-ui-fabric-react/lib/Pivot';
 // import { Icon, IIconProps } from 'office-ui-fabric-react/lib/Icon';
 // import { defaultBannerCommandStyles, } from "@mikezimm/npmfunctions/dist/HelpPanelOnNPM/onNpm/defaults";
@@ -15,9 +13,11 @@ import { RefinerRulesStrs, RefinerRulesInts, RefinerRulesNums, RefinerRulesTime,
 
 import { gitRepoDrillDownSmall } from '@mikezimm/npmfunctions/dist/Links/LinksRepos';
 
-import { BannerHelp, FPSBasicHelp, FPSExpandHelp, ImportHelp, SinglePageAppHelp, VisitorHelp, PinMeHelp, SitePresetsInfo } from '@mikezimm/npmfunctions/dist/PropPaneHelp/FPSCommonOnNpm';
+import { BannerHelp, FPSBasicHelp, FPSExpandHelp, ImportHelp, SinglePageAppHelp, VisitorHelp, PinMeHelp } from '../fpsReferences';
 
-// import {HandleBarReplacements } from '@mikezimm/npmfunctions/dist/Services/Strings/handleBars';
+import { ISitePreConfigProps, SitePresetsInfo } from '../fpsReferences';
+
+// import {HandleBarReplacements } from '../fpsReferences';
 
 import { DoNotExpandLinkColumns, DoNotExpandTrimB4, DoNotExpandTrimAfter, DoNotExpandTrimWords, DoNotExpandTrimSpecial } from '../../../services/getInterfaceV2';
 
@@ -371,7 +371,7 @@ export function getWebPartHelpElement ( sitePresets : ISitePreConfigProps ) {
           <a href="https://sharepoint.stackexchange.com/a/272687" target="_blank">source:  stack exchange</a>
         </div>
       </PivotItem>
-      { PinMeHelp }
+      {/* { PinMeHelp } */}
       { VisitorHelp }
       { BannerHelp }
       { FPSBasicHelp }

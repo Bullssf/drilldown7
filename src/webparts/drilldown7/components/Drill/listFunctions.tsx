@@ -1,18 +1,16 @@
 
-import { ListView, IViewField, SelectionMode, GroupOrder, IGrouping } from "@pnp/spfx-controls-react/lib/ListView";
+import { IViewField, IGrouping } from "@pnp/spfx-controls-react/lib/ListView";
 
-import { Web, IList, IItem } from "@pnp/sp/presets/all";
+import { Web,  } from "@pnp/sp/presets/all";
 
 import { ICustViewDef,  } from '@mikezimm/npmfunctions/dist/Views/IListViews';
 import { IUser,  } from '@mikezimm/npmfunctions/dist/Services/Users/IUserInterfaces';
-import { IQuickButton, IQuickCommands, IQuickField } from '@mikezimm/npmfunctions/dist/QuickCommands/IQuickCommands';
+import { IQuickButton, } from '@mikezimm/npmfunctions/dist/QuickCommands/IQuickCommands';
 
 import { getHelpfullError } from '@mikezimm/npmfunctions/dist/Services/Logging/ErrorHandler';
 
 //Manipulation
-import { expandArray, spliceCopyArray, addItemToArrayIfItDoesNotExist, convertNumberArrayToRelativePercents,
-  removeItemFromArrayOnce, removeItemFromArrayAll, updateNextOpenIndex 
-  } from '@mikezimm/npmfunctions/dist/Services/Arrays/manipulation';
+import { removeItemFromArrayAll, } from '@mikezimm/npmfunctions/dist/Services/Arrays/manipulation';
 
 import { IDrillItemInfo } from '@mikezimm/npmfunctions/dist/WebPartInterfaces/DrillDown/IDrillItem';
 
