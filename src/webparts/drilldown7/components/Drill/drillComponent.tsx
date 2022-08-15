@@ -5,6 +5,8 @@ import * as React from 'react';
 import { IDrillDownProps, IDrillDownState, IDrillList, IViewType, IRefinerStyles, RefinerChartTypes } from './IDrillProps';
 import { pivCats } from './IDrillProps';
 
+import { saveViewAnalytics } from '../../CoreFPS/Analytics';
+
 import { Stack, IStackTokens, Icon, } from 'office-ui-fabric-react';
 import { SearchBox } from 'office-ui-fabric-react/lib/SearchBox';
 import { Pivot, PivotItem, } from 'office-ui-fabric-react/lib/Pivot';
@@ -561,6 +563,8 @@ export default class DrillDown extends React.Component<IDrillDownProps, IDrillDo
 
 
   public componentDidMount() {
+    const analyticsWasExecuted: boolean = saveViewAnalytics( 'Drilldown Webpart', 'didMount', this.props, this.state.analyticsWasExecuted );
+
     this._updateStateOnPropsChange();
     console.log('DrillComponent Mounted!');
   }

@@ -2,7 +2,7 @@
 import { PageContext } from '@microsoft/sp-page-context';
 import { IMyProgress } from '@mikezimm/npmfunctions/dist/ReusableInterfaces/IMyInterfaces';
 import { IWhenToShowItems } from './components/Drill/IDrillProps';
-import { ICssChartProps } from '../cssChart/components/ICssChartProps';
+import { ICssChartProps } from './components/CssCharts/ICssChartProps';
 
 /***
  * NOTE:  All imports in here Must be imported directly from npmFunctions, not the fpsPreferences
