@@ -6,7 +6,7 @@
         "title": "drilldown-7 Feature",
         "description": "The feature that activates elements of the drilldown-7 solution.",
         "id": "0e2f5b90-ecea-4ac0-b5e1-1127a8696cfe",
-        "version": "1.3.0.1"
+        "version": "1.3.0.2"
       }
     ],
     "metadata": {
@@ -22,7 +22,7 @@
     },
     "name": "Drilldown7 Unique functionality to drill down on data",
     "id": "bdcf72e6-9215-4cba-9b02-892e5eab42f8",
-    "version": "1.3.0.1",
+    "version": "1.3.0.2",
     "includeClientSideAssets": true,
     "isDomainIsolated": false,
     "developer": {

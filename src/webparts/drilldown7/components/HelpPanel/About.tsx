@@ -6,7 +6,7 @@ import { repoLink, } from '../../fpsReferences';
 
 import { createAboutRow } from '../../fpsReferences';
 
-export const panelVersionNumber = '2022-08-14 -  1.3.0.1'; //Added to show in panel
+export const panelVersionNumber = '2022-08-14 -  1.3.0.2'; //Added to show in panel
 
 export function aboutTable( showrepoLink: boolean ) {
 
@@ -16,7 +16,7 @@ export function aboutTable( showrepoLink: boolean ) {
         rows: [],
     };
 
-    table.rows.push( createAboutRow('2022-08-14','1.3.0.1'  ,'', showrepoLink === true ? repoLink : null ) );
+    table.rows.push( createAboutRow('2022-08-14','1.3.0.2'  ,'#71 - Import settings', showrepoLink === true ? repoLink : null ) );
     table.rows.push( createAboutRow('2022-08-13','1.3.0.0'  ,'Refactoring:  #150, fpsPreferences, clean up', showrepoLink === true ? repoLink : null ) );
 
 
