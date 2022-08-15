@@ -29,7 +29,25 @@ export const importBlockPropsThis : string[] = [ 'showSomeProps' ];
 
 export const importBlockProps : string[] = [ ...importBlockPropsFPS, ...importBlockPropsThis ];
 
-export const changePropertyGroupX : string[] = [ 'showSomeProps', 'showCustomProps' , 'showOOTBProps' , 'showApprovalProps' , 'propsTitleField', 'propsExpanded', 'selectedProperties' ];
+
+
+// importChanges: [  changeListConfig, changeListInfo, changePerformance, changeRefiners, changeToggles, changeInstructions, changeGrouping,
+//       changeViews, changeListToggles, changeStats, changeCommands ]
+export const changeListConfig : string[] = [ 'definitionToggle', 'listDefinition' , ];
+export const changeListInfo : string[] = [ 'parentListWeb', 'parentListTitle', 'parentListURL' , 'language' , 'hideFolders' , ];
+
+export const changePerformance : string[] = [ 'fetchCount', 'fetchCountMobile' , 'restFilter' , 'updateRefinersOnTextSearch' , ];
+
+export const changeRefiners : string[] = [ 'refiner0', 'rules0def' , 'rules0' , 'refiner1' , 'rules1def', 'rules1', 'refiner2', 'rules2def', 'rules2', ];
+export const changeToggles : string[] = [ 'togOtherListview', 'togRefinerCounts', 'togCountChart' , 'togOtherChartpart', 'togStats' , ];
+export const changeInstructions : string[] = [ 'whenToShowItems', 'minItemsForHide' , 'instructionIntro' , 'refinerInstruction1' , 'refinerInstruction2', 'refinerInstruction3', ];
+export const changeGrouping : string[] = [ 'groupByFields',  ];
+export const changeViews : string[] = [ 'viewWidth1', 'viewJSON1' , 'viewWidth2' , 'viewJSON2' , 'viewWidth3', 'viewJSON3',];
+
+export const changeListToggles : string[] = [ 'includeDetails', 'includeAttach', 'includeListLink',];
+
+export const changeStats : string[] = [ 'stats', ];
+export const changeCommands : string[] = [ 'quickCommands', ];
 
 // export interface IFpsCore114BannerWebPartProps extends IMinWPBannerProps {
   /**
@@ -52,12 +70,27 @@ export const changePropertyGroupX : string[] = [ 'showSomeProps', 'showCustomPro
   
     // 2 - Source and destination list information
     createVerifyLists: boolean;
+
+
+    //Group 1 - PreConfigSetup
+    definitionToggle: boolean;
+    listDefinition: any; //Picked list defintion :  Title
+
+    //Group 2 - List Info
     parentListTitle: string;
     parentListWeb: string;
     parentListURL?: string;
     hideFolders: boolean;
     language: string; //local language list data is saved in (needed to properly sort refiners)
   
+    //Group 3 - Performance options
+    fetchCount: number;
+    fetchCountMobile: number;
+    restFilter: string;
+    updateRefinersOnTextSearch?: boolean;
+
+
+    //Group 4 - Refiners
     refiner0: string;
     refiner1: string;
     refiner2: string;
@@ -70,38 +103,28 @@ export const changePropertyGroupX : string[] = [ 'showSomeProps', 'showCustomPro
     rules1: string[];
     rules2: string[];
   
+    //Group 5 - Toggles
+    togOtherListview:  boolean;
     togRefinerCounts: boolean;
     togCountChart: boolean;
-    togStats: boolean;
-    togOtherListview:  boolean;
     togOtherChartpart:  boolean;
-    includeListLink: boolean;
-    fetchCount: number;
-    fetchCountMobile: number;
-    restFilter: string;
+    togStats: boolean;
+
+
+    // Page 2 Group 2 - Instructions 
+    whenToShowItems: IWhenToShowItems;
+    minItemsForHide: number;
+    instructionIntro: string;
+    refinerInstruction1: string;
+    refinerInstruction2: string;
+    refinerInstruction3: string;
+
   
-    showCatCounts: boolean;
-    showSummary: boolean;
-  
-    stats: string;
-  
-    newMap?: any[];
-  
-    showDisabled?: boolean;  //This will show disabled refiners for DaysOfWeek/Months when the day or month has no data
-    updateRefinersOnTextSearch?: boolean;
-  
-    parentListFieldTitles: string;
-  
-    onlyActiveParents: boolean;
-  
-    quickCommands?: string;
-  
-    // 3 - General how accurate do you want this to be
-  
-    // 4 - Info Options
-  
-    // 5 - UI Defaults
-  
+    // Page 2 Group 3 - View item Grouping 
+    groupByFields: string;
+
+
+    // Page 2 Group 4,5,6 - View Definitions   
     viewWidth1: number;
     viewWidth2: number;
     viewWidth3: number;
@@ -109,29 +132,64 @@ export const changePropertyGroupX : string[] = [ 'showSomeProps', 'showCustomPro
     viewJSON1: string;
     viewJSON2: string;
     viewJSON3: string;
-  
+
+
+    // Page 2 Group 7 - List view Toggles 
     includeDetails: boolean;
     includeAttach: boolean;
+    includeListLink: boolean;
+
+    // Page 2 Group 8 - Summary Stats 
+    stats: string;
+
+
+    // Page 2 Group 9 - Commands 
+    quickCommands?: string;
+
+
+
   
-    groupByFields: string;
+    showCatCounts: boolean;
+    showSummary: boolean;
+  
+
+
+
+
+
+  
+    newMap?: any[];
+  
+    showDisabled?: boolean;  //This will show disabled refiners for DaysOfWeek/Months when the day or month has no data
+
+  
+    parentListFieldTitles: string;
+  
+    onlyActiveParents: boolean;
+  
+
+  
+    // 3 - General how accurate do you want this to be
+  
+    // 4 - Info Options
+  
+    // 5 - UI Defaults
+
+  
+
+  
+
   
     // 6 - User Feedback:
     progress: IMyProgress;
   
-    whenToShowItems: IWhenToShowItems;
-    minItemsForHide: number;
-    instructionIntro: string;
-    refinerInstruction1: string;
-    refinerInstruction2: string;
-    refinerInstruction3: string;
-  
+
   
     // 7 - TBD
   
     // 9 - Other web part options
     webPartScenario: string; //DEV, TEAM, CORP
-    definitionToggle: boolean;
-    listDefinition: any; //Picked list defintion :  Title
+
   
     advancedPivotStyles: boolean;
     pivotSize: string;

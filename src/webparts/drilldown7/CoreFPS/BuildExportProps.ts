@@ -50,9 +50,15 @@ import { changeCustomHelp, changeExpando, changeBanner, changePageStyle, changef
 
 import { changeBannerBasics, changeBannerNav, changeBannerTheme, changeBannerUtility,  } from '../fpsReferences';
 
+
+// importChanges: [  changeListConfig, changeListInfo, changePerformance, changeRefiners, changeToggles, changeInstructions, changeGrouping,
+//       changeViews, changeListToggles, changeStats, changeCommands ]
+
 // import { changePinMe,  } from '../fpsReferences';
 
 // import { importBlockProps } from '../IDrilldown7WebPartProps';
+import { changeListConfig, changeListInfo, changePerformance, changeRefiners, changeToggles, changeInstructions, changeGrouping,
+      changeViews, changeListToggles, changeStats, changeCommands } from '../IDrilldown7WebPartProps';
 
 /***
  *    d88888b db    db d8888b.  .d88b.  d8888b. d888888b      d8888b. d8888b.  .d88b.  d8888b. .d8888. 
@@ -78,12 +84,18 @@ import { changeBannerBasics, changeBannerNav, changeBannerTheme, changeBannerUti
     exportStructure.wpInstanceID = wpInstanceID;
     exportStructure.currentWeb = currentWeb;
 
-    // exportStructure.changePinMe = changePinMe;
-    // exportStructure.changeTOC = changeTOC;
-    // exportStructure.changeProperties = changeProperties;
-    // exportStructure.changeRelated1 = changeRelated1;
-    // exportStructure.changeRelated2 = changeRelated2;
-    // exportStructure.pageLinks = changePageLinks;
+    exportStructure.changeListConfig = changeListConfig;
+    exportStructure.changeListInfo = changeListInfo;
+    exportStructure.changePerformance = changePerformance;
+    exportStructure.changeRefiners = changeRefiners;
+
+    exportStructure.changeToggles = changeToggles;
+    exportStructure.changeInstructions = changeInstructions;
+    exportStructure.changeGrouping = changeGrouping;
+    exportStructure.changeViews = changeViews;
+    exportStructure.changeListToggles = changeListToggles;
+    exportStructure.changeStats = changeStats;
+    exportStructure.changeCommands = changeCommands;
 
     exportStructure.Visitor = changeCustomHelp;
 
@@ -113,6 +125,19 @@ import { changeBannerBasics, changeBannerNav, changeBannerTheme, changeBannerUti
     exportStructure.wpInstanceID = wpInstanceID;
     exportStructure.currentWeb = currentWeb;
 
+    exportStructure.changeListConfig = changeListConfig;
+    exportStructure.changeListInfo = changeListInfo;
+    exportStructure.changePerformance = changePerformance;
+    exportStructure.changeRefiners = changeRefiners;
+
+    exportStructure.changeToggles = changeToggles;
+    exportStructure.changeInstructions = changeInstructions;
+    exportStructure.changeGrouping = changeGrouping;
+    exportStructure.changeViews = changeViews;
+    exportStructure.changeListToggles = changeListToggles;
+    exportStructure.changeStats = changeStats;
+    exportStructure.changeCommands = changeCommands;
+    
     exportStructure.Visitor = changeCustomHelp;
 
     exportStructure.BannerBasics = changeBannerBasics;
