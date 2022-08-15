@@ -791,7 +791,7 @@ public componentDidUpdate(prevProps){
                         return <li>{ issue } </li>;
                     });
                     errMessage = this.state.errMessage === '' ? null : <div>
-                    <h2>Detected potential performance issues... :(</h2>
+                    <h2>{escape(`Detected potential performance issues... :(`)}</h2>
                     { issueElements }
                     </div>;
                 }
