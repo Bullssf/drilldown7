@@ -68,7 +68,7 @@ import { consoleRef } from './components/Drill/drillFunctions';
  
  import { webpartInstance, IFPSUser, getFPSUser, repoLink, trickyEmails } from './fpsReferences';
  import { createBasePerformanceInit, startPerformOp, updatePerformanceEnd } from './fpsReferences';
- import { IPerformanceOp, ILoadPerformance, IHistoryPerformance } from './fpsReferences';
+ import { IPerformanceOp, ILoadPerformance, IHistoryPerformance, ILoadPerformanceOps } from './fpsReferences';
  
  /***
   *    .d8888. d888888b db    db db      d88888b .d8888. 
@@ -115,7 +115,7 @@ import { consoleRef } from './components/Drill/drillFunctions';
 //  import { mainWebPartRenderBannerSetup } from './CoreFPS/WebPartRenderBanner';
 
 //For whatever reason, THIS NEEDS TO BE CALLED Directly and NOT through fpsReferences or it gives error.
-import { mainWebPartRenderBannerSetup } from '@mikezimm/npmfunctions/dist/HelpPanelOnNPM/onNpm/WebPartRenderBannerV2';
+import { mainWebPartRenderBannerSetup, refreshPanelHTML } from '@mikezimm/npmfunctions/dist/HelpPanelOnNPM/onNpm/WebPartRenderBannerV2';
 
 
  /***
@@ -254,7 +254,8 @@ export default class Drilldown7WebPart extends BaseClientSideWebPart<IDrilldown7
 
   private _exitPropPaneChanged = false;
   private _importErrorMessage = '';
-    
+  
+  private _keysToShow : ILoadPerformanceOps[] = [ ];
   private _performance : ILoadPerformance = null;
 
   //2022-04-07:  Intent of this is a one-time per instance to 'become a reader' level user.  aka, hide banner buttons that reader won't see
@@ -556,6 +557,11 @@ export default class Drilldown7WebPart extends BaseClientSideWebPart<IDrilldown7
 
   public render(): void {
 
+  /**
+   * PERFORMANCE - START
+   * This is how you can start a performance snapshot - make the _performance.KEYHERE = startPerforOp('KEYHERE', this.displayMode)
+   */ 
+   this._performance.renderWebPartStart = startPerformOp( 'renderWebPartStart', this.displayMode );
 
     renderCustomStyles(  { wpInstanceID: this._wpInstanceID, domElement: this.domElement, wpProps: this.properties, 
       displayMode: this.displayMode,
@@ -565,7 +571,7 @@ export default class Drilldown7WebPart extends BaseClientSideWebPart<IDrilldown7
   
      const bannerProps: IWebpartBannerProps = mainWebPartRenderBannerSetup( this.displayMode, this._beAReader, this._FPSUser, //repoLink.desc, 
          this.properties, repoLink, trickyEmails, exportProps, strings , this.domElement.clientWidth, this.context, this._modifyBannerTitle, 
-         this._forceBanner, false, null, true, true );
+         this._forceBanner, false, null, this._keysToShow, true, true );
   
       if ( bannerProps.showBeAUserIcon === true ) { bannerProps.beAUserFunction = this._beAUserFunction.bind(this); }
   
@@ -639,6 +645,17 @@ export default class Drilldown7WebPart extends BaseClientSideWebPart<IDrilldown7
 
     //Just for test purposes
     //stringRules = JSON.stringify( [rules1,rules2,rules3] );
+
+    /** 
+     * PERFORMANCE - UPDATE
+     * This is how you can UPDATE a performance snapshot - make the _performance.KEYHERE = startPerforOp('KEYHERE', this.displayMode)
+     * NOTE IN THIS CASE to do it before you refreshPanelHTML :)
+     */
+
+    this._performance.renderWebPartStart = updatePerformanceEnd( this._performance.renderWebPartStart, true );
+
+    // This gets done a second time if you do not want to pass it in the first time.
+    bannerProps.replacePanelHTML = refreshPanelHTML( bannerProps as any, repoLink, this._performance, this._keysToShow );   console.log('mainWebPart: createElement ~ 316',   );
 
     let language = this.properties.language;
     try {

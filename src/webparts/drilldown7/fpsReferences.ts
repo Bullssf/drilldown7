@@ -81,7 +81,7 @@ export { IListViewDDDrillDown } from '@mikezimm/npmfunctions/dist/Views/IDrillVi
 
  export { sortStringArray, sortObjectArrayByStringKey, sortNumberArray, sortObjectArrayByNumberKey, sortKeysByOtherKey } from '@mikezimm/npmfunctions/dist/Services/Arrays/sorting';
  export { ISeriesSort, } from '@mikezimm/npmfunctions/dist/CSSCharts/ICSSCharts';
- export { getExpandColumns, getKeysLike, getSelectColumns } from '@mikezimm/npmfunctions/dist/Lists/getFunctions';
+ export { getExpandColumns, getKeysLike, getSelectColumns } from '@mikezimm/npmfunctions/dist/Lists/getV1/getFunctions';
  
  export { doesObjectExistInArray, } from '@mikezimm/npmfunctions/dist/Services/Arrays/checks';
  export { compareArrays, ICompareResult, } from '@mikezimm/npmfunctions/dist/Services/Arrays/checks';
@@ -111,7 +111,7 @@ removeItemFromArrayOnce, removeItemFromArrayAll, updateNextOpenIndex
  
 // instead of createBasePerformanceInit, you can use startPerformanceInit_SS7 for SecureScript or startPerformanceInit_ALVFM for ALVFM
 export { createBasePerformanceInit, startPerformOp, updatePerformanceEnd } from '@mikezimm/npmfunctions/dist/Performance/functions';
-export { IPerformanceOp, ILoadPerformance, IHistoryPerformance } from '@mikezimm/npmfunctions/dist/Performance/IPerformance';
+export { IPerformanceOp, ILoadPerformance, IHistoryPerformance, ILoadPerformanceOps } from '@mikezimm/npmfunctions/dist/Performance/IPerformance';
 export { createPerformanceTableVisitor } from '@mikezimm/npmfunctions/dist/Performance/tables';
 
 /***
