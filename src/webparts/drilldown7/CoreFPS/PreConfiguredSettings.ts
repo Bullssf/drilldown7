@@ -30,21 +30,19 @@ export const WPPresetEverywhere : IPreConfigSettings = {
     location: '*',
     props: {
 
-        // Visitor Panel props that are not preset in manifest.json
-        // fullPanelAudience: 'Page Editors',
-        // panelMessageDescription1: 'Finance Manual Help and Contact',
-        // panelMessageSupport: `Contact ${encrptMeOriginalTest( ContALVFMContent )} for Finance Manual content`,
-        // panelMessageDocumentation: `Contact ${encrptMeOriginalTest( ContALVFMWebP )}  for Web part questions`,
-        // panelMessageIfYouStill: '',
-        // documentationLinkDesc: 'Finance Manual Help site',
-        // documentationLinkUrl: '/sites/FinanceManual/Help',
-        // documentationIsValid: true,
-        // supportContacts: [ FinancialManualContacts ],
+        rules0: [],
+        rules1: [],
+        rules2: [],
 
-        // FPS Banner Basics
-        // bannerTitle: 'Drilldown',
-        // infoElementChoice: "IconName=Unknown",
-        // infoElementText: "Question mark circle",
+        //Added for https://github.com/mikezimm/drilldown7/issues/95
+        whenToShowItems:2,
+        minItemsForHide:30,
+        instructionIntro:`Please click filters (above) to see items :)`,
+        refinerInstruction1: `Select a {{refiner0}}`,
+        refinerInstruction2: `Select a {{refiner1}}`,
+        refinerInstruction3: `Select a {{refiner2}}`,
+        language: `en-us`,
+
         feedbackEmail: `ae57524a.${window.location.hostname}.onmicrosoft.com@amer.teams.ms`,
 
         // FPS Banner Navigation

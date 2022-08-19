@@ -1,4 +1,4 @@
-import { IFPSCorePinMeReactComponentProps, IFPSCorePinMeReactComponentState } from '../../fpsReferences';
+import { IFPSCorePinMeReactComponentProps, IFPSCorePinMeReactComponentState, ILoadPerformance } from '../../fpsReferences';
 
 import { IGrouping } from "@pnp/spfx-controls-react/lib/ListView";
 
@@ -179,6 +179,8 @@ export interface IDrillDownProps extends IFPSCorePinMeReactComponentProps {
      environmentMessage: string;
      hasTeamsContext: boolean;
      userDisplayName: string;
+
+     loadPerformance: ILoadPerformance;
 
     allowOtherSites?: boolean; //default is local only.  Set to false to allow provisioning parts on other sites.
 

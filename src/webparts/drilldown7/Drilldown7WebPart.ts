@@ -313,24 +313,27 @@ export default class Drilldown7WebPart extends BaseClientSideWebPart<IDrilldown7
        */
       this.context.dynamicDataSourceManager.initializeSource(this);
 
-      if ( !this.properties.rules0 ) { 
-        this.properties.rules0 = [] ; 
-      }
-      if ( !this.properties.rules1 ) { 
-        this.properties.rules1 = [] ; 
-      }
-      if ( !this.properties.rules2 ) { 
-        this.properties.rules2 = [] ; 
-      }
+      // if ( !this.properties.rules0 ) { 
+      //   this.properties.rules0 = [] ; 
+      // }
+      // if ( !this.properties.rules1 ) { 
+      //   this.properties.rules1 = [] ; 
+      // }
+      // if ( !this.properties.rules2 ) { 
+      //   this.properties.rules2 = [] ; 
+      // }
 
-      //Added for https://github.com/mikezimm/drilldown7/issues/95
-      if ( this.properties.whenToShowItems === undefined || this.properties.whenToShowItems === null ) { this.properties.whenToShowItems = 2; }
-      if ( this.properties.minItemsForHide === undefined || this.properties.minItemsForHide === null ) { this.properties.minItemsForHide = 30; }
-      if ( !this.properties.instructionIntro ) { this.properties.instructionIntro = `Please click filters (above) to see items :)`; }
-      if ( !this.properties.refinerInstruction1 ) { this.properties.refinerInstruction1 = `Select a {{refiner0}}`; }
-      if ( !this.properties.refinerInstruction2 ) { this.properties.refinerInstruction2 = `Select a {{refiner1}}`; }
-      if ( !this.properties.refinerInstruction3 ) { this.properties.refinerInstruction3 = `Select a {{refiner2}}`; }
-      if ( !this.properties.language ) { this.properties.language = `en-us`; }
+      /**
+       * MOVED TO PRECONFIG PROPS
+       */
+      //Added for https://github.com/mikezimm/drilldown7/issues/95  
+      // if ( this.properties.whenToShowItems === undefined || this.properties.whenToShowItems === null ) { this.properties.whenToShowItems = 2; }
+      // if ( this.properties.minItemsForHide === undefined || this.properties.minItemsForHide === null ) { this.properties.minItemsForHide = 30; }
+      // if ( !this.properties.instructionIntro ) { this.properties.instructionIntro = `Please click filters (above) to see items :)`; }
+      // if ( !this.properties.refinerInstruction1 ) { this.properties.refinerInstruction1 = `Select a {{refiner0}}`; }
+      // if ( !this.properties.refinerInstruction2 ) { this.properties.refinerInstruction2 = `Select a {{refiner1}}`; }
+      // if ( !this.properties.refinerInstruction3 ) { this.properties.refinerInstruction3 = `Select a {{refiner2}}`; }
+      // if ( !this.properties.language ) { this.properties.language = `en-us`; }
 
       this.getQuickCommandsObject( 'Group Quick Commands', this.properties.quickCommands);
       
@@ -368,16 +371,16 @@ export default class Drilldown7WebPart extends BaseClientSideWebPart<IDrilldown7
      *                                                                                                                         
      */
 
+      // DEFAULTS SECTION:  Performance   <<< ================================================================
+      this._performance = createBasePerformanceInit( this.displayMode, false );
+      this._performance.superOnInit = startPerformOp( 'superOnInit', this.displayMode );
+
       //NEED TO APPLY THIS HERE as well as follow-up in render for it to not visibly change
       this._sitePresets = applyPresetCollectionDefaults( this._sitePresets, PreConfiguredProps, this.properties, this.context.pageContext.web.serverRelativeUrl ) ;
 
       //This indicates if its SPA, Teams etc.... always keep.
       this.properties.pageLayout =  this.context['_pageLayoutType']?this.context['_pageLayoutType'] : this.context['_pageLayoutType'];
       // this.urlParameters = getUrlVars();
-
-            //Added for ALVFinMan
-      // DEFAULTS SECTION:  Performance   <<< ================================================================
-      this._performance = createBasePerformanceInit( this.displayMode, false );
 
       this._FPSUser = getFPSUser( this.context as any, trickyEmails, this._trickyApp ) ;
       console.log( 'FPSUser: ', this._FPSUser );
@@ -392,6 +395,9 @@ export default class Drilldown7WebPart extends BaseClientSideWebPart<IDrilldown7
         { wpInstanceID: this._wpInstanceID, domElement: this.domElement, wpProps: this.properties, 
           displayMode: this.displayMode,
           doHeadings: false } ); //doHeadings is currently only used in PageInfo so set to false.
+
+      this._performance.superOnInit = updatePerformanceEnd( this._performance.superOnInit, true );  
+
     });
     
   }
@@ -654,9 +660,6 @@ export default class Drilldown7WebPart extends BaseClientSideWebPart<IDrilldown7
 
     this._performance.renderWebPartStart = updatePerformanceEnd( this._performance.renderWebPartStart, true );
 
-    // This gets done a second time if you do not want to pass it in the first time.
-    bannerProps.replacePanelHTML = refreshPanelHTML( bannerProps as any, repoLink, this._performance, this._keysToShow );   console.log('mainWebPart: createElement ~ 316',   );
-
     let language = this.properties.language;
     try {
       language = language.toLowerCase();
@@ -679,6 +682,8 @@ export default class Drilldown7WebPart extends BaseClientSideWebPart<IDrilldown7
         // 0 - Context
         context: this.context,
         displayMode: this.displayMode,
+
+        loadPerformance: this._performance,
 
         // saveLoadAnalytics: this.saveLoadAnalytics.bind(this),
         FPSPropsObj: buildFPSAnalyticsProps( this.properties, this._wpInstanceID, this.context.pageContext.web.serverRelativeUrl ),

@@ -88,6 +88,11 @@ import { IDrillItemInfo } from '../../fpsReferences';
 import { defaultBannerCommandStyles } from '../../fpsReferences';
 
 
+import { createPerformanceTableVisitor, repoLink } from '../../fpsReferences';
+
+//For whatever reason, THIS NEEDS TO BE CALLED Directly and NOT through fpsReferences or it gives error.
+import { refreshPanelHTML } from '@mikezimm/npmfunctions/dist/HelpPanelOnNPM/onNpm/WebPartRenderBannerV2';
+import { ILoadPerformance, startPerformOp, updatePerformanceEnd } from "../../fpsReferences";
 
 /***
  *    d88888b db    db d8888b.  .d88b.  d8888b. d888888b      d8888b. d88888b d88888b       .o88b. db       .d8b.  .d8888. .d8888. 
@@ -103,8 +108,22 @@ import { defaultBannerCommandStyles } from '../../fpsReferences';
 
 export default class DrillDown extends React.Component<IDrillDownProps, IDrillDownState> {
 
+    
+    private _performance: ILoadPerformance = null;
+    private _bonusHTML: JSX.Element = null;
+
     private _webPartHelpElement = getWebPartHelpElement( this.props.sitePresets );
     private _contentPages : IBannerPages = getBannerPages( this.props.bannerProps );
+
+    
+    private _newRefreshId() {
+
+        const startTime = new Date();
+        const refreshId = startTime.toISOString().replace('T', ' T'); // + ' ~ ' + startTime.toLocaleTimeString();
+        return refreshId;
+
+    }
+
     /***
  *    d8b   db d88888b  .d8b.  d8888b.      d88888b  .d8b.  d8888b.      d88888b db      d88888b 
  *    888o  88 88'     d8' `8b 88  `8D      88'     d8' `8b 88  `8D      88'     88      88'     
@@ -466,6 +485,11 @@ export default class DrillDown extends React.Component<IDrillDownProps, IDrillDo
     public constructor(props:IDrillDownProps){
         super(props);
 
+        if ( this._performance === null ) { this._performance = this.props.loadPerformance;  }
+
+        //Update the _bonusHTML if you want now
+        this._bonusHTML = createPerformanceTableVisitor( this._performance, [] );
+
         /**
          * This is copied later in code when you have to call the data in case something changed.
          */
@@ -497,6 +521,7 @@ export default class DrillDown extends React.Component<IDrillDownProps, IDrillDo
             showDevHeader: false,
             lastStateChange: '', 
             analyticsWasExecuted: false,
+            refreshId: this._newRefreshId(),
 
             //Size courtesy of https://www.netwoven.com/2018/11/13/resizing-of-spfx-react-web-parts-in-different-scenarios/
             WebpartHeight: this.props.WebpartElement.getBoundingClientRect().height ,
@@ -716,6 +741,9 @@ public componentDidUpdate(prevProps){
         ];
 
         const Banner = <FetchBanner 
+
+            bonusHTML={ this._bonusHTML }
+
             parentProps={ this.props }
             parentState={ this.state }
             
@@ -1190,6 +1218,9 @@ public componentDidUpdate(prevProps){
 
     private _getAllItemsCall( viewDefs: ICustViewDef[], refiners: string[] ) {
 
+        //Start tracking performance
+        this._performance.fetch1 = startPerformOp( 'fetch1 TitleText', this.props.displayMode );
+
         /**
          * This is copied from constructor when you have to call the data in case something changed.
          */
@@ -1310,6 +1341,12 @@ public componentDidUpdate(prevProps){
             rules: JSON.stringify(drillList.refinerRules),
             instructionsHidden: 'dynamic',
         });
+
+        //End tracking performance
+        this._performance.fetch1 = updatePerformanceEnd( this._performance.fetch1, true );
+
+        //Update the _bonusHTML if you want now
+        this._bonusHTML = createPerformanceTableVisitor( this._performance, [] );
 
         //This is required so that the old list items are removed and it's re-rendered.
         //If you do not re-run it, the old list items will remain and new results get added to the list.
