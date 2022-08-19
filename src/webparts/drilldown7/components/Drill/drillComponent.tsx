@@ -504,9 +504,8 @@ export default class DrillDown extends React.Component<IDrillDownProps, IDrillDo
             if ( this.props.refiners.length > 2 ) { maxRefinersToShow = 3; }
         }
 
-
         let quickCommands : IQuickCommands = this.props.quickCommands ? JSON.parse( JSON.stringify(this.props.quickCommands )) : null ;
-        
+
         if ( quickCommands !== null ) {
             if ( quickCommands.onUpdateReload === true ) {
                 quickCommands.refreshCallback = this._reloadOnUpdate.bind(this);
@@ -1325,6 +1324,12 @@ public componentDidUpdate(prevProps){
         console.log('addTheseItemsToState: drillList',drillList );
         console.log('addTheseItemsToState: refinerStats', drillList.refinerStats );
 
+        //End tracking performance
+        this._performance.fetch1 = updatePerformanceEnd( this._performance.fetch1, true );
+
+        //Update the _bonusHTML if you want now
+        this._bonusHTML = createPerformanceTableVisitor( this._performance, [] );
+
         this.setState({
             allItems: allItems,
             searchedItems: allItems, //newFilteredItems,  //Replaced with allItems to update when props change.
@@ -1342,11 +1347,6 @@ public componentDidUpdate(prevProps){
             instructionsHidden: 'dynamic',
         });
 
-        //End tracking performance
-        this._performance.fetch1 = updatePerformanceEnd( this._performance.fetch1, true );
-
-        //Update the _bonusHTML if you want now
-        this._bonusHTML = createPerformanceTableVisitor( this._performance, [] );
 
         //This is required so that the old list items are removed and it's re-rendered.
         //If you do not re-run it, the old list items will remain and new results get added to the list.
