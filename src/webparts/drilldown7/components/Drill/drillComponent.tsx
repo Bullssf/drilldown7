@@ -92,7 +92,7 @@ import { createPerformanceTableVisitor, repoLink } from '../../fpsReferences';
 
 //For whatever reason, THIS NEEDS TO BE CALLED Directly and NOT through fpsReferences or it gives error.
 import { refreshPanelHTML } from '@mikezimm/npmfunctions/dist/HelpPanelOnNPM/onNpm/WebPartRenderBannerV2';
-import { ILoadPerformance, startPerformOp, updatePerformanceEnd } from "../../fpsReferences";
+import { ILoadPerformance, startPerformOp, updatePerformanceEnd, ILoadPerformanceOps } from "../../fpsReferences";
 
 /***
  *    d88888b db    db d8888b.  .d88b.  d8888b. d888888b      d8888b. d88888b d88888b       .o88b. db       .d8b.  .d8888. .d8888. 
@@ -1218,7 +1218,7 @@ public componentDidUpdate(prevProps){
     private _getAllItemsCall( viewDefs: ICustViewDef[], refiners: string[] ) {
 
         //Start tracking performance
-        this._performance.fetch1 = startPerformOp( 'fetch1 TitleText', this.props.displayMode );
+        this._performance.fetch1 = startPerformOp( 'fetch1 data', this.props.displayMode );
 
         /**
          * This is copied from constructor when you have to call the data in case something changed.
@@ -1228,11 +1228,13 @@ public componentDidUpdate(prevProps){
         let errMessage = drillList.refinerRules === undefined ? 'Invalid Rule set: ' +  this.state.rules : '';
         if ( drillList.refinerRules === undefined ) { drillList.refinerRules = [[],[],[]] ; } 
 
-        let result : any = getAllItems( drillList, this._addTheseItemsToState.bind(this), this._setProgress.bind(this), null );
+        let result : any = getAllItems( drillList, this._addTheseItemsToState.bind(this), this._setProgress.bind(this), null,  this._updatePerformance.bind( this ), this.props.quickCommands.quickCommandsRequireUser );
 
     }
 
     private _addTheseItemsToState( drillList: IDrillList, allItems , errMessage : string, refinerObj: IRefinerLayer ) {
+        this._updatePerformance( 'analyze2','start', 'updateState' );
+
         consoleRef( 'addTheseItems1REF', refinerObj );
         consoleMe( 'addTheseItems1' , allItems, drillList );
         //let newFilteredItems : IDrillItemInfo[] = this.getNewFilteredItems( '', this.state.searchMeta, allItems, 0 );
@@ -1325,7 +1327,7 @@ public componentDidUpdate(prevProps){
         console.log('addTheseItemsToState: refinerStats', drillList.refinerStats );
 
         //End tracking performance
-        this._performance.fetch1 = updatePerformanceEnd( this._performance.fetch1, true );
+        this._updatePerformance( 'analyze2','update' );
 
         //Update the _bonusHTML if you want now
         this._bonusHTML = createPerformanceTableVisitor( this._performance, [] );
@@ -1634,8 +1636,19 @@ public componentDidUpdate(prevProps){
     let errMessage = drillList.refinerRules === undefined ? 'Invalid Rule set: ' +  this.state.rules : '';
     if ( drillList.refinerRules === undefined ) { drillList.refinerRules = [[],[],[]] ; }
 
-    processAllItems( this.state.allItems, errMessage, drillList, this._addTheseItemsToState.bind(this), this._setProgress.bind(this), null );
+    processAllItems( this.state.allItems, errMessage, drillList, this._addTheseItemsToState.bind(this), this._setProgress.bind(this), null, );
 
+  }
+
+  private _updatePerformance( key: ILoadPerformanceOps, phase: 'start' | 'update', note: string = '' ) {
+
+    if ( phase === 'start' ) {
+        this._performance[key] = startPerformOp( `${key} ${ note ? ' - ' + note : '' }`, this.props.displayMode );
+
+    } else if ( phase = 'update' ) {
+        this._performance[key] = updatePerformanceEnd( this._performance[key], true );
+
+    }
   }
 
   private _getCurrentRefinerTree(newMeta: string[] ) {

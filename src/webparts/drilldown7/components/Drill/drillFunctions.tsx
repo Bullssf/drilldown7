@@ -60,19 +60,26 @@ import { createItemFunctionProp,  } from '../../../../services/parse'; //Main fu
 //        
 
 // This is what it was before I split off the other part
-export async function getAllItems( drillList: IDrillList, addTheseItemsToState: any, setProgress: any, markComplete: any ): Promise<void>{
+export async function getAllItems( drillList: IDrillList, addTheseItemsToState: any, setProgress: any, markComplete: any, updatePerformance: any, getUser: boolean ): Promise<void>{
 
     let errMessage = '';        
     let allItems : IDrillItemInfo[] = [];
     let sourceUserInfo: IUser = null;
-    try {
-        sourceUserInfo = await ensureUserInfo( drillList.webURL, drillList.contextUserInfo.email );
-    } catch (e) {
-        errMessage = getHelpfullError(e, false, true);
+    updatePerformance( 'fetch1', 'start', 'getUser' );
+    if ( getUser === true ) {
+        try {
+            sourceUserInfo = await ensureUserInfo( drillList.webURL, drillList.contextUserInfo.email );
+        } catch (e) {
+            errMessage = getHelpfullError(e, false, true);
+        }
     }
 
+    updatePerformance( 'fetch1', 'update' );
+
+    updatePerformance( 'fetch2', 'start', 'items'  );
+
     if ( errMessage !== '' ) {
-        allItems = processAllItems( allItems, errMessage, drillList, addTheseItemsToState, setProgress, markComplete );
+        allItems = processAllItems( allItems, errMessage, drillList, addTheseItemsToState, setProgress, updatePerformance );
 
     } else {
         drillList.sourceUserInfo = sourceUserInfo;
@@ -122,13 +129,17 @@ export async function getAllItems( drillList: IDrillList, addTheseItemsToState: 
     
         }
         consoleMe( 'getAllItems' , allItems, drillList );
-        allItems = processAllItems( allItems, errMessage, drillList, addTheseItemsToState, setProgress, markComplete );
+        allItems = processAllItems( allItems, errMessage, drillList, addTheseItemsToState, setProgress, updatePerformance );
     }
 
 
 }
 
-export function processAllItems( allItems : IDrillItemInfo[], errMessage: string, drillList: IDrillList, addTheseItemsToState: any, setProgress: any, markComplete: any ){
+export function processAllItems( allItems : IDrillItemInfo[], errMessage: string, drillList: IDrillList, addTheseItemsToState: any, setProgress: any, updatePerformance: any ){
+
+    updatePerformance( 'fetch2', 'update' );
+
+    updatePerformance( 'analyze1', 'start', 'process'  );
 
     const DoNotExpandFuncColumnsLC = convertArrayToLC(DoNotExpandFuncColumns);
 
@@ -392,6 +403,9 @@ export function processAllItems( allItems : IDrillItemInfo[], errMessage: string
 //    console.log('Post-Sort: getAllItems', allRefiners);
 
     consoleMe( 'processAllItems2' , finalItems, drillList );
+
+    updatePerformance( 'analyze1', 'update' );
+
     addTheseItemsToState(drillList, finalItems, errMessage, allRefiners );
     return finalItems;
 

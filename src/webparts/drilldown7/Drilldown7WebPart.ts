@@ -228,6 +228,7 @@ import { IRefinerLayer, RefineRuleValues, IRefinerStat } from './fpsReferences';
 import { IDynamicDataCallables, IDynamicDataPropertyDefinition} from '@microsoft/sp-dynamic-data';
 
 import { IGrouping, IViewField } from "@pnp/spfx-controls-react/lib/ListView";
+import { buildQuickCommandsGroup } from './PropPaneGroups/Page2/QuickCommands';
 
 
 
@@ -473,7 +474,7 @@ export default class Drilldown7WebPart extends BaseClientSideWebPart<IDrilldown7
   public getQuickCommandsObject( message: string, str: string ) {
 
     let result : IQuickCommands = undefined;
-    
+
     if ( str === null || str === undefined ) { return result; }
     try {
       str = str.replace(/\\\"/g,'"').replace(/\\'"/g,"'"); //Replace any cases where I copied the hashed characters from JSON file directly.
@@ -485,6 +486,11 @@ export default class Drilldown7WebPart extends BaseClientSideWebPart<IDrilldown7
 
       this.properties.quickCommands = JSON.stringify(result);
       this._quickCommands = result;
+
+      if ( this.properties.quickCommands.indexOf('sourceUserInfo') > 1 ) {
+        this._quickCommands.quickCommandsRequireUser = true;
+
+      }
 
     } catch(e) {
       console.log(message + ' is not a valid JSON object.  Please fix it and re-run');
@@ -992,6 +998,7 @@ export default class Drilldown7WebPart extends BaseClientSideWebPart<IDrilldown7
 
             buildViewTogglesGroup( ),
             buildStatsGroup( ),
+            buildQuickCommandsGroup(),
 
             // FPSOptionsExpando( this.properties.enableExpandoramic, this.properties.enableExpandoramic,null, null ),
   
