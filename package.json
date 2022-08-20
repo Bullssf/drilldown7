@@ -14,7 +14,7 @@
     "@microsoft/sp-office-ui-fabric-core": "1.14.0",
     "@microsoft/sp-property-pane": "1.14.0",
     "@microsoft/sp-webpart-base": "1.14.0",
-    "@mikezimm/npmfunctions": "^2.1.27",
+    "@mikezimm/npmfunctions": "^2.1.28",
     "@pnp/common": "^2.11.0",
     "@pnp/graph": "^2.14.0",
     "@pnp/logging": "^2.11.0",

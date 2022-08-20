@@ -14,7 +14,7 @@ import { DisplayMode, } from '@microsoft/sp-core-library';
 
 import { IDrillDownProps } from '../components/Drill/IDrillProps';
 import { saveAnalytics3, IZLoadAnalytics, IZSentAnalytics, } from '../fpsReferences';
-import { ILoadPerformance, } from '../fpsReferences';
+import { ILoadPerformance, LoadPerformanceOps, IMinPerformance, IMinPerformanceSetting, IMinPerformanceSettingLabels, IMinPerformanceSettingLabelSS7 } from '../fpsReferences';
 
 
 /***
@@ -45,7 +45,7 @@ export const analyticsWeb: string = "/sites/Templates/Analytics/";
  *                                                                                
  */
 
-export function saveViewAnalytics( Title: string, Result: string, thisProps: IDrillDownProps, analyticsWasExecuted: boolean, performance: ILoadPerformance ) : boolean {
+export function saveViewAnalytics( Title: string, Result: string, thisProps: IDrillDownProps, analyticsWasExecuted: boolean, performanceObj: ILoadPerformance ) : boolean {
 
   if ( analyticsWasExecuted === true ) {
     console.log('saved view info already');
@@ -68,7 +68,8 @@ export function saveViewAnalytics( Title: string, Result: string, thisProps: IDr
 
     };
 
-    const zzzRichText1Obj = performance;
+
+    const zzzRichText1Obj = null;
     const zzzRichText2Obj = null;
     const zzzRichText3Obj = null;
 
@@ -76,6 +77,26 @@ export function saveViewAnalytics( Title: string, Result: string, thisProps: IDr
     console.log( 'zzzRichText2Obj:', zzzRichText2Obj);
     console.log( 'zzzRichText3Obj:', zzzRichText3Obj);
 
+    const minPerformance : IMinPerformance = {
+      mode: null,
+    };
+
+    if ( performanceObj && performanceObj.mode ) {
+      minPerformance.mode = performanceObj.mode ;
+    }
+
+    Object.keys( performanceObj ).map( ( key : any ) => {
+      if ( LoadPerformanceOps.indexOf(key) > -1 ) {
+        if ( performanceObj[key] ) {
+          minPerformance[key] = {
+            label: performanceObj[key]['label'],
+            ms: performanceObj[key]['ms'],
+          };
+        }
+      }
+    });
+
+    let performance = minPerformance ? JSON.stringify( minPerformance ) : null;
     let zzzRichText1 = null;
     let zzzRichText2 = null;
     let zzzRichText3 = null;
@@ -126,6 +147,8 @@ export function saveViewAnalytics( Title: string, Result: string, thisProps: IDr
       zzzRichText1: zzzRichText1,  //Used to store JSON objects for later use, will be stringified
       zzzRichText2: zzzRichText2,
       zzzRichText3: zzzRichText3,
+
+      performance: performance,
 
       FPSProps: FPSProps,
 

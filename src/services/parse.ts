@@ -17,7 +17,8 @@ import { DidNotTrim, TrimAfterColon, TrimAfterTilda, TrimAfterHyphen, TrimAfterT
 import { GetFirstWord, GetLastWord } from '@mikezimm/npmfunctions/dist/Services/';
 
  */
-
+import { checkDeepProperty } from '@mikezimm/npmfunctions/dist/Services/Objects/properties';
+import { replaceHTMLEntities } from '@mikezimm/npmfunctions/dist/Services/Strings/html';
 
 import { getDetailValueType } from '../webparts/drilldown7/fpsReferences';
 import { truncate } from '@microsoft/sp-lodash-subset';
@@ -274,6 +275,27 @@ export function createItemFunctionProp ( staticColumn: string, item: any, defaul
       //  export type ITrimTimes = 'YYYY-MM-DD' | 'YYYY-MM' | 'HH:mm' | 'HH:mm:ss' | 'HH:mm_AM' | 'HH:mm:ss_AM' |  'Q1-YY' | 'YY-Q1' | 'YYYY-Q1' ;
       } else if (  DoNotExpandTrimTimesLC.indexOf( rightSideLC ) > -1 ) {
         singleItemValue = convertUTCTime( trimmedItem, rightSide as ITrimTimes ); 
+
+      //  
+      } else if (  rightSideLC.indexOf( 'object.' ) ===0 ) {
+
+        let objKeys = rightSide.slice(7).split('.');
+
+        try {
+          const isMultiLine = trimmedItem.indexOf('</div>') > 0 ? true : false;
+          if ( isMultiLine === true ) {
+            const firstGt = trimmedItem.indexOf('>') + 1;
+            trimmedItem = trimmedItem.slice( firstGt ).replace('</div>','');
+            trimmedItem = replaceHTMLEntities( trimmedItem );
+          }
+          let obj = JSON.parse( trimmedItem );
+          singleItemValue = checkDeepProperty( obj, objKeys, 'Actual' );
+
+        } catch (e) {
+          // singleItemValue = `${}`;
+          singleItemValue = `Invalid object`;
+        }
+        
 
       // } else if ( rightSideLC === 'First象征' ) {
       //   let firstHan = testWord.match(/\p{Han}/gu);
@@ -548,7 +570,6 @@ export function convertUTCTime( trimmedItem: string, rightSide: ITrimTimes ) {
     AMStamp = isAM === true ? ' AM' : ' PM' ;
 
     if ( hourStamp.length === 1 ) { hourStamp = `0${hourStamp}` ; }
-    hourStamp += AMStamp;
 
   } else {
     hourStamp = hour24.toString();

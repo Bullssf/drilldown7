@@ -181,7 +181,8 @@ export function getWebPartHelpElement ( sitePresets : ISitePreConfigProps ) {
 
             </div>
             <div className={ 'fps-pph-topic' }>Notes: </div>
-            <div></div>
+            <div>Words ending in Capital C - the C stands for Characters so FirstWord2C = First 2 characters of the first word</div>
+            <div>Words ending in Capital D - includes digits so InitalsD includes all Initials AND numbers</div>
             <div>at this time, 'TrimB42ndDot', 'FirstAcronym', 'SecondAcronym' are not implimented :( </div>
 
         </div>

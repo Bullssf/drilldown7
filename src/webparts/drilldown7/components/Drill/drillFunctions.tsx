@@ -598,9 +598,11 @@ export function updateRefinerStats( i: IDrillItemInfo , topKeyZ: number,  refine
 
             } else if ( thisStat === 'sum' || thisStat === 'avg' || thisStat === 'daysAgo' || thisStat === 'monthsAgo' ) {
                 //Add numbers up here and divide by total count later
-                refiners['stat' + i2][topKeyZ] += thisValue;
-                refiners['stat' + i2 + 'Count'][topKeyZ] ++;
-
+                //Only add and count if there is an actual value.
+                if ( typeof thisValue === 'number' || typeof thisValue === 'bigint' ) {
+                    refiners['stat' + i2][topKeyZ] += thisValue;
+                    refiners['stat' + i2 + 'Count'][topKeyZ] ++;
+                }
             } else if ( thisStat === 'max' ) {
                 if ( thisValue > currentRefinerValue || currentRefinerValue === null ) {
                     //Add numbers up here and divide by total count later
@@ -838,6 +840,10 @@ export function getRefinerStatsForItem( drillList: IDrillList, item: IDrillItemI
         let primaryType : ITypeStrings = 'unknown';
 
         if ( primaryField !== undefined || primaryField !== null ) { testPrimary = true; }
+
+        //This was added to be able to do summary stats on an object property
+        primaryField = primaryField.replace('/Object.','Object.').replace('/object.','object.');
+
         if ( testPrimary === true) {
             primaryType = getDetailValueType(  item[primaryField] );
         }

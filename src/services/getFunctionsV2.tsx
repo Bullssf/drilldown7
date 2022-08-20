@@ -112,6 +112,10 @@ import { DoNotExpandLinkColumns, DoNotExpandColumns, DoNotExpandFuncColumns } fr
 
             }
 
+          } else if ( rightSide.toLowerCase().indexOf('object.') === 0 ) {
+            // This is an object function - should be text or rich text so do not expand
+            // baseSelectColumns.push( splitCol[ 0 ] );
+
           } else {
             baseSelectColumns.push(thisColumn);
 
@@ -166,6 +170,10 @@ import { DoNotExpandLinkColumns, DoNotExpandColumns, DoNotExpandFuncColumns } fr
               if ( actualFuncColumns.indexOf( leftSide ) < 0 ) { actualFuncColumns.push( leftSide ); }
 
             }
+          } else if ( rightSide && rightSide.toLowerCase().indexOf( 'object.' ) ===0 ) {
+            //Then do nothing since this column is a 'faux expanded column' used in Drilldown for Func Columns
+            allFuncColumns.push( thisColumn );
+            
           }
 
           let funcIdx =  DoNotExpandFuncColumnsLC.indexOf( rightSide.toLowerCase() );
@@ -211,6 +219,9 @@ import { DoNotExpandLinkColumns, DoNotExpandColumns, DoNotExpandFuncColumns } fr
 
         if ( nextPart && DoNotExpandColumnsLC.indexOf( nextPart.toLowerCase() ) > -1 ) {
           //Then do nothing since this column is a 'faux expanded column' used in Drilldown for Link Columns
+
+        } else if ( nextPart.toLowerCase().indexOf('object.') === 0 ) {
+          //Do not expand since this is an object column which should be text or multiline text
 
         } else if(baseExpandColumns.indexOf(baseColumn) < 0) {
           baseExpandColumns.push(baseColumn);

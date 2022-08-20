@@ -111,7 +111,8 @@ removeItemFromArrayOnce, removeItemFromArrayAll, updateNextOpenIndex
  
 // instead of createBasePerformanceInit, you can use startPerformanceInit_SS7 for SecureScript or startPerformanceInit_ALVFM for ALVFM
 export { createBasePerformanceInit, startPerformOp, updatePerformanceEnd } from '@mikezimm/npmfunctions/dist/Performance/functions';
-export { IPerformanceOp, ILoadPerformance, IHistoryPerformance, ILoadPerformanceOps } from '@mikezimm/npmfunctions/dist/Performance/IPerformance';
+export { IPerformanceOp, ILoadPerformance, IHistoryPerformance, ILoadPerformanceOps, LoadPerformanceOps } from '@mikezimm/npmfunctions/dist/Performance/IPerformance';
+export { IMinPerformance, IMinPerformanceSetting, IMinPerformanceSettingLabels, IMinPerformanceSettingLabelSS7 } from '@mikezimm/npmfunctions/dist/Performance/IPerformance';
 export { createPerformanceTableVisitor } from '@mikezimm/npmfunctions/dist/Performance/tables';
 
 /***
