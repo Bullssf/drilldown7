@@ -20,6 +20,9 @@
   export type ITrimWords = 'FirstWord' | 'FirstWordNoNum' | 'FirstWord2C' | 'FirstWord3C' |  'FirstWord4C' | 'FirstWordNoNum2C' | 'FirstWordNoNum3C' |  'FirstWordNoNum4C' | 'LastWord' | 'LastWordNoNum' ;
   export const DoNotExpandTrimWords : ITrimWords[] = [ 'FirstWord', 'FirstWordNoNum', 'FirstWord2C' , 'FirstWord3C' , 'FirstWord4C', 'FirstWordNoNum2C' , 'FirstWordNoNum3C' , 'FirstWordNoNum4C' ,'LastWord', 'LastWordNoNum' , ];
   
+  export type ITrimTimes = 'YYYY-MM-DD' | 'YYYY-MM' | 'HH:mm' | 'HH:mm:ss' | 'HH:mm_AM' | 'HH:mm:ss_AM' |  'Q1-YY' | 'YY-Q1' | 'YYYY-Q1' ;
+  export const DoNotExpandTrimTimes : ITrimTimes[] = [ 'YYYY-MM-DD', 'YYYY-MM', 'HH:mm' , 'HH:mm:ss' , 'HH:mm_AM' , 'HH:mm:ss_AM' , 'Q1-YY', 'YY-Q1' , 'YYYY-Q1' , ];
+  
   // export type ITrimSpecial = 'FirstLetter' | 'FirstLetterAsCap' | 'FirstNumber' | 'First象征' | 'Initials' | 'InitialsAsCaps' | 'InitialsD' | 'InitialsAsCapsD' | 'FirstInFirst' | 'FirstInLast'  | 'FirstInFirstAsCap' | 'FirstInLastAsCap' | 'FirstAcronym' | 'SecondAcronym';
   
   // export const DoNotExpandTrimSpecial : ITrimSpecial[] = [  'FirstLetter', 'FirstLetterAsCap', 'FirstNumber', `First象征`, 'Initials', 'InitialsAsCaps', 'InitialsD', 'InitialsAsCapsD', 'FirstInFirst', 'FirstInLast', 'FirstInFirstAsCap', 'FirstInLastAsCap', 'FirstAcronym', 'SecondAcronym', ];
@@ -28,13 +31,13 @@
   
   export const DoNotExpandTrimSpecial : ITrimSpecial[] = [  'FirstLetter', 'FirstLetterAsCap', 'FirstNumber', 'Initials', 'InitialsAsCaps', 'InitialsD', 'InitialsAsCapsD', 'FirstInFirst', 'FirstInLast', 'FirstInFirstAsCap', 'FirstInLastAsCap', 'FirstAcronym', 'SecondAcronym', ];
 
-  export type ITrimFunctions = ITrimB4 | ITrimAfter | ITrimWords | ITrimSpecial;
+  export type ITrimFunctions = ITrimB4 | ITrimAfter | ITrimWords | ITrimTimes | ITrimSpecial ;
 
-  export type IDoNotExpandColumns = ITrimLink | ITrimB4 | ITrimAfter | ITrimWords | ITrimSpecial;
+  export type IDoNotExpandColumns = ITrimLink | ITrimB4 | ITrimAfter | ITrimWords | ITrimTimes | ITrimSpecial;
 
-   export const DoNotExpandFuncColumns : ITrimFunctions[] = [ ...DoNotExpandTrimB4, ...DoNotExpandTrimAfter, ...DoNotExpandTrimWords, ...DoNotExpandTrimSpecial ];
+  export const DoNotExpandFuncColumns : ITrimFunctions[] = [ ...DoNotExpandTrimB4, ...DoNotExpandTrimAfter, ...DoNotExpandTrimWords, ...DoNotExpandTrimTimes, ...DoNotExpandTrimSpecial ];
 
-   export const DoNotExpandColumns : string[] = [ ...DoNotExpandLinkColumns, ...DoNotExpandFuncColumns ];
+  export const DoNotExpandColumns : string[] = [ ...DoNotExpandLinkColumns, ...DoNotExpandFuncColumns ];
 
 export function convertArrayToLC( arr: string[] ) {
   let result: string[] = arr.map( str => { return str.toLowerCase(); } );

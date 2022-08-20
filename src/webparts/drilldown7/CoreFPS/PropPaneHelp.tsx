@@ -19,7 +19,7 @@ import { ISitePreConfigProps, SitePresetsInfo } from '../fpsReferences';
 
 // import {HandleBarReplacements } from '../fpsReferences';
 
-import { DoNotExpandLinkColumns, DoNotExpandTrimB4, DoNotExpandTrimAfter, DoNotExpandTrimWords, DoNotExpandTrimSpecial } from '../../../services/getInterfaceV2';
+import { DoNotExpandLinkColumns, DoNotExpandTrimB4, DoNotExpandTrimAfter, DoNotExpandTrimWords, DoNotExpandTrimTimes, DoNotExpandTrimSpecial } from '../../../services/getInterfaceV2';
 
 import ReactJson from "react-json-view";
 
@@ -170,11 +170,20 @@ export function getWebPartHelpElement ( sitePresets : ISitePreConfigProps ) {
                 <div style={ padRight40 }><div className={ 'fps-pph-topic' }>Initials</div><ul>
                   { DoNotExpandTrimSpecial.map( rule => <li>{ '/' + rule }</li> ) }
                 </ul></div>
-                <div style={ padRight40 }><div className={ 'fps-pph-topic' }>Link columns</div><ul>
-                  { DoNotExpandLinkColumns.map( rule => <li>{ '/' + rule }</li> ) }
-                </ul></div>
+                <div>
+                  <div style={ padRight40 }><div className={ 'fps-pph-topic' }>Link columns</div><ul>
+                    { DoNotExpandLinkColumns.map( rule => <li>{ '/' + rule }</li> ) }
+                  </ul></div>
+                  <div style={ padRight40 }><div className={ 'fps-pph-topic' }>Time columns</div><ul>
+                    { DoNotExpandTrimTimes.map( rule => <li>{ '/' + rule }</li> ) }
+                  </ul></div>
+                </div>
+
             </div>
-            <div>Note:  at this time, 'TrimB42ndDot', 'FirstAcronym', 'SecondAcronym' are not implimented :( </div>
+            <div className={ 'fps-pph-topic' }>Notes: </div>
+            <div></div>
+            <div>at this time, 'TrimB42ndDot', 'FirstAcronym', 'SecondAcronym' are not implimented :( </div>
+
         </div>
       </PivotItem>
 {/* 
