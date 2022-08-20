@@ -22,6 +22,9 @@ import { GetFirstWord, GetLastWord } from '@mikezimm/npmfunctions/dist/Services/
 import { getDetailValueType } from '../webparts/drilldown7/fpsReferences';
 import { truncate } from '@microsoft/sp-lodash-subset';
 
+
+// import XRegExp from 'xregexp/lib/addons/unicode-scripts';
+
 export const DidNotTrim = 'NothingChanged';
 
 /***
@@ -266,6 +269,10 @@ export function createItemFunctionProp ( staticColumn: string, item: any, defaul
         let firstNumber = trimmedItem.match(/(\d+)/);
         singleItemValue = firstNumber ? firstNumber[0] : ''; 
         
+      // } else if ( rightSideLC === 'First象征' ) {
+      //   let firstHan = testWord.match(/\p{Han}/gu);
+      //   singleItemValue = firstHan ? firstHan[0] : ''; 
+        
       }
 
       if ( singleItemValue === '' && defaultValue !== 'originalValue' ) { singleItemValue = defaultValue ; }
@@ -290,6 +297,7 @@ export function createItemFunctionProp ( staticColumn: string, item: any, defaul
 
 export const regexInitials = /[^a-zA-Z- ]/g;
 export const regexInitialsWithNumbers = /[^a-zA-Z-\d ]/g;
+// export const regexFirstHan = /\p{Han}/gu;
 
 export function getInitials( str: string, asCaps: boolean, includeNumbers: boolean ) {
 

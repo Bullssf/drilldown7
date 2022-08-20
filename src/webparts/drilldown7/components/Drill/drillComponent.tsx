@@ -587,7 +587,7 @@ export default class DrillDown extends React.Component<IDrillDownProps, IDrillDo
 
 
   public componentDidMount() {
-    const analyticsWasExecuted: boolean = saveViewAnalytics( 'Drilldown Webpart', 'didMount', this.props, this.state.analyticsWasExecuted );
+    // const analyticsWasExecuted: boolean = saveViewAnalytics( 'Drilldown Webpart', 'didMount', this.props, this.state.analyticsWasExecuted );
 
     this._updateStateOnPropsChange();
     console.log('DrillComponent Mounted!');
@@ -1332,6 +1332,8 @@ public componentDidUpdate(prevProps){
         //Update the _bonusHTML if you want now
         this._bonusHTML = createPerformanceTableVisitor( this._performance, [] );
 
+        const analyticsWasExecuted: boolean = saveViewAnalytics( 'Drilldown Webpart', 'addItems', this.props, this.state.analyticsWasExecuted, this._performance );
+
         this.setState({
             allItems: allItems,
             searchedItems: allItems, //newFilteredItems,  //Replaced with allItems to update when props change.
@@ -1347,7 +1349,9 @@ public componentDidUpdate(prevProps){
             maxRefinersToShow: maxRefinersToShow,
             rules: JSON.stringify(drillList.refinerRules),
             instructionsHidden: 'dynamic',
+            analyticsWasExecuted: true,
         });
+
 
 
         //This is required so that the old list items are removed and it's re-rendered.

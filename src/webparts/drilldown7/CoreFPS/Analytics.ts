@@ -14,6 +14,7 @@ import { DisplayMode, } from '@microsoft/sp-core-library';
 
 import { IDrillDownProps } from '../components/Drill/IDrillProps';
 import { saveAnalytics3, IZLoadAnalytics, IZSentAnalytics, } from '../fpsReferences';
+import { ILoadPerformance, } from '../fpsReferences';
 
 
 /***
@@ -44,7 +45,7 @@ export const analyticsWeb: string = "/sites/Templates/Analytics/";
  *                                                                                
  */
 
-export function saveViewAnalytics( Title: string, Result: string, thisProps: IDrillDownProps, analyticsWasExecuted: boolean) : boolean {
+export function saveViewAnalytics( Title: string, Result: string, thisProps: IDrillDownProps, analyticsWasExecuted: boolean, performance: ILoadPerformance ) : boolean {
 
   if ( analyticsWasExecuted === true ) {
     console.log('saved view info already');
@@ -67,7 +68,7 @@ export function saveViewAnalytics( Title: string, Result: string, thisProps: IDr
 
     };
 
-    const zzzRichText1Obj = null;
+    const zzzRichText1Obj = performance;
     const zzzRichText2Obj = null;
     const zzzRichText3Obj = null;
 

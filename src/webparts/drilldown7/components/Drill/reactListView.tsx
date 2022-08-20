@@ -815,9 +815,18 @@ export default class ReactListItems extends React.Component<IReactListItemsProps
         console.log('_onShowPanel: e',e);
         console.log('_onShowPanel item clicked:',item);
 
-        let isLink = e.srcElement && e.srcElement.href && e.srcElement.href.length > 0 ? true : false;
+        let isLink = e && e.srcElement && e.srcElement.href && e.srcElement.href.length > 0 ? true : false;
 
-        if ( isLink === true ) {
+        /**
+         * Added to solve https://github.com/mikezimm/drilldown7/issues/159 
+         *  on /sites/ChinaSustainabilitySteeringCommittee/SitePages/Climate-Articles.aspx
+         * Have never seen this error before.  Tried same exact config to same list on another site and do not get the error.
+         * 
+         */
+        if ( e === undefined ) {
+            return;
+
+        } else if ( isLink === true ) {
             window.open(e.srcElement.href, '_blank');
 
         } else {
