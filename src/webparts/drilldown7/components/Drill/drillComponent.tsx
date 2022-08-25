@@ -76,7 +76,8 @@ import {buildCountChartsObject ,  buildStatChartsArray} from '../CssCharts/cssCh
 import { getAppropriateViewFields, getAppropriateViewGroups, getAppropriateViewProp } from './listFunctions';
 
 // import FetchBanner from '../CoreFPS/FetchBannerElement';
-import FetchBanner from '@mikezimm/npmfunctions/dist/HelpPanelOnNPM/onNpm/FetchBannerElement';
+// import FetchBanner from '@mikezimm/npmfunctions/dist/HelpPanelOnNPM/onNpm/FetchBannerElement';
+import FetchBanner from '../../CoreFPS/FetchBannerElement';
 
 import { IBannerPages } from '../../fpsReferences';
 
@@ -551,7 +552,7 @@ export default class DrillDown extends React.Component<IDrillDownProps, IDrillDo
 
             whenToShowItems: this.props.showItems.whenToShowItems,
             instructionsHidden: 'dynamic',
-            
+
             meta: [],
 
             webURL: this.props.webURL,
@@ -741,19 +742,22 @@ public componentDidUpdate(prevProps){
 
         const Banner = <FetchBanner 
 
-            bonusHTML={ this._bonusHTML }
+            bonusHTML1={ this._bonusHTML }
+            panelPerformance={ this._performance }
+            bonusHTML2={ this._bonusHTML }
 
             parentProps={ this.props }
             parentState={ this.state }
-            
+
             nearBannerElementsArray={ [] }
             farBannerElementsArray={ farBannerElementsArray }
-    
+
             contentPages={ this._contentPages }
             WebPartHelpElement={ this._webPartHelpElement }
-            
+
             updatePinState = { null }
             pinState = { this.state.pinState }
+
         />;
 
 /***
