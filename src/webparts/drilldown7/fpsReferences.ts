@@ -259,7 +259,7 @@ export { validateDocumentationUrl,  } from '@mikezimm/npmfunctions/dist/Links/Va
  */
 
 
-export { saveAnalytics3 } from '@mikezimm/npmfunctions/dist/Services/Analytics/analytics2';
+export { saveAnalytics3, getMinPerformanceString } from '@mikezimm/npmfunctions/dist/Services/Analytics/analytics2';
 export { IZLoadAnalytics, IZSentAnalytics, } from '@mikezimm/npmfunctions/dist/Services/Analytics/interfaces';
 
 // export { importBlockPropsFPS } from '@mikezimm/npmfunctions/dist/HelpPanelOnNPM/onNpm/BannerSetup';

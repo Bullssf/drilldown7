@@ -13,7 +13,7 @@ import { DisplayMode, } from '@microsoft/sp-core-library';
  */
 
 import { IDrillDownProps } from '../components/Drill/IDrillProps';
-import { saveAnalytics3, IZLoadAnalytics, IZSentAnalytics, } from '../fpsReferences';
+import { saveAnalytics3, IZLoadAnalytics, IZSentAnalytics, getMinPerformanceString } from '../fpsReferences';
 import { ILoadPerformance, LoadPerformanceOps, IMinPerformance, IMinPerformanceSetting, IMinPerformanceSettingLabels, IMinPerformanceSettingLabelSS7 } from '../fpsReferences';
 
 
@@ -44,6 +44,66 @@ export const analyticsWeb: string = "/sites/Templates/Analytics/";
  *                                                                                
  *                                                                                
  */
+
+
+//  export function getMinPerformanceString( performanceObj: ILoadPerformance, capMS: number = 7000, capValue: any = 'paused?' ) : string {
+
+//   let minPerformanceString = '';
+
+//   if ( performanceObj ) {
+//     const minPerformance : IMinPerformance = getMinPerformance( performanceObj , capMS, capValue );
+//     minPerformanceString = JSON.stringify( minPerformance );
+//   }
+
+//   return minPerformanceString;
+
+// }
+
+// /**
+//  * 
+//  * @param performanceObj: ILoadPerformance 
+//  * @capMS - max Milliseconds to save.... else return 'error' or null for that value.
+//  * @capValue - if ms value exceeds capMS, return this value in place of value
+//  * @returns 
+//  */
+
+// export function getMinPerformance( performanceObj: any, capMS: number = 7000, capValue: any = 'paused?' ) : IMinPerformance {
+
+//   const minPerformance : IMinPerformance = {
+//     mode: null as any,
+//   };
+
+//   if ( performanceObj && performanceObj.mode ) {
+//     minPerformance.mode = performanceObj.mode ;
+//   }
+
+//   const keys: string[] = Object.keys( performanceObj );
+
+//   keys.map( ( key : any ) => {
+//     if ( LoadPerformanceOps.indexOf(key) > -1 ) {
+//       const thisKey: any = key;
+//       if ( key.indexOf( 'setting')  === 0 ) {
+
+//         minPerformance[ thisKey ] = performanceObj[key] ;
+
+//       } else if ( performanceObj[key] ) {
+
+//         const ms: number  = performanceObj[key]['ms'] && performanceObj[key]['ms'] <= capMS ? performanceObj[key]['ms'] : capValue;
+
+//         minPerformance[ thisKey ] = {
+//           label: performanceObj[key]['label'],
+//           ms: ms,
+//         };
+
+//       }
+//     }
+//   });
+
+//   return minPerformance;
+
+// }
+
+
 
 export function saveViewAnalytics( Title: string, Result: string, thisProps: IDrillDownProps, analyticsWasExecuted: boolean, performanceObj: ILoadPerformance ) : boolean {
 
@@ -77,26 +137,27 @@ export function saveViewAnalytics( Title: string, Result: string, thisProps: IDr
     console.log( 'zzzRichText2Obj:', zzzRichText2Obj);
     console.log( 'zzzRichText3Obj:', zzzRichText3Obj);
 
-    const minPerformance : IMinPerformance = {
-      mode: null,
-    };
+    const performance : string = getMinPerformanceString( performanceObj );
+    // {
+    //   mode: null,
+    // };
 
-    if ( performanceObj && performanceObj.mode ) {
-      minPerformance.mode = performanceObj.mode ;
-    }
+    // if ( performanceObj && performanceObj.mode ) {
+    //   minPerformance.mode = performanceObj.mode ;
+    // }
 
-    Object.keys( performanceObj ).map( ( key : any ) => {
-      if ( LoadPerformanceOps.indexOf(key) > -1 ) {
-        if ( performanceObj[key] ) {
-          minPerformance[key] = {
-            label: performanceObj[key]['label'],
-            ms: performanceObj[key]['ms'],
-          };
-        }
-      }
-    });
+    // Object.keys( performanceObj ).map( ( key : any ) => {
+    //   if ( LoadPerformanceOps.indexOf(key) > -1 ) {
+    //     if ( performanceObj[key] ) {
+    //       minPerformance[key] = {
+    //         label: performanceObj[key]['label'],
+    //         ms: performanceObj[key]['ms'],
+    //       };
+    //     }
+    //   }
+    // });
 
-    let performance = minPerformance ? JSON.stringify( minPerformance ) : null;
+    // let performance = minPerformance ? JSON.stringify( minPerformance ) : null;
     let zzzRichText1 = null;
     let zzzRichText2 = null;
     let zzzRichText3 = null;

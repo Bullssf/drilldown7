@@ -76,24 +76,19 @@ import {buildCountChartsObject ,  buildStatChartsArray} from '../CssCharts/cssCh
 import { getAppropriateViewFields, getAppropriateViewGroups, getAppropriateViewProp } from './listFunctions';
 
 // import FetchBanner from '../CoreFPS/FetchBannerElement';
-// import FetchBanner from '@mikezimm/npmfunctions/dist/HelpPanelOnNPM/onNpm/FetchBannerElement';
-import FetchBanner from '../../CoreFPS/FetchBannerElement';
+import FetchBanner from '@mikezimm/npmfunctions/dist/HelpPanelOnNPM/onNpm/FetchBannerElement';
+// import FetchBanner from '../../CoreFPS/FetchBannerElement';
 
-import { IBannerPages } from '../../fpsReferences';
 
 import { getWebPartHelpElement } from '../../CoreFPS/PropPaneHelp';
-
 import { getBannerPages, } from '../HelpPanel/AllContent';
+import { IBannerPages } from '../../fpsReferences';
+
+import { ILoadPerformance, startPerformOp, updatePerformanceEnd, ILoadPerformanceOps } from "../../fpsReferences";
 
 import { IDrillItemInfo } from '../../fpsReferences';
 import { defaultBannerCommandStyles } from '../../fpsReferences';
 
-
-import { createPerformanceTableVisitor, repoLink } from '../../fpsReferences';
-
-//For whatever reason, THIS NEEDS TO BE CALLED Directly and NOT through fpsReferences or it gives error.
-import { refreshPanelHTML } from '@mikezimm/npmfunctions/dist/HelpPanelOnNPM/onNpm/WebPartRenderBannerV2';
-import { ILoadPerformance, startPerformOp, updatePerformanceEnd, ILoadPerformanceOps } from "../../fpsReferences";
 
 /***
  *    d88888b db    db d8888b.  .d88b.  d8888b. d888888b      d8888b. d88888b d88888b       .o88b. db       .d8b.  .d8888. .d8888. 
@@ -111,7 +106,6 @@ export default class DrillDown extends React.Component<IDrillDownProps, IDrillDo
 
     
     private _performance: ILoadPerformance = null;
-    private _bonusHTML: JSX.Element = null;
 
     private _webPartHelpElement = getWebPartHelpElement( this.props.sitePresets );
     private _contentPages : IBannerPages = getBannerPages( this.props.bannerProps );
@@ -487,10 +481,6 @@ export default class DrillDown extends React.Component<IDrillDownProps, IDrillDo
         super(props);
 
         if ( this._performance === null ) { this._performance = this.props.loadPerformance;  }
-
-        //Update the _bonusHTML if you want now
-        this._bonusHTML = createPerformanceTableVisitor( this._performance, [] );
-
         /**
          * This is copied later in code when you have to call the data in case something changed.
          */
@@ -742,9 +732,9 @@ public componentDidUpdate(prevProps){
 
         const Banner = <FetchBanner 
 
-            bonusHTML1={ this._bonusHTML }
+            // bonusHTML1={ this._bonusHTML }
             panelPerformance={ this._performance }
-            bonusHTML2={ this._bonusHTML }
+            // bonusHTML2={ this._bonusHTML }
 
             parentProps={ this.props }
             parentState={ this.state }
@@ -1237,7 +1227,8 @@ public componentDidUpdate(prevProps){
     }
 
     private _addTheseItemsToState( drillList: IDrillList, allItems , errMessage : string, refinerObj: IRefinerLayer ) {
-        this._updatePerformance( 'analyze2','start', 'updateState' );
+
+        this._performance.analyze2 = startPerformOp( 'analyze2 addItems', this.props.displayMode );
 
         consoleRef( 'addTheseItems1REF', refinerObj );
         consoleMe( 'addTheseItems1' , allItems, drillList );
@@ -1331,10 +1322,7 @@ public componentDidUpdate(prevProps){
         console.log('addTheseItemsToState: refinerStats', drillList.refinerStats );
 
         //End tracking performance
-        this._updatePerformance( 'analyze2','update' );
-
-        //Update the _bonusHTML if you want now
-        this._bonusHTML = createPerformanceTableVisitor( this._performance, [] );
+        this._performance.analyze2 = updatePerformanceEnd( this._performance.analyze2, true );
 
         const analyticsWasExecuted: boolean = saveViewAnalytics( 'Drilldown Webpart', 'addItems', this.props, this.state.analyticsWasExecuted, this._performance );
 
