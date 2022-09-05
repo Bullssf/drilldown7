@@ -24,6 +24,14 @@ import { DoNotExpandLinkColumns, DoNotExpandTrimB4, DoNotExpandTrimAfter, DoNotE
 import ReactJson from "react-json-view";
 
 const SampleViewJSON : any = [
+  // https://github.com/mikezimm/drilldown7/issues/161
+  {
+    "name": "Id",
+    "displayName": "Id",
+    "minWidth": 20,
+    "maxWidth": 35,
+    "linkPropertyName":"goToPropsLink"
+  },
   {
     "name": "Author/Title",
     "displayName": "Created by",
@@ -184,6 +192,7 @@ export function getWebPartHelpElement ( sitePresets : ISitePreConfigProps ) {
             <div>Words ending in Capital C - the C stands for Characters so FirstWord2C = First 2 characters of the first word</div>
             <div>Words ending in Capital D - includes digits so InitalsD includes all Initials AND numbers</div>
             <div>at this time, 'TrimB42ndDot', 'FirstAcronym', 'SecondAcronym' are not implimented :( </div>
+            <div>Object. : If string column is parsable JSON:  ColumnName/Object.propKey to get the value for propKey in Text column called 'ColumnName'</div>
 
         </div>
       </PivotItem>

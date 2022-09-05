@@ -722,6 +722,7 @@ export default class Drilldown7WebPart extends BaseClientSideWebPart<IDrilldown7
     
         performance: {
             fetchCount: this.properties.fetchCount,
+            itemsPerPage: this.properties.itemsPerPage,
             fetchCountMobile: this.properties.fetchCountMobile,
             restFilter: !this.properties.restFilter ? '' : this.properties.restFilter,
         },

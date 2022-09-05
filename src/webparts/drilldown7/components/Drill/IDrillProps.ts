@@ -213,6 +213,7 @@ export interface IDrillDownProps extends IFPSCorePinMeReactComponentProps {
         fetchCount: number;
         fetchCountMobile: number;
         restFilter: string;
+        itemsPerPage: number;
     };
 
     showItems: {

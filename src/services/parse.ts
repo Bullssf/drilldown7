@@ -271,7 +271,7 @@ export function createItemFunctionProp ( staticColumn: string, item: any, defaul
         let firstNumber = trimmedItem.match(/(\d+)/);
         singleItemValue = firstNumber ? firstNumber[0] : ''; 
       
-
+      // https://github.com/mikezimm/drilldown7/issues/147
       //  export type ITrimTimes = 'YYYY-MM-DD' | 'YYYY-MM' | 'HH:mm' | 'HH:mm:ss' | 'HH:mm_AM' | 'HH:mm:ss_AM' |  'Q1-YY' | 'YY-Q1' | 'YYYY-Q1' ;
       } else if (  DoNotExpandTrimTimesLC.indexOf( rightSideLC ) > -1 ) {
         singleItemValue = convertUTCTime( trimmedItem, rightSide as ITrimTimes ); 
@@ -577,6 +577,8 @@ export function convertUTCTime( trimmedItem: string, rightSide: ITrimTimes ) {
 
   }
 
+  const theDate = date > 9 ? `${date}` : `0${date}`;
+
   let result = '';
   switch ( rightSide ) {
 
@@ -584,7 +586,7 @@ export function convertUTCTime( trimmedItem: string, rightSide: ITrimTimes ) {
       result = `${year}-${monthStamp}`;
       break;
     case 'YYYY-MM-DD':
-      result = `${year}-${monthStamp}-${date}`;
+      result = `${year}-${monthStamp}-${theDate}`;
       break;
     case 'HH:mm' : case 'HH:mm_AM':
       result = `${hourStamp}:${minStamp}${AMStamp}`;

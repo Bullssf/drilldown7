@@ -1014,6 +1014,7 @@ public componentDidUpdate(prevProps){
                                 viewFields={ currentViewFields }
                                 groupByFields={ currentViewGroups }
                                 items={ this.state.searchedItems }
+                                itemsPerPage={ this.props.performance.itemsPerPage }
                                 includeDetails= { includeDetails }
                                 includeAttach= { includeAttach }
                                 includeListLink = { includeListLink }

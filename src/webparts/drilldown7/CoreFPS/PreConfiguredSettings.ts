@@ -37,6 +37,7 @@ export const WPPresetEverywhere : IPreConfigSettings = {
         //Added for https://github.com/mikezimm/drilldown7/issues/95
         whenToShowItems:2,
         minItemsForHide:30,
+
         instructionIntro:`Please click filters (above) to see items :)`,
         refinerInstruction1: `Select a {{refiner0}}`,
         refinerInstruction2: `Select a {{refiner1}}`,
@@ -44,6 +45,8 @@ export const WPPresetEverywhere : IPreConfigSettings = {
         language: `en-us`,
 
         feedbackEmail: `ae57524a.${window.location.hostname}.onmicrosoft.com@amer.teams.ms`,
+
+        itemsPerPage:20,
 
         // FPS Banner Navigation
         // showGoToHome: true,

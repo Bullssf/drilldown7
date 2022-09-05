@@ -65,6 +65,16 @@ export function buildPerformanceGroup( wpProps: IDrilldown7WebPartProps ) {
       onText: 'Yes = Slower',
   }));
 
+  groupFields.push(
+    PropertyPaneSlider('itemsPerPage', {
+      label: 'Items per page',
+      min: 5,
+      max: 100,
+      step: 5,
+      value: wpProps.itemsPerPage,
+      // disabled: true,
+  }));
+
   const ExportThisGroup: IPropertyPaneGroup = {
     groupName: `Performance Properties`,
     isCollapsed: true,

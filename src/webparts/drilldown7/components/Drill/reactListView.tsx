@@ -45,9 +45,12 @@ import { IContentsToggles, makeToggles } from '../fields/toggleFieldBuilder';
 
 import styles from '../Contents/listView.module.scss';
 import stylesInfo from './InfoPane.module.scss';
+
+import PageArrows from '@mikezimm/npmfunctions/dist/zComponents/Arrows/PageArrows';
+import { IMinPageArrowsState, IPageArrowsParentProps } from '@mikezimm/npmfunctions/dist/zComponents/Arrows/PageArrows';
 // import { IView } from '@pnp/sp/views';
 
-export interface IReactListItemsProps {
+export interface IReactListItemsProps extends IPageArrowsParentProps {
     title?: string;
     descending?: boolean;
     maxChars?: number;
@@ -67,7 +70,7 @@ export interface IReactListItemsProps {
 
     parentListFieldTitles?: string;
     viewFields?: IViewField[];
-    
+
     groupByFields?:  IGrouping[];
     includeDetails: boolean;
     includeAttach: boolean;
@@ -79,7 +82,7 @@ export interface IReactListItemsProps {
 
 }
 
-export interface IReactListItemsState {
+export interface IReactListItemsState extends IMinPageArrowsState {
   maxChars?: number;
   parentListFieldTitles: any;
   viewFields: IViewField[];
@@ -137,6 +140,8 @@ const iconClassInfo = mergeStyles({
 
 
 export default class ReactListItems extends React.Component<IReactListItemsProps, IReactListItemsState> {
+
+  private _componentWidth: number = null;
 
     private createAttachPanel () {
         return null;
@@ -403,6 +408,9 @@ export default class ReactListItems extends React.Component<IReactListItemsProps
           myDialog: this.createBlankDialog(),
           pickedCommand: null,
           panelWidth: PanelType.medium,
+
+          firstVisible: 0,
+          lastVisible: this.props.itemsPerPage - 1,
         };
     }
         
@@ -481,6 +489,9 @@ export default class ReactListItems extends React.Component<IReactListItemsProps
 
             let toggles = !this.state.showPanel ? null : <div style={{ float: 'right' }}> { makeToggles(this.getPageToggles( this.state.panelWidth )) } </div>;
 
+            const itemLink: any = <div style={{ cursor: 'pointer', fontSize: 'larger', 'fontWeight': 600, color: 'darkblue', padding: '10px 10px 10px 0px', margin: '20px 0px' }} 
+              onClick={ () => { window.open( this.state.panelItem.goToPropsLink, '_blank' ) ; }}>Click to open item</div>;
+
             let fullPanel = null;
             if ( this.state.showPanel === true && this.state.panelId ) {
                 fullPanel = <Panel
@@ -498,19 +509,25 @@ export default class ReactListItems extends React.Component<IReactListItemsProps
                         aria-label="Basic Pivot Example"
                         defaultSelectedIndex ={ 0 }
                     >
-                        <PivotItem headerText="Commands" itemKey= "Commands"><div>
-                                <div id='20pxSpacer' style={{ height: '20px'}}></div>
-                                { attachments }
-                                { this.createPanelButtons( this.props.quickCommands, this.state.panelItem, this.props.sourceUserInfo ) }
-                            </div>
-                        </PivotItem>
-                        <PivotItem headerText="Details" itemKey= "Details">
-                            { autoDetailsList(this.state.panelItem, ["Title","refiners"],["search","meta","searchString"],true) }
-                        </PivotItem>
-                        <PivotItem headerText="JSON" itemKey= "JSON"><div id="CommandsJSONPanel" style={{paddingTop: '20px'}}>
-                                <ReactJson src={ this.state.panelItem } name={ 'panelItem' } collapsed={ true } displayDataTypes={ true } displayObjectSize={ true } enableClipboard={ true } style={{ padding: '20px 0px' }}/>
-                            </div>
-                        </PivotItem>
+                      <PivotItem headerText="Commands" itemKey= "Commands"><div>
+                          {/* https://github.com/mikezimm/drilldown7/issues/168 */}
+                          { itemLink }
+                          <div id='20pxSpacer' style={{ height: '20px'}}></div>
+                          { attachments }
+                          { this.createPanelButtons( this.props.quickCommands, this.state.panelItem, this.props.sourceUserInfo ) }
+                        </div>
+                      </PivotItem>
+                      <PivotItem headerText="Details" itemKey= "Details">
+                        {/* https://github.com/mikezimm/drilldown7/issues/168 */}
+                        { itemLink }
+                        { autoDetailsList(this.state.panelItem, ["Title","refiners"],["search","meta","searchString"],true) }
+                      </PivotItem>
+                      <PivotItem headerText="JSON" itemKey= "JSON"><div id="CommandsJSONPanel" style={{paddingTop: '20px'}}>
+                          {/* https://github.com/mikezimm/drilldown7/issues/168 */}
+                          { itemLink }
+                          <ReactJson src={ this.state.panelItem } name={ 'panelItem' } collapsed={ true } displayDataTypes={ true } displayObjectSize={ true } enableClipboard={ true } style={{ padding: '20px 0px' }}/>
+                        </div>
+                      </PivotItem>
                     </Pivot>
 
                 </Panel>;
@@ -556,9 +573,26 @@ export default class ReactListItems extends React.Component<IReactListItemsProps
 
             let viewFields = attachField.concat( viewFieldsBase );
 
+
+            let filtered = [];
+            this.props.items.map( ( item, idx ) => {
+
+              if ( idx >= this.state.firstVisible && idx <= this.state.lastVisible ) {
+                filtered.push( item );
+              }
+            });
+
+            const pageArrows = <PageArrows 
+              itemCount={ this.props.items.length }
+              itemsPerPage={ this.props.itemsPerPage }
+              setParentStateFirstLast={ this._updateFirstLastVisible.bind(this) }
+              debugMode = { this.props.debugMode }
+              fontSize = { this._componentWidth && this._componentWidth > 800 ? 28 : 24 }
+            />;
+
             let listView = <div>
             <ListView
-                items={ this.props.items }
+                items={ filtered }
                 viewFields={ viewFields }
                 compact={true}
                 selectionMode={ this.props.includeDetails ? SelectionMode.single : SelectionMode.none }
@@ -579,12 +613,21 @@ export default class ReactListItems extends React.Component<IReactListItemsProps
                     <span style={{ background: 'transparent' }} className={ stylesInfo.listLink }>Go to list</span></div>;
 
             if ( barText != null ) {
-                webTitle =<div className={ [stylesInfo.infoHeading, stylesInfo.innerShadow].join(' ') }><span style={{ paddingLeft: 20, whiteSpace: 'nowrap' }}>( { this.props.items.length }  ) Items in: { barText }</span>{ listLink }</div>;
+                webTitle =<div  style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }} className={ [stylesInfo.infoHeading, stylesInfo.innerShadow].join(' ') }>
+                  <span style={{ paddingLeft: 20, whiteSpace: 'nowrap' }}>( { this.props.items.length }  ) Items in: { barText }</span>
+                   { pageArrows }
+                   { listLink }</div>;
 
-            
             /*stylesL.reactListView*/
             return (
-                <div className={ '' } >
+                <div className={ '' } 
+                  ref={el => {
+                    // el can be null - see https://reactjs.org/docs/refs-and-the-dom.html#caveats-with-callback-refs
+                    if (!el) return;
+                    this._componentWidth = el.getBoundingClientRect().width ; 
+                    // console.log('componentWidth', this._componentWidth ) ;
+                  } }
+                  >
                     <div style={{ paddingTop: 10}} className={ stylesInfo.infoPaneTight }>
                     { webTitle }
                     { fullPanel }
@@ -967,5 +1010,11 @@ export default class ReactListItems extends React.Component<IReactListItemsProps
         });
     }
 
+    private _updateFirstLastVisible( firstVisible: number, lastVisible: number ) {
+      this.setState({
+        firstVisible: firstVisible,
+        lastVisible: lastVisible,
+      });
+    }
 
 }
