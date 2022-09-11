@@ -75,6 +75,13 @@ export function buildPerformanceGroup( wpProps: IDrilldown7WebPartProps ) {
       // disabled: true,
   }));
 
+  groupFields.push(
+    PropertyPaneToggle('getAllProps', {
+      label: 'Get all item props',
+      offText: 'No = Faster',
+      onText: 'Yes = Slower',
+  }));
+
   const ExportThisGroup: IPropertyPaneGroup = {
     groupName: `Performance Properties`,
     isCollapsed: true,

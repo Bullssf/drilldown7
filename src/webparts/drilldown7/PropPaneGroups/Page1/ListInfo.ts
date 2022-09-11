@@ -52,6 +52,12 @@ export function buildYourListGroup( ) {
     onText: 'Hide Folders',
   }));
 
+  // groupFields.push(PropertyPaneToggle('hideFolders', {
+  //   label: 'Hide Folders',
+  //   offText: 'Show Folders',
+  //   onText: 'Hide Folders',
+  // }));
+
   const ExportThisGroup: IPropertyPaneGroup = {
     groupName: `Your list info`,
     isCollapsed: true,

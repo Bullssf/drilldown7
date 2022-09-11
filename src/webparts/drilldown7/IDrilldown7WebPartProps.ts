@@ -44,7 +44,7 @@ export const changeInstructions : string[] = [ 'whenToShowItems', 'minItemsForHi
 export const changeGrouping : string[] = [ 'groupByFields',  ];
 export const changeViews : string[] = [ 'viewWidth1', 'viewJSON1' , 'viewWidth2' , 'viewJSON2' , 'viewWidth3', 'viewJSON3',];
 
-export const changeListToggles : string[] = [ 'includeDetails', 'includeAttach', 'includeListLink',];
+export const changeListToggles : string[] = [ 'includeDetails', 'includeAttach', 'includeListLink', 'createItemLink',];
 
 export const changeStats : string[] = [ 'stats', ];
 export const changeCommands : string[] = [ 'quickCommands', ];
@@ -87,6 +87,7 @@ export const changeCommands : string[] = [ 'quickCommands', ];
     fetchCount: number;
     fetchCountMobile: number;
     itemsPerPage: number;
+    getAllProps: boolean;
     restFilter: string;
     updateRefinersOnTextSearch?: boolean;
 
@@ -139,6 +140,7 @@ export const changeCommands : string[] = [ 'quickCommands', ];
     includeDetails: boolean;
     includeAttach: boolean;
     includeListLink: boolean;
+    createItemLink: boolean;
 
     // Page 2 Group 8 - Summary Stats 
     stats: string;

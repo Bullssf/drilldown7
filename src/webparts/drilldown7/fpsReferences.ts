@@ -59,7 +59,7 @@ export { makeTheTimeObject } from '@mikezimm/npmfunctions/dist/Services/Time/tim
 
 export { weekday3,  } from '@mikezimm/npmfunctions/dist/Services/Time/dayLabels';
 export { monthStr3 } from '@mikezimm/npmfunctions/dist/Services/Time/monthLabels';
-export { pivotOptionsGroup } from '@mikezimm/npmfunctions/dist/Services/PropPane/ReactPivotOptions';
+export { pivotOptionsGroup } from '@mikezimm/npmfunctions/dist/Services/PropPane/ReactPivot/v1/Options';
 
 export { IMyFieldTypes } from '@mikezimm/npmfunctions/dist/Lists/columnTypes';
 export { changes, cBool, cCalcT, cCalcN, cChoice, cMChoice, cCurr, cDate, cLocal, cLook, cDLook,

@@ -397,7 +397,7 @@ export default class Drilldown7WebPart extends BaseClientSideWebPart<IDrilldown7
           displayMode: this.displayMode,
           doHeadings: false } ); //doHeadings is currently only used in PageInfo so set to false.
 
-      this._performance.superOnInit = updatePerformanceEnd( this._performance.superOnInit, true );  
+      this._performance.superOnInit = updatePerformanceEnd( this._performance.superOnInit, true, null );  
 
     });
     
@@ -643,15 +643,16 @@ export default class Drilldown7WebPart extends BaseClientSideWebPart<IDrilldown7
 
     let includeDetails = this.properties.includeDetails;
     let includeAttach = this.properties.includeAttach;
+    let createItemLink = this.properties.createItemLink;
     let viewWidth1 = this.properties.viewWidth1;
     let viewWidth2 = this.properties.viewWidth2;
     let viewWidth3 = this.properties.viewWidth3;
 
     let includeListLink = this.properties.includeListLink;
 
-    if (viewFields1 !== undefined ) { viewDefs.push( { minWidth: viewWidth1, viewFields: viewFields1, groupByFields: groupByFields, includeDetails: includeDetails, includeAttach: includeAttach, includeListLink: includeListLink }); }
-    if (viewFields2 !== undefined ) { viewDefs.push( { minWidth: viewWidth2, viewFields: viewFields2, groupByFields: groupByFields, includeDetails: includeDetails, includeAttach: includeAttach, includeListLink: includeListLink }); }
-    if (viewFields3 !== undefined ) { viewDefs.push( { minWidth: viewWidth3, viewFields: viewFields3, groupByFields: groupByFields, includeDetails: includeDetails, includeAttach: includeAttach, includeListLink: includeListLink }); }
+    if (viewFields1 !== undefined ) { viewDefs.push( { minWidth: viewWidth1, viewFields: viewFields1, groupByFields: groupByFields, includeDetails: includeDetails, includeAttach: includeAttach, includeListLink: includeListLink, createItemLink: createItemLink }); }
+    if (viewFields2 !== undefined ) { viewDefs.push( { minWidth: viewWidth2, viewFields: viewFields2, groupByFields: groupByFields, includeDetails: includeDetails, includeAttach: includeAttach, includeListLink: includeListLink, createItemLink: createItemLink }); }
+    if (viewFields3 !== undefined ) { viewDefs.push( { minWidth: viewWidth3, viewFields: viewFields3, groupByFields: groupByFields, includeDetails: includeDetails, includeAttach: includeAttach, includeListLink: includeListLink, createItemLink: createItemLink }); }
 
     let stringRules: string = JSON.stringify( rules );
 
@@ -664,7 +665,8 @@ export default class Drilldown7WebPart extends BaseClientSideWebPart<IDrilldown7
      * NOTE IN THIS CASE to do it before you refreshPanelHTML :)
      */
 
-    this._performance.renderWebPartStart = updatePerformanceEnd( this._performance.renderWebPartStart, true );
+    this._performance.renderWebPartStart = updatePerformanceEnd( this._performance.renderWebPartStart, true, null );
+    this._performance.getAllProps = this.properties.getAllProps;
 
     let language = this.properties.language;
     try {
@@ -724,6 +726,7 @@ export default class Drilldown7WebPart extends BaseClientSideWebPart<IDrilldown7
             fetchCount: this.properties.fetchCount,
             itemsPerPage: this.properties.itemsPerPage,
             fetchCountMobile: this.properties.fetchCountMobile,
+            getAllProps: this.properties.getAllProps,
             restFilter: !this.properties.restFilter ? '' : this.properties.restFilter,
         },
 

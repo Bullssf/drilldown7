@@ -79,7 +79,7 @@ const SampleCommands: any = {
         "ReviewDays": 99,
         "Body": "Hi! It's [Today+3] and I'm $MyName$"
       },
-      "showWhenEvalTrue": "item.AssignedToId !== sourceUserInfo.Id"
+      "showWhenEvalTrue": "item.AssignedToTitle !== sourceUserInfo.Title"
     }
   ]],
   "fields": [],

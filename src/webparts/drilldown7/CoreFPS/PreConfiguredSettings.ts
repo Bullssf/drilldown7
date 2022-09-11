@@ -30,33 +30,73 @@ export const WPPresetEverywhere : IPreConfigSettings = {
     location: '*',
     props: {
 
-        rules0: [],
-        rules1: [],
-        rules2: [],
+      description: "Drilldown cascading filters",
+      parentListTitle:"",
+      webPartScenario: "TEAM",
+      refiner0: "",
+      refiner1: "",
+      refiner2: "",
+      rules0def: "",
+      rules1def: "",
+      rules2def: "",
+      viewWidth1: 1200,
+      viewWidth2: 800,
+      viewWidth3: 500,
+      listDefinition: "",
+      includeDetails: true,
+      includeListLink: true,
+      createItemLink: false,
 
-        //Added for https://github.com/mikezimm/drilldown7/issues/95
-        whenToShowItems:2,
-        minItemsForHide:30,
+      showCatCounts: false,
+      showSummary: false,
 
-        instructionIntro:`Please click filters (above) to see items :)`,
-        refinerInstruction1: `Select a {{refiner0}}`,
-        refinerInstruction2: `Select a {{refiner1}}`,
-        refinerInstruction3: `Select a {{refiner2}}`,
-        language: `en-us`,
+      groupByFields: "",
+      togRefinerCounts: false,
+      togCountChart: true,
+      togStats: true,
+      togOtherListview: false,
+      fetchCount: 500,
+      fetchCountMobile: 200,
+      getAllProps: true,
+      restFilter: "",
+      definitionToggle: true,
+      togListLink: true,
+      hideFolders: true,
 
-        feedbackEmail: `ae57524a.${window.location.hostname}.onmicrosoft.com@amer.teams.ms`,
+      // viewJSON1: "[{ \"name\": \"Id\", \"displayName\": \"Id\", \"minWidth\": 50 },{ \"name\": \"Title\", \"displayName\": \"Title\", \"minWidth\": 200 },{ \"name\": \"Created\", \"displayName\": \"Created\", \"minWidth\": 200 },{ \"name\": \"Modified\", \"displayName\": \"Modified\", \"minWidth\": 200 }]",
+      // viewJSON2: "[{ \"name\": \"Id\", \"displayName\": \"Id\", \"minWidth\": 50 },{ \"name\": \"Title\", \"displayName\": \"Title\", \"minWidth\": 200 },{ \"name\": \"Modified\", \"displayName\": \"Modified\", \"minWidth\": 200 }]",
+      // viewJSON3: "[{ \"name\": \"Id\", \"displayName\": \"Id\", \"minWidth\": 50 },{ \"name\": \"Title\", \"displayName\": \"Title\", \"minWidth\": 200 }]",
 
-        itemsPerPage:20,
+      stats: "[{ \"primaryField\": \"Created\", \"secondField\": \"currentTime\", \"title\": \"Created Age\", \"stat\": \"avg\", \"chartTypes\": [\"pareto-dec\"],\"ignore\": [{\"field\": \"EntryType\",\"op\" : \"eq\",\"val\" : \"start\"}] },{ \"primaryField\": \"Modified\", \"secondField\": \"currentTime\", \"title\": \"Modified Age\", \"stat\": \"avg\", \"chartTypes\": [\"pareto-dec\"],\"ignore\": [{\"field\": \"EntryType\",\"op\" : \"eq\",\"val\" : \"start\"}] }]",
+      //quickCommands: "",  Do not set here.
 
-        // FPS Banner Navigation
-        // showGoToHome: true,
-        // showGoToParent: true,
+      rules0: [],
+      rules1: [],
+      rules2: [],
 
-         // Banner Theme props that are not preset in manifest.json
-        //  bannerStyleChoice: 'corpDark1',
-        //  bannerStyle: '{\"color\":\"white\",\"backgroundColor\":\"#005495\",\"fontSize\":\"larger\",\"fontWeight\":600,\"fontStyle\":\"normal\",\"padding\":\"0px 10px\",\"height\":\"48px\",\"cursor\":\"pointer\"}',
-        //  bannerCmdStyle: '{\"color\":\"white\",\"backgroundColor\":\"#005495\",\"fontSize\":16,\"fontWeight\":\"normal\",\"fontStyle\":\"normal\",\"padding\":\"7px 4px\",\"marginRight\":\"0px\",\"borderRadius\":\"5px\",\"cursor\":\"pointer\"}',
-        //  lockStyles: true,
+      //Added for https://github.com/mikezimm/drilldown7/issues/95
+      whenToShowItems:2,
+      minItemsForHide:30,
+
+      instructionIntro:`Please click filters (above) to see items :)`,
+      refinerInstruction1: `Select a {{refiner0}}`,
+      refinerInstruction2: `Select a {{refiner1}}`,
+      refinerInstruction3: `Select a {{refiner2}}`,
+      language: `en-us`,
+
+      feedbackEmail: `ae57524a.${window.location.hostname}.onmicrosoft.com@amer.teams.ms`,
+
+      itemsPerPage:20,
+
+      // FPS Banner Navigation
+      // showGoToHome: true,
+      // showGoToParent: true,
+
+        // Banner Theme props that are not preset in manifest.json
+      //  bannerStyleChoice: 'corpDark1',
+      //  bannerStyle: '{\"color\":\"white\",\"backgroundColor\":\"#005495\",\"fontSize\":\"larger\",\"fontWeight\":600,\"fontStyle\":\"normal\",\"padding\":\"0px 10px\",\"height\":\"48px\",\"cursor\":\"pointer\"}',
+      //  bannerCmdStyle: '{\"color\":\"white\",\"backgroundColor\":\"#005495\",\"fontSize\":16,\"fontWeight\":\"normal\",\"fontStyle\":\"normal\",\"padding\":\"7px 4px\",\"marginRight\":\"0px\",\"borderRadius\":\"5px\",\"cursor\":\"pointer\"}',
+      //  lockStyles: true,
         
     }
 };

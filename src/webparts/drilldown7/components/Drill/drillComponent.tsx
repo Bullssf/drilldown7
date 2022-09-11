@@ -427,6 +427,7 @@ export default class DrillDown extends React.Component<IDrillDownProps, IDrillDo
             restFilter: !this.props.performance.restFilter ? ' ' : this.props.performance.restFilter,
             hideFolders: this.props.hideFolders,
             isLibrary: isLibrary,
+            getAllProps: this.props.performance.getAllProps,
             hasAttach: false,
             togStats: this.props.toggles.togStats,
 
@@ -953,6 +954,7 @@ public componentDidUpdate(prevProps){
                     let includeDetails = getAppropriateViewProp( viewDefs, this.state.WebpartWidth, 'includeDetails' );
                     let includeAttach = getAppropriateViewProp( viewDefs, this.state.WebpartWidth, 'includeAttach' );
                     let includeListLink = getAppropriateViewProp( viewDefs, this.state.WebpartWidth, 'includeListLink' );
+                    let createItemLink = getAppropriateViewProp( viewDefs, this.state.WebpartWidth, 'createItemLink' );
                     
                     if ( this.state.drillList.hasAttach !== true ) { includeAttach = false; }
                     let currentViewFields: any[] = [];
@@ -1007,6 +1009,7 @@ public componentDidUpdate(prevProps){
                                 webURL = { this.state.drillList.webURL }
                                 parentListURL = { this.state.drillList.parentListURL }
                                 listName = { this.state.drillList.name }
+                                isLibrary = { this.state.drillList.isLibrary }
     
                                 contextUserInfo = { this.state.drillList.contextUserInfo }
                                 sourceUserInfo = { this.state.drillList.sourceUserInfo }
@@ -1018,6 +1021,7 @@ public componentDidUpdate(prevProps){
                                 includeDetails= { includeDetails }
                                 includeAttach= { includeAttach }
                                 includeListLink = { includeListLink }
+                                createItemLink = { createItemLink }
                                 quickCommands={ this.state.quickCommands }
                             
                             ></ReactListItems>;
@@ -1223,7 +1227,7 @@ public componentDidUpdate(prevProps){
         let errMessage = drillList.refinerRules === undefined ? 'Invalid Rule set: ' +  this.state.rules : '';
         if ( drillList.refinerRules === undefined ) { drillList.refinerRules = [[],[],[]] ; } 
 
-        let result : any = getAllItems( drillList, this._addTheseItemsToState.bind(this), this._setProgress.bind(this), null,  this._updatePerformance.bind( this ), this.props.quickCommands.quickCommandsRequireUser );
+        let result : any = getAllItems( drillList, this._addTheseItemsToState.bind(this), this._setProgress.bind(this), null,  this._updatePerformance.bind( this ), this.props.quickCommands ? this.props.quickCommands.quickCommandsRequireUser : false );
 
     }
 
@@ -1323,7 +1327,7 @@ public componentDidUpdate(prevProps){
         console.log('addTheseItemsToState: refinerStats', drillList.refinerStats );
 
         //End tracking performance
-        this._performance.analyze2 = updatePerformanceEnd( this._performance.analyze2, true );
+        this._performance.analyze2 = updatePerformanceEnd( this._performance.analyze2, true, allItems.length );
 
         const analyticsWasExecuted: boolean = saveViewAnalytics( 'Drilldown Webpart', 'addItems', this.props, this.state.analyticsWasExecuted, this._performance );
 
@@ -1637,13 +1641,13 @@ public componentDidUpdate(prevProps){
 
   }
 
-  private _updatePerformance( key: ILoadPerformanceOps, phase: 'start' | 'update', note: string = '' ) {
+  private _updatePerformance( key: ILoadPerformanceOps, phase: 'start' | 'update', note: string = '', count: number ) {
 
     if ( phase === 'start' ) {
         this._performance[key] = startPerformOp( `${key} ${ note ? ' - ' + note : '' }`, this.props.displayMode );
 
     } else if ( phase = 'update' ) {
-        this._performance[key] = updatePerformanceEnd( this._performance[key], true );
+        this._performance[key] = updatePerformanceEnd( this._performance[key], true , count );
 
     }
   }

@@ -46,6 +46,7 @@ import { IDrillItemInfo } from '../../fpsReferences';
     restFilter: string;
     hideFolders: boolean;
     isLibrary?: boolean;
+    getAllProps: boolean; //If getAllProps, then it gets * in select.  Can be slower for pages which also get CanvasContent.
     hasAttach: boolean;
     webURL?: string;
     togStats: boolean;
@@ -214,6 +215,7 @@ export interface IDrillDownProps extends IFPSCorePinMeReactComponentProps {
         fetchCountMobile: number;
         restFilter: string;
         itemsPerPage: number;
+        getAllProps: boolean; //If getAllProps, then it gets * in select.  Can be slower for pages which also get CanvasContent.
     };
 
     showItems: {

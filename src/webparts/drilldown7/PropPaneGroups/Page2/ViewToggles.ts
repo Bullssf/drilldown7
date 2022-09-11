@@ -42,12 +42,21 @@ export function buildViewTogglesGroup ( ) {
         onText: 'Auto detect',
       }));
   
-    groupFields.push(
-      PropertyPaneToggle('includeListLink', {
+    groupFields.push( 
+      PropertyPaneToggle('includeListLink', { 
         label: 'Show link to List',
         offText: 'No',
         onText: 'Yes',
       }));
+
+    groupFields.push( 
+      PropertyPaneToggle('createItemLink', { 
+        label: 'Show + New item link',
+        offText: 'No',
+        onText: 'Yes',
+      }));
+
+      
   
 
       const ExportThisGroup: IPropertyPaneGroup = {

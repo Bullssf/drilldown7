@@ -25,7 +25,8 @@ import { getHelpfullError } from '../../fpsReferences';
 
 import { buildConfirmDialog, IMyDialogProps } from '@mikezimm/npmfunctions/dist/Elements/dialogBox'; 
 
-import stylesL from '../ListView/listView.module.scss';
+// import stylesL from '../ListView/listView.module.scss';
+
 import { ListView, IViewField, SelectionMode, GroupOrder, IGrouping, } from "@pnp/spfx-controls-react/lib/ListView";
 // import { IGroup } from 'office-ui-fabric-react/lib/components/DetailsList';
 
@@ -50,6 +51,8 @@ import PageArrows from '@mikezimm/npmfunctions/dist/zComponents/Arrows/PageArrow
 import { IMinPageArrowsState, IPageArrowsParentProps } from '@mikezimm/npmfunctions/dist/zComponents/Arrows/PageArrows';
 // import { IView } from '@pnp/sp/views';
 
+require('./reactListView.css');
+
 export interface IReactListItemsProps extends IPageArrowsParentProps {
     title?: string;
     descending?: boolean;
@@ -59,6 +62,7 @@ export interface IReactListItemsProps extends IPageArrowsParentProps {
     webURL: string; //Used for attachments
     listName: string; //Used for attachments
     parentListURL: string;
+    isLibrary: boolean;
 
     contextUserInfo: IUser;  //For site you are on ( aka current page context )
     sourceUserInfo: IUser;   //For site where the list is stored
@@ -75,6 +79,7 @@ export interface IReactListItemsProps extends IPageArrowsParentProps {
     includeDetails: boolean;
     includeAttach: boolean;
     includeListLink: boolean;
+    createItemLink: boolean;
 
     highlightedFields?: string[];
 
@@ -253,9 +258,9 @@ export default class ReactListItems extends React.Component<IReactListItemsProps
 
                                     alert(`createPanelButtons: quickCommands.showWhenEvalTrue error !!! Check the console for details:   ${quickCommands.showWhenEvalTrue}`);
                                 }
-                                
+
                             }
-                            
+
                             if ( buildThisButton === true ) {
                                 let icon = b.icon ? { iconName: b.icon } : null;
                                 let buttonID = ['ButtonID', r, i , item.Id].join(this.delim);
@@ -594,6 +599,8 @@ export default class ReactListItems extends React.Component<IReactListItemsProps
             <ListView
                 items={ filtered }
                 viewFields={ viewFields }
+                // className={ 'font-size-14' }
+                // listClassName={ stylesL.fontSizeLarger }
                 compact={true}
                 selectionMode={ this.props.includeDetails ? SelectionMode.single : SelectionMode.none }
                 selection={this._onShowPanel.bind(this)}
@@ -609,14 +616,22 @@ export default class ReactListItems extends React.Component<IReactListItemsProps
 
             let webTitle = null;
             let listLink = !this.props.includeListLink ? null : <div className={ stylesInfo.infoHeading } onClick={ this._onGoToList.bind(this) } 
-                style={{ paddingRight: 20, whiteSpace: 'nowrap', float: 'right', paddingTop: 0, cursor: 'pointer', fontSize: 'smaller',background: 'transparent' }}>
+                style={{ paddingRight: 20, whiteSpace: 'nowrap', paddingTop: 0, cursor: 'pointer', fontSize: 'smaller',background: 'transparent' }}>
                     <span style={{ background: 'transparent' }} className={ stylesInfo.listLink }>Go to list</span></div>;
 
+            let createItemLink = !this.props.createItemLink ? null : <div title="Create new item" className={ stylesInfo.infoHeading } onClick={ this._CreateNewItem.bind(this) } 
+            style={{ marginRight: 50, paddingRight: 20, whiteSpace: 'nowrap', paddingTop: 0, cursor: 'pointer', fontSize: 'larger',background: 'transparent' }}>
+                <span style={{ background: 'transparent' }} className={ stylesInfo.listLink }><Icon iconName="AddTo"/></span></div>;
+
             if ( barText != null ) {
-                webTitle =<div  style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }} className={ [stylesInfo.infoHeading, stylesInfo.innerShadow].join(' ') }>
+                webTitle =<div  style={{ display: 'flex', justifyContent: 'space-between', }} className={ [stylesInfo.infoHeading, stylesInfo.innerShadow].join(' ') }>
                   <span style={{ paddingLeft: 20, whiteSpace: 'nowrap' }}>( { this.props.items.length }  ) Items in: { barText }</span>
                    { pageArrows }
-                   { listLink }</div>;
+                   <span style={{ whiteSpace: 'nowrap', display: 'flex' }}>
+                    { createItemLink }
+                    { listLink }
+                    </span>
+                  </div>;
 
             /*stylesL.reactListView*/
             return (
@@ -680,6 +695,18 @@ export default class ReactListItems extends React.Component<IReactListItemsProps
 
     }
 
+    private _CreateNewItem = () : void => {
+
+      if ( this.props.isLibrary === true ) {
+        window.open( `${this.props.parentListURL}`, "_blank");
+
+      } else {
+        window.open( `${this.props.parentListURL}/NewForm.aspx?source=${window.location.href}`, "_blank");
+
+      }
+
+
+    }
 
     private _updateStateOnPropsChange( pushViewFieldsToState : boolean ): void {
 
