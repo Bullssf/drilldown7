@@ -1,18 +1,16 @@
 
-import { ListView, IViewField, SelectionMode, GroupOrder, IGrouping } from "@pnp/spfx-controls-react/lib/ListView";
+import { IViewField, IGrouping } from "@pnp/spfx-controls-react/lib/ListView";
 
-import { Web, IList, IItem } from "@pnp/sp/presets/all";
+import { Web,  } from "@pnp/sp/presets/all";
 
 import { ICustViewDef,  } from '@mikezimm/npmfunctions/dist/Views/IListViews';
 import { IUser,  } from '@mikezimm/npmfunctions/dist/Services/Users/IUserInterfaces';
-import { IQuickButton, IQuickCommands, IQuickField } from '@mikezimm/npmfunctions/dist/QuickCommands/IQuickCommands';
+import { IQuickButton, } from '@mikezimm/npmfunctions/dist/QuickCommands/IQuickCommands';
 
 import { getHelpfullError } from '@mikezimm/npmfunctions/dist/Services/Logging/ErrorHandler';
 
 //Manipulation
-import { expandArray, spliceCopyArray, addItemToArrayIfItDoesNotExist, convertNumberArrayToRelativePercents,
-  removeItemFromArrayOnce, removeItemFromArrayAll, updateNextOpenIndex 
-  } from '@mikezimm/npmfunctions/dist/Services/Arrays/manipulation';
+import { removeItemFromArrayAll, } from '@mikezimm/npmfunctions/dist/Services/Arrays/manipulation';
 
 import { IDrillItemInfo } from '@mikezimm/npmfunctions/dist/WebPartInterfaces/DrillDown/IDrillItem';
 
@@ -129,7 +127,9 @@ export function getAppropriateViewGroups ( OrigViewDefs: ICustViewDef[], current
 
 }
 
-export function getAppropriateViewProp ( OrigViewDefs: ICustViewDef[], currentWidth: number, prop: 'includeDetails' | 'includeAttach' | 'includeListLink' ) {
+//Check npmFunctions v2.1.63 for ICustViewDefKeys to replace prop interface
+
+export function getAppropriateViewProp ( OrigViewDefs: ICustViewDef[], currentWidth: number, prop: 'includeDetails' | 'includeAttach' | 'includeListLink' | 'createItemLink' ) {
 
     //2022-01-17:  Added this to see if this gets mutated and breaks on refresh items.  (One of these fixed it!)
     //2022-01-18:  Skipped the parse/stringify for performance after determining it was not causing the crash.

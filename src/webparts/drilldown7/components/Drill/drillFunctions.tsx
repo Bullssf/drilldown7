@@ -1,55 +1,57 @@
-import { Web, IList, IItem } from "@pnp/sp/presets/all";
+import { Web, } from "@pnp/sp/presets/all";
 
-import { sp } from "@pnp/sp";
+// import { sp } from "@pnp/sp";
 
 import "@pnp/sp/webs";
 import "@pnp/sp/clientside-pages/web";
 import "@pnp/sp/site-users/web";
 
-import { ClientsideWebpart } from "@pnp/sp/clientside-pages";
-import { CreateClientsidePage, PromotedState, ClientsidePageLayoutType, ClientsideText,  } from "@pnp/sp/clientside-pages";
+// import { ClientsideWebpart } from "@pnp/sp/clientside-pages";
+// import { CreateClientsidePage, PromotedState, ClientsidePageLayoutType, ClientsideText,  } from "@pnp/sp/clientside-pages";
 
-import { IContentsListInfo, IMyListInfo, IServiceLog, IContentsLists } from '../../../../services/listServices/listTypes'; //Import view arrays for Time list
+// import { IContentsListInfo, IMyListInfo, IServiceLog, IContentsLists } from '../../../../services/listServices/listTypes'; //Import view arrays for Time list
 
-import { IDrillItemInfo } from '@mikezimm/npmfunctions/dist/WebPartInterfaces/DrillDown/IDrillItem';
+import { IDrillItemInfo } from '../../fpsReferences';
 
 import { IDrillList, } from  './IDrillProps';
 
 
-import { changes, IMyFieldTypes } from '../../../../services/listServices/columnTypes'; //Import view arrays for Time list
+// import { changes, IMyFieldTypes } from '../../../../services/listServices/columnTypes'; //Import view arrays for Time list
 
-import { IMyView,  } from '../../../../services/listServices/viewTypes'; //Import view arrays for Time list
+// import { IMyView,  } from '../../../../services/listServices/viewTypes'; //Import view arrays for Time list
 
-import { addTheseItemsToList, addTheseItemsToListInBatch } from '../../../../services/listServices/listServices';
+// import { addTheseItemsToList, addTheseItemsToListInBatch } from '../../../../services/listServices/listServices';
 
-import { makeTheTimeObject } from '@mikezimm/npmfunctions/dist/Services/Time/timeObject';
-import { monthStr3 } from '@mikezimm/npmfunctions/dist/Services/Time/monthLabels';
+import { makeTheTimeObject } from '../../fpsReferences';
+import { monthStr3 } from '../../fpsReferences';
 import { getBestTimeDelta, getAge } from '@mikezimm/npmfunctions/dist/Services/Time/deltas';
 
-import { doesObjectExistInArray } from '@mikezimm/npmfunctions/dist/Services/Arrays/checks';
-import { addItemToArrayIfItDoesNotExist, } from '@mikezimm/npmfunctions/dist/Services/Arrays/manipulation';
-import { sortKeysByOtherKey, } from '@mikezimm/npmfunctions/dist/Services/Arrays/sorting';
+// import { doesObjectExistInArray } from '@mikezimm/npmfunctions/dist/Services/Arrays/checks';
+import { addItemToArrayIfItDoesNotExist, } from '../../fpsReferences';
+import { sortKeysByOtherKey, } from '../../fpsReferences';
 
-import { getHelpfullError } from '@mikezimm/npmfunctions/dist/Services/Logging/ErrorHandler';
+import { getHelpfullError } from '../../fpsReferences';
 
-import { IViewLog, addTheseViews } from '../../../../services/listServices/viewServices'; //Import view arrays for Time list
+// import { IViewLog, addTheseViews } from '../../../../services/listServices/viewServices'; //Import view arrays for Time list
 
-import { IAnyArray } from  '../../../../services/listServices/listServices';
-import { DoNotExpandFuncColumns, convertArrayToLC } from  '../../../../services/getInterface';
+// import { IAnyArray } from  '../../../../services/listServices/listServices';
+import { DoNotExpandFuncColumns, convertArrayToLC } from  '../../../../services/getInterfaceV2';
 
 import { getDetailValueType, ITypeStrings } from '@mikezimm/npmfunctions/dist/Services/typeServices';
 
 import { ensureUserInfo } from '@mikezimm/npmfunctions/dist/Services/Users/userServices';
 
-import { mergeAriaAttributeValues } from "office-ui-fabric-react";
+// import { mergeAriaAttributeValues } from "office-ui-fabric-react";
 
-import { IRefinerLayer, IRefiners, IItemRefiners, IRefinerStats, RefineRuleValues,
-    IRefinerRules, IRefinerStatType, RefinerStatTypes, IRefinerStat } from '@mikezimm/npmfunctions/dist/Refiners/IRefiners';
+import { IRefinerLayer, IItemRefiners, RefineRuleValues, IRefinerStatType, RefinerStatTypes,  } from '../../fpsReferences';
 
-import { IUser } from '@mikezimm/npmfunctions/dist/Services/Users/IUserInterfaces';
-import { IQuickButton } from '@mikezimm/npmfunctions/dist/QuickCommands/IQuickCommands';
+import { IUser } from '../../fpsReferences';
+// import { IQuickButton } from '@mikezimm/npmfunctions/dist/QuickCommands/IQuickCommands';
 
 import { createItemFunctionProp,  } from '../../../../services/parse'; //Main function to update item
+
+import { ILoadPerformance, startPerformOp, updatePerformanceEnd } from "../../fpsReferences";
+import { DoNotExpandColumns } from "../../../../services/getInterfaceV2";
 
 //   d888b  d88888b d888888b  .d8b.  db      db      d888888b d888888b d88888b .88b  d88. .d8888. 
 //  88' Y8b 88'     `~~88~~' d8' `8b 88      88        `88'   `~~88~~' 88'     88'YbdP`88 88'  YP 
@@ -61,19 +63,26 @@ import { createItemFunctionProp,  } from '../../../../services/parse'; //Main fu
 //        
 
 // This is what it was before I split off the other part
-export async function getAllItems( drillList: IDrillList, addTheseItemsToState: any, setProgress: any, markComplete: any ): Promise<void>{
+export async function getAllItems( drillList: IDrillList, addTheseItemsToState: any, setProgress: any, markComplete: any, updatePerformance: any, getUser: boolean ): Promise<void>{
 
-    let errMessage = '';        
+    let errMessage = '';
     let allItems : IDrillItemInfo[] = [];
     let sourceUserInfo: IUser = null;
-    try {
-        sourceUserInfo = await ensureUserInfo( drillList.webURL, drillList.contextUserInfo.email );
-    } catch (e) {
-        errMessage = getHelpfullError(e, false, true);
+    updatePerformance( 'fetch1', 'start', 'getUser', null );
+    if ( getUser === true ) {
+        try {
+            sourceUserInfo = await ensureUserInfo( drillList.webURL, drillList.contextUserInfo.email );
+        } catch (e) {
+            errMessage = getHelpfullError(e, false, true);
+        }
     }
 
+    updatePerformance( 'fetch1', 'update', '', 1 );
+
+    updatePerformance( 'fetch2', 'start', 'items', null  );
+
     if ( errMessage !== '' ) {
-        allItems = processAllItems( allItems, errMessage, drillList, addTheseItemsToState, setProgress, markComplete );
+        allItems = processAllItems( allItems, errMessage, drillList, addTheseItemsToState, setProgress, updatePerformance );
 
     } else {
         drillList.sourceUserInfo = sourceUserInfo;
@@ -94,7 +103,7 @@ export async function getAllItems( drillList: IDrillList, addTheseItemsToState: 
 
         //Always add these columns if it's a library to get links
         if ( drillList.isLibrary === true ) {
-            selColumns += ',FileLeafRef,FileRef';
+            selColumns += ',FileLeafRef,FileRef,OData__UIVersion';//,_ComplianceTag,_ISRecord,_IpLabelHash,_IpLabelPromotionCtagVersion,OData__ComplianceTag is not available on the library
         }
         //Always add this column to fetch an embed url
         selColumns += ',ServerRedirectedEmbedUrl';
@@ -102,17 +111,47 @@ export async function getAllItems( drillList: IDrillList, addTheseItemsToState: 
         let expandThese = drillList.expandColumnsStr;
         let staticCols = drillList.staticColumns.length > 0 ? drillList.staticColumns.join(',') : '';
         // let selectCols = '*,' + staticCols;
-        let selectCols = '*,' + selColumns;
-    
+        // let selectCols = drillList.getAllProps === true ? '*,' + selColumns : selColumns;
+
+        // let selectCols = '*,' + staticCols;
+        let selectCols = drillList.getAllProps === true ? '*,' + selColumns : selColumns;
+
+        //Added for https://github.com/mikezimm/drilldown7/issues/176.... Can be improved though.
+        if ( drillList.getAllProps === false ) {
+          const selectColsArr = selectCols.split(',');
+          if ( drillList.staticColumns.length > 0 ) {
+            drillList.staticColumns.map( column => {
+              if ( selectColsArr.indexOf( column ) < 0 ) { selectColsArr.push( column ) ;}
+            });
+            const cleanSelectCols: string[] = [];
+            selectColsArr.map( column => { 
+              let cleanColumn: string = `${column}`;
+              if ( column.indexOf('/') > -1 ) {
+                DoNotExpandColumns.map( doNotExp => {
+                  //https://reactgo.com/javascript-variable-regex/
+                  const removeStr = `\/${doNotExp}`;
+                  const regex =  new RegExp(removeStr,'gi'); // correct way
+                  cleanColumn = cleanColumn.replace(regex,''); // it works  
+                });
+              }
+              cleanSelectCols.push( cleanColumn ); // it works  
+            });
+
+            selectCols = cleanSelectCols.join(',');
+
+          }
+        }
+
+
         let thisListObject = thisListWeb.lists.getByTitle(drillList.name);
-    
+
         /**
          * IN FUTURE, ALWAYS BE SURE TO PUT SELECT AND EXPAND AFTER .ITEMS !!!!!!
          */
-    
+
         try {
             let fetchCount = drillList.fetchCount > 0 ? drillList.fetchCount : 200;
-    
+
             if ( drillList.restFilter.length > 1 ) {
                 allItems = await thisListObject.items.select(selectCols).expand(expandThese).orderBy('ID',false).top(fetchCount).filter(drillList.restFilter).get();
             } else {
@@ -123,13 +162,17 @@ export async function getAllItems( drillList: IDrillList, addTheseItemsToState: 
     
         }
         consoleMe( 'getAllItems' , allItems, drillList );
-        allItems = processAllItems( allItems, errMessage, drillList, addTheseItemsToState, setProgress, markComplete );
+        allItems = processAllItems( allItems, errMessage, drillList, addTheseItemsToState, setProgress, updatePerformance );
     }
 
 
 }
 
-export function processAllItems( allItems : IDrillItemInfo[], errMessage: string, drillList: IDrillList, addTheseItemsToState: any, setProgress: any, markComplete: any ){
+export function processAllItems( allItems : IDrillItemInfo[], errMessage: string, drillList: IDrillList, addTheseItemsToState: any, setProgress: any, updatePerformance: any ){
+
+    updatePerformance( 'fetch2', 'update', '', allItems.length );
+
+    updatePerformance( 'analyze1', 'start', 'process'  );
 
     const DoNotExpandFuncColumnsLC = convertArrayToLC(DoNotExpandFuncColumns);
 
@@ -393,6 +436,9 @@ export function processAllItems( allItems : IDrillItemInfo[], errMessage: string
 //    console.log('Post-Sort: getAllItems', allRefiners);
 
     consoleMe( 'processAllItems2' , finalItems, drillList );
+
+    updatePerformance( 'analyze1', 'update', '', allItems.length );
+
     addTheseItemsToState(drillList, finalItems, errMessage, allRefiners );
     return finalItems;
 
@@ -585,9 +631,11 @@ export function updateRefinerStats( i: IDrillItemInfo , topKeyZ: number,  refine
 
             } else if ( thisStat === 'sum' || thisStat === 'avg' || thisStat === 'daysAgo' || thisStat === 'monthsAgo' ) {
                 //Add numbers up here and divide by total count later
-                refiners['stat' + i2][topKeyZ] += thisValue;
-                refiners['stat' + i2 + 'Count'][topKeyZ] ++;
-
+                //Only add and count if there is an actual value.
+                if ( typeof thisValue === 'number' || typeof thisValue === 'bigint' ) {
+                    refiners['stat' + i2][topKeyZ] += thisValue;
+                    refiners['stat' + i2 + 'Count'][topKeyZ] ++;
+                }
             } else if ( thisStat === 'max' ) {
                 if ( thisValue > currentRefinerValue || currentRefinerValue === null ) {
                     //Add numbers up here and divide by total count later
@@ -825,6 +873,10 @@ export function getRefinerStatsForItem( drillList: IDrillList, item: IDrillItemI
         let primaryType : ITypeStrings = 'unknown';
 
         if ( primaryField !== undefined || primaryField !== null ) { testPrimary = true; }
+
+        //This was added to be able to do summary stats on an object property
+        primaryField = primaryField.replace('/Object.','Object.').replace('/object.','object.');
+
         if ( testPrimary === true) {
             primaryType = getDetailValueType(  item[primaryField] );
         }
@@ -1209,9 +1261,9 @@ export function consoleRef( location: string, refiners: IRefinerLayer ) {
 
     return; //Not needed for now.
 
-    let refiners2 = JSON.parse(JSON.stringify(refiners));
+    // let refiners2 = JSON.parse(JSON.stringify(refiners));
 
-    console.log('Error#94: - Refiners', refiners2 );
+    // console.log('Error#94: - Refiners', refiners2 );
 
 }
 
@@ -1219,22 +1271,22 @@ export function consoleMe( location: string, obj: any, drillList: IDrillList ) {
 
     return; //Not needed for now.
 
-    let testId = 179;
-    let testItem = obj && obj[testId] ? true : false;
-    let testRef = testItem && obj[testId].refiners ? true : false;
-    let testLev = testRef && obj[testId].refiners.level1 ? true : false;
-    let tbdNote = 'null';
-    if ( testLev === true ) { tbdNote = 'Level found' ; }
-    else if ( testRef === true ) { tbdNote = 'Refiner found' ; }
-    else if ( testItem === true ) { tbdNote = 'Item found' ; }
+    // let testId = 179;
+    // let testItem = obj && obj[testId] ? true : false;
+    // let testRef = testItem && obj[testId].refiners ? true : false;
+    // let testLev = testRef && obj[testId].refiners.level1 ? true : false;
+    // let tbdNote = 'null';
+    // if ( testLev === true ) { tbdNote = 'Level found' ; }
+    // else if ( testRef === true ) { tbdNote = 'Refiner found' ; }
+    // else if ( testItem === true ) { tbdNote = 'Item found' ; }
 
-    let pasteMe =  obj && obj[testId] && obj[testId].refiners ? obj[testId].refiners.lev1 : tbdNote ;
-    obj = JSON.parse(JSON.stringify(obj));
-    let drillListX = JSON.parse(JSON.stringify(drillList));
+    // let pasteMe =  obj && obj[testId] && obj[testId].refiners ? obj[testId].refiners.lev1 : tbdNote ;
+    // obj = JSON.parse(JSON.stringify(obj));
+    // let drillListX = JSON.parse(JSON.stringify(drillList));
 
-    let itteration = drillList.itteration;
-    console.log('Error#94:', itteration, location, pasteMe, drillListX );
+    // let itteration = drillList.itteration;
+    // console.log('Error#94:', itteration, location, pasteMe, drillListX );
 
-    return;
+    // return;
 
 }

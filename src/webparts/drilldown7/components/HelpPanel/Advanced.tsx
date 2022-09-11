@@ -1,12 +1,12 @@
-import * as React from 'react';
+// import * as React from 'react';
 
-import * as devLinks from '@mikezimm/npmfunctions/dist/Links/LinksDevDocs';
+// import { IHelpTable, } from '../../fpsReferences';
+// import { repoLink, } from '../../fpsReferences';
+// import { convertIssuesMarkdownStringToSpan } from '../../fpsReferences';
 
-import { IRepoLinks } from '@mikezimm/npmfunctions/dist/Links/CreateLinks';
+// import { createAboutRow } from '../../fpsReferences';
 
-import { convertIssuesMarkdownStringToSpan } from '@mikezimm/npmfunctions/dist/Elements/Markdown';
-
-export function advancedContent( repoLinks: IRepoLinks ) {
+export function advancedContent(  ) {
 
 //Returning null because it should be in the prop pane helper now
 return null;
@@ -19,42 +19,42 @@ return null;
 'groupByUsers' | 'invalidRules' | '
 */
 
-    let row00 = <tr><td>Refiner Rules</td><td></td><td></td></tr>;
-    let row01 = <tr><td>Parse text</td><td>parseBySemiColons, parseByCommas</td><td></td></tr>;
-    let row03 = <tr><td>Group Numbers</td><td>groupBy10s, groupBy100s, groupBy1000s, groupByMillions</td><td></td></tr>;
+//     let row00 = <tr><td>Refiner Rules</td><td></td><td></td></tr>;
+//     let row01 = <tr><td>Parse text</td><td>parseBySemiColons, parseByCommas</td><td></td></tr>;
+//     let row03 = <tr><td>Group Numbers</td><td>groupBy10s, groupBy100s, groupBy1000s, groupByMillions</td><td></td></tr>;
 
 
-    let row07 = <tr><td>Dates        </td><td>isDate, groupByDays, groupByWeeks, groupByMonths, groupByYears</td><td></td></tr>;
-    let row08 = <tr><td>             </td><td>groupByDayOfWeek, groupByMonthsMMM, groupByDayOfWeek, </td><td></td></tr>;
-    let row09 = <tr><td>             </td><td>groupByDateBuckets</td><td></td></tr>;
-    let row10 = <tr>Summary Stats    <td></td><td></td><td></td></tr>;
-    let row11 = <tr><td>             </td><td> </td><td></td></tr>;
-    let row12 = <tr><td>             </td><td> </td><td></td></tr>;
-    let row13 = <tr><td>             </td><td> </td><td></td></tr>;
+//     let row07 = <tr><td>Dates        </td><td>isDate, groupByDays, groupByWeeks, groupByMonths, groupByYears</td><td></td></tr>;
+//     let row08 = <tr><td>             </td><td>groupByDayOfWeek, groupByMonthsMMM, groupByDayOfWeek, </td><td></td></tr>;
+//     let row09 = <tr><td>             </td><td>groupByDateBuckets</td><td></td></tr>;
+//     let row10 = <tr>Summary Stats    <td></td><td></td><td></td></tr>;
+//     let row11 = <tr><td>             </td><td> </td><td></td></tr>;
+//     let row12 = <tr><td>             </td><td> </td><td></td></tr>;
+//     let row13 = <tr><td>             </td><td> </td><td></td></tr>;
 
-    let thisPage = <div>
-        <h2></h2>
-        <table >
-            <tr><th>Info</th><th>Example</th><th>Details</th></tr>
-            { row00 }
-            { row01 }
-            {  }
-            { row03 }
-            {  }
-            {  }
-            {  }
+//     let thisPage = <div>
+//         <h2></h2>
+//         <table >
+//             <tr><th>Info</th><th>Example</th><th>Details</th></tr>
+//             { row00 }
+//             { row01 }
+//             {  }
+//             { row03 }
+//             {  }
+//             {  }
+//             {  }
 
-            { row07 }
-            { row08 }
-            { row09 }
-            { row10 }
-            { row11 }
-            { row12 }
-            { row13 }
-        </table>
-    </div>;
+//             { row07 }
+//             { row08 }
+//             { row09 }
+//             { row10 }
+//             { row11 }
+//             { row12 }
+//             { row13 }
+//         </table>
+//     </div>;
 
-return { html1: thisPage };
+// return { html1: thisPage };
 
 }
   

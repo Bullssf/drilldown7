@@ -1,12 +1,12 @@
-import { IPropertyFieldGroupOrPerson } from "@pnp/spfx-property-controls/lib/PropertyFieldPeoplePicker";
-import { IDrilldown7WebPartProps } from "../IDrilldown7WebPartProps";
+// import { IPropertyFieldGroupOrPerson } from "@pnp/spfx-property-controls/lib/PropertyFieldPeoplePicker";
+// import { IDrilldown7WebPartProps } from "../IDrilldown7WebPartProps";
 
-import { IPreConfigSettings, IAllPreConfigSettings } from '@mikezimm/npmfunctions/dist/PropPaneHelp/PreConfigFunctions';
-import { encrptMeOriginalTest } from '@mikezimm/npmfunctions/dist/HelpPanelOnNPM/onNpm/logTest';
-import { ContALVFMContent, ContALVFMWebP } from '@mikezimm/npmfunctions/dist/HelpPanelOnNPM/onNpm/constants';
+import { PresetFPSBanner, IPreConfigSettings, IAllPreConfigSettings,  } from '../fpsReferences';
+// import { encrptMeOriginalTest } from '@mikezimm/npmfunctions/dist/HelpPanelOnNPM/onNpm/logTest';
+// import { ContALVFMContent, ContALVFMWebP } from '@mikezimm/npmfunctions/dist/HelpPanelOnNPM/onNpm/constants';
 
-export const ForceEverywhere : IPreConfigSettings = {
-    source: 'ForceEverywhere',
+export const WPForceEverywhere : IPreConfigSettings = {
+    source: 'WPForceEverywhere',
     location: '*',
     props: {
         // relatedStyle: '',
@@ -25,64 +25,79 @@ export const ForceEverywhere : IPreConfigSettings = {
     }
 };
 
-export const PresetEverywhere : IPreConfigSettings = {
-    source: 'PresetEverywhere',
+export const WPPresetEverywhere : IPreConfigSettings = {
+    source: 'WPPresetEverywhere',
     location: '*',
     props: {
 
-        // Visitor Panel props that are not preset in manifest.json
-        fullPanelAudience: 'Page Editors',
-        // panelMessageDescription1: 'Finance Manual Help and Contact',
-        // panelMessageSupport: `Contact ${encrptMeOriginalTest( ContALVFMContent )} for Finance Manual content`,
-        // panelMessageDocumentation: `Contact ${encrptMeOriginalTest( ContALVFMWebP )}  for Web part questions`,
-        // panelMessageIfYouStill: '',
-        // documentationLinkDesc: 'Finance Manual Help site',
-        // documentationLinkUrl: '/sites/FinanceManual/Help',
-        // documentationIsValid: true,
-        // supportContacts: [ FinancialManualContacts ],
+      description: "Drilldown cascading filters",
+      parentListTitle:"",
+      webPartScenario: "TEAM",
+      refiner0: "",
+      refiner1: "",
+      refiner2: "",
+      rules0def: "",
+      rules1def: "",
+      rules2def: "",
+      viewWidth1: 1200,
+      viewWidth2: 800,
+      viewWidth3: 500,
+      listDefinition: "",
+      includeDetails: true,
+      includeListLink: true,
+      createItemLink: false,
 
-        // FPS Banner Basics
-        bannerTitle: 'Drilldown',
-        infoElementChoice: "IconName=Unknown",
-        infoElementText: "Question mark circle",
-        feedbackEmail: `ae57524a.${window.location.hostname}.onmicrosoft.com@amer.teams.ms`,
+      showCatCounts: false,
+      showSummary: false,
 
-        // FPS Banner Navigation
-        showGoToHome: true,
-        showGoToParent: true,
+      groupByFields: "",
+      togRefinerCounts: false,
+      togCountChart: true,
+      togStats: true,
+      togOtherListview: false,
+      fetchCount: 500,
+      fetchCountMobile: 200,
+      getAllProps: true,
+      restFilter: "",
+      definitionToggle: true,
+      togListLink: true,
+      hideFolders: true,
+
+      // viewJSON1: "[{ \"name\": \"Id\", \"displayName\": \"Id\", \"minWidth\": 50 },{ \"name\": \"Title\", \"displayName\": \"Title\", \"minWidth\": 200 },{ \"name\": \"Created\", \"displayName\": \"Created\", \"minWidth\": 200 },{ \"name\": \"Modified\", \"displayName\": \"Modified\", \"minWidth\": 200 }]",
+      // viewJSON2: "[{ \"name\": \"Id\", \"displayName\": \"Id\", \"minWidth\": 50 },{ \"name\": \"Title\", \"displayName\": \"Title\", \"minWidth\": 200 },{ \"name\": \"Modified\", \"displayName\": \"Modified\", \"minWidth\": 200 }]",
+      // viewJSON3: "[{ \"name\": \"Id\", \"displayName\": \"Id\", \"minWidth\": 50 },{ \"name\": \"Title\", \"displayName\": \"Title\", \"minWidth\": 200 }]",
+
+      stats: "[{ \"primaryField\": \"Created\", \"secondField\": \"currentTime\", \"title\": \"Created Age\", \"stat\": \"avg\", \"chartTypes\": [\"pareto-dec\"],\"ignore\": [{\"field\": \"EntryType\",\"op\" : \"eq\",\"val\" : \"start\"}] },{ \"primaryField\": \"Modified\", \"secondField\": \"currentTime\", \"title\": \"Modified Age\", \"stat\": \"avg\", \"chartTypes\": [\"pareto-dec\"],\"ignore\": [{\"field\": \"EntryType\",\"op\" : \"eq\",\"val\" : \"start\"}] }]",
+      //quickCommands: "",  Do not set here.
+
+      rules0: [],
+      rules1: [],
+      rules2: [],
+
+      //Added for https://github.com/mikezimm/drilldown7/issues/95
+      whenToShowItems:2,
+      minItemsForHide:30,
+
+      instructionIntro:`Please click filters (above) to see items :)`,
+      refinerInstruction1: `Select a {{refiner0}}`,
+      refinerInstruction2: `Select a {{refiner1}}`,
+      refinerInstruction3: `Select a {{refiner2}}`,
+      language: `en-us`,
+
+      feedbackEmail: `ae57524a.${window.location.hostname}.onmicrosoft.com@amer.teams.ms`,
+
+      itemsPerPage:20,
+
+      // FPS Banner Navigation
+      // showGoToHome: true,
+      // showGoToParent: true,
 
         // Banner Theme props that are not preset in manifest.json
-        bannerStyleChoice: 'corpDark1',
-        bannerStyle: '{\"color\":\"white\",\"backgroundColor\":\"#005495\",\"fontSize\":\"larger\",\"fontWeight\":600,\"fontStyle\":\"normal\",\"padding\":\"0px 10px\",\"height\":\"48px\",\"cursor\":\"pointer\"}',
-        bannerCmdStyle: '{\"color\":\"white\",\"backgroundColor\":\"#005495\",\"fontSize\":16,\"fontWeight\":\"normal\",\"fontStyle\":\"normal\",\"padding\":\"7px 4px\",\"marginRight\":\"0px\",\"borderRadius\":\"5px\",\"cursor\":\"pointer\"}',
-        lockStyles: true,
+      //  bannerStyleChoice: 'corpDark1',
+      //  bannerStyle: '{\"color\":\"white\",\"backgroundColor\":\"#005495\",\"fontSize\":\"larger\",\"fontWeight\":600,\"fontStyle\":\"normal\",\"padding\":\"0px 10px\",\"height\":\"48px\",\"cursor\":\"pointer\"}',
+      //  bannerCmdStyle: '{\"color\":\"white\",\"backgroundColor\":\"#005495\",\"fontSize\":16,\"fontWeight\":\"normal\",\"fontStyle\":\"normal\",\"padding\":\"7px 4px\",\"marginRight\":\"0px\",\"borderRadius\":\"5px\",\"cursor\":\"pointer\"}',
+      //  lockStyles: true,
         
-    }
-};
-
-export const ForceFinancialManualColl : IPreConfigSettings = {
-    source: 'ForceFinancialManualColl',
-    location: '/sites/financemanual/',
-    props: {
-        // Web part styling props that are not preset in manifest.json
-        // h1Style: "background:#e3e3e3;color:#005495;padding:10px 20px",
-
-    }
-};
-
-export const ForceFinancialManualSubSite : IPreConfigSettings = {
-    source: 'ForceFinancialManualSubSite',
-    location: '/sites/financemanual/manual/',
-    props: {
-
-    }
-};
-
-export const PresetFinancialManual : IPreConfigSettings = {
-    source: 'PresetFinancialManual',
-    location: '/sites/financemanual/',
-    props: {
-        homeParentGearAudience: 'Everyone',
     }
 };
 
@@ -95,6 +110,13 @@ export const PresetSomeRandomSite : IPreConfigSettings = {
 };
 
 export const PreConfiguredProps : IAllPreConfigSettings = {
-    forced: [ ForceEverywhere ],
-    preset: [ PresetEverywhere ],
+    //Forced over-ride presets.
+    //Forced and presets are applied in order of this array....
+    //  This means the final preset in the array takes precedance.
+
+    //For Forced, generally speaking put because this web part may have specific needs.
+    forced: [ WPForceEverywhere ],
+
+    //For Presets, Order should be:  PresetFPSBanner, WPPresetEverywhere, CUSTOM Sites,
+    preset: [ PresetFPSBanner, WPPresetEverywhere ],
 };

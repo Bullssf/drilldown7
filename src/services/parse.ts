@@ -2,10 +2,10 @@
  * Eventually this should be in npmFunctions, possibly under Services/Strings
  * 
  */
-import { DoNotExpandLinkColumns, DoNotExpandTrimB4, DoNotExpandTrimAfter, DoNotExpandTrimSpecial } from './getInterface';
-import { ITrimLink, ITrimB4, ITrimAfter, ITrimSpecial, IDoNotExpandColumns } from './getInterface';
-import { DoNotExpandFuncColumns, DoNotExpandColumns, } from './getInterface';
-import { convertArrayToLC, } from './getInterface';
+import { DoNotExpandLinkColumns, DoNotExpandTrimB4, DoNotExpandTrimAfter, DoNotExpandTrimTimes, DoNotExpandTrimSpecial } from './getInterfaceV2';
+import { ITrimLink, ITrimB4, ITrimAfter, ITrimSpecial, ITrimTimes, IDoNotExpandColumns } from './getInterfaceV2';
+import { DoNotExpandFuncColumns, DoNotExpandColumns, } from './getInterfaceV2';
+import { convertArrayToLC, } from './getInterfaceV2';
 
 /**
  *  Typical exports
@@ -17,10 +17,14 @@ import { DidNotTrim, TrimAfterColon, TrimAfterTilda, TrimAfterHyphen, TrimAfterT
 import { GetFirstWord, GetLastWord } from '@mikezimm/npmfunctions/dist/Services/';
 
  */
-
+import { checkDeepProperty } from '@mikezimm/npmfunctions/dist/Services/Objects/properties';
+import { replaceHTMLEntities } from '@mikezimm/npmfunctions/dist/Services/Strings/html';
 
 import { getDetailValueType } from '../webparts/drilldown7/fpsReferences';
 import { truncate } from '@microsoft/sp-lodash-subset';
+
+
+// import XRegExp from 'xregexp/lib/addons/unicode-scripts';
 
 export const DidNotTrim = 'NothingChanged';
 
@@ -47,6 +51,7 @@ export function createItemFunctionProp ( staticColumn: string, item: any, defaul
 
   const DoNotExpandTrimB4LC = convertArrayToLC( DoNotExpandTrimB4 );
   const DoNotExpandTrimAfterLC = convertArrayToLC( DoNotExpandTrimAfter );
+  const DoNotExpandTrimTimesLC = convertArrayToLC( DoNotExpandTrimTimes );
   const DoNotExpandColumnsLC = convertArrayToLC( DoNotExpandColumns );
 
   /**
@@ -228,7 +233,7 @@ export function createItemFunctionProp ( staticColumn: string, item: any, defaul
         singleItemValue = GetLastWord( trimmedItem, false, false, false );
 
       //Hanlde LastWord
-    } else if ( rightSideLC === 'LastWordNoNum'.toLowerCase() ) {
+      } else if ( rightSideLC === 'LastWordNoNum'.toLowerCase() ) {
       singleItemValue = GetLastWord( trimmedItem, false, false, true );
 
       //Hanlde FirstWord
@@ -265,6 +270,36 @@ export function createItemFunctionProp ( staticColumn: string, item: any, defaul
       } else if ( rightSideLC === 'FirstNumber'.toLowerCase() ) {
         let firstNumber = trimmedItem.match(/(\d+)/);
         singleItemValue = firstNumber ? firstNumber[0] : ''; 
+      
+      // https://github.com/mikezimm/drilldown7/issues/147
+      //  export type ITrimTimes = 'YYYY-MM-DD' | 'YYYY-MM' | 'HH:mm' | 'HH:mm:ss' | 'HH:mm_AM' | 'HH:mm:ss_AM' |  'Q1-YY' | 'YY-Q1' | 'YYYY-Q1' ;
+      } else if (  DoNotExpandTrimTimesLC.indexOf( rightSideLC ) > -1 ) {
+        singleItemValue = convertUTCTime( trimmedItem, rightSide as ITrimTimes ); 
+
+      //  
+      } else if (  rightSideLC.indexOf( 'object.' ) ===0 ) {
+
+        let objKeys = rightSide.slice(7).split('.');
+
+        try {
+          const isMultiLine = trimmedItem.indexOf('</div>') > 0 ? true : false;
+          if ( isMultiLine === true ) {
+            const firstGt = trimmedItem.indexOf('>') + 1;
+            trimmedItem = trimmedItem.slice( firstGt ).replace('</div>','');
+            trimmedItem = replaceHTMLEntities( trimmedItem );
+          }
+          let obj = JSON.parse( trimmedItem );
+          singleItemValue = checkDeepProperty( obj, objKeys, 'Actual' );
+
+        } catch (e) {
+          // singleItemValue = `${}`;
+          singleItemValue = `Invalid object`;
+        }
+        
+
+      // } else if ( rightSideLC === 'First象征' ) {
+      //   let firstHan = testWord.match(/\p{Han}/gu);
+      //   singleItemValue = firstHan ? firstHan[0] : ''; 
         
       }
 
@@ -290,6 +325,7 @@ export function createItemFunctionProp ( staticColumn: string, item: any, defaul
 
 export const regexInitials = /[^a-zA-Z- ]/g;
 export const regexInitialsWithNumbers = /[^a-zA-Z-\d ]/g;
+// export const regexFirstHan = /\p{Han}/gu;
 
 export function getInitials( str: string, asCaps: boolean, includeNumbers: boolean ) {
 
@@ -497,6 +533,79 @@ export function GetLastWord( str: string, asCaps: boolean, justInitial: boolean,
   }
 
   return newValue ; 
+
+}
+
+export function convertUTCTime( trimmedItem: string, rightSide: ITrimTimes ) {
+
+  if ( typeof trimmedItem !== 'string' ) {
+    return 'No date';
+  }
+  const thisTime = new Date( trimmedItem );
+  if ( !thisTime ) {
+    return 'No date';
+  }
+
+  const year = thisTime.getFullYear();
+  const month = ( thisTime.getMonth() + 1 ).toString();
+  const date = thisTime.getDate();
+  const hour24 = thisTime.getHours();
+  const hour12 = thisTime.getHours() - 12;
+  const mins = thisTime.getMinutes().toString();
+  const secs = thisTime.getSeconds().toFixed();
+  const quarter = `Q${Math.floor(thisTime.getMonth() / 3 + 1)}`;
+
+  let hourStamp : string = '';
+  let AMStamp : string = '';
+  const minStamp: string = mins.length === 1 ? `0${mins}` : mins;
+  const secStamp: string = secs.length === 1 ? `0${secs}` : secs;
+  const monthStamp: string = month.length === 1 ? `0${month}` : month;
+
+  let needsAM = rightSide.indexOf('AM') > -1 ? true : false;
+  let isAM = hour12 < 0 ? true : false;
+
+  if ( needsAM === true ) {
+
+    hourStamp = hour12 >= 0 ? hour12.toString(): hour24.toString() ;
+    AMStamp = isAM === true ? ' AM' : ' PM' ;
+
+    if ( hourStamp.length === 1 ) { hourStamp = `0${hourStamp}` ; }
+
+  } else {
+    hourStamp = hour24.toString();
+    if ( hourStamp.length === 1 ) { hourStamp = `0${hourStamp}` ; }
+
+  }
+
+  const theDate = date > 9 ? `${date}` : `0${date}`;
+
+  let result = '';
+  switch ( rightSide ) {
+
+    case 'YYYY-MM':
+      result = `${year}-${monthStamp}`;
+      break;
+    case 'YYYY-MM-DD':
+      result = `${year}-${monthStamp}-${theDate}`;
+      break;
+    case 'HH:mm' : case 'HH:mm_AM':
+      result = `${hourStamp}:${minStamp}${AMStamp}`;
+      break;
+    case 'HH:mm:ss' : case 'HH:mm:ss_AM':
+      result = `${hourStamp}:${minStamp}:${secStamp}${AMStamp}`;
+      break;
+    case 'Q1-YY':
+      result = `${quarter}-${year.toString().slice(-2)}`;
+      break;
+    case 'YY-Q1':
+      result = `${year.toString().slice(-2)}-${quarter}`;
+      break;
+    case 'YYYY-Q1':
+      result = `${year.toString()}-${quarter}`;
+      break;
+  }
+
+  return result;
 
 }
 

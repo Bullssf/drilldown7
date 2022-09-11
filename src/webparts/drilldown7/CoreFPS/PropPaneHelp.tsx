@@ -2,28 +2,36 @@ import * as React from 'react';
 
 require('@mikezimm/npmfunctions/dist/PropPaneHelp/PropPanelHelp.css');
 
-import { ISitePreConfigProps, } from '@mikezimm/npmfunctions/dist/PropPaneHelp/PreConfigFunctions';
+import { Pivot, PivotItem, PivotLinkFormat, PivotLinkSize,} from 'office-ui-fabric-react/lib/Pivot';
+// import { Icon, IIconProps } from 'office-ui-fabric-react/lib/Icon';
+// import { defaultBannerCommandStyles, } from "@mikezimm/npmfunctions/dist/HelpPanelOnNPM/onNpm/defaults";
 
-import { Pivot, PivotItem, IPivotItemProps, PivotLinkFormat, PivotLinkSize,} from 'office-ui-fabric-react/lib/Pivot';
-import { Icon, IIconProps } from 'office-ui-fabric-react/lib/Icon';
-import { defaultBannerCommandStyles, } from "@mikezimm/npmfunctions/dist/HelpPanelOnNPM/onNpm/defaults";
+// import { IQuickCommands } from '@mikezimm/npmfunctions/dist/QuickCommands/IQuickCommands';
 
-import { IQuickCommands } from '@mikezimm/npmfunctions/dist/QuickCommands/IQuickCommands';
-
-import { IRefinerRulesStrs, IRefinerRulesInts, IRefinerRulesNums, IRefinerRulesTime, IRefinerRulesUser, IRefinerRulesEXPE, IRefinerRulesNone } from '@mikezimm/npmfunctions/dist/Refiners/IRefiners';
+// import { IRefinerRulesStrs, IRefinerRulesInts, IRefinerRulesNums, IRefinerRulesTime, IRefinerRulesUser, IRefinerRulesEXPE, IRefinerRulesNone } from '@mikezimm/npmfunctions/dist/Refiners/IRefiners';
 import { RefinerRulesStrs, RefinerRulesInts, RefinerRulesNums, RefinerRulesTime, RefinerRulesUser, RefinerRulesEXPE, RefinerRulesNone } from '../fpsReferences';
 
 import { gitRepoDrillDownSmall } from '@mikezimm/npmfunctions/dist/Links/LinksRepos';
 
-import { BannerHelp, FPSBasicHelp, FPSExpandHelp, ImportHelp, SinglePageAppHelp, VisitorHelp, PinMeHelp, SitePresetsInfo } from '@mikezimm/npmfunctions/dist/PropPaneHelp/FPSCommonOnNpm';
+import { BannerHelp, FPSBasicHelp, FPSExpandHelp, ImportHelp, SinglePageAppHelp, VisitorHelp, PinMeHelp } from '../fpsReferences';
 
-import {HandleBarReplacements } from '@mikezimm/npmfunctions/dist/Services/Strings/handleBars';
+import { ISitePreConfigProps, SitePresetsInfo } from '../fpsReferences';
 
-import { DoNotExpandLinkColumns, DoNotExpandTrimB4, DoNotExpandTrimAfter, DoNotExpandTrimWords, DoNotExpandTrimSpecial } from '../../../services/getInterface';
+// import {HandleBarReplacements } from '../fpsReferences';
+
+import { DoNotExpandLinkColumns, DoNotExpandTrimB4, DoNotExpandTrimAfter, DoNotExpandTrimWords, DoNotExpandTrimTimes, DoNotExpandTrimSpecial } from '../../../services/getInterfaceV2';
 
 import ReactJson from "react-json-view";
 
 const SampleViewJSON : any = [
+  // https://github.com/mikezimm/drilldown7/issues/161
+  {
+    "name": "Id",
+    "displayName": "Id",
+    "minWidth": 20,
+    "maxWidth": 35,
+    "linkPropertyName":"goToPropsLink"
+  },
   {
     "name": "Author/Title",
     "displayName": "Created by",
@@ -71,7 +79,7 @@ const SampleCommands: any = {
         "ReviewDays": 99,
         "Body": "Hi! It's [Today+3] and I'm $MyName$"
       },
-      "showWhenEvalTrue": "item.AssignedToId !== sourceUserInfo.Id"
+      "showWhenEvalTrue": "item.AssignedToTitle !== sourceUserInfo.Title"
     }
   ]],
   "fields": [],
@@ -170,11 +178,22 @@ export function getWebPartHelpElement ( sitePresets : ISitePreConfigProps ) {
                 <div style={ padRight40 }><div className={ 'fps-pph-topic' }>Initials</div><ul>
                   { DoNotExpandTrimSpecial.map( rule => <li>{ '/' + rule }</li> ) }
                 </ul></div>
-                <div style={ padRight40 }><div className={ 'fps-pph-topic' }>Link columns</div><ul>
-                  { DoNotExpandLinkColumns.map( rule => <li>{ '/' + rule }</li> ) }
-                </ul></div>
+                <div>
+                  <div style={ padRight40 }><div className={ 'fps-pph-topic' }>Link columns</div><ul>
+                    { DoNotExpandLinkColumns.map( rule => <li>{ '/' + rule }</li> ) }
+                  </ul></div>
+                  <div style={ padRight40 }><div className={ 'fps-pph-topic' }>Time columns</div><ul>
+                    { DoNotExpandTrimTimes.map( rule => <li>{ '/' + rule }</li> ) }
+                  </ul></div>
+                </div>
+
             </div>
-            <div>Note:  at this time, 'TrimB42ndDot', 'FirstAcronym', 'SecondAcronym' are not implimented :( </div>
+            <div className={ 'fps-pph-topic' }>Notes: </div>
+            <div>Words ending in Capital C - the C stands for Characters so FirstWord2C = First 2 characters of the first word</div>
+            <div>Words ending in Capital D - includes digits so InitalsD includes all Initials AND numbers</div>
+            <div>at this time, 'TrimB42ndDot', 'FirstAcronym', 'SecondAcronym' are not implimented :( </div>
+            <div>Object. : If string column is parsable JSON:  ColumnName/Object.propKey to get the value for propKey in Text column called 'ColumnName'</div>
+
         </div>
       </PivotItem>
 {/* 
@@ -371,7 +390,7 @@ export function getWebPartHelpElement ( sitePresets : ISitePreConfigProps ) {
           <a href="https://sharepoint.stackexchange.com/a/272687" target="_blank">source:  stack exchange</a>
         </div>
       </PivotItem>
-      { PinMeHelp }
+      {/* { PinMeHelp } */}
       { VisitorHelp }
       { BannerHelp }
       { FPSBasicHelp }

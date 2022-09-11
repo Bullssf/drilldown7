@@ -1,15 +1,15 @@
-import * as React from 'react';
+// import * as React from 'react';
 
-import { IRepoLinks } from '@mikezimm/npmfunctions/dist/Links/CreateLinks';
+// import { IRepoLinks } from '@mikezimm/npmfunctions/dist/Links/CreateLinks';
 
-import { convertIssuesMarkdownStringToSpan } from '@mikezimm/npmfunctions/dist/Elements/Markdown';
+// import { convertIssuesMarkdownStringToSpan } from '@mikezimm/npmfunctions/dist/Elements/Markdown';
 
-const iconStyles: any = { root: {
-  fontSize: 'x-large',
-  fontWeight: 600,
-  paddingRight: '10px',
-  paddingLeft: '10px',
-}};
+// const iconStyles: any = { root: {
+//   fontSize: 'x-large',
+//   fontWeight: 600,
+//   paddingRight: '10px',
+//   paddingLeft: '10px',
+// }};
 
 // const gridIcon = <Icon iconName={"GridViewSmall"}  style={ iconStyles } />; 
 // const tilesIcon = <Icon iconName={"Tiles"}  style={ iconStyles } />; 
@@ -26,7 +26,7 @@ export const webParTips : any[] = [
   // <tr><td>Click on &nbsp;&nbsp;<b>-- Icon { dashIcon }</b></td><td>Upper Right</td><td>Hide All Tiles</td></tr>,
 ];
 
-export function getRandomTip( repoLinks: IRepoLinks ) {
+export function getRandomTip( ) {
 
   return webParTips[Math.floor(Math.random() * webParTips.length)];
 

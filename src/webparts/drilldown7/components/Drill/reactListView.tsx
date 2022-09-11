@@ -9,35 +9,36 @@ import { Pivot, PivotItem, IPivotItemProps} from 'office-ui-fabric-react/lib/Piv
 
 import ReactJson from "react-json-view";
 
-import { IUser } from '@mikezimm/npmfunctions/dist/Services/Users/IUserInterfaces';
+import { IUser } from '../../fpsReferences';
 import { IQuickButton, IQuickCommands } from '@mikezimm/npmfunctions/dist/QuickCommands/IQuickCommands';
 import { gitRepoDrillDown } from '@mikezimm/npmfunctions/dist/Links/LinksRepos';
 
-import { IDrillItemInfo } from '@mikezimm/npmfunctions/dist/WebPartInterfaces/DrillDown/IDrillItem';
+import { IDrillItemInfo } from '../../fpsReferences';
 
 import { autoDetailsList } from '../../../../services/hoverCardService';
 
-import { doesObjectExistInArray } from '@mikezimm/npmfunctions/dist/Services/Arrays/checks';
+import { doesObjectExistInArray } from '../../fpsReferences';
 
 import { findParentElementPropLikeThis } from '@mikezimm/npmfunctions/dist/Elements/functions';
 
-import { getHelpfullError } from '@mikezimm/npmfunctions/dist/Services/Logging/ErrorHandler';
+import { getHelpfullError } from '../../fpsReferences';
 
 import { buildConfirmDialog, IMyDialogProps } from '@mikezimm/npmfunctions/dist/Elements/dialogBox'; 
 
-import stylesL from '../ListView/listView.module.scss';
+// import stylesL from '../ListView/listView.module.scss';
+
 import { ListView, IViewField, SelectionMode, GroupOrder, IGrouping, } from "@pnp/spfx-controls-react/lib/ListView";
-import { IGroup } from 'office-ui-fabric-react/lib/components/DetailsList';
+// import { IGroup } from 'office-ui-fabric-react/lib/components/DetailsList';
 
 import { mergeStyles } from 'office-ui-fabric-react/lib/Styling';
-import { Fabric, Stack, IStackTokens, initializeIcons } from 'office-ui-fabric-react';
+import { Stack, IStackTokens } from 'office-ui-fabric-react';
 import { Panel, PanelType } from 'office-ui-fabric-react/lib/Panel';
 import { PrimaryButton, DefaultButton } from 'office-ui-fabric-react/lib/Button';
 
 
-import { Dialog, DialogType, DialogFooter, IDialogProps } 	from 'office-ui-fabric-react/lib/Dialog';
-import { Button, ButtonType, } 			from 'office-ui-fabric-react/lib/Button';
-import { Label } 			from 'office-ui-fabric-react/lib/Label';
+// import { Dialog, DialogType, DialogFooter, IDialogProps } 	from 'office-ui-fabric-react/lib/Dialog';
+// import { Button, ButtonType, } 			from 'office-ui-fabric-react/lib/Button';
+// import { Label } 			from 'office-ui-fabric-react/lib/Label';
 
 import { updateReactListItem } from './listFunctions';
 
@@ -45,9 +46,14 @@ import { IContentsToggles, makeToggles } from '../fields/toggleFieldBuilder';
 
 import styles from '../Contents/listView.module.scss';
 import stylesInfo from './InfoPane.module.scss';
-import { IView } from '@pnp/sp/views';
 
-export interface IReactListItemsProps {
+import PageArrows from '@mikezimm/npmfunctions/dist/zComponents/Arrows/PageArrows';
+import { IMinPageArrowsState, IPageArrowsParentProps } from '@mikezimm/npmfunctions/dist/zComponents/Arrows/PageArrows';
+// import { IView } from '@pnp/sp/views';
+
+require('./reactListView.css');
+
+export interface IReactListItemsProps extends IPageArrowsParentProps {
     title?: string;
     descending?: boolean;
     maxChars?: number;
@@ -56,6 +62,7 @@ export interface IReactListItemsProps {
     webURL: string; //Used for attachments
     listName: string; //Used for attachments
     parentListURL: string;
+    isLibrary: boolean;
 
     contextUserInfo: IUser;  //For site you are on ( aka current page context )
     sourceUserInfo: IUser;   //For site where the list is stored
@@ -67,11 +74,12 @@ export interface IReactListItemsProps {
 
     parentListFieldTitles?: string;
     viewFields?: IViewField[];
-    
+
     groupByFields?:  IGrouping[];
     includeDetails: boolean;
     includeAttach: boolean;
     includeListLink: boolean;
+    createItemLink: boolean;
 
     highlightedFields?: string[];
 
@@ -79,7 +87,7 @@ export interface IReactListItemsProps {
 
 }
 
-export interface IReactListItemsState {
+export interface IReactListItemsState extends IMinPageArrowsState {
   maxChars?: number;
   parentListFieldTitles: any;
   viewFields: IViewField[];
@@ -137,6 +145,8 @@ const iconClassInfo = mergeStyles({
 
 
 export default class ReactListItems extends React.Component<IReactListItemsProps, IReactListItemsState> {
+
+  private _componentWidth: number = null;
 
     private createAttachPanel () {
         return null;
@@ -248,9 +258,9 @@ export default class ReactListItems extends React.Component<IReactListItemsProps
 
                                     alert(`createPanelButtons: quickCommands.showWhenEvalTrue error !!! Check the console for details:   ${quickCommands.showWhenEvalTrue}`);
                                 }
-                                
+
                             }
-                            
+
                             if ( buildThisButton === true ) {
                                 let icon = b.icon ? { iconName: b.icon } : null;
                                 let buttonID = ['ButtonID', r, i , item.Id].join(this.delim);
@@ -403,6 +413,9 @@ export default class ReactListItems extends React.Component<IReactListItemsProps
           myDialog: this.createBlankDialog(),
           pickedCommand: null,
           panelWidth: PanelType.medium,
+
+          firstVisible: 0,
+          lastVisible: this.props.itemsPerPage - 1,
         };
     }
         
@@ -481,6 +494,9 @@ export default class ReactListItems extends React.Component<IReactListItemsProps
 
             let toggles = !this.state.showPanel ? null : <div style={{ float: 'right' }}> { makeToggles(this.getPageToggles( this.state.panelWidth )) } </div>;
 
+            const itemLink: any = <div style={{ cursor: 'pointer', fontSize: 'larger', 'fontWeight': 600, color: 'darkblue', padding: '10px 10px 10px 0px', margin: '20px 0px' }} 
+              onClick={ () => { window.open( this.state.panelItem.goToPropsLink, '_blank' ) ; }}>Click to open item</div>;
+
             let fullPanel = null;
             if ( this.state.showPanel === true && this.state.panelId ) {
                 fullPanel = <Panel
@@ -498,19 +514,25 @@ export default class ReactListItems extends React.Component<IReactListItemsProps
                         aria-label="Basic Pivot Example"
                         defaultSelectedIndex ={ 0 }
                     >
-                        <PivotItem headerText="Commands" itemKey= "Commands"><div>
-                                <div id='20pxSpacer' style={{ height: '20px'}}></div>
-                                { attachments }
-                                { this.createPanelButtons( this.props.quickCommands, this.state.panelItem, this.props.sourceUserInfo ) }
-                            </div>
-                        </PivotItem>
-                        <PivotItem headerText="Details" itemKey= "Details">
-                            { autoDetailsList(this.state.panelItem, ["Title","refiners"],["search","meta","searchString"],true) }
-                        </PivotItem>
-                        <PivotItem headerText="JSON" itemKey= "JSON"><div id="CommandsJSONPanel" style={{paddingTop: '20px'}}>
-                                <ReactJson src={ this.state.panelItem } name={ 'panelItem' } collapsed={ true } displayDataTypes={ true } displayObjectSize={ true } enableClipboard={ true } style={{ padding: '20px 0px' }}/>
-                            </div>
-                        </PivotItem>
+                      <PivotItem headerText="Commands" itemKey= "Commands"><div>
+                          {/* https://github.com/mikezimm/drilldown7/issues/168 */}
+                          { itemLink }
+                          <div id='20pxSpacer' style={{ height: '20px'}}></div>
+                          { attachments }
+                          { this.createPanelButtons( this.props.quickCommands, this.state.panelItem, this.props.sourceUserInfo ) }
+                        </div>
+                      </PivotItem>
+                      <PivotItem headerText="Details" itemKey= "Details">
+                        {/* https://github.com/mikezimm/drilldown7/issues/168 */}
+                        { itemLink }
+                        { autoDetailsList(this.state.panelItem, ["Title","refiners"],["search","meta","searchString"],true) }
+                      </PivotItem>
+                      <PivotItem headerText="JSON" itemKey= "JSON"><div id="CommandsJSONPanel" style={{paddingTop: '20px'}}>
+                          {/* https://github.com/mikezimm/drilldown7/issues/168 */}
+                          { itemLink }
+                          <ReactJson src={ this.state.panelItem } name={ 'panelItem' } collapsed={ true } displayDataTypes={ true } displayObjectSize={ true } enableClipboard={ true } style={{ padding: '20px 0px' }}/>
+                        </div>
+                      </PivotItem>
                     </Pivot>
 
                 </Panel>;
@@ -556,10 +578,29 @@ export default class ReactListItems extends React.Component<IReactListItemsProps
 
             let viewFields = attachField.concat( viewFieldsBase );
 
+
+            let filtered = [];
+            this.props.items.map( ( item, idx ) => {
+
+              if ( idx >= this.state.firstVisible && idx <= this.state.lastVisible ) {
+                filtered.push( item );
+              }
+            });
+
+            const pageArrows = <PageArrows 
+              itemCount={ this.props.items.length }
+              itemsPerPage={ this.props.itemsPerPage }
+              setParentStateFirstLast={ this._updateFirstLastVisible.bind(this) }
+              debugMode = { this.props.debugMode }
+              fontSize = { this._componentWidth && this._componentWidth > 800 ? 28 : 24 }
+            />;
+
             let listView = <div>
             <ListView
-                items={ this.props.items }
+                items={ filtered }
                 viewFields={ viewFields }
+                // className={ 'font-size-14' }
+                // listClassName={ stylesL.fontSizeLarger }
                 compact={true}
                 selectionMode={ this.props.includeDetails ? SelectionMode.single : SelectionMode.none }
                 selection={this._onShowPanel.bind(this)}
@@ -575,16 +616,33 @@ export default class ReactListItems extends React.Component<IReactListItemsProps
 
             let webTitle = null;
             let listLink = !this.props.includeListLink ? null : <div className={ stylesInfo.infoHeading } onClick={ this._onGoToList.bind(this) } 
-                style={{ paddingRight: 20, whiteSpace: 'nowrap', float: 'right', paddingTop: 0, cursor: 'pointer', fontSize: 'smaller',background: 'transparent' }}>
+                style={{ paddingRight: 20, whiteSpace: 'nowrap', paddingTop: 0, cursor: 'pointer', fontSize: 'smaller',background: 'transparent' }}>
                     <span style={{ background: 'transparent' }} className={ stylesInfo.listLink }>Go to list</span></div>;
 
-            if ( barText != null ) {
-                webTitle =<div className={ [stylesInfo.infoHeading, stylesInfo.innerShadow].join(' ') }><span style={{ paddingLeft: 20, whiteSpace: 'nowrap' }}>( { this.props.items.length }  ) Items in: { barText }</span>{ listLink }</div>;
+            let createItemLink = !this.props.createItemLink ? null : <div title="Create new item" className={ stylesInfo.infoHeading } onClick={ this._CreateNewItem.bind(this) } 
+            style={{ marginRight: 50, paddingRight: 20, whiteSpace: 'nowrap', paddingTop: 0, cursor: 'pointer', fontSize: 'larger',background: 'transparent' }}>
+                <span style={{ background: 'transparent' }} className={ stylesInfo.listLink }><Icon iconName="AddTo"/></span></div>;
 
-            
+            if ( barText != null ) {
+                webTitle =<div  style={{ display: 'flex', justifyContent: 'space-between', }} className={ [stylesInfo.infoHeading, stylesInfo.innerShadow].join(' ') }>
+                  <span style={{ paddingLeft: 20, whiteSpace: 'nowrap' }}>( { this.props.items.length }  ) Items in: { barText }</span>
+                   { pageArrows }
+                   <span style={{ whiteSpace: 'nowrap', display: 'flex' }}>
+                    { createItemLink }
+                    { listLink }
+                    </span>
+                  </div>;
+
             /*stylesL.reactListView*/
             return (
-                <div className={ '' } >
+                <div className={ '' } 
+                  ref={el => {
+                    // el can be null - see https://reactjs.org/docs/refs-and-the-dom.html#caveats-with-callback-refs
+                    if (!el) return;
+                    this._componentWidth = el.getBoundingClientRect().width ; 
+                    // console.log('componentWidth', this._componentWidth ) ;
+                  } }
+                  >
                     <div style={{ paddingTop: 10}} className={ stylesInfo.infoPaneTight }>
                     { webTitle }
                     { fullPanel }
@@ -637,6 +695,18 @@ export default class ReactListItems extends React.Component<IReactListItemsProps
 
     }
 
+    private _CreateNewItem = () : void => {
+
+      if ( this.props.isLibrary === true ) {
+        window.open( `${this.props.parentListURL}`, "_blank");
+
+      } else {
+        window.open( `${this.props.parentListURL}/NewForm.aspx?source=${window.location.href}`, "_blank");
+
+      }
+
+
+    }
 
     private _updateStateOnPropsChange( pushViewFieldsToState : boolean ): void {
 
@@ -815,9 +885,18 @@ export default class ReactListItems extends React.Component<IReactListItemsProps
         console.log('_onShowPanel: e',e);
         console.log('_onShowPanel item clicked:',item);
 
-        let isLink = e.srcElement && e.srcElement.href && e.srcElement.href.length > 0 ? true : false;
+        let isLink = e && e.srcElement && e.srcElement.href && e.srcElement.href.length > 0 ? true : false;
 
-        if ( isLink === true ) {
+        /**
+         * Added to solve https://github.com/mikezimm/drilldown7/issues/159 
+         *  on /sites/ChinaSustainabilitySteeringCommittee/SitePages/Climate-Articles.aspx
+         * Have never seen this error before.  Tried same exact config to same list on another site and do not get the error.
+         * 
+         */
+        if ( e === undefined ) {
+            return;
+
+        } else if ( isLink === true ) {
             window.open(e.srcElement.href, '_blank');
 
         } else {
@@ -958,5 +1037,11 @@ export default class ReactListItems extends React.Component<IReactListItemsProps
         });
     }
 
+    private _updateFirstLastVisible( firstVisible: number, lastVisible: number ) {
+      this.setState({
+        firstVisible: firstVisible,
+        lastVisible: lastVisible,
+      });
+    }
 
 }

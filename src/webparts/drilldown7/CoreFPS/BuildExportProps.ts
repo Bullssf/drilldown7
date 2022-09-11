@@ -10,8 +10,8 @@
  *                                                                                                                                  
  */
 
- import * as React from 'react';
- import * as ReactDom from 'react-dom';
+//  import * as React from 'react';
+//  import * as ReactDom from 'react-dom';
 
  import "@pnp/sp/webs";
  import "@pnp/sp/site-groups/web";
@@ -27,7 +27,7 @@
   *                                                                                                                                                                              
   */
 
- import { createExportObject, } from '@mikezimm/npmfunctions/dist/Services/PropPane/ExportFunctions';
+ import { createExportObject, } from '../fpsReferences';
 
 
   /***
@@ -50,9 +50,15 @@ import { changeCustomHelp, changeExpando, changeBanner, changePageStyle, changef
 
 import { changeBannerBasics, changeBannerNav, changeBannerTheme, changeBannerUtility,  } from '../fpsReferences';
 
-import { changePinMe,  } from '../fpsReferences';
 
-import { importBlockProps } from '../IDrilldown7WebPartProps';
+// importChanges: [  changeListConfig, changeListInfo, changePerformance, changeRefiners, changeToggles, changeInstructions, changeGrouping,
+//       changeViews, changeListToggles, changeStats, changeCommands ]
+
+// import { changePinMe,  } from '../fpsReferences';
+
+// import { importBlockProps } from '../IDrilldown7WebPartProps';
+import { changeListConfig, changeListInfo, changePerformance, changeRefiners, changeToggles, changeInstructions, changeGrouping,
+      changeViews, changeListToggles, changeStats, changeCommands } from '../IDrilldown7WebPartProps';
 
 /***
  *    d88888b db    db d8888b.  .d88b.  d8888b. d888888b      d8888b. d8888b.  .d88b.  d8888b. .d8888. 
@@ -78,12 +84,18 @@ import { importBlockProps } from '../IDrilldown7WebPartProps';
     exportStructure.wpInstanceID = wpInstanceID;
     exportStructure.currentWeb = currentWeb;
 
-    // exportStructure.changePinMe = changePinMe;
-    // exportStructure.changeTOC = changeTOC;
-    // exportStructure.changeProperties = changeProperties;
-    // exportStructure.changeRelated1 = changeRelated1;
-    // exportStructure.changeRelated2 = changeRelated2;
-    // exportStructure.pageLinks = changePageLinks;
+    exportStructure.changeListConfig = changeListConfig;
+    exportStructure.changeListInfo = changeListInfo;
+    exportStructure.changePerformance = changePerformance;
+    exportStructure.changeRefiners = changeRefiners;
+
+    exportStructure.changeToggles = changeToggles;
+    exportStructure.changeInstructions = changeInstructions;
+    exportStructure.changeGrouping = changeGrouping;
+    exportStructure.changeViews = changeViews;
+    exportStructure.changeListToggles = changeListToggles;
+    exportStructure.changeStats = changeStats;
+    exportStructure.changeCommands = changeCommands;
 
     exportStructure.Visitor = changeCustomHelp;
 
@@ -113,6 +125,19 @@ import { importBlockProps } from '../IDrilldown7WebPartProps';
     exportStructure.wpInstanceID = wpInstanceID;
     exportStructure.currentWeb = currentWeb;
 
+    exportStructure.changeListConfig = changeListConfig;
+    exportStructure.changeListInfo = changeListInfo;
+    exportStructure.changePerformance = changePerformance;
+    exportStructure.changeRefiners = changeRefiners;
+
+    exportStructure.changeToggles = changeToggles;
+    exportStructure.changeInstructions = changeInstructions;
+    exportStructure.changeGrouping = changeGrouping;
+    exportStructure.changeViews = changeViews;
+    exportStructure.changeListToggles = changeListToggles;
+    exportStructure.changeStats = changeStats;
+    exportStructure.changeCommands = changeCommands;
+    
     exportStructure.Visitor = changeCustomHelp;
 
     exportStructure.BannerBasics = changeBannerBasics;

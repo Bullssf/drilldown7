@@ -1,4 +1,4 @@
-import { IFPSCoreReactComponentProps, IFPSCoreReactComponentState } from '../../fpsReferences';
+import { IFPSCorePinMeReactComponentProps, IFPSCorePinMeReactComponentState, ILoadPerformance } from '../../fpsReferences';
 
 import { IGrouping } from "@pnp/spfx-controls-react/lib/ListView";
 
@@ -18,11 +18,8 @@ import { IMyPivCat } from '../../fpsReferences';
 
 import { ICMDItem } from './refiners/commandBar';
 
-import { IWebpartBannerProps, } from '../../fpsReferences';
-
 import { IDrillItemInfo } from '../../fpsReferences';
 
-import { ISitePreConfigProps, } from '../../fpsReferences';
 
 
 /***
@@ -49,6 +46,7 @@ import { ISitePreConfigProps, } from '../../fpsReferences';
     restFilter: string;
     hideFolders: boolean;
     isLibrary?: boolean;
+    getAllProps: boolean; //If getAllProps, then it gets * in select.  Can be slower for pages which also get CanvasContent.
     hasAttach: boolean;
     webURL?: string;
     togStats: boolean;
@@ -171,7 +169,7 @@ Page owner can set:
  * Extends IFPSCorePinMeReactComponentProps with all basics required for FPS Banner
  */
 
-export interface IDrillDownProps extends IFPSCoreReactComponentProps {
+export interface IDrillDownProps extends IFPSCorePinMeReactComponentProps {
 
     
     /**
@@ -182,6 +180,8 @@ export interface IDrillDownProps extends IFPSCoreReactComponentProps {
      environmentMessage: string;
      hasTeamsContext: boolean;
      userDisplayName: string;
+
+     loadPerformance: ILoadPerformance;
 
     allowOtherSites?: boolean; //default is local only.  Set to false to allow provisioning parts on other sites.
 
@@ -214,6 +214,8 @@ export interface IDrillDownProps extends IFPSCoreReactComponentProps {
         fetchCount: number;
         fetchCountMobile: number;
         restFilter: string;
+        itemsPerPage: number;
+        getAllProps: boolean; //If getAllProps, then it gets * in select.  Can be slower for pages which also get CanvasContent.
     };
 
     showItems: {
@@ -369,7 +371,7 @@ export const RefinerChartTypes : ICSSChartTypes[] = ['stacked-column-labels', 'p
  * Extends IFPSCoreReactComponentState with all basics required for FPS Banner
  */
 
-export interface IDrillDownState extends IFPSCoreReactComponentState {
+export interface IDrillDownState extends IFPSCorePinMeReactComponentState {
 
     allowOtherSites?: boolean; //default is local only.  Set to false to allow provisioning parts on other sites.
 

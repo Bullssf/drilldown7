@@ -39,6 +39,7 @@ import { consoleRef } from './components/Drill/drillFunctions';
 
 
 
+
 /***
  *    d88888b d8888b. .d8888.      d8888b. d8888b. d88888b .d8888. d88888b d888888b .d8888. 
  *    88'     88  `8D 88'  YP      88  `8D 88  `8D 88'     88'  YP 88'     `~~88~~' 88'  YP 
@@ -67,7 +68,7 @@ import { consoleRef } from './components/Drill/drillFunctions';
  
  import { webpartInstance, IFPSUser, getFPSUser, repoLink, trickyEmails } from './fpsReferences';
  import { createBasePerformanceInit, startPerformOp, updatePerformanceEnd } from './fpsReferences';
- import { IPerformanceOp, ILoadPerformance, IHistoryPerformance } from './fpsReferences';
+ import { IPerformanceOp, ILoadPerformance, IHistoryPerformance, ILoadPerformanceOps } from './fpsReferences';
  
  /***
   *    .d8888. d888888b db    db db      d88888b .d8888. 
@@ -114,7 +115,7 @@ import { consoleRef } from './components/Drill/drillFunctions';
 //  import { mainWebPartRenderBannerSetup } from './CoreFPS/WebPartRenderBanner';
 
 //For whatever reason, THIS NEEDS TO BE CALLED Directly and NOT through fpsReferences or it gives error.
-import { mainWebPartRenderBannerSetup } from '@mikezimm/npmfunctions/dist/HelpPanelOnNPM/onNpm/WebPartRenderBannerV2';
+import { mainWebPartRenderBannerSetup, refreshPanelHTML } from '@mikezimm/npmfunctions/dist/HelpPanelOnNPM/onNpm/WebPartRenderBannerV2';
 
 
  /***
@@ -128,6 +129,22 @@ import { mainWebPartRenderBannerSetup } from '@mikezimm/npmfunctions/dist/HelpPa
   *    USED FOR PROPERTY PANE GROUPS
   */
  
+
+  import { buildYourListGroup } from './PropPaneGroups/Page1/ListInfo';
+  import { buildPreConfigGroup } from './PropPaneGroups/Page1/PreConfigSetup';
+  import { buildPerformanceGroup } from './PropPaneGroups/Page1/Performance';
+  import { buildRefinerGroup } from './PropPaneGroups/Page1/Refiners';
+  import { buildTogglesGroup } from './PropPaneGroups/Page1/Toggles';
+
+
+  import { buildRefinerInstructionsGroup } from './PropPaneGroups/Page2/RefinerInstructions';
+  import { buildCustomizeGroup } from './PropPaneGroups/Page2/Customize';
+  import { buildListGroupingGroup } from './PropPaneGroups/Page2/Grouping';
+  import { buildViewTogglesGroup } from './PropPaneGroups/Page2/ViewToggles';
+  import { buildStatsGroup } from './PropPaneGroups/Page2/StatsGroup';
+  import { buildViewGroupFields } from './PropPaneGroups/Page2/Views';
+
+  
  import { WebPartInfoGroup, } from './fpsReferences';
  import { FPSOptionsGroupBasic, } from './fpsReferences';
  import { FPSBanner4BasicGroup, FPSBanner3NavGroup, FPSBanner3ThemeGroup } from './fpsReferences';
@@ -178,7 +195,7 @@ require('@mikezimm/npmfunctions/dist/Services/PropPane/GrayPropPaneAccordions.cs
 require('@mikezimm/npmfunctions/dist/Services/DOM/PinMe/FPSPinMe.css');
 require('@mikezimm/npmfunctions/dist/HeadingCSS/FPSHeadings.css');
 require('@mikezimm/npmfunctions/dist/PropPaneHelp/PropPanelHelp.css');
-
+require('@mikezimm/npmfunctions/dist/Performance/styles.css');
 
 
 
@@ -193,7 +210,7 @@ import { getHelpfullError } from './fpsReferences';
 
 import { sp } from '@pnp/sp';
 
-import { propertyPaneBuilder } from '../../services/propPane/PropPaneBuilder';
+// import { propertyPaneBuilder } from '../../services/propPane/PropPaneBuilder';
 import { getAllItems } from '../../services/propPane/PropPaneFunctions';
 
 import { ICSSChartDD } from './fpsReferences';
@@ -211,7 +228,7 @@ import { IRefinerLayer, RefineRuleValues, IRefinerStat } from './fpsReferences';
 import { IDynamicDataCallables, IDynamicDataPropertyDefinition} from '@microsoft/sp-dynamic-data';
 
 import { IGrouping, IViewField } from "@pnp/spfx-controls-react/lib/ListView";
-
+import { buildQuickCommandsGroup } from './PropPaneGroups/Page2/QuickCommands';
 
 
 
@@ -238,7 +255,8 @@ export default class Drilldown7WebPart extends BaseClientSideWebPart<IDrilldown7
 
   private _exitPropPaneChanged = false;
   private _importErrorMessage = '';
-    
+  
+  private _keysToShow : ILoadPerformanceOps[] = [ ];
   private _performance : ILoadPerformance = null;
 
   //2022-04-07:  Intent of this is a one-time per instance to 'become a reader' level user.  aka, hide banner buttons that reader won't see
@@ -296,24 +314,27 @@ export default class Drilldown7WebPart extends BaseClientSideWebPart<IDrilldown7
        */
       this.context.dynamicDataSourceManager.initializeSource(this);
 
-      if ( !this.properties.rules0 ) { 
-        this.properties.rules0 = [] ; 
-      }
-      if ( !this.properties.rules1 ) { 
-        this.properties.rules1 = [] ; 
-      }
-      if ( !this.properties.rules2 ) { 
-        this.properties.rules2 = [] ; 
-      }
+      // if ( !this.properties.rules0 ) { 
+      //   this.properties.rules0 = [] ; 
+      // }
+      // if ( !this.properties.rules1 ) { 
+      //   this.properties.rules1 = [] ; 
+      // }
+      // if ( !this.properties.rules2 ) { 
+      //   this.properties.rules2 = [] ; 
+      // }
 
-      //Added for https://github.com/mikezimm/drilldown7/issues/95
-      if ( this.properties.whenToShowItems === undefined || this.properties.whenToShowItems === null ) { this.properties.whenToShowItems = 2; }
-      if ( this.properties.minItemsForHide === undefined || this.properties.minItemsForHide === null ) { this.properties.minItemsForHide = 30; }
-      if ( !this.properties.instructionIntro ) { this.properties.instructionIntro = `Please click filters (above) to see items :)`; }
-      if ( !this.properties.refinerInstruction1 ) { this.properties.refinerInstruction1 = `Select a {{refiner0}}`; }
-      if ( !this.properties.refinerInstruction2 ) { this.properties.refinerInstruction2 = `Select a {{refiner1}}`; }
-      if ( !this.properties.refinerInstruction3 ) { this.properties.refinerInstruction3 = `Select a {{refiner2}}`; }
-      if ( !this.properties.language ) { this.properties.language = `en-us`; }
+      /**
+       * MOVED TO PRECONFIG PROPS
+       */
+      //Added for https://github.com/mikezimm/drilldown7/issues/95  
+      // if ( this.properties.whenToShowItems === undefined || this.properties.whenToShowItems === null ) { this.properties.whenToShowItems = 2; }
+      // if ( this.properties.minItemsForHide === undefined || this.properties.minItemsForHide === null ) { this.properties.minItemsForHide = 30; }
+      // if ( !this.properties.instructionIntro ) { this.properties.instructionIntro = `Please click filters (above) to see items :)`; }
+      // if ( !this.properties.refinerInstruction1 ) { this.properties.refinerInstruction1 = `Select a {{refiner0}}`; }
+      // if ( !this.properties.refinerInstruction2 ) { this.properties.refinerInstruction2 = `Select a {{refiner1}}`; }
+      // if ( !this.properties.refinerInstruction3 ) { this.properties.refinerInstruction3 = `Select a {{refiner2}}`; }
+      // if ( !this.properties.language ) { this.properties.language = `en-us`; }
 
       this.getQuickCommandsObject( 'Group Quick Commands', this.properties.quickCommands);
       
@@ -351,16 +372,16 @@ export default class Drilldown7WebPart extends BaseClientSideWebPart<IDrilldown7
      *                                                                                                                         
      */
 
+      // DEFAULTS SECTION:  Performance   <<< ================================================================
+      this._performance = createBasePerformanceInit( this.displayMode, false );
+      this._performance.superOnInit = startPerformOp( 'superOnInit', this.displayMode );
+
       //NEED TO APPLY THIS HERE as well as follow-up in render for it to not visibly change
       this._sitePresets = applyPresetCollectionDefaults( this._sitePresets, PreConfiguredProps, this.properties, this.context.pageContext.web.serverRelativeUrl ) ;
 
       //This indicates if its SPA, Teams etc.... always keep.
       this.properties.pageLayout =  this.context['_pageLayoutType']?this.context['_pageLayoutType'] : this.context['_pageLayoutType'];
       // this.urlParameters = getUrlVars();
-
-            //Added for ALVFinMan
-      // DEFAULTS SECTION:  Performance   <<< ================================================================
-      this._performance = createBasePerformanceInit( this.displayMode, false );
 
       this._FPSUser = getFPSUser( this.context as any, trickyEmails, this._trickyApp ) ;
       console.log( 'FPSUser: ', this._FPSUser );
@@ -375,6 +396,9 @@ export default class Drilldown7WebPart extends BaseClientSideWebPart<IDrilldown7
         { wpInstanceID: this._wpInstanceID, domElement: this.domElement, wpProps: this.properties, 
           displayMode: this.displayMode,
           doHeadings: false } ); //doHeadings is currently only used in PageInfo so set to false.
+
+      this._performance.superOnInit = updatePerformanceEnd( this._performance.superOnInit, true, null );  
+
     });
     
   }
@@ -450,7 +474,7 @@ export default class Drilldown7WebPart extends BaseClientSideWebPart<IDrilldown7
   public getQuickCommandsObject( message: string, str: string ) {
 
     let result : IQuickCommands = undefined;
-    
+
     if ( str === null || str === undefined ) { return result; }
     try {
       str = str.replace(/\\\"/g,'"').replace(/\\'"/g,"'"); //Replace any cases where I copied the hashed characters from JSON file directly.
@@ -462,6 +486,11 @@ export default class Drilldown7WebPart extends BaseClientSideWebPart<IDrilldown7
 
       this.properties.quickCommands = JSON.stringify(result);
       this._quickCommands = result;
+
+      if ( this.properties.quickCommands.indexOf('sourceUserInfo') > 1 ) {
+        this._quickCommands.quickCommandsRequireUser = true;
+
+      }
 
     } catch(e) {
       console.log(message + ' is not a valid JSON object.  Please fix it and re-run');
@@ -540,6 +569,11 @@ export default class Drilldown7WebPart extends BaseClientSideWebPart<IDrilldown7
 
   public render(): void {
 
+  /**
+   * PERFORMANCE - START
+   * This is how you can start a performance snapshot - make the _performance.KEYHERE = startPerforOp('KEYHERE', this.displayMode)
+   */ 
+   this._performance.renderWebPartStart = startPerformOp( 'renderWebPartStart', this.displayMode );
 
     renderCustomStyles(  { wpInstanceID: this._wpInstanceID, domElement: this.domElement, wpProps: this.properties, 
       displayMode: this.displayMode,
@@ -549,7 +583,7 @@ export default class Drilldown7WebPart extends BaseClientSideWebPart<IDrilldown7
   
      const bannerProps: IWebpartBannerProps = mainWebPartRenderBannerSetup( this.displayMode, this._beAReader, this._FPSUser, //repoLink.desc, 
          this.properties, repoLink, trickyEmails, exportProps, strings , this.domElement.clientWidth, this.context, this._modifyBannerTitle, 
-         this._forceBanner, false, null, true, true );
+         this._forceBanner, false, null, this._keysToShow, true, true );
   
       if ( bannerProps.showBeAUserIcon === true ) { bannerProps.beAUserFunction = this._beAUserFunction.bind(this); }
   
@@ -609,20 +643,30 @@ export default class Drilldown7WebPart extends BaseClientSideWebPart<IDrilldown7
 
     let includeDetails = this.properties.includeDetails;
     let includeAttach = this.properties.includeAttach;
+    let createItemLink = this.properties.createItemLink;
     let viewWidth1 = this.properties.viewWidth1;
     let viewWidth2 = this.properties.viewWidth2;
     let viewWidth3 = this.properties.viewWidth3;
 
     let includeListLink = this.properties.includeListLink;
 
-    if (viewFields1 !== undefined ) { viewDefs.push( { minWidth: viewWidth1, viewFields: viewFields1, groupByFields: groupByFields, includeDetails: includeDetails, includeAttach: includeAttach, includeListLink: includeListLink }); }
-    if (viewFields2 !== undefined ) { viewDefs.push( { minWidth: viewWidth2, viewFields: viewFields2, groupByFields: groupByFields, includeDetails: includeDetails, includeAttach: includeAttach, includeListLink: includeListLink }); }
-    if (viewFields3 !== undefined ) { viewDefs.push( { minWidth: viewWidth3, viewFields: viewFields3, groupByFields: groupByFields, includeDetails: includeDetails, includeAttach: includeAttach, includeListLink: includeListLink }); }
+    if (viewFields1 !== undefined ) { viewDefs.push( { minWidth: viewWidth1, viewFields: viewFields1, groupByFields: groupByFields, includeDetails: includeDetails, includeAttach: includeAttach, includeListLink: includeListLink, createItemLink: createItemLink }); }
+    if (viewFields2 !== undefined ) { viewDefs.push( { minWidth: viewWidth2, viewFields: viewFields2, groupByFields: groupByFields, includeDetails: includeDetails, includeAttach: includeAttach, includeListLink: includeListLink, createItemLink: createItemLink }); }
+    if (viewFields3 !== undefined ) { viewDefs.push( { minWidth: viewWidth3, viewFields: viewFields3, groupByFields: groupByFields, includeDetails: includeDetails, includeAttach: includeAttach, includeListLink: includeListLink, createItemLink: createItemLink }); }
 
     let stringRules: string = JSON.stringify( rules );
 
     //Just for test purposes
     //stringRules = JSON.stringify( [rules1,rules2,rules3] );
+
+    /** 
+     * PERFORMANCE - UPDATE
+     * This is how you can UPDATE a performance snapshot - make the _performance.KEYHERE = startPerforOp('KEYHERE', this.displayMode)
+     * NOTE IN THIS CASE to do it before you refreshPanelHTML :)
+     */
+
+    this._performance.renderWebPartStart = updatePerformanceEnd( this._performance.renderWebPartStart, true, null );
+    this._performance.getAllProps = this.properties.getAllProps;
 
     let language = this.properties.language;
     try {
@@ -646,6 +690,8 @@ export default class Drilldown7WebPart extends BaseClientSideWebPart<IDrilldown7
         // 0 - Context
         context: this.context,
         displayMode: this.displayMode,
+
+        loadPerformance: this._performance,
 
         // saveLoadAnalytics: this.saveLoadAnalytics.bind(this),
         FPSPropsObj: buildFPSAnalyticsProps( this.properties, this._wpInstanceID, this.context.pageContext.web.serverRelativeUrl ),
@@ -678,7 +724,9 @@ export default class Drilldown7WebPart extends BaseClientSideWebPart<IDrilldown7
     
         performance: {
             fetchCount: this.properties.fetchCount,
+            itemsPerPage: this.properties.itemsPerPage,
             fetchCountMobile: this.properties.fetchCountMobile,
+            getAllProps: this.properties.getAllProps,
             restFilter: !this.properties.restFilter ? '' : this.properties.restFilter,
         },
 
@@ -752,6 +800,13 @@ export default class Drilldown7WebPart extends BaseClientSideWebPart<IDrilldown7
         // handleSwitch: null,
         handleListPost: this.handleListPost,  //Commented out due to something causing viewFields names to get messed up (removed the / for expanded columns )
         // handleListPost: null,
+
+        fpsPinMenu: {
+          defPinState: 'disabled',
+          forcePinState: true,
+          domElement: this.context.domElement,
+          pageLayout: this.properties.pageLayout,
+        }
 
       }
     );
@@ -892,13 +947,70 @@ export default class Drilldown7WebPart extends BaseClientSideWebPart<IDrilldown7
   */
 
 
+  // protected getPropertyPaneConfiguration(): IPropertyPaneConfiguration {
+  //   return propertyPaneBuilder.getPropertyPaneConfiguration(
+  //     this.properties,
+  //     this.UpdateTitles.bind(this),
+  //     this._getListDefintions.bind(this),
+  //     this._forceBanner, this._modifyBannerTitle, this._modifyBannerStyle
+  //     );
+  // }
+
   protected getPropertyPaneConfiguration(): IPropertyPaneConfiguration {
-    return propertyPaneBuilder.getPropertyPaneConfiguration(
-      this.properties,
-      this.UpdateTitles.bind(this),
-      this._getListDefintions.bind(this),
-      this._forceBanner, this._modifyBannerTitle, this._modifyBannerStyle
-      );
+
+    // Log.Write(`getPropertyPaneConfiguration`);
+
+    return {
+      pages: [
+        {
+          // header: {
+          //   description: strings.PropertyPaneDescription
+          // },
+          displayGroupsAsAccordion: true, //DONT FORGET THIS IF PROP PANE GROUPS DO NOT EXPAND
+          groups: [
+            WebPartInfoGroup( repoLink, 'Best TOC and Page Info available :)' ),
+            buildPreConfigGroup( this.properties ), //End this group
+            buildYourListGroup( ),
+            buildPerformanceGroup( this.properties, ),
+            buildRefinerGroup( this.properties, ),
+            buildTogglesGroup( this.properties ),
+            
+            FPSBanner3VisHelpGroup( this.context, this.onPropertyPaneFieldChanged, this.properties ),
+            FPSBanner4BasicGroup( this._forceBanner , this._modifyBannerTitle, this.properties.showBanner, this.properties.infoElementChoice === 'Text' ? true : false, true, true ),
+            FPSBanner3NavGroup(), 
+            FPSBanner3ThemeGroup( this._modifyBannerStyle, this.properties.showBanner, this.properties.lockStyles, ),
+
+            FPSOptionsGroupBasic( false, true, true, true, this.properties.allSectionMaxWidthEnable, true, this.properties.allSectionMarginEnable, true ), // this group
+            FPSOptionsExpando( this.properties.enableExpandoramic, this.properties.enableExpandoramic,null, null ),
+            // FPSOptionsExpando( this.properties.enableExpandoramic, this.properties.enableExpandoramic,null, null ),
+  
+            FPSImportPropsGroup, // this group
+          ]
+        },
+        {
+          // header: {
+          //   description: strings.PropertyPaneDescription
+          // },
+          displayGroupsAsAccordion: true, //DONT FORGET THIS IF PROP PANE GROUPS DO NOT EXPAND
+          groups: [
+            buildCustomizeGroup(  ),
+            buildRefinerInstructionsGroup( this.properties ),
+            buildListGroupingGroup( ),
+            buildViewGroupFields( 'Wide', 1),
+            buildViewGroupFields( 'Medium', 2),
+            buildViewGroupFields( 'Small', 3),
+
+            buildViewTogglesGroup( ),
+            buildStatsGroup( ),
+            buildQuickCommandsGroup(),
+
+            // FPSOptionsExpando( this.properties.enableExpandoramic, this.properties.enableExpandoramic,null, null ),
+  
+            FPSImportPropsGroup, // this group
+          ]
+        }
+      ]
+    };
   }
 
   //Promise<IDrillItemInfo[]>

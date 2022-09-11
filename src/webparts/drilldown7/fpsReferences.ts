@@ -37,6 +37,7 @@ export { IUser } from '@mikezimm/npmfunctions/dist/Services/Users/IUserInterface
 export { IQuickCommands } from '@mikezimm/npmfunctions/dist/QuickCommands/IQuickCommands';
 
 export { IRefinerLayer, IRefinerRules, IRefinerStat, RefineRuleValues } from '@mikezimm/npmfunctions/dist/Refiners/IRefiners';
+export { IRefiners, IItemRefiners, IRefinerStats, IRefinerStatType, RefinerStatTypes, } from '@mikezimm/npmfunctions/dist/Refiners/IRefiners';
 
 export { IDrillItemInfo } from '@mikezimm/npmfunctions/dist/WebPartInterfaces/DrillDown/IDrillItem';
 
@@ -56,6 +57,15 @@ export { buildKeyText, refinerRuleItems } from '@mikezimm/npmfunctions/dist/Refi
 export { RefinerRulesStrs, RefinerRulesInts, RefinerRulesNums, RefinerRulesTime, RefinerRulesUser, RefinerRulesEXPE, RefinerRulesNone } from '@mikezimm/npmfunctions/dist/Refiners/IRefiners';
 export { makeTheTimeObject } from '@mikezimm/npmfunctions/dist/Services/Time/timeObject';
 
+export { weekday3,  } from '@mikezimm/npmfunctions/dist/Services/Time/dayLabels';
+export { monthStr3 } from '@mikezimm/npmfunctions/dist/Services/Time/monthLabels';
+export { pivotOptionsGroup } from '@mikezimm/npmfunctions/dist/Services/PropPane/ReactPivot/v1/Options';
+
+export { IMyFieldTypes } from '@mikezimm/npmfunctions/dist/Lists/columnTypes';
+export { changes, cBool, cCalcT, cCalcN, cChoice, cMChoice, cCurr, cDate, cLocal, cLook, cDLook,
+  cMText, cText, cNumb, cURL, cUser, cMUser } from '@mikezimm/npmfunctions/dist/Lists/columnTypes';
+
+
 export { IListViewDDDrillDown } from '@mikezimm/npmfunctions/dist/Views/IDrillViews';
 
 /***
@@ -71,7 +81,7 @@ export { IListViewDDDrillDown } from '@mikezimm/npmfunctions/dist/Views/IDrillVi
 
  export { sortStringArray, sortObjectArrayByStringKey, sortNumberArray, sortObjectArrayByNumberKey, sortKeysByOtherKey } from '@mikezimm/npmfunctions/dist/Services/Arrays/sorting';
  export { ISeriesSort, } from '@mikezimm/npmfunctions/dist/CSSCharts/ICSSCharts';
- export { getExpandColumns, getKeysLike, getSelectColumns } from '@mikezimm/npmfunctions/dist/Lists/getFunctions';
+ export { getExpandColumns, getKeysLike, getSelectColumns } from '@mikezimm/npmfunctions/dist/Lists/getV1/getFunctions';
  
  export { doesObjectExistInArray, } from '@mikezimm/npmfunctions/dist/Services/Arrays/checks';
  export { compareArrays, ICompareResult, } from '@mikezimm/npmfunctions/dist/Services/Arrays/checks';
@@ -101,7 +111,8 @@ removeItemFromArrayOnce, removeItemFromArrayAll, updateNextOpenIndex
  
 // instead of createBasePerformanceInit, you can use startPerformanceInit_SS7 for SecureScript or startPerformanceInit_ALVFM for ALVFM
 export { createBasePerformanceInit, startPerformOp, updatePerformanceEnd } from '@mikezimm/npmfunctions/dist/Performance/functions';
-export { IPerformanceOp, ILoadPerformance, IHistoryPerformance } from '@mikezimm/npmfunctions/dist/Performance/IPerformance';
+export { IPerformanceOp, ILoadPerformance, IHistoryPerformance, ILoadPerformanceOps, LoadPerformanceOps } from '@mikezimm/npmfunctions/dist/Performance/IPerformance';
+export { IMinPerformance, IMinPerformanceSetting, IMinPerformanceSettingLabels, IMinPerformanceSettingLabelSS7 } from '@mikezimm/npmfunctions/dist/Performance/IPerformance';
 export { createPerformanceTableVisitor } from '@mikezimm/npmfunctions/dist/Performance/tables';
 
 /***
@@ -143,7 +154,7 @@ import { IRepoLinks } from '@mikezimm/npmfunctions/dist/Links/CreateLinks';
 export { IRepoLinks } from '@mikezimm/npmfunctions/dist/Links/CreateLinks';
 
 
-export const repoLink: IRepoLinks = links.gitRepoCoreFPS114Small;
+export const repoLink: IRepoLinks = links.gitRepoDrillDownSmall;
 export const trickyEmails = links.trickyEmails;
 
 /***
@@ -209,12 +220,14 @@ export { IWebpartBannerProps } from '@mikezimm/npmfunctions/dist/HelpPanelOnNPM/
  export { FPSOptionsGroup, FPSBanner2Group, } from '@mikezimm/npmfunctions/dist/Services/PropPane/FPSOptionsGroup';
 
 
-export { WebPartInfoGroup, } from '@mikezimm/npmfunctions/dist/Services/PropPane/zReusablePropPane';
+export { WebPartInfoGroup, JSON_Edit_Link, ValidLocalLanguages } from '@mikezimm/npmfunctions/dist/Services/PropPane/zReusablePropPane';
 export { FPSOptionsGroupBasic, } from '@mikezimm/npmfunctions/dist/Services/PropPane/FPSOptionsGroup3';
 export { FPSBanner4BasicGroup,FPSBanner3NavGroup, FPSBanner3ThemeGroup } from '@mikezimm/npmfunctions/dist/Services/PropPane/FPSOptionsGroup3';
 export { FPSBanner3VisHelpGroup } from '@mikezimm/npmfunctions/dist/CoreFPS/FPSOptionsGroupVisHelp';
 export { FPSPinMePropsGroup } from '@mikezimm/npmfunctions/dist/Services/DOM/PinMe/FPSOptionsGroupPinMe';
 export { FPSOptionsExpando, } from '@mikezimm/npmfunctions/dist/Services/DOM/Expando/FPSOptionsExpando'; //expandAudienceChoicesAll
+
+
 
 
 /***
@@ -246,7 +259,7 @@ export { validateDocumentationUrl,  } from '@mikezimm/npmfunctions/dist/Links/Va
  */
 
 
-export { saveAnalytics3 } from '@mikezimm/npmfunctions/dist/Services/Analytics/analytics2';
+export { saveAnalytics3, getMinPerformanceString } from '@mikezimm/npmfunctions/dist/Services/Analytics/analytics2';
 export { IZLoadAnalytics, IZSentAnalytics, } from '@mikezimm/npmfunctions/dist/Services/Analytics/interfaces';
 
 // export { importBlockPropsFPS } from '@mikezimm/npmfunctions/dist/HelpPanelOnNPM/onNpm/BannerSetup';
@@ -303,7 +316,7 @@ export { changePinMe,  } from '@mikezimm/npmfunctions/dist/HelpPanelOnNPM/onNpm/
 
 
 // from src\webparts\fpsCore115Banner\components\IFpsCore115BannerProps.ts
-export { IFPSCoreReactComponentProps, IFPSCoreReactComponentState } from '@mikezimm/npmfunctions/dist/CoreFPS/ReactComponentProps';
+export { IFPSCorePinMeReactComponentProps, IFPSCorePinMeReactComponentState } from '@mikezimm/npmfunctions/dist/CoreFPS/ReactComponentProps';
 
 // from src\webparts\fpsCore115Banner\components\HelpPanel\About.tsx
 

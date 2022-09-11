@@ -1,26 +1,28 @@
 import * as React from 'react';
-import { WebPartContext } from '@microsoft/sp-webpart-base';
-import { DisplayMode, } from '@microsoft/sp-core-library';
+// import { WebPartContext } from '@microsoft/sp-webpart-base';
+// import { DisplayMode, } from '@microsoft/sp-core-library';
 
 import { IDrillDownProps, IDrillDownState, IDrillList, IViewType, IRefinerStyles, RefinerChartTypes } from './IDrillProps';
 import { pivCats } from './IDrillProps';
 
-import { CompoundButton, Stack, IStackTokens, elementContains, initializeIcons, Icon, IIconStyles, getLanguage, FontWeights } from 'office-ui-fabric-react';
+import { saveViewAnalytics } from '../../CoreFPS/Analytics';
+
+import { Stack, IStackTokens, Icon, } from 'office-ui-fabric-react';
 import { SearchBox } from 'office-ui-fabric-react/lib/SearchBox';
-import { Pivot, PivotItem, IPivotItemProps, PivotLinkFormat, PivotLinkSize,} from 'office-ui-fabric-react/lib/Pivot';
+import { Pivot, PivotItem, } from 'office-ui-fabric-react/lib/Pivot';
 
-import { sp } from "@pnp/sp";
-import { Web, Lists } from "@pnp/sp/presets/all"; //const projectWeb = Web(useProjectWeb);
+// import { sp } from "@pnp/sp";
+// import { Web, Lists } from "@pnp/sp/presets/all"; //const projectWeb = Web(useProjectWeb);
 
-import { IWebAddResult, IWebInfo, IWeb, } from "@pnp/sp/webs/types";
+// import { IWebAddResult, IWebInfo, IWeb, } from "@pnp/sp/webs/types";
 
 import "@pnp/sp/webs";
 
-import { IContentsListInfo, IMyListInfo, IServiceLog, IContentsLists } from '../../../../services/listServices/listTypes'; //Import view arrays for Time list
+// import { IContentsListInfo, IMyListInfo, IServiceLog, IContentsLists } from '../../../../services/listServices/listTypes'; //Import view arrays for Time list
 
-import { ITheTime, } from '@mikezimm/npmfunctions/dist/Services/Time/Interfaces';
-import { weekday3,  } from '@mikezimm/npmfunctions/dist/Services/Time/dayLabels';
-import { monthStr3 } from '@mikezimm/npmfunctions/dist/Services/Time/monthLabels';
+// import { ITheTime, } from '@mikezimm/npmfunctions/dist/Services/Time/Interfaces';
+import { weekday3,  } from '../../fpsReferences';
+import { monthStr3 } from '../../fpsReferences';
 
 import styles from '../Contents/contents.module.scss';
 
@@ -30,29 +32,28 @@ import { IContentsToggles, makeToggles } from '../fields/toggleFieldBuilder';
 
 import { IMyProgress, ICSSChartTypes, IMyPivCat } from '../../fpsReferences';
 
-import { ICustViewDef } from '@mikezimm/npmfunctions/dist/Views/IListViews';
+import { ICustViewDef } from '../../fpsReferences';
 
-import { IUser } from '@mikezimm/npmfunctions/dist/Services/Users/IUserInterfaces';
-import { IQuickButton, IQuickCommands } from '@mikezimm/npmfunctions/dist/QuickCommands/IQuickCommands';
+// import { IUser } from '@mikezimm/npmfunctions/dist/Services/Users/IUserInterfaces';
+import { IQuickCommands } from '../../fpsReferences';
 
-import { IListViewDDDrillDown } from '@mikezimm/npmfunctions/dist/Views/IDrillViews';
+import { IListViewDDDrillDown } from '../../fpsReferences';
 
-import { gitRepoDrillDown } from '@mikezimm/npmfunctions/dist/Links/LinksRepos';
+// import { gitRepoDrillDown } from '@mikezimm/npmfunctions/dist/Links/LinksRepos';
 
-import { IRefinerLayer, IRefiners, IItemRefiners, IRefinerStats, RefineRuleValues,
-    IRefinerRules, IRefinerStatType, RefinerStatTypes, IRefinerStat } from '@mikezimm/npmfunctions/dist/Refiners/IRefiners';
+import { IRefinerLayer, IRefinerRules, IRefinerStat } from '../../fpsReferences';
 
-import { PageContext } from '@microsoft/sp-page-context';
+// import { PageContext } from '@microsoft/sp-page-context';
 
-import { pivotOptionsGroup, } from '../../../../services/propPane';
+import { pivotOptionsGroup, } from '../../fpsReferences';
 
-import { getExpandColumns, getKeysLike, getSelectColumns, getLinkColumns, getFuncColumns } from '../../../../services/getFunctions';
+import { getExpandColumnsV2, getSelectColumnsV2, getLinkColumnsV2, getFuncColumnsV2 } from '../../../../services/getFunctionsV2';
 
-import { DoNotExpandLinkColumns, DoNotExpandTrimB4, DoNotExpandTrimAfter, DoNotExpandTrimSpecial } from '../../../../services/getInterface';
+// import { DoNotExpandLinkColumns, DoNotExpandTrimB4, DoNotExpandTrimAfter, DoNotExpandTrimSpecial } from '../../../../services/getInterface';
 
-import { getHelpfullError } from '@mikezimm/npmfunctions/dist/Services/Logging/ErrorHandler';
+// import { getHelpfullError } from '@mikezimm/npmfunctions/dist/Services/Logging/ErrorHandler';
 
-import MyDrillItems from './drillListView';
+// import MyDrillItems from './drillListView';
 
 import ReactListItems from './reactListView';
 
@@ -65,7 +66,7 @@ import ResizeGroupOverflowSetExample from './refiners/commandBar';
 import { ICMDItem } from './refiners/commandBar';
 
 import stylesD from './drillComponent.module.scss';
-import {  } from '../../../../services/listServices/viewTypes';
+// import {  } from '../../../../services/listServices/viewTypes';
 import { IGrouping } from "@pnp/spfx-controls-react/lib/ListView";
 
 import Cssreactbarchart from '../CssCharts/Cssreactbarchart';
@@ -74,17 +75,19 @@ import {buildCountChartsObject ,  buildStatChartsArray} from '../CssCharts/cssCh
 
 import { getAppropriateViewFields, getAppropriateViewGroups, getAppropriateViewProp } from './listFunctions';
 
-import WebpartBanner from "@mikezimm/npmfunctions/dist/HelpPanelOnNPM/banner/onLocal/component";
+// import FetchBanner from '../CoreFPS/FetchBannerElement';
+import FetchBanner from '@mikezimm/npmfunctions/dist/HelpPanelOnNPM/onNpm/FetchBannerElement';
+// import FetchBanner from '../../CoreFPS/FetchBannerElement';
 
-import { IBannerPages } from '@mikezimm/npmfunctions/dist/HelpPanelOnNPM/onNpm/bannerProps';
 
 import { getWebPartHelpElement } from '../../CoreFPS/PropPaneHelp';
-
 import { getBannerPages, } from '../HelpPanel/AllContent';
+import { IBannerPages } from '../../fpsReferences';
 
-import { IDrillItemInfo } from '@mikezimm/npmfunctions/dist/WebPartInterfaces/DrillDown/IDrillItem';
-import { defaultBannerCommandStyles } from '@mikezimm/npmfunctions/dist/HelpPanelOnNPM/onNpm/defaults';
+import { ILoadPerformance, startPerformOp, updatePerformanceEnd, ILoadPerformanceOps } from "../../fpsReferences";
 
+import { IDrillItemInfo } from '../../fpsReferences';
+import { defaultBannerCommandStyles } from '../../fpsReferences';
 
 
 /***
@@ -102,6 +105,20 @@ import { defaultBannerCommandStyles } from '@mikezimm/npmfunctions/dist/HelpPane
 export default class DrillDown extends React.Component<IDrillDownProps, IDrillDownState> {
 
     
+    private _performance: ILoadPerformance = null;
+
+    private _webPartHelpElement = getWebPartHelpElement( this.props.sitePresets );
+    private _contentPages : IBannerPages = getBannerPages( this.props.bannerProps );
+
+    
+    private _newRefreshId() {
+
+        const startTime = new Date();
+        const refreshId = startTime.toISOString().replace('T', ' T'); // + ' ~ ' + startTime.toLocaleTimeString();
+        return refreshId;
+
+    }
+
     /***
  *    d8b   db d88888b  .d8b.  d8888b.      d88888b  .d8b.  d8888b.      d88888b db      d88888b 
  *    888o  88 88'     d8' `8b 88  `8D      88'     d8' `8b 88  `8D      88'     88      88'     
@@ -112,42 +129,38 @@ export default class DrillDown extends React.Component<IDrillDownProps, IDrillDo
  *                                                                                               
  *                                                                                               
  */
-     private WebPartHelpElement = getWebPartHelpElement( this.props.sitePresets );
-     private contentPages : IBannerPages = getBannerPages( this.props.bannerProps );
 
-    private nearBannerElements = this.buildNearBannerElements();
-    private farBannerElements = this.buildFarBannerElements();
+     private _farBannerElements = this._buildFarBannerElements();
+ 
+     private _buildNearBannerElements() {
+       //See banner/NearAndFarSample.js for how to build this.
+       let elements = [];
+       // defaultBannerCommandStyles.fontWeight = 'bolder';
+       // elements.push(<div style={{ paddingRight: null }} className={ '' } title={ title}>
+       //   <Icon iconName='WindDirection' onClick={ this.jumpToParentSite.bind(this) } style={ defaultBannerCommandStyles }></Icon>
+       // </div>);
+       return elements;
+     }
+   
+     private _buildFarBannerElements() {
+       let farElements: any[] = [];
+   
+       if ( this.props.bannerProps.showTricks === true ) {
+         farElements.push( null );
+       }
+       return farElements;
+     }
 
-    private buildNearBannerElements() {
-        //See banner/NearAndFarSample.js for how to build this.
-        let elements = [];
-        // defaultBannerCommandStyles.fontWeight = 'bolder';
-        // elements.push(<div style={{ paddingRight: null }} className={ '' } title={ title}>
-        //   <Icon iconName='WindDirection' onClick={ this.jumpToParentSite.bind(this) } style={ defaultBannerCommandStyles }></Icon>
-        // </div>);
-        return elements;
-    }
-
-    private buildFarBannerElements() {
-        //See banner/NearAndFarSample.js for how to build this.
-        // minimizeTiles= { this.minimizeTiles.bind(this) }
-        // searchMe= { this.searchMe.bind(this) }
-        // showAll= { this.showAll.bind(this) }
-
-        let farElements: any[] = [];
-
-        if ( this.props.bannerProps.showTricks === true ) {
-            farElements.push( null );
-        }
-        return farElements;
-
-        //   return [
-        //     // <Icon iconName='BookAnswers' onClick={ this.toggleInstructions.bind(this) } style={ defaultBannerCommandStyles }></Icon>,
-        //     // <Icon iconName='ChromeMinimize' onClick={ this.minimizeTiles.bind(this) } style={ defaultBannerCommandStyles }></Icon>,
-        //     // <Icon iconName='ClearFilter' onClick={ this.showAll.bind(this) } style={ defaultBannerCommandStyles }></Icon>,
-        //   ];
-    }
-
+     private _makeDebugCmdStyles( withLeftMargin: boolean ) {
+        let propsCmdCSS: React.CSSProperties = JSON.parse(JSON.stringify( this.props.bannerProps.bannerCmdReactCSS ));
+        propsCmdCSS.backgroundColor = 'transparent';
+        propsCmdCSS.marginRight = '30px';
+        propsCmdCSS.fontSize = '24px'; //Make sure icon is always visible
+    
+        return propsCmdCSS;
+      }
+    
+      private _debugCmdStyles: React.CSSProperties = this._makeDebugCmdStyles( true );
 
     /***
      *    d8888b. db    db d888888b db      d8888b.      .d8888. db    db .88b  d88.       .o88b.  .d88b.  db    db d8b   db d888888b       .o88b. db   db  .d8b.  d8888b. d888888b .d8888. 
@@ -163,7 +176,7 @@ export default class DrillDown extends React.Component<IDrillDownProps, IDrillDo
      /**
       * This builds the refiner count horizontal stacked bars
       */
-    private buildCountCharts( title: string, callBackID: string, refinerObj: IRefinerLayer , chartTypes: ICSSChartTypes[] ) {
+    private _buildCountCharts( title: string, callBackID: string, refinerObj: IRefinerLayer , chartTypes: ICSSChartTypes[] ) {
         let resultSummary = null;
 
         let resultSummaryObject = buildCountChartsObject( title, callBackID, refinerObj , chartTypes );
@@ -174,7 +187,7 @@ export default class DrillDown extends React.Component<IDrillDownProps, IDrillDo
             chartSettings = { resultSummaryObject.chartSettings }
             callBackID = { resultSummaryObject.callBackID }
             WebpartWidth = { this.state.WebpartWidth }
-            //onAltClick = { this.changeRefinerOrder.bind(this) }
+            //onAltClick = { this._changeRefinerOrder.bind(this) }
         ></Cssreactbarchart>;
 
         return resultSummary;
@@ -196,7 +209,7 @@ export default class DrillDown extends React.Component<IDrillDownProps, IDrillDo
      /**
       * This builds the custom stat charts (that are set to consumer = 0 --> inside this webpart)
       */
-    private buildStatCharts(  statArray) {
+    private _buildStatCharts(  statArray) {
 
         let statChart = null;
         let theseCharts : any[] = [];
@@ -212,7 +225,7 @@ export default class DrillDown extends React.Component<IDrillDownProps, IDrillDo
                     chartSettings = { chartDataObject.chartSettings }
                     callBackID = { chartDataObject.callBackID }
                     WebpartWidth = { this.state.WebpartWidth }
-                    //onAltClick = { this.changeRefinerOrder.bind(this) }
+                    //onAltClick = { this._changeRefinerOrder.bind(this) }
                 ></Cssreactbarchart>;
 
                 theseCharts.push( statChart );
@@ -235,7 +248,7 @@ export default class DrillDown extends React.Component<IDrillDownProps, IDrillDo
  *                                                                                                                                                                                                       
  */
     
-    private createEmptyRefinerRules( rules: string ) {
+    private _createEmptyRefinerRules( rules: string ) {
         let emptyRules : any = null;
         try {
             emptyRules = JSON.parse(rules);
@@ -248,7 +261,7 @@ export default class DrillDown extends React.Component<IDrillDownProps, IDrillDo
     }
 
 
-    private createRefinerRuleCalcs( calcs: string ) {
+    private _createRefinerRuleCalcs( calcs: string ) {
         let theCalcs : any = null;
         //Close https://github.com/mikezimm/drilldown7/issues/78
         if ( calcs === '' ) { return []; }
@@ -266,19 +279,19 @@ export default class DrillDown extends React.Component<IDrillDownProps, IDrillDo
         return theCalcs;
     }
 
-    private buildInstructionIcons() {
+    private _buildInstructionIcons() {
         //See banner/NearAndFarSample.js for how to build this.
         let elements = [];
         defaultBannerCommandStyles.fontWeight = 'bolder';
         defaultBannerCommandStyles.fontSize = 'normal';
         
         elements.push(<span style={{ paddingLeft: '20px' }} className={ '' } title={ 'Hide instructions based on webpart settings' }>
-          <Icon iconName='Hide3' onClick={ this.hideInstructions.bind(this) } style={ defaultBannerCommandStyles }></Icon></span>);
+          <Icon iconName='Hide3' onClick={ this._hideInstructions.bind(this) } style={ defaultBannerCommandStyles }></Icon></span>);
 
         return elements;
       }
 
-    private createInstructionRow( row : 0 | 1 | 2 ){
+    private _createInstructionRow( row : 0 | 1 | 2 ){
         let isDone = this.state.searchMeta.length > row && this.state.searchMeta[ row ] !== 'All' ? true : false;
         let isNext = row === this.state.searchMeta.length && this.state.searchMeta[ row ] !== 'All' ? true : false;
         //Make this adjustment for first row
@@ -311,7 +324,7 @@ export default class DrillDown extends React.Component<IDrillDownProps, IDrillDo
  */
 
 
-    private updateDrillListColumns( list: IDrillList ) {
+    private _updateDrillListColumns( list: IDrillList ) {
        
         let selectCols: string = "*";
         let expandThese = "";
@@ -345,10 +358,10 @@ export default class DrillDown extends React.Component<IDrillDownProps, IDrillDo
             });
         }
 
-        let expColumns = getExpandColumns(allColumns);
-        let selColumns = getSelectColumns(allColumns);
-        let linkColumns = getLinkColumns(allColumns);
-        let funcColumns = getFuncColumns(allColumns);
+        let expColumns = getExpandColumnsV2(allColumns);
+        let selColumns = getSelectColumnsV2(allColumns);
+        let linkColumns = getLinkColumnsV2(allColumns);
+        let funcColumns = getFuncColumnsV2(allColumns);
 
         selColumns.length > 0 ? selectCols += "," + allColumns.join(",") : selectCols = selectCols;
         if (expColumns.length > 0) { expandThese = expColumns.join(","); }
@@ -382,12 +395,12 @@ export default class DrillDown extends React.Component<IDrillDownProps, IDrillDo
      *                                                                                                                                          
      */
 
-    private createDrillList(webURL: string, name: string, isLibrary: boolean, refiners: string[], rules: string, stats: string, 
+    private _createDrillList(webURL: string, name: string, isLibrary: boolean, refiners: string[], rules: string, stats: string, 
         OrigViewDefs: ICustViewDef[], togOtherChartpart: boolean, title: string = null, stateSourceUserInfo: boolean, language: string, location: string, itteration: number ) {
 
         let viewDefs = JSON.parse(JSON.stringify(OrigViewDefs)) ;
-        let refinerRules = this.createEmptyRefinerRules( rules );
-        let refinerStats: IRefinerStat[] = this.createRefinerRuleCalcs( stats );
+        let refinerRules = this._createEmptyRefinerRules( rules );
+        let refinerStats: IRefinerStat[] = this._createRefinerRuleCalcs( stats );
 
         if ( togOtherChartpart === true && refinerStats && refinerStats.length > 0 ) {
             //set consumer = 1 to all charts that are not explicitly defined.
@@ -414,6 +427,7 @@ export default class DrillDown extends React.Component<IDrillDownProps, IDrillDo
             restFilter: !this.props.performance.restFilter ? ' ' : this.props.performance.restFilter,
             hideFolders: this.props.hideFolders,
             isLibrary: isLibrary,
+            getAllProps: this.props.performance.getAllProps,
             hasAttach: false,
             togStats: this.props.toggles.togStats,
 
@@ -447,7 +461,7 @@ export default class DrillDown extends React.Component<IDrillDownProps, IDrillDo
         };
 
         consoleMe( 'createDL' + location , this.state ? this.state.allItems : null , list );
-        list = this.updateDrillListColumns( list ) ;
+        list = this._updateDrillListColumns( list ) ;
 
         return list;
     }
@@ -467,11 +481,12 @@ export default class DrillDown extends React.Component<IDrillDownProps, IDrillDo
     public constructor(props:IDrillDownProps){
         super(props);
 
+        if ( this._performance === null ) { this._performance = this.props.loadPerformance;  }
         /**
          * This is copied later in code when you have to call the data in case something changed.
          */
 
-        let drillList = this.createDrillList(this.props.webURL, this.props.listName, false, this.props.refiners, this.props.rules, this.props.stats, this.props.viewDefs, this.props.toggles.togOtherChartpart, '', false, this.props.language, 'constructor', 0);
+        let drillList = this._createDrillList(this.props.webURL, this.props.listName, false, this.props.refiners, this.props.rules, this.props.stats, this.props.viewDefs, this.props.toggles.togOtherChartpart, '', false, this.props.language, 'constructor', 0);
         let errMessage = drillList.refinerRules === undefined ? 'Invalid Rule set: ' +  this.props.rules : '';
         if ( drillList.refinerRules === undefined ) { drillList.refinerRules = [[],[],[]] ; } 
 
@@ -481,9 +496,8 @@ export default class DrillDown extends React.Component<IDrillDownProps, IDrillDo
             if ( this.props.refiners.length > 2 ) { maxRefinersToShow = 3; }
         }
 
-
         let quickCommands : IQuickCommands = this.props.quickCommands ? JSON.parse( JSON.stringify(this.props.quickCommands )) : null ;
-        
+
         if ( quickCommands !== null ) {
             if ( quickCommands.onUpdateReload === true ) {
                 quickCommands.refreshCallback = this._reloadOnUpdate.bind(this);
@@ -494,10 +508,11 @@ export default class DrillDown extends React.Component<IDrillDownProps, IDrillDo
         }
 
         this.state = { 
-
+            pinState: this.props.fpsPinMenu.defPinState ? this.props.fpsPinMenu.defPinState : 'disabled',
             showDevHeader: false,
             lastStateChange: '', 
             analyticsWasExecuted: false,
+            refreshId: this._newRefreshId(),
 
             //Size courtesy of https://www.netwoven.com/2018/11/13/resizing-of-spfx-react-web-parts-in-different-scenarios/
             WebpartHeight: this.props.WebpartElement.getBoundingClientRect().height ,
@@ -528,7 +543,7 @@ export default class DrillDown extends React.Component<IDrillDownProps, IDrillDo
 
             whenToShowItems: this.props.showItems.whenToShowItems,
             instructionsHidden: 'dynamic',
-            
+
             meta: [],
 
             webURL: this.props.webURL,
@@ -555,10 +570,6 @@ export default class DrillDown extends React.Component<IDrillDownProps, IDrillDo
 
         };
 
-        
-        this.nearBannerElements = this.buildNearBannerElements();
-        this.farBannerElements = this.buildFarBannerElements();
-
     // because our event handler needs access to the component, bind 
     //  the component to the function so it can get access to the
     //  components properties (this.props)... otherwise "this" is undefined
@@ -568,6 +579,8 @@ export default class DrillDown extends React.Component<IDrillDownProps, IDrillDo
 
 
   public componentDidMount() {
+    // const analyticsWasExecuted: boolean = saveViewAnalytics( 'Drilldown Webpart', 'didMount', this.props, this.state.analyticsWasExecuted );
+
     this._updateStateOnPropsChange();
     console.log('DrillComponent Mounted!');
   }
@@ -587,6 +600,14 @@ export default class DrillDown extends React.Component<IDrillDownProps, IDrillDo
 public componentDidUpdate(prevProps){
 
     let rebuildPart = false;
+
+    const refresh = this.props.displayMode !== prevProps.displayMode ? true : false;
+
+    if ( refresh === true ) {
+      this._webPartHelpElement = getWebPartHelpElement( this.props.sitePresets );
+      this._contentPages = getBannerPages( this.props.bannerProps );
+    }
+
     if (this.props.progress !== prevProps.progress) {  rebuildPart = true ; }
 
     if ( JSON.stringify(prevProps.refiners) !== JSON.stringify(this.props.refiners )) {
@@ -704,76 +725,31 @@ public componentDidUpdate(prevProps){
             *                                                      
             */
 
+
         // let farBannerElementsArray = [];
-        let farBannerElementsArray = [...this.farBannerElements,
-            // <Icon iconName={layoutIcon} onClick={ this.toggleLayout.bind(this) } style={ defaultBannerCommandStyles }></Icon>,
-            <Icon iconName='BookAnswers' onClick={ this.forceInstructions.bind(this) } style={ defaultBannerCommandStyles }></Icon>,
-            // <Icon iconName='Hide3' onClick={ this.hideInstructions.bind(this) } style={ defaultBannerCommandStyles }></Icon>,
+        let farBannerElementsArray = [...this._farBannerElements,
+            <Icon iconName='BookAnswers' onClick={ this._forceInstructions.bind(this) } style={ this._debugCmdStyles }></Icon>,
         ];
-        // if ( this.props.displayMode === DisplayMode.Edit ) {
-        //     farBannerElementsArray.push( 
-        //         <Icon iconName='OpenEnrollment' onClick={ this.togglePropsHelp.bind(this) } style={ defaultBannerCommandStyles }></Icon>
-        // );
-        // }
 
-        //Exclude the props.bannerProps.title if the webpart is narrow to make more responsive
-        let bannerTitle = bannerProps.bannerWidth < 900 ? '' : `${bannerProps.title} - ${''}`;
-        if ( bannerTitle === '' ) { bannerTitle = 'Pivot Tiles' ; }
+        const Banner = <FetchBanner 
 
-        let Banner = <WebpartBanner 
+            // bonusHTML1={ this._bonusHTML }
+            panelPerformance={ this._performance }
+            // bonusHTML2={ this._bonusHTML }
 
-            displayMode={ bannerProps.displayMode }
-            WebPartHelpElement={ this.WebPartHelpElement }
-            forceNarrowStyles= { false }
-            contentPages= { this.contentPages }
-            feedbackEmail= { bannerProps.feedbackEmail }
-            FPSUser={ bannerProps.FPSUser }
-            exportProps={ bannerProps.exportProps }
-            showBanner={ bannerProps.showBanner }
-            // Adding this to adjust expected width for when prop pane could be opened
-            bannerWidth={ ( bannerProps.bannerWidth ) }
-            pageContext={ bannerProps.pageContext }
-            pageLayout={ bannerProps.pageLayout }
-            title ={ bannerTitle }
-            panelTitle = { bannerProps.panelTitle }
-            infoElement = { bannerProps.infoElement }
-            bannerReactCSS={ bannerProps.bannerReactCSS }
-            bannerCmdReactCSS={ defaultBannerCommandStyles }
-            showTricks={ bannerProps.showTricks }
-            showGoToParent={ bannerProps.showGoToParent }
-            showGoToHome={ bannerProps.showGoToHome }
-            onHomePage={ bannerProps.onHomePage }
+            parentProps={ this.props }
+            parentState={ this.state }
 
-            webpartHistory={ this.props.webpartHistory }
+            nearBannerElementsArray={ [] }
+            farBannerElementsArray={ farBannerElementsArray }
 
-            showBannerGear={ bannerProps.showBannerGear }
+            contentPages={ this._contentPages }
+            WebPartHelpElement={ this._webPartHelpElement }
 
-            showFullPanel={ bannerProps.showFullPanel }
-            replacePanelHTML={ bannerProps.replacePanelHTML }
-            replacePanelWarning={ bannerProps.replacePanelWarning }
+            updatePinState = { null }
+            pinState = { this.state.pinState }
 
-            hoverEffect={ bannerProps.hoverEffect }
-            gitHubRepo={ bannerProps.gitHubRepo }
-            earyAccess={ bannerProps.earyAccess }
-            wideToggle={ bannerProps.wideToggle }
-            nearElements = { this.nearBannerElements }
-            farElements = { farBannerElementsArray }
-
-            showRepoLinks={ bannerProps.showRepoLinks }
-            showExport={ bannerProps.showExport }
-            //2022-02-17:  Added these for expandoramic mode
-            domElement = { bannerProps.domElement }
-            enableExpandoramic = { bannerProps.enableExpandoramic }
-            expandoDefault = { bannerProps.expandoDefault }
-            expandoStyle = { bannerProps.expandoStyle}
-            expandAlert = { bannerProps.expandAlert }
-            expandConsole = { bannerProps.expandConsole }
-            expandoPadding = { bannerProps.expandoPadding }
-            beAUser = { bannerProps.beAUser }
-            showBeAUserIcon = { bannerProps.showBeAUserIcon }
-            beAUserFunction={ bannerProps.beAUserFunction }
-
-        ></WebpartBanner>;
+        />;
 
 /***
  *              d888888b db   db d888888b .d8888.      d8888b.  .d8b.   d888b  d88888b 
@@ -826,7 +802,7 @@ public componentDidUpdate(prevProps){
             } else {
 
                 let toggleTipsButton = <div style={{marginRight: "20px", background: 'white', opacity: '.7', borderRadius: '10px' }}>
-                { createIconButton('Help','Toggle Tips',this.toggleTips.bind(this), null, tipsStyles ) } </div>;
+                { createIconButton('Help','Toggle Tips',this._toggleTips.bind(this), null, tipsStyles ) } </div>;
 
                 let errMessage = this.state.errMessage === '' ? null : <div>
                     { this.state.errMessage }
@@ -837,7 +813,7 @@ public componentDidUpdate(prevProps){
                         return <li>{ issue } </li>;
                     });
                     errMessage = this.state.errMessage === '' ? null : <div>
-                    <h2>Detected potential performance issues... :(</h2>
+                    <h2>{escape(`Detected potential performance issues... :(`)}</h2>
                     { issueElements }
                     </div>;
                 }
@@ -897,9 +873,9 @@ public componentDidUpdate(prevProps){
                 let refinersObjects = [];
                 if ( this.state.style === 'pivot' ) {
 
-                    let drillPivots0 = this.createPivotObject(this.state.searchMeta[0], '', 0);
-                    let drillPivots1 = showRefiner1 ? this.createPivotObject(this.state.searchMeta[1], '', 1) : null;
-                    let drillPivots2 = showRefiner2 ?  this.createPivotObject(this.state.searchMeta[2], '', 2) : null;
+                    let drillPivots0 = this._createPivotObject(this.state.searchMeta[0], '', 0);
+                    let drillPivots1 = showRefiner1 ? this._createPivotObject(this.state.searchMeta[1], '', 1) : null;
+                    let drillPivots2 = showRefiner2 ?  this._createPivotObject(this.state.searchMeta[2], '', 2) : null;
 
                     if ( showRefiner0 ) { refinersObjects.push( drillPivots0 ) ; }
                     if ( showRefiner1 ) { refinersObjects.push( drillPivots1 ) ; }
@@ -907,8 +883,8 @@ public componentDidUpdate(prevProps){
 
                 } else if ( this.state.style === 'commandBar' ) {
 
-                    let pinCmd1 = createIconButton('Pin','Pin ' + this.state.refiners[1] + ' to top, Alt-Click to move DOWNOne level.',this.changeRefinerOrder1.bind(this), null, null );
-                    let pinCmd2 = createIconButton('Pin','Pin ' + this.state.refiners[2] + ' to top, Alt-Click to move UP One level.',this.changeRefinerOrder2.bind(this), null, null );
+                    let pinCmd1 = createIconButton('Pin','Pin ' + this.state.refiners[1] + ' to top, Alt-Click to move DOWNOne level.',this._changeRefinerOrder1.bind(this), null, null );
+                    let pinCmd2 = createIconButton('Pin','Pin ' + this.state.refiners[2] + ' to top, Alt-Click to move UP One level.',this._changeRefinerOrder2.bind(this), null, null );
                     let pinSpanStyle = { paddingLeft: '8px', height: '0px' } ;
 
                     thisIsRefiner0 = showRefiner0 ? <div><ResizeGroupOverflowSetExample
@@ -978,6 +954,7 @@ public componentDidUpdate(prevProps){
                     let includeDetails = getAppropriateViewProp( viewDefs, this.state.WebpartWidth, 'includeDetails' );
                     let includeAttach = getAppropriateViewProp( viewDefs, this.state.WebpartWidth, 'includeAttach' );
                     let includeListLink = getAppropriateViewProp( viewDefs, this.state.WebpartWidth, 'includeListLink' );
+                    let createItemLink = getAppropriateViewProp( viewDefs, this.state.WebpartWidth, 'createItemLink' );
                     
                     if ( this.state.drillList.hasAttach !== true ) { includeAttach = false; }
                     let currentViewFields: any[] = [];
@@ -1005,16 +982,16 @@ public componentDidUpdate(prevProps){
 
                         let instructions = [];
                         if ( this.state.drillList.refinerInstructions[0].length > 0 && this.props.refiners.length > 0 ) { //Updated to solve #95
-                            instructions.push( this.createInstructionRow(0));
+                            instructions.push( this._createInstructionRow(0));
                         } 
                         if ( this.state.drillList.refinerInstructions[1].length > 0 && this.props.refiners.length > 1 ) { //Updated to solve #95
-                            instructions.push( this.createInstructionRow(1));
+                            instructions.push( this._createInstructionRow(1));
                         } 
                         if ( this.state.drillList.refinerInstructions[2].length > 0 && this.props.refiners.length > 2 ) { //Updated to solve #95
-                            instructions.push( this.createInstructionRow(2));
+                            instructions.push( this._createInstructionRow(2));
                         } 
                         let instructionContent = <div className={ [stylesD.instructions, null ].join(' ') }>
-                            <div className={ stylesD.instHeading } style={{ }}>{ this.props.showItems.instructionIntro } { this.buildInstructionIcons() }</div>
+                            <div className={ stylesD.instHeading } style={{ }}>{ this.props.showItems.instructionIntro } { this._buildInstructionIcons() }</div>
                             <ul style={{ listStyleType: 'decimal' }}>
                                 { instructions }
                             </ul>
@@ -1032,6 +1009,7 @@ public componentDidUpdate(prevProps){
                                 webURL = { this.state.drillList.webURL }
                                 parentListURL = { this.state.drillList.parentListURL }
                                 listName = { this.state.drillList.name }
+                                isLibrary = { this.state.drillList.isLibrary }
     
                                 contextUserInfo = { this.state.drillList.contextUserInfo }
                                 sourceUserInfo = { this.state.drillList.sourceUserInfo }
@@ -1039,9 +1017,11 @@ public componentDidUpdate(prevProps){
                                 viewFields={ currentViewFields }
                                 groupByFields={ currentViewGroups }
                                 items={ this.state.searchedItems }
+                                itemsPerPage={ this.props.performance.itemsPerPage }
                                 includeDetails= { includeDetails }
                                 includeAttach= { includeAttach }
                                 includeListLink = { includeListLink }
+                                createItemLink = { createItemLink }
                                 quickCommands={ this.state.quickCommands }
                             
                             ></ReactListItems>;
@@ -1089,18 +1069,18 @@ public componentDidUpdate(prevProps){
                     }
 
                     if ( this.state.showCountChart === true || statsVisible === true ) {
-                        if ( buildCount ) { countCharts.push( this.buildCountCharts( this.state.refiners[0], 'refiner0' , this.state.refinerObj, RefinerChartTypes ) ); }
+                        if ( buildCount ) { countCharts.push( this._buildCountCharts( this.state.refiners[0], 'refiner0' , this.state.refinerObj, RefinerChartTypes ) ); }
                         if ( textMaxRefinersToShow >= 1 ) {
-                            if ( buildCount ) {  countCharts.push( this.buildCountCharts( this.state.refiners[1], 'refiner1' , this.state.refinerObj.childrenObjs[childIndex0], RefinerChartTypes ) ); }
+                            if ( buildCount ) {  countCharts.push( this._buildCountCharts( this.state.refiners[1], 'refiner1' , this.state.refinerObj.childrenObjs[childIndex0], RefinerChartTypes ) ); }
                             if ( textMaxRefinersToShow >= 2 ) {
-                                if ( buildCount ) {  countCharts.push( this.buildCountCharts( this.state.refiners[2], 'refiner2' , this.state.refinerObj.childrenObjs[childIndex0].childrenObjs[childIndex1],  RefinerChartTypes ) ); }
+                                if ( buildCount ) {  countCharts.push( this._buildCountCharts( this.state.refiners[2], 'refiner2' , this.state.refinerObj.childrenObjs[childIndex0].childrenObjs[childIndex1],  RefinerChartTypes ) ); }
                             }
                         }
 
                         if ( countCharts.length === 0 ) { countCharts = null ; }
                         if ( buildStats && statsVisible === true && statRefinerObject && statRefinerObject.childrenKeys.length > 0  ) {
                             let statChartArray = buildStatChartsArray( this.state.drillList.refinerStats, 'summaries', statRefinerObject );
-                            statCharts = this.buildStatCharts( statChartArray );
+                            statCharts = this._buildStatCharts( statChartArray );
 
                         } else {
 
@@ -1131,7 +1111,7 @@ public componentDidUpdate(prevProps){
                         */
 
 
-                    let toggles = <div style={{ float: 'right' }}> { makeToggles(this.getPageToggles( statCharts.length > 0 ? true : false )) } </div>;
+                    let toggles = <div style={{ float: 'right' }}> { makeToggles(this._getPageToggles( statCharts.length > 0 ? true : false )) } </div>;
 
                     let messages : any[] = [];
                     if ( this.state.WebpartWidth > 800 ) { 
@@ -1234,30 +1214,36 @@ public componentDidUpdate(prevProps){
 
     }   //End Public Render
 
-    private getAllItemsCall( viewDefs: ICustViewDef[], refiners: string[] ) {
+    private _getAllItemsCall( viewDefs: ICustViewDef[], refiners: string[] ) {
+
+        //Start tracking performance
+        this._performance.fetch1 = startPerformOp( 'fetch1 data', this.props.displayMode );
 
         /**
          * This is copied from constructor when you have to call the data in case something changed.
          */
 
-        let drillList = this.createDrillList(this.props.webURL, this.props.listName, false, refiners, this.state.rules, this.props.stats, viewDefs, this.props.toggles.togOtherChartpart, '', false, this.props.language, 'getAllItemsCall', this.state.drillList.itteration );
+        let drillList = this._createDrillList(this.props.webURL, this.props.listName, false, refiners, this.state.rules, this.props.stats, viewDefs, this.props.toggles.togOtherChartpart, '', false, this.props.language, 'getAllItemsCall', this.state.drillList.itteration );
         let errMessage = drillList.refinerRules === undefined ? 'Invalid Rule set: ' +  this.state.rules : '';
         if ( drillList.refinerRules === undefined ) { drillList.refinerRules = [[],[],[]] ; } 
 
-        let result : any = getAllItems( drillList, this.addTheseItemsToState.bind(this), this.setProgress.bind(this), null );
+        let result : any = getAllItems( drillList, this._addTheseItemsToState.bind(this), this._setProgress.bind(this), null,  this._updatePerformance.bind( this ), this.props.quickCommands ? this.props.quickCommands.quickCommandsRequireUser : false );
 
     }
 
-    private addTheseItemsToState( drillList: IDrillList, allItems , errMessage : string, refinerObj: IRefinerLayer ) {
+    private _addTheseItemsToState( drillList: IDrillList, allItems , errMessage : string, refinerObj: IRefinerLayer ) {
+
+        this._performance.analyze2 = startPerformOp( 'analyze2 addItems', this.props.displayMode );
+
         consoleRef( 'addTheseItems1REF', refinerObj );
         consoleMe( 'addTheseItems1' , allItems, drillList );
         //let newFilteredItems : IDrillItemInfo[] = this.getNewFilteredItems( '', this.state.searchMeta, allItems, 0 );
         let pivotCats : any = [];
         let cmdCats : any = [];
-        pivotCats.push ( refinerObj.childrenKeys.map( r => { return this.createThisPivotCat(r,'',0); }));
+        pivotCats.push ( refinerObj.childrenKeys.map( r => { return this._createThisPivotCat(r,'',0); }));
         let countTree: number[] = refinerObj.childrenObjs.map( o => { return o.itemCount; }) ;
 
-        cmdCats.push ( this.convertRefinersToCMDs( ['All'],  refinerObj.childrenKeys, countTree, 0 , 0, refinerObj) );
+        cmdCats.push ( this._convertRefinersToCMDs( ['All'],  refinerObj.childrenKeys, countTree, 0 , 0, refinerObj) );
 
         if ( allItems.length < 300 ) {
             console.log('addTheseItemsToState allItems: ', allItems);
@@ -1340,6 +1326,11 @@ public componentDidUpdate(prevProps){
         console.log('addTheseItemsToState: drillList',drillList );
         console.log('addTheseItemsToState: refinerStats', drillList.refinerStats );
 
+        //End tracking performance
+        this._performance.analyze2 = updatePerformanceEnd( this._performance.analyze2, true, allItems.length );
+
+        const analyticsWasExecuted: boolean = saveViewAnalytics( 'Drilldown Webpart', 'addItems', this.props, this.state.analyticsWasExecuted, this._performance );
+
         this.setState({
             allItems: allItems,
             searchedItems: allItems, //newFilteredItems,  //Replaced with allItems to update when props change.
@@ -1355,16 +1346,19 @@ public componentDidUpdate(prevProps){
             maxRefinersToShow: maxRefinersToShow,
             rules: JSON.stringify(drillList.refinerRules),
             instructionsHidden: 'dynamic',
+            analyticsWasExecuted: true,
         });
+
+
 
         //This is required so that the old list items are removed and it's re-rendered.
         //If you do not re-run it, the old list items will remain and new results get added to the list.
         //However the list will show correctly if you click on a pivot.
-        //this.searchForItems( '', this.state.searchMeta, 0, 'meta' );
+        //this._searchForItems( '', this.state.searchMeta, 0, 'meta' );
         return true;
     }
 
-    private createThisPivotCat ( title, desc, order ) {
+    private _createThisPivotCat ( title, desc, order ) {
 
         let pivCat : IMyPivCat = {
             title: title,
@@ -1389,7 +1383,7 @@ public componentDidUpdate(prevProps){
  */
 
  //Can't use this
-    private findMatchtingElementTextOriginal(arr: string[], item: any ) {
+    private _findMatchtingElementTextOriginal(arr: string[], item: any ) {
 
         let hasItemKey = item.props && item.props.itemKey ? true : false ;
         let hasTargetInnerText = item.target && item.target.innerText ? true : false;
@@ -1410,7 +1404,7 @@ public componentDidUpdate(prevProps){
         return '';
     }
 
-    private findCountOfAriaLabel( item: any ) {
+    private _findCountOfAriaLabel( item: any ) {
         let result = '';
         if ( item === null ) { return result; }
         let isValue = false;
@@ -1439,7 +1433,7 @@ public componentDidUpdate(prevProps){
         return result;
     }
 
-    private findMatchtingElementText( item: any ) {
+    private _findMatchtingElementText( item: any ) {
 
         if ( item === null ) { return '' ; }
 
@@ -1467,7 +1461,7 @@ public componentDidUpdate(prevProps){
 
     public _getValidCountFromClickItem( item, validText: string) {
         if ( this.state.showRefinerCounts === true ) {
-            let countOf = this.findCountOfAriaLabel( item );
+            let countOf = this._findCountOfAriaLabel( item );
             validText = validText.replace(' ('+countOf+')','');
         }
         return validText;
@@ -1475,31 +1469,31 @@ public componentDidUpdate(prevProps){
     public _searchForText = (item): void => {
         //This sends back the correct pivot category which matches the category on the tile.
         let searchString = item && item.target && item.target.value ? item.target.value : '';
-        this.searchForItems( searchString, this.state.searchMeta, 0, 'text' );
+        this._searchForItems( searchString, this.state.searchMeta, 0, 'text' );
     }
 
     //This function works great for Pivots, not neccessarily anything with icons.
     public _onSearchForMetaPivot0 = (item): void => {
         //This sends back the correct pivot category which matches the category on the tile.
         let validText = item.props.itemKey;
-        this.searchForItems( this.state.searchText, [validText], 0, 'meta' );
+        this._searchForItems( this.state.searchText, [validText], 0, 'meta' );
     }
 
 
-    private getClickInfo ( e , item ) {
+    private _getClickInfo ( e , item ) {
 
         //This sends back the correct pivot category which matches the category on the tile.
-        let validText = this.findMatchtingElementText( item );
-        this.consoleClick( 'getClickInfo1 - validText' , validText );
+        let validText = this._findMatchtingElementText( item );
+        this._consoleClick( 'getClickInfo1 - validText' , validText );
         validText = this._getValidCountFromClickItem( item, validText );
-        this.consoleClick( 'getClickInfo2 - validText' , validText );
+        this._consoleClick( 'getClickInfo2 - validText' , validText );
         let clickInfo = {
             isAltClick : e.altKey,
             isShfitClick : e.shiftKey,
             isCtrlClick : e.ctrlKey,
             validText : validText,
         };
-        this.consoleClick( 'getClickInfo - clickInfo' , clickInfo );
+        this._consoleClick( 'getClickInfo - clickInfo' , clickInfo );
 
 
         return clickInfo;
@@ -1508,11 +1502,11 @@ public componentDidUpdate(prevProps){
     //This function works great for Pivots, not neccessarily anything with icons.
     public _onSearchForMetaCmd0 = (item): void => {
         let e: any = event;
-        let clickInfo = this.getClickInfo( e, item );
+        let clickInfo = this._getClickInfo( e, item );
         if ( clickInfo.isAltClick === '!Value' ) {
-            this.changeRefinerOrder('refiner0', clickInfo.validText ) ;
+            this._changeRefinerOrder('refiner0', clickInfo.validText ) ;
         } else {
-            this.searchForItems( this.state.searchText, [clickInfo.validText], 0, 'meta' );
+            this._searchForItems( this.state.searchText, [clickInfo.validText], 0, 'meta' );
         }
     }
 
@@ -1522,9 +1516,9 @@ public componentDidUpdate(prevProps){
 
     public _onSearchForMetaCmd1= (item): void => {
         let e: any = event;
-        let clickInfo = this.getClickInfo( e, item );
+        let clickInfo = this._getClickInfo( e, item );
         if ( clickInfo.isAltClick === '!Value' ) {
-            this.changeRefinerOrder('refiner1', clickInfo.validText ) ;
+            this._changeRefinerOrder('refiner1', clickInfo.validText ) ;
         } else {
             this._onSearchForMeta1(clickInfo.validText);
         }
@@ -1547,7 +1541,7 @@ public componentDidUpdate(prevProps){
             newMeta.push( validText ) ; 
         } else { alert('Had unexpected error in _onSearchForMeta1, lastMeta.length = ' + lastMeta.length); }
 
-        this.searchForItems( this.state.searchText, newMeta, 1, 'meta' );
+        this._searchForItems( this.state.searchText, newMeta, 1, 'meta' );
       }
 
     public _onSearchForMetaPivot2= (item): void => {
@@ -1556,9 +1550,9 @@ public componentDidUpdate(prevProps){
 
     public _onSearchForMetaCmd2= (item): void => {
         let e: any = event;
-        let clickInfo = this.getClickInfo( e, item );
+        let clickInfo = this._getClickInfo( e, item );
         if ( clickInfo.isAltClick === '!Value' ) {
-            this.changeRefinerOrder('refiner2', clickInfo.validText ) ;
+            this._changeRefinerOrder('refiner2', clickInfo.validText ) ;
         } else {
             this._onSearchForMeta2(clickInfo.validText);
         }
@@ -1581,22 +1575,22 @@ public componentDidUpdate(prevProps){
         newMeta.push( validText ) ; 
     } else { alert('Had unexpected error in _onSearchForMeta2, lastMeta.length = ' + lastMeta.length); }
 
-    this.searchForItems( this.state.searchText, newMeta, 2, 'meta' );
+    this._searchForItems( this.state.searchText, newMeta, 2, 'meta' );
   }
 
-    private changeRefinerOrder1() { 
+    private _changeRefinerOrder1() { 
         let e: any = event;
-        let clickInfo = this.getClickInfo( e, null );
-        this.changeRefinerOrder( 'refiner1', clickInfo );
+        let clickInfo = this._getClickInfo( e, null );
+        this._changeRefinerOrder( 'refiner1', clickInfo );
     }
 
-    private changeRefinerOrder2() {
+    private _changeRefinerOrder2() {
         let e: any = event;
-        let clickInfo = this.getClickInfo( e, null );
-        this.changeRefinerOrder( 'refiner2', clickInfo );  
+        let clickInfo = this._getClickInfo( e, null );
+        this._changeRefinerOrder( 'refiner2', clickInfo );  
     }
 
-  private changeRefinerOrder( newLeadRefiner: string, clickInfo ) {
+  private _changeRefinerOrder( newLeadRefiner: string, clickInfo ) {
 
     let refiners: string[] = [];
     let refinersOrig: string[] = JSON.parse(JSON.stringify( this.state.refiners ));
@@ -1620,7 +1614,7 @@ public componentDidUpdate(prevProps){
 
     let stateRefinerInstructions: string[] = [];
 
-    this.consoleClick( 'changeRefinerOrder - newOrder' , newOrder );
+    this._consoleClick( 'changeRefinerOrder - newOrder' , newOrder );
     
     newOrder.map( i => { 
         refiners.push( refinersOrig[i] );
@@ -1628,7 +1622,7 @@ public componentDidUpdate(prevProps){
         stateRefinerInstructions.push( `${this.state.drillList.refinerInstructions[i]}` ); // Put this in quotes to insure it is not a direct pointer to the current drillList instructions
     });
 
-    this.consoleClick( 'changeRefinerOrder - refiners', refiners );
+    this._consoleClick( 'changeRefinerOrder - refiners', refiners );
 
     /**
      * 2022-01-17:  Added this to see if this gets mutated and breaks on refresh items.  
@@ -1636,18 +1630,29 @@ public componentDidUpdate(prevProps){
      */ 
     let viewDefs: ICustViewDef[] = JSON.parse(JSON.stringify(this.props.viewDefs));
 
-    let drillList = this.createDrillList(this.props.webURL, this.props.listName, false, refiners, JSON.stringify(refinerRulesNew), this.props.stats, viewDefs, this.props.toggles.togOtherChartpart, '', true, this.props.language, 'changeRefinerOrder', this.state.drillList.itteration  );
+    let drillList = this._createDrillList(this.props.webURL, this.props.listName, false, refiners, JSON.stringify(refinerRulesNew), this.props.stats, viewDefs, this.props.toggles.togOtherChartpart, '', true, this.props.language, 'changeRefinerOrder', this.state.drillList.itteration  );
 
     drillList.refinerInstructions = stateRefinerInstructions;
     
     let errMessage = drillList.refinerRules === undefined ? 'Invalid Rule set: ' +  this.state.rules : '';
     if ( drillList.refinerRules === undefined ) { drillList.refinerRules = [[],[],[]] ; }
 
-    processAllItems( this.state.allItems, errMessage, drillList, this.addTheseItemsToState.bind(this), this.setProgress.bind(this), null );
+    processAllItems( this.state.allItems, errMessage, drillList, this._addTheseItemsToState.bind(this), this._setProgress.bind(this), null, );
 
   }
 
-  private getCurrentRefinerTree(newMeta: string[] ) {
+  private _updatePerformance( key: ILoadPerformanceOps, phase: 'start' | 'update', note: string = '', count: number ) {
+
+    if ( phase === 'start' ) {
+        this._performance[key] = startPerformOp( `${key} ${ note ? ' - ' + note : '' }`, this.props.displayMode );
+
+    } else if ( phase = 'update' ) {
+        this._performance[key] = updatePerformanceEnd( this._performance[key], true , count );
+
+    }
+  }
+
+  private _getCurrentRefinerTree(newMeta: string[] ) {
 
     let result = {
         refinerTree: null,
@@ -1699,14 +1704,14 @@ public componentDidUpdate(prevProps){
 
   }
 
-  public searchForItems = (text: string, newMeta: string[] , layer: number, searchType: 'meta' | 'text' ): void => {
+  public _searchForItems = (text: string, newMeta: string[] , layer: number, searchType: 'meta' | 'text' ): void => {
 
             
     consoleMe( 'searchForItems1: ' + text , this.state.allItems, this.state.drillList );
     let searchItems : IDrillItemInfo[] = this.state.allItems;
     let searchCount = searchItems.length;
 
-    let newFilteredItems : IDrillItemInfo[] = this.getNewFilteredItems( text, newMeta, searchItems, layer );
+    let newFilteredItems : IDrillItemInfo[] = this._getNewFilteredItems( text, newMeta, searchItems, layer );
 
     let pivotCats : any = [];
     let cmdCats : any = [];
@@ -1731,14 +1736,14 @@ public componentDidUpdate(prevProps){
         //countTree: null,
         //multiTree: null,
 
-        let refinerTreeObj = this.getCurrentRefinerTree( newMeta );
+        let refinerTreeObj = this._getCurrentRefinerTree( newMeta );
         let refinerTree = refinerTreeObj.refinerTree;
         let refinerCount = refinerTreeObj.countTree;
         let refinerMulit = refinerTreeObj.multiTree;
         let sendCount = refinerCount;
 
-        pivotCats.push ( refinerTree[0].map( r => { return this.createThisPivotCat(r,'',0); })); // Recreate first layer of pivots
-        cmdCats.push ( this.convertRefinersToCMDs( newMeta, refinerTree[0], sendCount[0], layer, 0, refinerObj ));
+        pivotCats.push ( refinerTree[0].map( r => { return this._createThisPivotCat(r,'',0); })); // Recreate first layer of pivots
+        cmdCats.push ( this._convertRefinersToCMDs( newMeta, refinerTree[0], sendCount[0], layer, 0, refinerObj ));
 
         if ( newMeta.length === 1 && newMeta[0] === 'All'){  //For some reason this was giving False when it should be true: if ( newMeta === ['All'] ) { }
             //Nothing is needed.
@@ -1750,13 +1755,13 @@ public componentDidUpdate(prevProps){
         } else { // Add new layer
 
             if ( refinerTree.length > 1 ) { 
-                pivotCats.push ( refinerTree[1].map( r => { return this.createThisPivotCat(r,'',0); })); // Recreate first layer of pivots
-                cmdCats.push ( this.convertRefinersToCMDs( newMeta, refinerTree[1], sendCount[1], layer, 1, refinerObj));
+                pivotCats.push ( refinerTree[1].map( r => { return this._createThisPivotCat(r,'',0); })); // Recreate first layer of pivots
+                cmdCats.push ( this._convertRefinersToCMDs( newMeta, refinerTree[1], sendCount[1], layer, 1, refinerObj));
             }
 
             if ( refinerTree.length > 2 ) {
-                pivotCats.push ( refinerTree[2].map( r => { return this.createThisPivotCat(r,'',0); })); // Recreate first layer of pivots
-                cmdCats.push ( this.convertRefinersToCMDs( newMeta, refinerTree[2], sendCount[2], layer, 2, refinerObj));
+                pivotCats.push ( refinerTree[2].map( r => { return this._createThisPivotCat(r,'',0); })); // Recreate first layer of pivots
+                cmdCats.push ( this._convertRefinersToCMDs( newMeta, refinerTree[2], sendCount[2], layer, 2, refinerObj));
             }
         }
     } else {
@@ -1769,9 +1774,9 @@ public componentDidUpdate(prevProps){
         refinerObj = buildRefinersObject(newFilteredItems, this.state.drillList );
         pivotCats = [];
         cmdCats = [];
-        pivotCats.push ( refinerObj.childrenKeys.map( r => { return this.createThisPivotCat(r,'',0); }));
+        pivotCats.push ( refinerObj.childrenKeys.map( r => { return this._createThisPivotCat(r,'',0); }));
         let countTree: number[] = this.state.refinerObj.childrenObjs.map( o => { return o.itemCount; }) ;
-        cmdCats.push ( this.convertRefinersToCMDs( ['All'],  refinerObj.childrenKeys, countTree, 0 , 0 , refinerObj) );
+        cmdCats.push ( this._convertRefinersToCMDs( ['All'],  refinerObj.childrenKeys, countTree, 0 , 0 , refinerObj) );
     }
 
     if ( this.props.toggles.togOtherListview === true ) {
@@ -1828,7 +1833,7 @@ public componentDidUpdate(prevProps){
 
     consoleMe( 'searchForItems2: ' + text , this.state.allItems, this.state.drillList );
     consoleRef( 'searchForItems2: ' + text , refinerObj );
-    this.consoleClick('searchForItems2: cmdCats', cmdCats );
+    this._consoleClick('searchForItems2: cmdCats', cmdCats );
     this.setState({
       searchedItems: newFilteredItems,
       searchCount: searchCount,
@@ -1846,7 +1851,7 @@ public componentDidUpdate(prevProps){
   } //End searchForItems
 
     
-  private getNewFilteredItems(text: string, meta: string[] , searchItems : IDrillItemInfo[], layer: number ) {
+  private _getNewFilteredItems(text: string, meta: string[] , searchItems : IDrillItemInfo[], layer: number ) {
 
     let newFilteredItems : IDrillItemInfo[] = [];
 
@@ -1890,7 +1895,7 @@ public componentDidUpdate(prevProps){
     * @param label : longer label used in Progress Indicator and hover card
     * @param description 
     */
-   private setProgress(progressHidden: boolean, page: 'E' | 'C' | 'V' | 'I', current: number , ofThese: number, color: string, icon: string, logLabel: string, label: string, description: string, ref: string = null ){
+   private _setProgress(progressHidden: boolean, page: 'E' | 'C' | 'V' | 'I', current: number , ofThese: number, color: string, icon: string, logLabel: string, label: string, description: string, ref: string = null ){
     let thisTime = new Date().toLocaleTimeString();
     const percentComplete = ofThese !== 0 ? current/ofThese : 0;
 
@@ -1938,7 +1943,7 @@ public componentDidUpdate(prevProps){
 
         consoleMe( '_reloadOnUpdate' , this.state.allItems, this.state.drillList );
 
-        this.getAllItemsCall( viewDefs, this.state.refiners );
+        this._getAllItemsCall( viewDefs, this.state.refiners );
 
         let delay = hasError === true ? 10000 : this.state.quickCommands.successBanner;
 
@@ -1954,7 +1959,7 @@ public componentDidUpdate(prevProps){
          * After deeper testing, adding this to getBestFitView solved it but that was getting called a lot so I'm just doing it once in the render
          */
         let viewDefs: ICustViewDef[] = JSON.parse(JSON.stringify(this.props.viewDefs));
-        this.getAllItemsCall( viewDefs, this.props.refiners );
+        this._getAllItemsCall( viewDefs, this.props.refiners );
     }
 
     /**
@@ -1964,7 +1969,7 @@ public componentDidUpdate(prevProps){
      * @param layer  - this is the layer that was clicked on?
      * @param refLayer - this is the layer of this particular control
      */
-    private convertRefinersToCMDs( newMeta: string[], refiners: string[], thisCount: number[], layer: number, refLayer: number, refinerObj: IRefinerLayer ) {
+    private _convertRefinersToCMDs( newMeta: string[], refiners: string[], thisCount: number[], layer: number, refLayer: number, refinerObj: IRefinerLayer ) {
         let result = [];
 
         //Get sum of array of numbers:  https://codeburst.io/javascript-arrays-finding-the-minimum-maximum-sum-average-values-f02f1b0ce332
@@ -2031,7 +2036,7 @@ public componentDidUpdate(prevProps){
 
 
 
-    public createPivotObject(setPivot, display, layer){
+    public _createPivotObject(setPivot, display, layer){
 
         let theseStyles = null;
         let onLinkClick : any = null;
@@ -2053,20 +2058,20 @@ public componentDidUpdate(prevProps){
           onLinkClick= { onLinkClick }  //{this.specialClick.bind(this)}
           selectedKey={ setPivot }
           headersOnly={true}>
-            {this.getRefinerPivots(layer)}
+            {this._getRefinerPivots(layer)}
         </Pivot>;
         return pivotWeb;
       }
 
-      private getRefinerPivots(layer) {
+      private _getRefinerPivots(layer) {
 
         let thesePivots = [ ];
         if ( this.state.pivotCats.length === 0 ) {
-            thesePivots = [this.buildFilterPivot( pivCats.all )];
+            thesePivots = [this._buildFilterPivot( pivCats.all )];
         } else  {
-            thesePivots = [this.buildFilterPivot( pivCats.all )];
+            thesePivots = [this._buildFilterPivot( pivCats.all )];
             if ( layer <= this.state.pivotCats.length - 1 ) {
-                thesePivots = thesePivots.concat(this.state.pivotCats[layer].map( pC => { return this.buildFilterPivot( pC ) ; }) ) ;
+                thesePivots = thesePivots.concat(this.state.pivotCats[layer].map( pC => { return this._buildFilterPivot( pC ) ; }) ) ;
             }
 
         }
@@ -2075,7 +2080,7 @@ public componentDidUpdate(prevProps){
 
       }
 
-    private buildFilterPivot(pivCat: IMyPivCat) {
+    private _buildFilterPivot(pivCat: IMyPivCat) {
 
         if ( pivCat === undefined || pivCat === null ) {
             let p = <PivotItem 
@@ -2110,30 +2115,30 @@ public componentDidUpdate(prevProps){
  *                                                                   
  */
 
-    private togglePropsHelp(){
+    private _togglePropsHelp(){
         let newState = this.state.showPropsHelp === true ? false : true;
         this.setState( { showPropsHelp: newState });
 
     }
-    private hideInstructions(){
+    private _hideInstructions(){
         let newState = this.state.whenToShowItems === 0 ? this.props.showItems.whenToShowItems : 0;
         this.setState( { whenToShowItems: newState, instructionsHidden: 'hide' });
 
     }
 
-    private forceInstructions(){
+    private _forceInstructions(){
         let newState = this.state.whenToShowItems === 0 ? this.props.showItems.whenToShowItems : 0;
         this.setState( { whenToShowItems: newState, instructionsHidden: 'force' });
 
     }
 
-    private getPageToggles( showStats ) {
+    private _getPageToggles( showStats ) {
 
         let togRefinerCounts = {
             //label: <span style={{ color: 'red', fontWeight: 900}}>Rails Off!</span>,
             label: <span>Refiner Counts</span>,
             key: 'togggleCount',
-            _onChange: this.updateRefinerCount.bind(this),
+            _onChange: this._updateRefinerCount.bind(this),
             checked: this.state.showRefinerCounts === true ? true : false,
             onText: '',
             offText: '',
@@ -2145,7 +2150,7 @@ public componentDidUpdate(prevProps){
             //label: <span style={{ color: 'red', fontWeight: 900}}>Rails Off!</span>,
             label: <span>Count Charts</span>,
             key: 'togggleCountChart',
-            _onChange: this.updateTogggleCountChart.bind(this),
+            _onChange: this._updateTogggleCountChart.bind(this),
             checked: this.state.showCountChart === true ? true : false,
             onText: '',
             offText: '',
@@ -2157,7 +2162,7 @@ public componentDidUpdate(prevProps){
             //label: <span style={{ color: 'red', fontWeight: 900}}>Rails Off!</span>,
             label: <span>Stat Charts</span>,
             key: 'togggleStats',
-            _onChange: this.updateTogggleStats.bind(this),
+            _onChange: this._updateTogggleStats.bind(this),
             checked: this.state.showStats === true ? true : false,
             onText: '',
             offText: '',
@@ -2169,7 +2174,7 @@ public componentDidUpdate(prevProps){
             //label: <span style={{ color: 'red', fontWeight: 900}}>Rails Off!</span>,
             label: <span>Style</span>,
             key: 'togggleRefinerStyle',
-            _onChange: this.updateTogggleRefinerStyle.bind(this),
+            _onChange: this._updateTogggleRefinerStyle.bind(this),
             checked: this.state.style === 'pivot' ? true : false,
             onText: 'Pivot',
             offText: 'CommandBar',
@@ -2203,26 +2208,26 @@ public componentDidUpdate(prevProps){
 
     }
 
-    private updateTogggleCountChart() {
+    private _updateTogggleCountChart() {
         this.setState({
             showCountChart: !this.state.showCountChart,
           });
     }
 
     
-    private updateTogggleStats() {
+    private _updateTogggleStats() {
         this.setState({
             showStats: !this.state.showStats,
           });
     }
 
-    private updateRefinerCount() {
+    private _updateRefinerCount() {
         this.setState({
             showRefinerCounts: !this.state.showRefinerCounts,
           });
     }
 
-    private updateTogggleView() {
+    private _updateTogggleView() {
 
         let viewType : IViewType = 'MZ';
         if (this.state.viewType === 'MZ') { viewType = 'React'; }
@@ -2231,7 +2236,7 @@ public componentDidUpdate(prevProps){
         });
     } //
 
-    private updateTogggleRefinerStyle() {
+    private _updateTogggleRefinerStyle() {
 
         let newStyle : IRefinerStyles = null;
 
@@ -2248,7 +2253,7 @@ public componentDidUpdate(prevProps){
         });
     }
 
-    public toggleTips = (item: any): void => {
+    public _toggleTips = (item: any): void => {
         //This sends back the correct pivot category which matches the category on the tile.
       
         this.setState({
@@ -2258,7 +2263,7 @@ public componentDidUpdate(prevProps){
       } //End toggleTips  
 
       
-    private consoleClick( location: string, info: any ) {
+    private _consoleClick( location: string, info: any ) {
 
         return; //Not needed for now.
 
