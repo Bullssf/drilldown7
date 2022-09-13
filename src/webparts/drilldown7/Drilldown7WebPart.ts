@@ -305,7 +305,7 @@ export default class Drilldown7WebPart extends BaseClientSideWebPart<IDrilldown7
 */
 
   //Added for Get List Data:  https://www.youtube.com/watch?v=b9Ymnicb1kc
-  public onInit():Promise<void> {
+  public async onInit():Promise<void> {
     return super.onInit().then(_ => {
       
       /**
@@ -353,7 +353,7 @@ export default class Drilldown7WebPart extends BaseClientSideWebPart<IDrilldown7
         }
       } 
 
-      this._getListDefintions(true, true);
+      // this._getListDefintions(true, true);
       //console.log('window.location',window.location);
       sp.setup({
         spfxContext: this.context
@@ -399,8 +399,9 @@ export default class Drilldown7WebPart extends BaseClientSideWebPart<IDrilldown7
 
       this._performance.superOnInit = updatePerformanceEnd( this._performance.superOnInit, true, null );  
 
+
     });
-    
+
   }
 
 
@@ -935,6 +936,11 @@ export default class Drilldown7WebPart extends BaseClientSideWebPart<IDrilldown7
   } 
 
 
+
+
+
+
+
   /***
   *         d8888b. d8888b.  .d88b.  d8888b.      d8888b.  .d8b.  d8b   db d88888b 
   *         88  `8D 88  `8D .8P  Y8. 88  `8D      88  `8D d8' `8b 888o  88 88'     
@@ -945,6 +951,19 @@ export default class Drilldown7WebPart extends BaseClientSideWebPart<IDrilldown7
   *                                                                                
   *                                                                                
   */
+
+
+    /**
+     * Copied from AdvancedPagePropertiesWebPart.ts
+     * 
+     * Hopefully resolves https://github.com/mikezimm/drilldown7/issues/184
+     */
+    
+    protected async onPropertyPaneConfigurationStart(): Promise<void> {
+      console.log(`onPropertyPaneConfigurationStart`);
+      await this._getListDefintions(true, true);
+      this.context.propertyPane.refresh();
+    }
 
 
   // protected getPropertyPaneConfiguration(): IPropertyPaneConfiguration {
