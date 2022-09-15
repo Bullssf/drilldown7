@@ -198,6 +198,7 @@ export interface IDrillDownProps extends IFPSCorePinMeReactComponentProps {
     hideFolders: boolean;
 
     listName : string;
+    isLibrary: boolean;  //determined in picker
     language: string; //local language list data is saved in (needed to properly sort refiners)
     
     allLoaded: boolean;

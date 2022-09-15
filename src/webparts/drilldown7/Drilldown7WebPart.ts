@@ -748,6 +748,7 @@ export default class Drilldown7WebPart extends BaseClientSideWebPart<IDrilldown7
 
         // 2 - Source and destination list information
         listName: this.properties.parentListTitle,
+        isLibrary: this.properties.isLibrary,
         webURL: parentWeb,
         parentListURL: this.properties.parentListURL,
         hideFolders: this.properties.hideFolders,
@@ -1096,6 +1097,8 @@ export default class Drilldown7WebPart extends BaseClientSideWebPart<IDrilldown7
       //alert("Hey! " +propertyPath +" new value is " + newValue);
       //this.properties.listTitle = "TitleChanged!";
       //this.properties.colTitleText = "TitleTextChanged!";
+
+      this.properties.isLibrary = newValue.toLowerCase().indexOf('library') > -1 ? true : false;
 
       let thisProps: string[] = Object.keys( this.properties );
       const hasValues = Object.keys(this.properties.newMap).length;

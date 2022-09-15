@@ -7,6 +7,8 @@ export function errorsContent( ) {
     let thisPage = null;
     let messageRows = [];
 
+    messageRows.push( <tr><td>Click to open item does not work</td><td>  </td><td>Make sure the <b>Is List or Library toggle</b> in Your List Info is set properly.</td></tr> );
+
     messageRows.push( <tr><td>Refiner just shows "All"</td><td>  </td><td>Refiner Rule must be compatible with the refiner.  For instance, you can't have a date rule for a person field.</td></tr> );
     messageRows.push( <tr><td></td><td>  </td><td>Check for extra 'space' characters in the refiner string.  NOTE as of #135, removing all spaces from refiners and viewField 'name' and 'linkPropertyName' strings before passing to react component.</td></tr> );
 

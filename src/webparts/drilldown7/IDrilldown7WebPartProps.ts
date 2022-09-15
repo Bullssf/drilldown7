@@ -78,6 +78,8 @@ export const changeCommands : string[] = [ 'quickCommands', ];
 
     //Group 2 - List Info
     parentListTitle: string;
+    isLibrary: boolean;  //determined in picker
+
     parentListWeb: string;
     parentListURL?: string;
     hideFolders: boolean;

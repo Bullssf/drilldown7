@@ -30,6 +30,7 @@ export const WPPresetEverywhere : IPreConfigSettings = {
     location: '*',
     props: {
 
+      isLibrary: false,
       newMap: [], //Added to address https://github.com/mikezimm/drilldown7/issues/184
       description: "Drilldown cascading filters",
       parentListTitle:"",

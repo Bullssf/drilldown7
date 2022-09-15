@@ -486,7 +486,7 @@ export default class DrillDown extends React.Component<IDrillDownProps, IDrillDo
          * This is copied later in code when you have to call the data in case something changed.
          */
 
-        let drillList = this._createDrillList(this.props.webURL, this.props.listName, false, this.props.refiners, this.props.rules, this.props.stats, this.props.viewDefs, this.props.toggles.togOtherChartpart, '', false, this.props.language, 'constructor', 0);
+        let drillList = this._createDrillList(this.props.webURL, this.props.listName, this.props.isLibrary, this.props.refiners, this.props.rules, this.props.stats, this.props.viewDefs, this.props.toggles.togOtherChartpart, '', false, this.props.language, 'constructor', 0);
         let errMessage = drillList.refinerRules === undefined ? 'Invalid Rule set: ' +  this.props.rules : '';
         if ( drillList.refinerRules === undefined ) { drillList.refinerRules = [[],[],[]] ; } 
 
@@ -1223,7 +1223,7 @@ public componentDidUpdate(prevProps){
          * This is copied from constructor when you have to call the data in case something changed.
          */
 
-        let drillList = this._createDrillList(this.props.webURL, this.props.listName, false, refiners, this.state.rules, this.props.stats, viewDefs, this.props.toggles.togOtherChartpart, '', false, this.props.language, 'getAllItemsCall', this.state.drillList.itteration );
+        let drillList = this._createDrillList(this.props.webURL, this.props.listName, this.props.isLibrary, refiners, this.state.rules, this.props.stats, viewDefs, this.props.toggles.togOtherChartpart, '', false, this.props.language, 'getAllItemsCall', this.state.drillList.itteration );
         let errMessage = drillList.refinerRules === undefined ? 'Invalid Rule set: ' +  this.state.rules : '';
         if ( drillList.refinerRules === undefined ) { drillList.refinerRules = [[],[],[]] ; } 
 
@@ -1630,7 +1630,7 @@ public componentDidUpdate(prevProps){
      */ 
     let viewDefs: ICustViewDef[] = JSON.parse(JSON.stringify(this.props.viewDefs));
 
-    let drillList = this._createDrillList(this.props.webURL, this.props.listName, false, refiners, JSON.stringify(refinerRulesNew), this.props.stats, viewDefs, this.props.toggles.togOtherChartpart, '', true, this.props.language, 'changeRefinerOrder', this.state.drillList.itteration  );
+    let drillList = this._createDrillList(this.props.webURL, this.props.listName, this.props.isLibrary, refiners, JSON.stringify(refinerRulesNew), this.props.stats, viewDefs, this.props.toggles.togOtherChartpart, '', true, this.props.language, 'changeRefinerOrder', this.state.drillList.itteration  );
 
     drillList.refinerInstructions = stateRefinerInstructions;
     
