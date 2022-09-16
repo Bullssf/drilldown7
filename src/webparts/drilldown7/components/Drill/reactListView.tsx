@@ -601,7 +601,7 @@ export default class ReactListItems extends React.Component<IReactListItemsProps
             />;
 
             //=>> address:  https://github.com/mikezimm/drilldown7/issues/169
-            const changeFont = <div onClick={ this._changeFontSize.bind(this) } style={{ fontSize: 'larger' , fontWeight: 'bolder', width: '25px', textAlign: 'center', cursor: 'pointer' }}><Icon iconName= 'FontSize'/></div>;
+            const changeFont = <div title="Change font size" onClick={ this._changeFontSize.bind(this) } style={{ fontSize: 'larger' , fontWeight: 'bolder', width: '25px', textAlign: 'center', cursor: 'pointer' }}><Icon iconName= 'FontSize'/></div>;
             let listView = <div className={ this.state.fontSize }>
             <ListView
                 items={ filtered }
