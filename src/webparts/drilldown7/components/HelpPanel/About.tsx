@@ -16,7 +16,8 @@ export function aboutTable( showrepoLink: boolean ) {
         rows: [],
     };
 
-    table.rows.push( createAboutRow('2022-09-12','1.3.2.0'  ,'#171, #185 - File links, #189 - banner fixes, #187', showrepoLink === true ? repoLink : null ) );
+    table.rows.push( createAboutRow('2022-09-14','1.3.2.0'  ,'#169 - Quality of life', showrepoLink === true ? repoLink : null ) );
+    table.rows.push( createAboutRow('',''  ,'#171, #185 - File links, #189 - banner fixes, #187', showrepoLink === true ? repoLink : null ) );
     table.rows.push( createAboutRow('2022-09-12','1.3.1.3'  ,'#184, #186, Removed feature property from package-solution.json', showrepoLink === true ? repoLink : null ) );
     table.rows.push( createAboutRow('2022-09-11','1.3.0.4'  ,'#170, #176, #178, #179, #182', showrepoLink === true ? repoLink : null ) );
     table.rows.push( createAboutRow('2022-09-05','1.3.0.3'  ,'#134, #147, #161, #166, #167, #168, ', showrepoLink === true ? repoLink : null ) );

@@ -36,7 +36,7 @@ import { DoNotExpandLinkColumns, DoNotExpandColumns, DoNotExpandFuncColumns } fr
  * @param findOp 
  */
 
-  export function getKeysLikeV2(thisProps,findMe,findOp){
+  export function getKeysLikeV2(thisProps: any, findMe: string, findOp: string){
     //Sample call:  getKeysLike(this.props,"col","begins")
     //console.log('FoundProps that ' + findOp + ' with ' + findMe);
     //console.log(thisProps);
