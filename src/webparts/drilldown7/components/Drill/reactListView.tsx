@@ -45,6 +45,7 @@ import { updateReactListItem } from './listFunctions';
 import { IContentsToggles, makeToggles } from '../fields/toggleFieldBuilder';
 
 import styles from '../Contents/listView.module.scss';
+import stylesRLV from './reactListView.module.scss';
 import stylesInfo from './InfoPane.module.scss';
 
 import PageArrows from '@mikezimm/npmfunctions/dist/zComponents/Arrows/PageArrows';
@@ -98,6 +99,7 @@ export interface IReactListItemsState extends IMinPageArrowsState {
   showAttach: boolean;
   clickedAttach: boolean;  //if you clicked the attached icon (vs selected row), it only will show the attachments in the panel for cleaner implimentation
 
+  fontSize: any;  //=>> address:  https://github.com/mikezimm/drilldown7/issues/169
   panelId: number;
   lastPanelId: number;
   panelItem: IDrillItemInfo;
@@ -377,6 +379,8 @@ export default class ReactListItems extends React.Component<IReactListItemsProps
  *                                                                                                       
  */ 
 
+     private _ListViewFontSizes: any[] = [ `${stylesRLV.defaultFontSize}`, `${stylesRLV.largerFontSize}`, `${stylesRLV.largeFontSize}` ];
+
     constructor(props: IReactListItemsProps) {
         super(props);
         console.log( 'listView PROPS: ', this.props, );
@@ -398,6 +402,7 @@ export default class ReactListItems extends React.Component<IReactListItemsProps
         }
 
         this.state = {
+          fontSize: this._ListViewFontSizes[0] ,  //=>> address:  https://github.com/mikezimm/drilldown7/issues/169
           maxChars: this.props.maxChars ? this.props.maxChars : 50,
           parentListFieldTitles:parentListFieldTitles,
           viewFields: viewFields,
@@ -595,7 +600,9 @@ export default class ReactListItems extends React.Component<IReactListItemsProps
               fontSize = { this._componentWidth && this._componentWidth > 800 ? 28 : 24 }
             />;
 
-            let listView = <div>
+            //=>> address:  https://github.com/mikezimm/drilldown7/issues/169
+            const changeFont = <div title="Change font size" onClick={ this._changeFontSize.bind(this) } style={{ fontSize: 'larger' , fontWeight: 'bolder', width: '25px', textAlign: 'center', cursor: 'pointer' }}><Icon iconName= 'FontSize'/></div>;
+            let listView = <div className={ this.state.fontSize }>
             <ListView
                 items={ filtered }
                 viewFields={ viewFields }
@@ -616,17 +623,19 @@ export default class ReactListItems extends React.Component<IReactListItemsProps
 
             let webTitle = null;
             let listLink = !this.props.includeListLink ? null : <div className={ stylesInfo.infoHeading } onClick={ this._onGoToList.bind(this) } 
-                style={{ paddingRight: 20, whiteSpace: 'nowrap', paddingTop: 0, cursor: 'pointer', fontSize: 'smaller',background: 'transparent' }}>
+                style={{ marginRight: 20, whiteSpace: 'nowrap', paddingTop: 0, cursor: 'pointer', fontSize: 'smaller',background: 'transparent' }}>
                     <span style={{ background: 'transparent' }} className={ stylesInfo.listLink }>Go to list</span></div>;
 
             let createItemLink = !this.props.createItemLink ? null : <div title="Create new item" className={ stylesInfo.infoHeading } onClick={ this._CreateNewItem.bind(this) } 
-            style={{ marginRight: 50, paddingRight: 20, whiteSpace: 'nowrap', paddingTop: 0, cursor: 'pointer', fontSize: 'larger',background: 'transparent' }}>
+            style={{ marginRight: 30, whiteSpace: 'nowrap', paddingTop: 0, cursor: 'pointer', fontSize: 'larger',background: 'transparent' }}>
                 <span style={{ background: 'transparent' }} className={ stylesInfo.listLink }><Icon iconName="AddTo"/></span></div>;
 
             if ( barText != null ) {
                 webTitle =<div  style={{ display: 'flex', justifyContent: 'space-between', }} className={ [stylesInfo.infoHeading, stylesInfo.innerShadow].join(' ') }>
                   <span style={{ paddingLeft: 20, whiteSpace: 'nowrap' }}>( { this.props.items.length }  ) Items in: { barText }</span>
                    { pageArrows }
+                   {/* //=>> address:  https://github.com/mikezimm/drilldown7/issues/169 */}
+                   { changeFont }   
                    <span style={{ whiteSpace: 'nowrap', display: 'flex' }}>
                     { createItemLink }
                     { listLink }
@@ -644,12 +653,12 @@ export default class ReactListItems extends React.Component<IReactListItemsProps
                   } }
                   >
                     <div style={{ paddingTop: 10}} className={ stylesInfo.infoPaneTight }>
-                    { webTitle }
-                    { fullPanel }
-                    { attachPanel }
-                    { dialog }
-                    { listView }
-                </div>
+                      { webTitle }
+                      { fullPanel }
+                      { attachPanel }
+                      { dialog }
+                      { listView }
+                    </div>
                 </div>
                 );
 
@@ -781,6 +790,16 @@ export default class ReactListItems extends React.Component<IReactListItemsProps
             myDialog: this.createBlankDialog(),
         });
 
+    }
+
+    //=>> address:  https://github.com/mikezimm/drilldown7/issues/169
+    private _changeFontSize() {
+
+      const oldValue = this.state.fontSize;
+      const oldIdx = this._ListViewFontSizes.indexOf( oldValue );
+      const nextIdx = oldIdx === this._ListViewFontSizes.length -1 ? 0 : oldIdx + 1;
+
+      this.setState({ fontSize: this._ListViewFontSizes[ nextIdx ] });
     }
 
     private async startThisQuickUpdate ( thisID: string ) {

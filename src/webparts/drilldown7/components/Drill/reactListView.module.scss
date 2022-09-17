@@ -1,0 +1,44 @@
+
+// .ms-DetailsRow .font-size-14 {
+//   font-size: 14px;
+// }
+
+// .ms-DetailsRow .font-size-16 {
+//   font-size: 16px;
+// }
+
+.defaultFontSize {
+
+  *[data-automationid="ColumnsHeaderColumn"] {
+    font-size: inherit;
+  }
+
+  *[data-automationid="DetailsRowCell"] {
+    font-size: inherit;
+  }
+
+}
+
+.largeFontSize {
+
+  *[data-automationid="ColumnsHeaderColumn"] {
+    font-size: large;
+  }
+
+  *[data-automationid="DetailsRowCell"] {
+    font-size: large;
+  }
+
+}
+
+.largerFontSize {
+
+  *[data-automationid="ColumnsHeaderColumn"] {
+    font-size: larger;
+  }
+
+  *[data-automationid="DetailsRowCell"] {
+    font-size: larger;
+  }
+
+}

@@ -37,6 +37,12 @@ export function buildYourListGroup( ) {
     label: strings.FieldLabel_ParentListTitle
   }));
 
+  groupFields.push(PropertyPaneToggle('isLibrary', {
+    label: 'Is List or Library',
+    offText: 'Is List',
+    onText: 'Is Library',
+  }));
+
   groupFields.push(//https://docs.microsoft.com/en-us/previous-versions/windows/desktop/indexsrv/valid-locale-identifiers
     PropertyPaneTextField('language', {
       label: 'Langage list data and structure were created in',

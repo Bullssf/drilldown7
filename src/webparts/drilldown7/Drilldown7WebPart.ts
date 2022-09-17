@@ -108,6 +108,7 @@ import { consoleRef } from './components/Drill/drillFunctions';
   *     USED FOR CREATING BANNER
   */
  
+ import { verifyAudienceVsUser, } from './fpsReferences';
  import { IWebpartBannerProps, } from './fpsReferences';
  import { buildExportProps, buildFPSAnalyticsProps , } from './CoreFPS/BuildExportProps';
  
@@ -293,6 +294,28 @@ export default class Drilldown7WebPart extends BaseClientSideWebPart<IDrilldown7
     this.render();
   }
 
+  /** Add Theme including on SPAs
+   * 
+   *   https://n8d.at/how-to-make-css-variables-work-in-every-web-part-context
+   */
+  /// Converts JSON Theme Slots it CSS variables
+  private setCSSVariables(theming: any) {
+
+    // request all key defined in theming
+    let themingKeys = Object.keys(theming);
+    // if we have the key
+    if (themingKeys !== null) {
+      // loop over it
+      themingKeys.forEach(key => {
+        // add CSS variable to style property of the web part
+        this.domElement.style.setProperty(`--${key}`, theming[key]);
+
+      });
+
+    }
+
+  }
+
 /***
 *          .d88b.  d8b   db d888888b d8b   db d888888b d888888b 
 *         .8P  Y8. 888o  88   `88'   888o  88   `88'   `~~88~~' 
@@ -308,6 +331,37 @@ export default class Drilldown7WebPart extends BaseClientSideWebPart<IDrilldown7
   public async onInit():Promise<void> {
     return super.onInit().then(_ => {
       
+
+
+      /** Add Theme including on SPAs
+       * 
+       *   https://n8d.at/how-to-make-css-variables-work-in-every-web-part-context
+       */
+
+      // Consume the new ThemeProvider service
+      this._themeProvider = this.context.serviceScope.consume(ThemeProvider.serviceKey);
+
+      // If it exists, get the theme variant
+      this._themeVariant = this._themeProvider.tryGetTheme();
+
+      console.debug('Theme variant ::: ', this._themeVariant);
+
+      // If there is a theme variant
+      if (this._themeVariant) {
+
+        // we set transfer semanticColors into CSS variables
+        this.setCSSVariables(this._themeVariant.semanticColors);
+
+      } else if (window["__themeState__"].theme) {
+
+        // FALLBACK TO App Page
+
+        // we set transfer semanticColors into CSS variables
+        this.setCSSVariables(window["__themeState__"].theme);
+
+      }
+
+
       /**
        * DD Provider: Step 3 - add / update OnInit
        *  Tell DD Service that this is a provider
@@ -570,6 +624,7 @@ export default class Drilldown7WebPart extends BaseClientSideWebPart<IDrilldown7
 
   public render(): void {
 
+
   /**
    * PERFORMANCE - START
    * This is how you can start a performance snapshot - make the _performance.KEYHERE = startPerforOp('KEYHERE', this.displayMode)
@@ -596,13 +651,12 @@ export default class Drilldown7WebPart extends BaseClientSideWebPart<IDrilldown7
       console.log('mainWebPart: createElement ~ 316',   );
 
 
-
     let errMessage = '';
     //Be sure to always pass down an actual URL if the webpart prop is empty at this point.
     //If it's undefined, null or '', get current page context value
-    let parentWeb = this.properties.parentListWeb && this.properties.parentListWeb != '' ? this.properties.parentListWeb : this.context.pageContext.web.absoluteUrl;
+    const parentWeb = this.properties.parentListWeb && this.properties.parentListWeb != '' ? this.properties.parentListWeb : this.context.pageContext.web.absoluteUrl;
 
-    let refiners: string[] = [];
+    const refiners: string[] = [];
 
     if ( this.properties.refiner0 && this.properties.refiner0.length > 0 ) { refiners.push( this.properties.refiner0.replace(/\s/g,'') ) ;}
     if ( this.properties.refiner1 && this.properties.refiner1.length > 0 ) { refiners.push( this.properties.refiner1.replace(/\s/g,'') ) ;}
@@ -612,21 +666,21 @@ export default class Drilldown7WebPart extends BaseClientSideWebPart<IDrilldown7
     let whenToShowItems: IWhenToShowItems = this.properties.whenToShowItems;
     if ( whenToShowItems > refiners.length ) { whenToShowItems = refiners.length as any ; }
 
-    let rules1: RefineRuleValues[] = ['parseBySemiColons'];
-    let rules2: RefineRuleValues[] = ['parseBySemiColons'];
-    let rules3: RefineRuleValues[] = ['groupByMonthsMMM'];
+    const rules1: RefineRuleValues[] = ['parseBySemiColons'];
+    const rules2: RefineRuleValues[] = ['parseBySemiColons'];
+    const rules3: RefineRuleValues[] = ['groupByMonthsMMM'];
 
     let rules = [];
     if ( this.properties.rules0 && this.properties.rules0.length > 0 ) { rules.push ( this.properties.rules0 ) ; } else { rules.push( ['']) ; }
     if ( this.properties.rules1 && this.properties.rules1.length > 0 ) { rules.push ( this.properties.rules1) ; } else { rules.push( ['']) ; }
     if ( this.properties.rules2 && this.properties.rules2.length > 0 ) { rules.push ( this.properties.rules2) ; } else { rules.push( ['']) ; }
 
-    let viewDefs : ICustViewDef[] = [];
+    const viewDefs : ICustViewDef[] = [];
 
     //2022-07-21:  Tried to case as any to get rid of incompatibility issues
-    let viewFields1Any : any[] = this.getViewFieldsObject('Full Size view', this.properties.viewJSON1, this.properties.groupByFields );
-    let viewFields2Any : any[] = this.getViewFieldsObject('Med Size view', this.properties.viewJSON2, this.properties.groupByFields );
-    let viewFields3Any : any[] = this.getViewFieldsObject('Small Size view', this.properties.viewJSON3, this.properties.groupByFields );
+    const viewFields1Any : any[] = this.getViewFieldsObject('Full Size view', this.properties.viewJSON1, this.properties.groupByFields );
+    const viewFields2Any : any[] = this.getViewFieldsObject('Med Size view', this.properties.viewJSON2, this.properties.groupByFields );
+    const viewFields3Any : any[] = this.getViewFieldsObject('Small Size view', this.properties.viewJSON3, this.properties.groupByFields );
 
     let viewFields1 : IViewField[] = viewFields1Any;
     let viewFields2 : IViewField[] = viewFields2Any;
@@ -642,20 +696,31 @@ export default class Drilldown7WebPart extends BaseClientSideWebPart<IDrilldown7
 
     if ( !groupByFields ) { errMessage += 'groupByFields has an error; '; groupByFields = []; }
 
-    let includeDetails = this.properties.includeDetails;
-    let includeAttach = this.properties.includeAttach;
-    let createItemLink = this.properties.createItemLink;
-    let viewWidth1 = this.properties.viewWidth1;
-    let viewWidth2 = this.properties.viewWidth2;
-    let viewWidth3 = this.properties.viewWidth3;
 
-    let includeListLink = this.properties.includeListLink;
+    const includeAttach = this.properties.includeAttach;
+
+    const viewWidth1 = this.properties.viewWidth1;
+    const viewWidth2 = this.properties.viewWidth2;
+    const viewWidth3 = this.properties.viewWidth3;
+
+
+    /**
+     * NEED TO CHECK:  CREATE ITEM LINK  LIST LINK AUDIENCE
+     */
+    const canUseDetails = verifyAudienceVsUser( this._FPSUser, bannerProps.showTricks, this.properties.detailsAudience , null, this._beAReader );
+    const includeDetails = this.properties.includeDetails === true && canUseDetails === true ? true : false ;
+
+    const canUseListLink = verifyAudienceVsUser( this._FPSUser, bannerProps.showTricks, this.properties.listLinkAudience , null, this._beAReader );
+    const includeListLink = this.properties.includeListLink === true && canUseListLink === true ? true : false ;
+
+    const canUseCreateLink = verifyAudienceVsUser( this._FPSUser, bannerProps.showTricks, this.properties.createItemAudience , null, this._beAReader );
+    const createItemLink = this.properties.createItemLink === true && canUseCreateLink === true ? true : false ;
 
     if (viewFields1 !== undefined ) { viewDefs.push( { minWidth: viewWidth1, viewFields: viewFields1, groupByFields: groupByFields, includeDetails: includeDetails, includeAttach: includeAttach, includeListLink: includeListLink, createItemLink: createItemLink }); }
     if (viewFields2 !== undefined ) { viewDefs.push( { minWidth: viewWidth2, viewFields: viewFields2, groupByFields: groupByFields, includeDetails: includeDetails, includeAttach: includeAttach, includeListLink: includeListLink, createItemLink: createItemLink }); }
     if (viewFields3 !== undefined ) { viewDefs.push( { minWidth: viewWidth3, viewFields: viewFields3, groupByFields: groupByFields, includeDetails: includeDetails, includeAttach: includeAttach, includeListLink: includeListLink, createItemLink: createItemLink }); }
 
-    let stringRules: string = JSON.stringify( rules );
+    const stringRules: string = JSON.stringify( rules );
 
     //Just for test purposes
     //stringRules = JSON.stringify( [rules1,rules2,rules3] );
@@ -684,6 +749,7 @@ export default class Drilldown7WebPart extends BaseClientSideWebPart<IDrilldown7
          */
          description: this.properties.description,
          isDarkTheme: this._isDarkTheme,
+         themeVariant: this._themeVariant,
          environmentMessage: this._environmentMessage,
          hasTeamsContext: !!this.context.sdks.microsoftTeams,
          userDisplayName: this.context.pageContext.user.displayName,
@@ -748,6 +814,7 @@ export default class Drilldown7WebPart extends BaseClientSideWebPart<IDrilldown7
 
         // 2 - Source and destination list information
         listName: this.properties.parentListTitle,
+        isLibrary: this.properties.isLibrary,
         webURL: parentWeb,
         parentListURL: this.properties.parentListURL,
         hideFolders: this.properties.hideFolders,
@@ -997,7 +1064,7 @@ export default class Drilldown7WebPart extends BaseClientSideWebPart<IDrilldown7
             FPSBanner3VisHelpGroup( this.context, this.onPropertyPaneFieldChanged, this.properties ),
             FPSBanner4BasicGroup( this._forceBanner , this._modifyBannerTitle, this.properties.showBanner, this.properties.infoElementChoice === 'Text' ? true : false, true, true ),
             FPSBanner3NavGroup(), 
-            FPSBanner3ThemeGroup( this._modifyBannerStyle, this.properties.showBanner, this.properties.lockStyles, ),
+            FPSBanner3ThemeGroup( this._modifyBannerStyle, this.properties.showBanner, this.properties.lockStyles, false ),
 
             FPSOptionsGroupBasic( false, true, true, true, this.properties.allSectionMaxWidthEnable, true, this.properties.allSectionMarginEnable, true ), // this group
             FPSOptionsExpando( this.properties.enableExpandoramic, this.properties.enableExpandoramic,null, null ),
@@ -1019,7 +1086,7 @@ export default class Drilldown7WebPart extends BaseClientSideWebPart<IDrilldown7
             buildViewGroupFields( 'Medium', 2),
             buildViewGroupFields( 'Small', 3),
 
-            buildViewTogglesGroup( ),
+            buildViewTogglesGroup( this.properties ),
             buildStatsGroup( ),
             buildQuickCommandsGroup(),
 
@@ -1096,6 +1163,8 @@ export default class Drilldown7WebPart extends BaseClientSideWebPart<IDrilldown7
       //alert("Hey! " +propertyPath +" new value is " + newValue);
       //this.properties.listTitle = "TitleChanged!";
       //this.properties.colTitleText = "TitleTextChanged!";
+
+      this.properties.isLibrary = newValue.toLowerCase().indexOf('library') > -1 ? true : false;
 
       let thisProps: string[] = Object.keys( this.properties );
       const hasValues = Object.keys(this.properties.newMap).length;

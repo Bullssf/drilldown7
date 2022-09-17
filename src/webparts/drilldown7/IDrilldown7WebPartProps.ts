@@ -11,6 +11,7 @@ import { ICssChartProps } from './components/CssCharts/ICssChartProps';
  */
  import { exportIgnorePropsFPS, } from '@mikezimm/npmfunctions/dist/HelpPanelOnNPM/onNpm/BannerInterface';
  import { importBlockPropsFPS } from '@mikezimm/npmfunctions/dist/HelpPanelOnNPM/onNpm/BannerInterface';
+ import { IItemEditorAudience , IEveryoneAudience } from '@mikezimm/npmfunctions/dist/Services/PropPane/Audiences';
  
  import { IMinBannerUIProps, IMinPinMeProps, IMinPandoramicProps, IMinBannerThemeProps, IMinCustomHelpProps, 
    IMinPageStyleProps, IMinBannerUtilityProps, IMinFPSLegacyProps } from "@mikezimm/npmfunctions/dist/HelpPanelOnNPM/onNpm/BannerInterface";
@@ -44,7 +45,7 @@ export const changeInstructions : string[] = [ 'whenToShowItems', 'minItemsForHi
 export const changeGrouping : string[] = [ 'groupByFields',  ];
 export const changeViews : string[] = [ 'viewWidth1', 'viewJSON1' , 'viewWidth2' , 'viewJSON2' , 'viewWidth3', 'viewJSON3',];
 
-export const changeListToggles : string[] = [ 'includeDetails', 'includeAttach', 'includeListLink', 'createItemLink',];
+export const changeListToggles : string[] = [ 'includeDetails', 'detailsAudience', 'includeAttach', 'includeListLink', 'listLinkAudience', 'createItemLink', 'createItemAudience' ];
 
 export const changeStats : string[] = [ 'stats', ];
 export const changeCommands : string[] = [ 'quickCommands', ];
@@ -78,6 +79,8 @@ export const changeCommands : string[] = [ 'quickCommands', ];
 
     //Group 2 - List Info
     parentListTitle: string;
+    isLibrary: boolean;  //determined in picker
+
     parentListWeb: string;
     parentListURL?: string;
     hideFolders: boolean;
@@ -138,10 +141,15 @@ export const changeCommands : string[] = [ 'quickCommands', ];
 
     // Page 2 Group 7 - List view Toggles 
     includeDetails: boolean;
+    detailsAudience: IEveryoneAudience;
+
     includeAttach: boolean;
     includeListLink: boolean;
-    createItemLink: boolean;
+    listLinkAudience:  IEveryoneAudience;
 
+    createItemLink: boolean;
+    createItemAudience: IItemEditorAudience;
+    
     // Page 2 Group 8 - Summary Stats 
     stats: string;
 
@@ -149,51 +157,36 @@ export const changeCommands : string[] = [ 'quickCommands', ];
     // Page 2 Group 9 - Commands 
     quickCommands?: string;
 
-
-
-  
     showCatCounts: boolean;
     showSummary: boolean;
-  
 
 
-
-
-
-  
     newMap?: any[];
-  
+
     showDisabled?: boolean;  //This will show disabled refiners for DaysOfWeek/Months when the day or month has no data
 
-  
-    parentListFieldTitles: string;
-  
-    onlyActiveParents: boolean;
-  
 
-  
+    parentListFieldTitles: string;
+
+    onlyActiveParents: boolean;
+
+
     // 3 - General how accurate do you want this to be
-  
+
     // 4 - Info Options
-  
+
     // 5 - UI Defaults
 
-  
 
-  
-
-  
     // 6 - User Feedback:
     progress: IMyProgress;
-  
 
-  
     // 7 - TBD
-  
+
     // 9 - Other web part options
     webPartScenario: string; //DEV, TEAM, CORP
 
-  
+
     advancedPivotStyles: boolean;
     pivotSize: string;
     pivotFormat: string;

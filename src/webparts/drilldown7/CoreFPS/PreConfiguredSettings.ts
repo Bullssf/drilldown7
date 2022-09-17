@@ -30,6 +30,7 @@ export const WPPresetEverywhere : IPreConfigSettings = {
     location: '*',
     props: {
 
+      isLibrary: false,
       newMap: [], //Added to address https://github.com/mikezimm/drilldown7/issues/184
       description: "Drilldown cascading filters",
       parentListTitle:"",
@@ -44,9 +45,15 @@ export const WPPresetEverywhere : IPreConfigSettings = {
       viewWidth2: 800,
       viewWidth3: 500,
       listDefinition: "",
+      
       includeDetails: true,
+      detailsAudience: 'Everyone',
+
       includeListLink: true,
+      listLinkAudience: 'Everyone',
+
       createItemLink: false,
+      createItemAudience: 'Item Editors',
 
       showCatCounts: false,
       showSummary: false,
@@ -61,7 +68,7 @@ export const WPPresetEverywhere : IPreConfigSettings = {
       getAllProps: true,
       restFilter: "",
       definitionToggle: true,
-      togListLink: true,
+
       hideFolders: true,
 
       // viewJSON1: "[{ \"name\": \"Id\", \"displayName\": \"Id\", \"minWidth\": 50 },{ \"name\": \"Title\", \"displayName\": \"Title\", \"minWidth\": 200 },{ \"name\": \"Created\", \"displayName\": \"Created\", \"minWidth\": 200 },{ \"name\": \"Modified\", \"displayName\": \"Modified\", \"minWidth\": 200 }]",

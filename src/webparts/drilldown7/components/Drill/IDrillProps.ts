@@ -1,3 +1,6 @@
+
+import { IReadonlyTheme } from '@microsoft/sp-component-base';
+
 import { IFPSCorePinMeReactComponentProps, IFPSCorePinMeReactComponentState, ILoadPerformance } from '../../fpsReferences';
 
 import { IGrouping } from "@pnp/spfx-controls-react/lib/ListView";
@@ -180,7 +183,8 @@ export interface IDrillDownProps extends IFPSCorePinMeReactComponentProps {
      environmentMessage: string;
      hasTeamsContext: boolean;
      userDisplayName: string;
-
+     themeVariant: IReadonlyTheme | undefined;
+     
      loadPerformance: ILoadPerformance;
 
     allowOtherSites?: boolean; //default is local only.  Set to false to allow provisioning parts on other sites.
@@ -198,6 +202,7 @@ export interface IDrillDownProps extends IFPSCorePinMeReactComponentProps {
     hideFolders: boolean;
 
     listName : string;
+    isLibrary: boolean;  //determined in picker
     language: string; //local language list data is saved in (needed to properly sort refiners)
     
     allLoaded: boolean;
