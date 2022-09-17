@@ -1,6 +1,18 @@
 {
   "$schema": "https://developer.microsoft.com/json-schemas/spfx-build/package-solution.schema.json",
   "solution": {
+    "name": "Drilldown7 Unique functionality to drill down on data",
+    "id": "bdcf72e6-9215-4cba-9b02-892e5eab42f8",
+    "version": "1.3.2.1",
+    "includeClientSideAssets": true,
+    "isDomainIsolated": false,
+    "developer": {
+      "name": "",
+      "websiteUrl": "",
+      "privacyUrl": "",
+      "termsOfUseUrl": "",
+      "mpnId": ""
+    },
     "metadata": {
       "shortDescription": {
         "default": "drilldown-7 description"
@@ -11,19 +23,8 @@
       "screenshotPaths": [],
       "videoUrl": "",
       "categories": []
-    },
-    "name": "Drilldown7 Unique functionality to drill down on data",
-    "id": "bdcf72e6-9215-4cba-9b02-892e5eab42f8",
-    "version": "1.3.2.0",
-    "includeClientSideAssets": true,
-    "isDomainIsolated": false,
-    "developer": {
-      "name": "",
-      "websiteUrl": "",
-      "privacyUrl": "",
-      "termsOfUseUrl": "",
-      "mpnId": ""
     }
+
   },
   "paths": {
     "zippedPackage": "solution/drilldown-7.sppkg"

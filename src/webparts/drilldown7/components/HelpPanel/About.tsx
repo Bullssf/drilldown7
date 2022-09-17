@@ -6,7 +6,7 @@ import { repoLink, } from '../../fpsReferences';
 
 import { createAboutRow } from '../../fpsReferences';
 
-export const panelVersionNumber = '2022-09-16 -  1.3.2.0'; //Added to show in panel
+export const panelVersionNumber = '2022-09-16 -  1.3.2.1'; //Added to show in panel
 
 export function aboutTable( showrepoLink: boolean ) {
 
@@ -16,8 +16,8 @@ export function aboutTable( showrepoLink: boolean ) {
         rows: [],
     };
 
-    table.rows.push( createAboutRow('2022-09-16','1.3.2.0'  ,'#169 - Quality of life', showrepoLink === true ? repoLink : null ) );
-    table.rows.push( createAboutRow('',''  ,'#177, #181, #191 - Features', showrepoLink === true ? repoLink : null ) );
+    table.rows.push( createAboutRow('2022-09-16','1.3.2.1'  ,'#169 - Quality of life', showrepoLink === true ? repoLink : null ) );
+    table.rows.push( createAboutRow('',''  ,'#177, #181, #191, #192 - Features', showrepoLink === true ? repoLink : null ) );
     table.rows.push( createAboutRow('',''  ,'#171, #185 - File links, #189 - banner fixes, #187, #190', showrepoLink === true ? repoLink : null ) );
     table.rows.push( createAboutRow('2022-09-12','1.3.1.3'  ,'#184, #186, Removed feature property from package-solution.json', showrepoLink === true ? repoLink : null ) );
     table.rows.push( createAboutRow('2022-09-11','1.3.0.4'  ,'#170, #176, #178, #179, #182', showrepoLink === true ? repoLink : null ) );
