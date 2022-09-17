@@ -294,6 +294,28 @@ export default class Drilldown7WebPart extends BaseClientSideWebPart<IDrilldown7
     this.render();
   }
 
+  /** Add Theme including on SPAs
+   * 
+   *   https://n8d.at/how-to-make-css-variables-work-in-every-web-part-context
+   */
+  /// Converts JSON Theme Slots it CSS variables
+  private setCSSVariables(theming: any) {
+
+    // request all key defined in theming
+    let themingKeys = Object.keys(theming);
+    // if we have the key
+    if (themingKeys !== null) {
+      // loop over it
+      themingKeys.forEach(key => {
+        // add CSS variable to style property of the web part
+        this.domElement.style.setProperty(`--${key}`, theming[key]);
+
+      });
+
+    }
+
+  }
+
 /***
 *          .d88b.  d8b   db d888888b d8b   db d888888b d888888b 
 *         .8P  Y8. 888o  88   `88'   888o  88   `88'   `~~88~~' 
@@ -309,6 +331,37 @@ export default class Drilldown7WebPart extends BaseClientSideWebPart<IDrilldown7
   public async onInit():Promise<void> {
     return super.onInit().then(_ => {
       
+
+
+      /** Add Theme including on SPAs
+       * 
+       *   https://n8d.at/how-to-make-css-variables-work-in-every-web-part-context
+       */
+
+      // Consume the new ThemeProvider service
+      this._themeProvider = this.context.serviceScope.consume(ThemeProvider.serviceKey);
+
+      // If it exists, get the theme variant
+      this._themeVariant = this._themeProvider.tryGetTheme();
+
+      console.debug('Theme variant ::: ', this._themeVariant);
+
+      // If there is a theme variant
+      if (this._themeVariant) {
+
+        // we set transfer semanticColors into CSS variables
+        this.setCSSVariables(this._themeVariant.semanticColors);
+
+      } else if (window["__themeState__"].theme) {
+
+        // FALLBACK TO App Page
+
+        // we set transfer semanticColors into CSS variables
+        this.setCSSVariables(window["__themeState__"].theme);
+
+      }
+
+
       /**
        * DD Provider: Step 3 - add / update OnInit
        *  Tell DD Service that this is a provider
@@ -571,6 +624,7 @@ export default class Drilldown7WebPart extends BaseClientSideWebPart<IDrilldown7
 
   public render(): void {
 
+
   /**
    * PERFORMANCE - START
    * This is how you can start a performance snapshot - make the _performance.KEYHERE = startPerforOp('KEYHERE', this.displayMode)
@@ -695,6 +749,7 @@ export default class Drilldown7WebPart extends BaseClientSideWebPart<IDrilldown7
          */
          description: this.properties.description,
          isDarkTheme: this._isDarkTheme,
+         themeVariant: this._themeVariant,
          environmentMessage: this._environmentMessage,
          hasTeamsContext: !!this.context.sdks.microsoftTeams,
          userDisplayName: this.context.pageContext.user.displayName,

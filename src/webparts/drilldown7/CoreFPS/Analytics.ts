@@ -158,9 +158,9 @@ export function saveViewAnalytics( Title: string, Result: string, thisProps: IDr
     // });
 
     // let performance = minPerformance ? JSON.stringify( minPerformance ) : null;
-    let zzzRichText1 = null;
-    let zzzRichText2 = null;
-    let zzzRichText3 = null;
+    let zzzRichText1 = '';
+    let zzzRichText2 = '';
+    let zzzRichText3 = '';
 
     //This will get rid of all the escaped characters in the summary (since it's all numbers)
     // let zzzRichText3 = ''; //JSON.stringify( fetchInfo.summary ).replace('\\','');

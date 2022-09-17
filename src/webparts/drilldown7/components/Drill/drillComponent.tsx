@@ -2,6 +2,7 @@ import * as React from 'react';
 // import { WebPartContext } from '@microsoft/sp-webpart-base';
 // import { DisplayMode, } from '@microsoft/sp-core-library';
 
+
 import { IDrillDownProps, IDrillDownState, IDrillList, IViewType, IRefinerStyles, RefinerChartTypes } from './IDrillProps';
 import { pivCats } from './IDrillProps';
 
@@ -287,7 +288,6 @@ export default class DrillDown extends React.Component<IDrillDownProps, IDrillDo
         
         elements.push(<span style={{ paddingLeft: '20px' }} className={ '' } title={ 'Hide instructions based on webpart settings' }>
           <Icon iconName='Hide3' onClick={ this._hideInstructions.bind(this) } style={ defaultBannerCommandStyles }></Icon></span>);
-
         return elements;
       }
 
@@ -1139,6 +1139,7 @@ public componentDidUpdate(prevProps){
                         *                                                                           
                         */
                     thisPage = <div>
+                         {/* <div style={{ width: 50, height: 50, background: this.props.themeVariant.palette.themePrimary }}></div> */}
                         { Banner }
                         <div className={styles.contents}>
                             <div className={stylesD.drillDown}>
@@ -1152,10 +1153,10 @@ public componentDidUpdate(prevProps){
                                 <Stack horizontal={false} wrap={true} horizontalAlign={"stretch"} tokens={stackPageTokens} className={ stylesD.refiners }>{/* Stack for Buttons and Webs */}
                                     { refinersObjects  }
                                 </Stack>
-                                
+
                                 { drillListErrors }
                                 { instructionBlock }
-                                
+
                                 <div> { this.state.showCountChart === true ? countCharts : null } </div>
                                 <div> { this.state.showStats === true ? statCharts : null } </div>
 
