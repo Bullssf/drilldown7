@@ -45,7 +45,7 @@ export const changeInstructions : string[] = [ 'whenToShowItems', 'minItemsForHi
 export const changeGrouping : string[] = [ 'groupByFields',  ];
 export const changeViews : string[] = [ 'viewWidth1', 'viewJSON1' , 'viewWidth2' , 'viewJSON2' , 'viewWidth3', 'viewJSON3',];
 
-export const changeListToggles : string[] = [ 'includeDetails', 'includeAttach', 'includeListLink', 'listLinkAudience', 'createItemLink', 'createItemAudience' ];
+export const changeListToggles : string[] = [ 'includeDetails', 'detailsAudience', 'includeAttach', 'includeListLink', 'listLinkAudience', 'createItemLink', 'createItemAudience' ];
 
 export const changeStats : string[] = [ 'stats', ];
 export const changeCommands : string[] = [ 'quickCommands', ];
@@ -141,12 +141,15 @@ export const changeCommands : string[] = [ 'quickCommands', ];
 
     // Page 2 Group 7 - List view Toggles 
     includeDetails: boolean;
+    detailsAudience: IEveryoneAudience;
+
     includeAttach: boolean;
     includeListLink: boolean;
     listLinkAudience:  IEveryoneAudience;
 
     createItemLink: boolean;
     createItemAudience: IItemEditorAudience;
+    
     // Page 2 Group 8 - Summary Stats 
     stats: string;
 

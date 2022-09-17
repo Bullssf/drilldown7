@@ -623,11 +623,11 @@ export default class ReactListItems extends React.Component<IReactListItemsProps
 
             let webTitle = null;
             let listLink = !this.props.includeListLink ? null : <div className={ stylesInfo.infoHeading } onClick={ this._onGoToList.bind(this) } 
-                style={{ paddingRight: 20, whiteSpace: 'nowrap', paddingTop: 0, cursor: 'pointer', fontSize: 'smaller',background: 'transparent' }}>
+                style={{ marginRight: 20, whiteSpace: 'nowrap', paddingTop: 0, cursor: 'pointer', fontSize: 'smaller',background: 'transparent' }}>
                     <span style={{ background: 'transparent' }} className={ stylesInfo.listLink }>Go to list</span></div>;
 
             let createItemLink = !this.props.createItemLink ? null : <div title="Create new item" className={ stylesInfo.infoHeading } onClick={ this._CreateNewItem.bind(this) } 
-            style={{ marginRight: 50, paddingRight: 20, whiteSpace: 'nowrap', paddingTop: 0, cursor: 'pointer', fontSize: 'larger',background: 'transparent' }}>
+            style={{ marginRight: 30, whiteSpace: 'nowrap', paddingTop: 0, cursor: 'pointer', fontSize: 'larger',background: 'transparent' }}>
                 <span style={{ background: 'transparent' }} className={ stylesInfo.listLink }><Icon iconName="AddTo"/></span></div>;
 
             if ( barText != null ) {

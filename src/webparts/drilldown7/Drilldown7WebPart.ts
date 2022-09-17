@@ -642,7 +642,7 @@ export default class Drilldown7WebPart extends BaseClientSideWebPart<IDrilldown7
 
     if ( !groupByFields ) { errMessage += 'groupByFields has an error; '; groupByFields = []; }
 
-    const includeDetails = this.properties.includeDetails;
+
     const includeAttach = this.properties.includeAttach;
 
     const viewWidth1 = this.properties.viewWidth1;
@@ -653,6 +653,9 @@ export default class Drilldown7WebPart extends BaseClientSideWebPart<IDrilldown7
     /**
      * NEED TO CHECK:  CREATE ITEM LINK  LIST LINK AUDIENCE
      */
+    const canUseDetails = verifyAudienceVsUser( this._FPSUser, bannerProps.showTricks, this.properties.detailsAudience , null, this._beAReader );
+    const includeDetails = this.properties.includeDetails === true && canUseDetails === true ? true : false ;
+
     const canUseListLink = verifyAudienceVsUser( this._FPSUser, bannerProps.showTricks, this.properties.listLinkAudience , null, this._beAReader );
     const includeListLink = this.properties.includeListLink === true && canUseListLink === true ? true : false ;
 

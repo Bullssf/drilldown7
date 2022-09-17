@@ -45,7 +45,9 @@ export const WPPresetEverywhere : IPreConfigSettings = {
       viewWidth2: 800,
       viewWidth3: 500,
       listDefinition: "",
+      
       includeDetails: true,
+      detailsAudience: 'Everyone',
 
       includeListLink: true,
       listLinkAudience: 'Everyone',

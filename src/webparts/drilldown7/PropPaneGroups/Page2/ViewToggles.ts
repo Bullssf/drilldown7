@@ -37,14 +37,16 @@ export function buildViewTogglesGroup ( wpProps: IDrilldown7WebPartProps ) {
       offText: 'No',
       onText: 'Yes',
     }));
-  
+
+    groupFields.push( createAudienceGroup( 'detailsAudience', 'Min audience to see Details panel', 'Everyone', !wpProps.includeDetails ) );
+
     groupFields.push(
       PropertyPaneToggle('includeAttach', {
         label: 'Include Attachments panel',
         offText: 'Never',
         onText: 'Auto detect',
       }));
-  
+
     groupFields.push( 
       PropertyPaneToggle('includeListLink', { 
         label: 'Show link to List',
@@ -52,7 +54,7 @@ export function buildViewTogglesGroup ( wpProps: IDrilldown7WebPartProps ) {
         onText: 'Yes',
       }));
 
-    groupFields.push( createAudienceGroup( 'listLinkAudience', 'Min audience to see List Link', 'Editor', wpProps.includeListLink ) );
+    groupFields.push( createAudienceGroup( 'listLinkAudience', 'Min audience to see List Link', 'Everyone', !wpProps.includeListLink ) );
 
     groupFields.push( 
       PropertyPaneToggle('createItemLink', { 
@@ -61,7 +63,7 @@ export function buildViewTogglesGroup ( wpProps: IDrilldown7WebPartProps ) {
         onText: 'Yes',
       }));
 
-    groupFields.push( createAudienceGroup( 'createItemAudience', 'Min audience to see Create Item', 'Editor', wpProps.createItemLink ) );
+    groupFields.push( createAudienceGroup( 'createItemAudience', 'Min audience to see Create Item', 'Editor', !wpProps.createItemLink ) );
 
     const ExportThisGroup: IPropertyPaneGroup = {
       groupName: `List view Toggles`,
