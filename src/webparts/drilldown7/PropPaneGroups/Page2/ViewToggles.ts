@@ -23,8 +23,11 @@ import {
 // import { IDrilldown7WebPartProps } from '../IDrilldown7WebPartProps';
 // import { JSON_Edit_Link  } from '../../fpsReferences';  //ValidLocalLanguages, 
 
+import { createAudienceGroup  } from '../../fpsReferences';
 
-export function buildViewTogglesGroup ( ) {
+import { IDrilldown7WebPartProps } from '../../IDrilldown7WebPartProps';
+
+export function buildViewTogglesGroup ( wpProps: IDrilldown7WebPartProps ) {
 
   var groupFields: IPropertyPaneField<any>[] = [];
 
@@ -49,6 +52,8 @@ export function buildViewTogglesGroup ( ) {
         onText: 'Yes',
       }));
 
+    groupFields.push( createAudienceGroup( 'listLinkAudience', 'Min audience to see List Link', 'Editor', wpProps.includeListLink ) );
+
     groupFields.push( 
       PropertyPaneToggle('createItemLink', { 
         label: 'Show + New item link',
@@ -56,15 +61,14 @@ export function buildViewTogglesGroup ( ) {
         onText: 'Yes',
       }));
 
-      
-  
+    groupFields.push( createAudienceGroup( 'createItemAudience', 'Min audience to see Create Item', 'Editor', wpProps.createItemLink ) );
 
-      const ExportThisGroup: IPropertyPaneGroup = {
-        groupName: `List view Toggles`,
-        isCollapsed: true,
-        groupFields: groupFields
-      };
-    
-      return ExportThisGroup;
+    const ExportThisGroup: IPropertyPaneGroup = {
+      groupName: `List view Toggles`,
+      isCollapsed: true,
+      groupFields: groupFields
+    };
+
+    return ExportThisGroup;
 
 }

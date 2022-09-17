@@ -46,8 +46,12 @@ export const WPPresetEverywhere : IPreConfigSettings = {
       viewWidth3: 500,
       listDefinition: "",
       includeDetails: true,
+
       includeListLink: true,
+      listLinkAudience: 'Everyone',
+
       createItemLink: false,
+      createItemAudience: 'Item Editors',
 
       showCatCounts: false,
       showSummary: false,
@@ -62,7 +66,7 @@ export const WPPresetEverywhere : IPreConfigSettings = {
       getAllProps: true,
       restFilter: "",
       definitionToggle: true,
-      togListLink: true,
+
       hideFolders: true,
 
       // viewJSON1: "[{ \"name\": \"Id\", \"displayName\": \"Id\", \"minWidth\": 50 },{ \"name\": \"Title\", \"displayName\": \"Title\", \"minWidth\": 200 },{ \"name\": \"Created\", \"displayName\": \"Created\", \"minWidth\": 200 },{ \"name\": \"Modified\", \"displayName\": \"Modified\", \"minWidth\": 200 }]",

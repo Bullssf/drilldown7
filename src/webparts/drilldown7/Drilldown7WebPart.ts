@@ -108,6 +108,7 @@ import { consoleRef } from './components/Drill/drillFunctions';
   *     USED FOR CREATING BANNER
   */
  
+ import { verifyAudienceVsUser, } from './fpsReferences';
  import { IWebpartBannerProps, } from './fpsReferences';
  import { buildExportProps, buildFPSAnalyticsProps , } from './CoreFPS/BuildExportProps';
  
@@ -596,13 +597,12 @@ export default class Drilldown7WebPart extends BaseClientSideWebPart<IDrilldown7
       console.log('mainWebPart: createElement ~ 316',   );
 
 
-
     let errMessage = '';
     //Be sure to always pass down an actual URL if the webpart prop is empty at this point.
     //If it's undefined, null or '', get current page context value
-    let parentWeb = this.properties.parentListWeb && this.properties.parentListWeb != '' ? this.properties.parentListWeb : this.context.pageContext.web.absoluteUrl;
+    const parentWeb = this.properties.parentListWeb && this.properties.parentListWeb != '' ? this.properties.parentListWeb : this.context.pageContext.web.absoluteUrl;
 
-    let refiners: string[] = [];
+    const refiners: string[] = [];
 
     if ( this.properties.refiner0 && this.properties.refiner0.length > 0 ) { refiners.push( this.properties.refiner0.replace(/\s/g,'') ) ;}
     if ( this.properties.refiner1 && this.properties.refiner1.length > 0 ) { refiners.push( this.properties.refiner1.replace(/\s/g,'') ) ;}
@@ -612,21 +612,21 @@ export default class Drilldown7WebPart extends BaseClientSideWebPart<IDrilldown7
     let whenToShowItems: IWhenToShowItems = this.properties.whenToShowItems;
     if ( whenToShowItems > refiners.length ) { whenToShowItems = refiners.length as any ; }
 
-    let rules1: RefineRuleValues[] = ['parseBySemiColons'];
-    let rules2: RefineRuleValues[] = ['parseBySemiColons'];
-    let rules3: RefineRuleValues[] = ['groupByMonthsMMM'];
+    const rules1: RefineRuleValues[] = ['parseBySemiColons'];
+    const rules2: RefineRuleValues[] = ['parseBySemiColons'];
+    const rules3: RefineRuleValues[] = ['groupByMonthsMMM'];
 
     let rules = [];
     if ( this.properties.rules0 && this.properties.rules0.length > 0 ) { rules.push ( this.properties.rules0 ) ; } else { rules.push( ['']) ; }
     if ( this.properties.rules1 && this.properties.rules1.length > 0 ) { rules.push ( this.properties.rules1) ; } else { rules.push( ['']) ; }
     if ( this.properties.rules2 && this.properties.rules2.length > 0 ) { rules.push ( this.properties.rules2) ; } else { rules.push( ['']) ; }
 
-    let viewDefs : ICustViewDef[] = [];
+    const viewDefs : ICustViewDef[] = [];
 
     //2022-07-21:  Tried to case as any to get rid of incompatibility issues
-    let viewFields1Any : any[] = this.getViewFieldsObject('Full Size view', this.properties.viewJSON1, this.properties.groupByFields );
-    let viewFields2Any : any[] = this.getViewFieldsObject('Med Size view', this.properties.viewJSON2, this.properties.groupByFields );
-    let viewFields3Any : any[] = this.getViewFieldsObject('Small Size view', this.properties.viewJSON3, this.properties.groupByFields );
+    const viewFields1Any : any[] = this.getViewFieldsObject('Full Size view', this.properties.viewJSON1, this.properties.groupByFields );
+    const viewFields2Any : any[] = this.getViewFieldsObject('Med Size view', this.properties.viewJSON2, this.properties.groupByFields );
+    const viewFields3Any : any[] = this.getViewFieldsObject('Small Size view', this.properties.viewJSON3, this.properties.groupByFields );
 
     let viewFields1 : IViewField[] = viewFields1Any;
     let viewFields2 : IViewField[] = viewFields2Any;
@@ -642,20 +642,28 @@ export default class Drilldown7WebPart extends BaseClientSideWebPart<IDrilldown7
 
     if ( !groupByFields ) { errMessage += 'groupByFields has an error; '; groupByFields = []; }
 
-    let includeDetails = this.properties.includeDetails;
-    let includeAttach = this.properties.includeAttach;
-    let createItemLink = this.properties.createItemLink;
-    let viewWidth1 = this.properties.viewWidth1;
-    let viewWidth2 = this.properties.viewWidth2;
-    let viewWidth3 = this.properties.viewWidth3;
+    const includeDetails = this.properties.includeDetails;
+    const includeAttach = this.properties.includeAttach;
 
-    let includeListLink = this.properties.includeListLink;
+    const viewWidth1 = this.properties.viewWidth1;
+    const viewWidth2 = this.properties.viewWidth2;
+    const viewWidth3 = this.properties.viewWidth3;
+
+
+    /**
+     * NEED TO CHECK:  CREATE ITEM LINK  LIST LINK AUDIENCE
+     */
+    const canUseListLink = verifyAudienceVsUser( this._FPSUser, bannerProps.showTricks, this.properties.listLinkAudience , null, this._beAReader );
+    const includeListLink = this.properties.includeListLink === true && canUseListLink === true ? true : false ;
+
+    const canUseCreateLink = verifyAudienceVsUser( this._FPSUser, bannerProps.showTricks, this.properties.createItemAudience , null, this._beAReader );
+    const createItemLink = this.properties.createItemLink === true && canUseCreateLink === true ? true : false ;
 
     if (viewFields1 !== undefined ) { viewDefs.push( { minWidth: viewWidth1, viewFields: viewFields1, groupByFields: groupByFields, includeDetails: includeDetails, includeAttach: includeAttach, includeListLink: includeListLink, createItemLink: createItemLink }); }
     if (viewFields2 !== undefined ) { viewDefs.push( { minWidth: viewWidth2, viewFields: viewFields2, groupByFields: groupByFields, includeDetails: includeDetails, includeAttach: includeAttach, includeListLink: includeListLink, createItemLink: createItemLink }); }
     if (viewFields3 !== undefined ) { viewDefs.push( { minWidth: viewWidth3, viewFields: viewFields3, groupByFields: groupByFields, includeDetails: includeDetails, includeAttach: includeAttach, includeListLink: includeListLink, createItemLink: createItemLink }); }
 
-    let stringRules: string = JSON.stringify( rules );
+    const stringRules: string = JSON.stringify( rules );
 
     //Just for test purposes
     //stringRules = JSON.stringify( [rules1,rules2,rules3] );
@@ -1020,7 +1028,7 @@ export default class Drilldown7WebPart extends BaseClientSideWebPart<IDrilldown7
             buildViewGroupFields( 'Medium', 2),
             buildViewGroupFields( 'Small', 3),
 
-            buildViewTogglesGroup( ),
+            buildViewTogglesGroup( this.properties ),
             buildStatsGroup( ),
             buildQuickCommandsGroup(),
 

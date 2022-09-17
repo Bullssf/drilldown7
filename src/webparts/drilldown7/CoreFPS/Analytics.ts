@@ -104,7 +104,7 @@ export const analyticsWeb: string = "/sites/Templates/Analytics/";
 // }
 
 
-
+export const CodeVersion = 'SPFx 1.14 v2';  //  ==>  https://github.com/mikezimm/drilldown7/issues/190
 export function saveViewAnalytics( Title: string, Result: string, thisProps: IDrillDownProps, analyticsWasExecuted: boolean, performanceObj: ILoadPerformance ) : boolean {
 
   if ( analyticsWasExecuted === true ) {
@@ -208,6 +208,8 @@ export function saveViewAnalytics( Title: string, Result: string, thisProps: IDr
       zzzRichText1: zzzRichText1,  //Used to store JSON objects for later use, will be stringified
       zzzRichText2: zzzRichText2,
       zzzRichText3: zzzRichText3,
+
+      CodeVersion: CodeVersion,  //  ==>  https://github.com/mikezimm/drilldown7/issues/190
 
       performance: performance,
 

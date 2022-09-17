@@ -137,7 +137,6 @@ import { DoNotExpandLinkColumns, DoNotExpandColumns, DoNotExpandFuncColumns } fr
           let splitCol = thisColumn.split("/");
           let leftSide = splitCol[0];
           let rightSide = splitCol[ splitCol.length -1 ];
-          
           if ( rightSide && DoNotExpandLinkColumnsLC.indexOf( rightSide.toLowerCase() ) > -1 ) {
             //Then do nothing since this column is a 'faux expanded column' used in Drilldown for Link Columns
             if ( baseLinkColumns.indexOf( thisColumn ) < 0 ) { baseLinkColumns.push(thisColumn); }

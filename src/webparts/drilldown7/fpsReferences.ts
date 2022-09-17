@@ -226,6 +226,7 @@ export { FPSBanner4BasicGroup,FPSBanner3NavGroup, FPSBanner3ThemeGroup } from '@
 export { FPSBanner3VisHelpGroup } from '@mikezimm/npmfunctions/dist/CoreFPS/FPSOptionsGroupVisHelp';
 export { FPSPinMePropsGroup } from '@mikezimm/npmfunctions/dist/Services/DOM/PinMe/FPSOptionsGroupPinMe';
 export { FPSOptionsExpando, } from '@mikezimm/npmfunctions/dist/Services/DOM/Expando/FPSOptionsExpando'; //expandAudienceChoicesAll
+export { createAudienceGroup, } from '@mikezimm/npmfunctions/dist/Services/PropPane/Audiences'; //expandAudienceChoicesAll
 
 
 
