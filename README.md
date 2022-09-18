@@ -94,6 +94,14 @@ After installing webpack analyzer, be sure to update the gulpfile.js so it actua
 
 ---
 
+## For NEW PACKAGE:
+Update solution name in package-solution.json
+Remove 'Deprecated' from all descriptions
+Remove Special component from drillComponent.tsx
+Change icon in webpart.mainfiest.json
+Bump MAJOR Version
+Update CodeVersion in analytics
+
 
 
 ## Minimal Path to Awesome

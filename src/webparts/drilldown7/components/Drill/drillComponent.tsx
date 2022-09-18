@@ -47,6 +47,7 @@ import { IRefinerLayer, IRefinerRules, IRefinerStat } from '../../fpsReferences'
 // import { PageContext } from '@microsoft/sp-page-context';
 
 import { pivotOptionsGroup, } from '../../fpsReferences';
+import { IFPSUser, } from '../../fpsReferences';
 
 import { getExpandColumnsV2, getSelectColumnsV2, getLinkColumnsV2, getFuncColumnsV2 } from '../../../../services/getFunctionsV2';
 
@@ -79,6 +80,8 @@ import { getAppropriateViewFields, getAppropriateViewGroups, getAppropriateViewP
 // import FetchBanner from '../CoreFPS/FetchBannerElement';
 import FetchBanner from '@mikezimm/npmfunctions/dist/HelpPanelOnNPM/onNpm/FetchBannerElement';
 // import FetchBanner from '../../CoreFPS/FetchBannerElement';
+
+import { ISpecialMessage, specialUpgrade } from '@mikezimm/npmfunctions/dist/HelpPanelOnNPM/special/interface';
 
 
 import { getWebPartHelpElement } from '../../CoreFPS/PropPaneHelp';
@@ -731,6 +734,11 @@ public componentDidUpdate(prevProps){
             <Icon iconName='BookAnswers' onClick={ this._forceInstructions.bind(this) } style={ this._debugCmdStyles }></Icon>,
         ];
 
+        const FPSUser : IFPSUser = this.props.bannerProps.FPSUser;
+        const showSpecial = FPSUser.manageWeb === true || FPSUser.managePermissions === true || FPSUser.manageLists === true ? true : false;
+        const Special : ISpecialMessage = showSpecial === true ? specialUpgrade( 'warn', '/sites/TheSharePointHub/SitePages/DrillDown-WebPart-Upgrade---v2.aspx', ) : undefined;
+        // Special.style = { color: 'black', background: 'limegreen' };
+
         const Banner = <FetchBanner 
 
             // bonusHTML1={ this._bonusHTML }
@@ -745,6 +753,8 @@ public componentDidUpdate(prevProps){
 
             contentPages={ this._contentPages }
             WebPartHelpElement={ this._webPartHelpElement }
+
+            SpecialMessage = { Special }
 
             updatePinState = { null }
             pinState = { this.state.pinState }
