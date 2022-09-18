@@ -18,7 +18,6 @@
     "@microsoft/sp-webpart-base": "1.15.2",
     "@microsoft/sp-lodash-subset": "1.15.2",
     "@microsoft/sp-office-ui-fabric-core": "1.15.2",
-
     "@mikezimm/npmfunctions": "^2.1.76",
     "@pnp/common": "^2.11.0",
     "@pnp/graph": "^2.14.0",
@@ -28,7 +27,6 @@
     "@pnp/spfx-controls-react": "3.7.2",
     "@pnp/spfx-property-controls": "^3.6.0",
     "react-json-view": "^1.21.3"
-
   },
   "devDependencies": {
     "@microsoft/rush-stack-compiler-4.5": "0.2.2",

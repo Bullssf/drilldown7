@@ -14,3 +14,11 @@ Remove Special component from drillComponent.tsx
 Change icon in webpart.mainfiest.json
 Bump MAJOR Version
 Update CodeVersion in analytics
+
+Copied \Services folder
+Copied \components subfolders
+Copied CoreFPS, PropPaneGroups, fpsReferences
+
+
+## .eslintrc.js updates
+  '@typescript-eslint/no-explicit-any': 0,
