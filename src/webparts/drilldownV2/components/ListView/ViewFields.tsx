@@ -150,7 +150,7 @@ export const  projectWide2 : IViewField = {
   //render: null,
   render: (item: any) => {
     //console.log('projectWide:', item);
-    let thisStyle : {} = {
+    let thisStyle : any = {
       color: '#333333',
       background: 'transparent',
       verticalAlign: 'top',

@@ -7,7 +7,7 @@ import * as React from 'react';
 // import { createAboutRow } from '../../fpsReferences';
 
 
-export function whyContent( ) {
+export function whyContent( ): any{
 
     return null;
 

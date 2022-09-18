@@ -52,7 +52,7 @@ export function makeChartSettings( qty: number, label: string, chartTypes : ICSS
   // let randomNums = generateVals( qty, 35, 90 );
   // let randomTitles = generateTitles( label, qty );
 
-  if ( chartTypes === [] ) { chartTypes = CSSChartTypes; }
+  if ( chartTypes.length === 0 ) { chartTypes = CSSChartTypes; }
 
   let chartData: ICSSChartSettings = {
     title: label,
@@ -183,7 +183,7 @@ export default class Cssreactbarchart extends React.Component<ICssreactbarchartP
  *                                                                                         
  */
 
-public componentDidUpdate(prevProps){
+public componentDidUpdate(prevProps: ICssreactbarchartProps){
 
     let rebuildPart = false;
     let settingsChanged = false;
@@ -262,27 +262,30 @@ public componentDidUpdate(prevProps){
     let chartIdx = -1;
 
     let hasStylesFigure = false;
-    let defaultStylesFigure = null;
+    let defaultStylesFigure: any = null;
 
     let hasStylesGraphic = false;
-    let defaultStylesGraphic = null;
+    let defaultStylesGraphic: any = null;
 
     let charts = chartData.map( ( cdO, j ) => {
       chartIdx ++ ;
 //      console.log('buildingLabels:', cdO.labels.join(', '));
       let selectedChartID = [this.props.callBackID , chartIdx.toString()].join('|||');
 
+
+     // barColors?: 'blue' | 'green' |'brown' | 'gray' | 'red' | 'brown' | 'themed' | 'custom' ;
+
       let sortOrder : ISeriesSort = 'asis';
       let stacked : boolean = null;
       let sortKey : ISeriesSort = null;
       let thisChartsSettings = chartSettings[j];
-      let barValues : string = thisChartsSettings.barValues;
+      let barValues : any = thisChartsSettings.barValues;  // barValues?: 'val1' | 'sums' | 'avgs' | 'percents' | string ;
       let isCollapsed : number = thisChartsSettings.isCollapsed;
       let activeType = thisChartsSettings.activeType;
 
       //2020-09-24:  Added this because the value array was getting mysteriously overwritten to nulls all the time.
-      chartData[thisChartsSettings.barValues] = JSON.parse(JSON.stringify(cdO[barValues]));
-      cdO.percents = convertNumberArrayToRelativePercents(cdO[barValues]);
+      const cdOBarValues: number[] = JSON.parse(JSON.stringify(cdO.val1));
+      cdO.percents = convertNumberArrayToRelativePercents( cdOBarValues );
 
       console.log('cssChart cdO - stats:', cdO);
 
@@ -354,11 +357,13 @@ public componentDidUpdate(prevProps){
       let stylesFigure = thisChartsSettings.stylesFigure && thisChartsSettings.stylesFigure[activeType] ? thisChartsSettings.stylesFigure[activeType] : null;
       let stylesGraphic = thisChartsSettings.stylesGraphic && thisChartsSettings.stylesGraphic[activeType] ? thisChartsSettings.stylesGraphic[activeType] : null;
 
+      // defaultStylesFigure was set as null and not changed so it will always null so why have it here?
       if ( stylesFigure !== null && hasStylesFigure === false && defaultStylesFigure === null ) {
         hasStylesFigure = true;
         defaultStylesFigure = stylesFigure;
       }
 
+      // defaultStylesGraphic was set as null and not changed so it will always null so why have it here?
       if ( stylesGraphic !== null && hasStylesGraphic === false && defaultStylesGraphic === null ) {
         hasStylesGraphic = true;
         defaultStylesGraphic = stylesFigure;
@@ -376,8 +381,8 @@ public componentDidUpdate(prevProps){
       let randomPallet = getRandomFromArray(randomPallets);
       let randomizeColors = this.state.useProps === true && thisChartsSettings.barColors ? false : true ;
 
-      if ( stacked === false && cdO[barValues].length > 15 ) { stateHeight = '20px'; }
-      else if ( stacked === false && cdO[barValues].length > 8 ) { stateHeight = '30px'; }
+      if ( stacked === false && cdOBarValues.length > 15 ) { stateHeight = '20px'; }
+      else if ( stacked === false && cdOBarValues.length > 8 ) { stateHeight = '30px'; }
       else { stateHeight = '40px'; }
 
       let cd : ICSSChartData = null;
@@ -390,7 +395,7 @@ public componentDidUpdate(prevProps){
         cd = cdO;
       }
 
-      let chartValueArray = cd[barValues];
+      let chartValueArray: number[] = cd.val1;
 
       let thisChart : any[] = [];
       let maxNumber: number = Math.max( ...chartValueArray );  //Need to use ... spread in math operators:  https://stackoverflow.com/a/1669222
@@ -482,8 +487,8 @@ public componentDidUpdate(prevProps){
           }
         }
 
-        let barLabel = barValueAsPercent === true ?
-          ( cd.percents[i].toFixed(1) ) + '%' : maxDecimal === 0 ? parseInt(barNumber) : barNumber ;
+        let barLabel: any = barValueAsPercent === true ?
+          ( cd.percents[i].toFixed(1) ) + '%' : maxDecimal === 0 && typeof barNumber === 'string' ? parseInt(barNumber) : barNumber ;
 
         if ( stacked === false ) { 
 
@@ -661,7 +666,7 @@ public componentDidUpdate(prevProps){
     );
   }
 
-  private onAccordionClick( item ) {
+  private onAccordionClick( item: any ) {
 
     
     //This sends back the correct pivot category which matches the category on the tile.
@@ -726,7 +731,7 @@ public componentDidUpdate(prevProps){
 
   }
 
-  private onClick(item) {
+  private onClick(item: any ) {
 
     //This sends back the correct pivot category which matches the category on the tile.
     let e: any = event;

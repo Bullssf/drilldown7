@@ -74,8 +74,8 @@ export function buildStatChartsArray(  stats: IRefinerStat[], callBackID: string
                 let theseStats = refinerObj['stat' + i] ;
                 let finalStats = [];
                 let theseCount = refinerObj['stat' + i + 'Count'];
-                let total = null;
-                let totalDiv = null;
+                let total: number | null = null;
+                let totalDiv: number | null = null;
                 if ( s.stat === 'avg' ) {
                     theseStats.map( ( v, iV ) => {
                         finalStats.push( theseCount[ iV ] == 0 ? null : v / theseCount[ iV ] ) ;
@@ -86,15 +86,15 @@ export function buildStatChartsArray(  stats: IRefinerStat[], callBackID: string
                 } else { 
                     finalStats = JSON.parse( JSON.stringify( theseStats ) ) ;
                     if ( s.stat === 'count' ) {
-                        theseCount.map( ( v ) => { total += v; });
+                        theseCount.map( ( v: any ) => { total += v; });
                     } else if ( s.stat === 'min' ) {
-                        theseStats.map( ( v ) => { if ( total === null || v < total ) { total = v; }  });
+                        theseStats.map( ( v: any ) => { if ( total === null || v < total ) { total = v; }  });
                     } else if ( s.stat === 'max' ) {
-                        theseStats.map( ( v ) => { if ( total === null || v > total ) { total = v; }  });
+                        theseStats.map( ( v: any ) => { if ( total === null || v > total ) { total = v; }  });
                     } else if ( s.stat === 'sum' ) {
-                        theseStats.map( ( v ) => { total += v; });
+                        theseStats.map( ( v: any ) => { total += v; });
                     }
-                    
+
                 }
 
                 let chartKey : string = labels.join('') + theseCount.join('');

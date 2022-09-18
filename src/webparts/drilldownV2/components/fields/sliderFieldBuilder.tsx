@@ -4,7 +4,7 @@ import * as React from 'react';
 
 import { Slider, } from 'office-ui-fabric-react/lib/Slider';
 
-export function createSlider(maxTime , timeSliderInc, timeSliderValue, _onChange){
+export function createSlider(maxTime: number , timeSliderInc: number, timeSliderValue: any, _onChange: any){
 
   return (
     <div style={{minWidth: 400, }}>

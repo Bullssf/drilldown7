@@ -6,7 +6,7 @@
 
 // import { createAboutRow } from '../../fpsReferences';
 
-export function futureContent( ) {
+export function futureContent( ): any {
 
     return null;
 

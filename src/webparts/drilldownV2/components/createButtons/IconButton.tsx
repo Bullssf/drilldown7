@@ -15,7 +15,7 @@ export const defCommandIconStyles = {
  },
 };
 
-export function createIconButton(iconName, titleText, _onClick, thisID,  iconStyles){
+export function createIconButton(iconName: string, titleText: string, _onClick: any, thisID: string,  iconStyles: any){
 
     if ( iconStyles == null ) { iconStyles = defCommandIconStyles ; }
 

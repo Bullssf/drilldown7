@@ -105,6 +105,12 @@ import { defaultBannerCommandStyles } from '../../fpsReferences';
  *                                                                                                                                 
  */
 
+export interface IClickInfo  {
+  isAltClick : boolean | '!Value'; //NO IDEA WHY THIS IS TYPED THIS WAY
+  isShfitClick : boolean;
+  isCtrlClick : boolean;
+  validText : string;
+}
 
 export default class DrillDown extends React.Component<IDrillDownProps, IDrillDownState> {
 
@@ -138,7 +144,7 @@ export default class DrillDown extends React.Component<IDrillDownProps, IDrillDo
  
      private _buildNearBannerElements() {
        //See banner/NearAndFarSample.js for how to build this.
-       let elements = [];
+       let elements: any[] = [];
        // defaultBannerCommandStyles.fontWeight = 'bolder';
        // elements.push(<div style={{ paddingRight: null }} className={ '' } title={ title}>
        //   <Icon iconName='WindDirection' onClick={ this.jumpToParentSite.bind(this) } style={ defaultBannerCommandStyles }></Icon>
@@ -213,7 +219,7 @@ export default class DrillDown extends React.Component<IDrillDownProps, IDrillDo
      /**
       * This builds the custom stat charts (that are set to consumer = 0 --> inside this webpart)
       */
-    private _buildStatCharts(  statArray) {
+    private _buildStatCharts(  statArray: any[]) {
 
         let statChart = null;
         let theseCharts : any[] = [];
@@ -600,7 +606,7 @@ export default class DrillDown extends React.Component<IDrillDownProps, IDrillDo
  *                                                                                         
  */
 
-public componentDidUpdate(prevProps){
+public componentDidUpdate( prevProps: IDrillDownProps ){
 
     let rebuildPart = false;
 
@@ -782,7 +788,7 @@ public componentDidUpdate(prevProps){
             }
 
             if ( this.props.errMessage ) {
-                let issues = this.props.errMessage.split(';');
+                let issues : string[] = this.props.errMessage.split(';');
                 let issueElements = issues.map( issue => {
                     return <li>{ issue } </li>;
                 });
@@ -1051,7 +1057,7 @@ public componentDidUpdate(prevProps){
                         *                                                                    
                         */
 
-                    let countCharts = [];
+                    let countCharts : any[] = [];
                     let statCharts = [];
                     let statRefinerObject = null;
                     let buildStats = this.state.drillList.refinerStats && this.state.drillList.refinerStats.length > 0 ? true : false;
@@ -1242,7 +1248,7 @@ public componentDidUpdate(prevProps){
 
     }
 
-    private _addTheseItemsToState( drillList: IDrillList, allItems , errMessage : string, refinerObj: IRefinerLayer ) {
+    private _addTheseItemsToState( drillList: IDrillList, allItems: IDrillItemInfo[] , errMessage : string, refinerObj: IRefinerLayer ) {
 
         this._performance.analyze2 = startPerformOp( 'analyze2 addItems', this.props.displayMode );
 
@@ -1369,7 +1375,7 @@ public componentDidUpdate(prevProps){
         return true;
     }
 
-    private _createThisPivotCat ( title, desc, order ) {
+    private _createThisPivotCat ( title: string, desc: any, order: number ) {
 
         let pivCat : IMyPivCat = {
             title: title,
@@ -1470,50 +1476,48 @@ public componentDidUpdate(prevProps){
         return '';
     }
 
-    public _getValidCountFromClickItem( item, validText: string) {
+    public _getValidCountFromClickItem( item: any, validText: string) {
         if ( this.state.showRefinerCounts === true ) {
             let countOf = this._findCountOfAriaLabel( item );
             validText = validText.replace(' ('+countOf+')','');
         }
         return validText;
     }
-    public _searchForText = (item): void => {
+    public _searchForText = (item: any): void => {
         //This sends back the correct pivot category which matches the category on the tile.
         let searchString = item && item.target && item.target.value ? item.target.value : '';
         this._searchForItems( searchString, this.state.searchMeta, 0, 'text' );
     }
 
     //This function works great for Pivots, not neccessarily anything with icons.
-    public _onSearchForMetaPivot0 = (item): void => {
+    public _onSearchForMetaPivot0 = (item: any): void => {
         //This sends back the correct pivot category which matches the category on the tile.
         let validText = item.props.itemKey;
         this._searchForItems( this.state.searchText, [validText], 0, 'meta' );
     }
 
 
-    private _getClickInfo ( e , item ) {
+    private _getClickInfo ( e: MouseEvent , item: any ) : IClickInfo {
 
         //This sends back the correct pivot category which matches the category on the tile.
         let validText = this._findMatchtingElementText( item );
         this._consoleClick( 'getClickInfo1 - validText' , validText );
         validText = this._getValidCountFromClickItem( item, validText );
         this._consoleClick( 'getClickInfo2 - validText' , validText );
-        let clickInfo = {
+        let clickInfo: IClickInfo = {
             isAltClick : e.altKey,
             isShfitClick : e.shiftKey,
             isCtrlClick : e.ctrlKey,
             validText : validText,
         };
         this._consoleClick( 'getClickInfo - clickInfo' , clickInfo );
-
-
         return clickInfo;
 
     }
     //This function works great for Pivots, not neccessarily anything with icons.
-    public _onSearchForMetaCmd0 = (item): void => {
+    public _onSearchForMetaCmd0 = (item: any): void => {
         let e: any = event;
-        let clickInfo = this._getClickInfo( e, item );
+        let clickInfo: IClickInfo = this._getClickInfo( e, item );
         if ( clickInfo.isAltClick === '!Value' ) {
             this._changeRefinerOrder('refiner0', clickInfo.validText ) ;
         } else {
@@ -1521,13 +1525,13 @@ public componentDidUpdate(prevProps){
         }
     }
 
-    public _onSearchForMetaPivot1= (item): void => {
+    public _onSearchForMetaPivot1= (item: any): void => {
         this._onSearchForMeta1(item.props.itemKey);
     }
 
-    public _onSearchForMetaCmd1= (item): void => {
+    public _onSearchForMetaCmd1= (item: any): void => {
         let e: any = event;
-        let clickInfo = this._getClickInfo( e, item );
+        let clickInfo: IClickInfo = this._getClickInfo( e, item );
         if ( clickInfo.isAltClick === '!Value' ) {
             this._changeRefinerOrder('refiner1', clickInfo.validText ) ;
         } else {
@@ -1535,7 +1539,7 @@ public componentDidUpdate(prevProps){
         }
     }
 
-    public _onSearchForMeta1 (validText) {
+    public _onSearchForMeta1 (validText: string) {
         //This sends back the correct pivot category which matches the category on the tile.
         //let e: any = event;
         //console.log('searchForItems: e',e);
@@ -1555,11 +1559,11 @@ public componentDidUpdate(prevProps){
         this._searchForItems( this.state.searchText, newMeta, 1, 'meta' );
       }
 
-    public _onSearchForMetaPivot2= (item): void => {
+    public _onSearchForMetaPivot2= (item: any): void => {
         this._onSearchForMeta2(item.props.itemKey);
     }
 
-    public _onSearchForMetaCmd2= (item): void => {
+    public _onSearchForMetaCmd2= (item: any): void => {
         let e: any = event;
         let clickInfo = this._getClickInfo( e, item );
         if ( clickInfo.isAltClick === '!Value' ) {
@@ -1569,7 +1573,7 @@ public componentDidUpdate(prevProps){
         }
     }
 
-  public _onSearchForMeta2 = (validText): void => {
+  public _onSearchForMeta2 = (validText: string): void => {
     //This sends back the correct pivot category which matches the category on the tile.
     //let e: any = event;
     //console.log('searchForItems: e',e);
@@ -1591,24 +1595,24 @@ public componentDidUpdate(prevProps){
 
     private _changeRefinerOrder1() { 
         let e: any = event;
-        let clickInfo = this._getClickInfo( e, null );
+        let clickInfo: IClickInfo = this._getClickInfo( e, null );
         this._changeRefinerOrder( 'refiner1', clickInfo );
     }
 
     private _changeRefinerOrder2() {
         let e: any = event;
-        let clickInfo = this._getClickInfo( e, null );
+        let clickInfo: IClickInfo = this._getClickInfo( e, null );
         this._changeRefinerOrder( 'refiner2', clickInfo );  
     }
 
-  private _changeRefinerOrder( newLeadRefiner: string, clickInfo ) {
+  private _changeRefinerOrder( newLeadRefiner: string, clickInfo: any ) {
 
     let refiners: string[] = [];
     let refinersOrig: string[] = JSON.parse(JSON.stringify( this.state.refiners ));
     let refinerRulesNew: IRefinerRules[][] = [];
     let refinerRulesOrig: IRefinerRules[][] = JSON.parse(JSON.stringify( this.state.drillList.refinerRules ));
 
-    let newOrder = [];
+    let newOrder: number[] = [];
     if ( newLeadRefiner === 'refiner0' ) {
         newOrder = clickInfo.isAltClick !== true ? [0,1,2] : [1,0,2];
         
@@ -1665,12 +1669,6 @@ public componentDidUpdate(prevProps){
 
   private _getCurrentRefinerTree(newMeta: string[] ) {
 
-    let result = {
-        refinerTree: null,
-        countTree: null,
-        multiTree: null,
-    };
-
     let refinerTree: any[] = [];  
     let countTree: any[] = [];
     let multiTree: any[] = [];
@@ -1705,7 +1703,7 @@ public componentDidUpdate(prevProps){
         }
     }
 
-    result = {
+    const result = {
         refinerTree: refinerTree,
         countTree: countTree,
         multiTree: multiTree,
@@ -1753,7 +1751,7 @@ public componentDidUpdate(prevProps){
         let refinerMulit = refinerTreeObj.multiTree;
         let sendCount = refinerCount;
 
-        pivotCats.push ( refinerTree[0].map( r => { return this._createThisPivotCat(r,'',0); })); // Recreate first layer of pivots
+        pivotCats.push ( refinerTree[0].map( ( r: any ) => { return this._createThisPivotCat(r,'',0); })); // Recreate first layer of pivots
         cmdCats.push ( this._convertRefinersToCMDs( newMeta, refinerTree[0], sendCount[0], layer, 0, refinerObj ));
 
         if ( newMeta.length === 1 && newMeta[0] === 'All'){  //For some reason this was giving False when it should be true: if ( newMeta === ['All'] ) { }
@@ -1766,12 +1764,12 @@ public componentDidUpdate(prevProps){
         } else { // Add new layer
 
             if ( refinerTree.length > 1 ) { 
-                pivotCats.push ( refinerTree[1].map( r => { return this._createThisPivotCat(r,'',0); })); // Recreate first layer of pivots
+                pivotCats.push ( refinerTree[1].map( ( r: any ) => { return this._createThisPivotCat(r,'',0); })); // Recreate first layer of pivots
                 cmdCats.push ( this._convertRefinersToCMDs( newMeta, refinerTree[1], sendCount[1], layer, 1, refinerObj));
             }
 
             if ( refinerTree.length > 2 ) {
-                pivotCats.push ( refinerTree[2].map( r => { return this._createThisPivotCat(r,'',0); })); // Recreate first layer of pivots
+                pivotCats.push ( refinerTree[2].map( ( r: any ) => { return this._createThisPivotCat(r,'',0); })); // Recreate first layer of pivots
                 cmdCats.push ( this._convertRefinersToCMDs( newMeta, refinerTree[2], sendCount[2], layer, 2, refinerObj));
             }
         }
@@ -1990,7 +1988,7 @@ public componentDidUpdate(prevProps){
             name: 'All',
             key: 'All',
             checked: 'All' === newMeta[layer] ? true : false ,
-            icon: null,
+            icon: '',
             count: arrSum,
         });
 
@@ -2074,7 +2072,7 @@ public componentDidUpdate(prevProps){
         return pivotWeb;
       }
 
-      private _getRefinerPivots(layer) {
+      private _getRefinerPivots(layer: number) {
 
         let thesePivots = [ ];
         if ( this.state.pivotCats.length === 0 ) {

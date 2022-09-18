@@ -11,7 +11,17 @@ export const transp = 'transparent';
 
 type PaneType = 'piv' | 'proj' | 'list' | 'entry' | 'command' | 'charts' | 'time' | 'category' | 'projectID' | 'activity';
 
-export const colorMap = {
+export interface IColorMap {
+  [key: string]: string;
+  piv: string;
+  proj: string;
+  list: string;
+  entry: string;
+  command: string;
+  charts: string;
+}
+
+export const colorMap: IColorMap = {
     piv: myLilac,
     proj: myGreen,
     list: myYellow,
@@ -24,14 +34,14 @@ let piv = myLilac;
 let proj = myOrange;
 
 
-export function styleRootBGColor(debugMode, part: PaneType ) {
+export function styleRootBGColor(debugMode: string, part: PaneType ) {
     return { root: {
                 backgroundColor: debugMode ? colorMap[part] : transp,
                 borderColor: debugMode ? defBorder : transp,
             }};
 }
 
-export function styleBGColor(debugMode, part: PaneType ) {
+export function styleBGColor(debugMode: string, part: PaneType ) {
     return { 
         backgroundColor: debugMode ? colorMap[part] : transp,
         borderColor: debugMode ? defBorder : transp,

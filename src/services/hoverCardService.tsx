@@ -6,7 +6,7 @@ import * as React from 'react';
 import { HoverCard, HoverCardType } from 'office-ui-fabric-react/lib/HoverCard';
 import { Icon  } from 'office-ui-fabric-react/lib/Icon';
 
-import styles from '../webparts/drilldown7/components/Contents/listView.module.scss';
+import styles from '../webparts/drilldownV2/components/Contents/listView.module.scss';
 
 import { mergeStyles } from 'office-ui-fabric-react/lib/Styling';
 import { Fabric, Stack, IStackTokens, initializeIcons } from 'office-ui-fabric-react';

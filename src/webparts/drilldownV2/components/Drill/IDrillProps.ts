@@ -92,7 +92,17 @@ import { IDrillItemInfo } from '../../fpsReferences';
  *                                                                             
  */
 
-export const pivCats = {
+export interface IPivCats {
+  all: IMyPivCat;
+  newWebs: IMyPivCat;
+  recCreate: IMyPivCat;
+  oldCreate: IMyPivCat;
+  recUpdate: IMyPivCat;
+  oldUpdate: IMyPivCat;
+
+}
+
+export const pivCats: IPivCats= {
     all: {title: 'All', desc: '', order: 1, count: null },
     newWebs: {title: 'New' , desc: '', order: 1, count: null },
     recCreate:  {title: 'RecentlyCreated' , desc: '', order: 1, count: null },
@@ -285,7 +295,7 @@ export interface IDrillDownProps extends IFPSCorePinMeReactComponentProps {
 }
 
   export interface ICSSChartData {
-    
+  [key: string]: string | number | number[] | any[] | boolean | string[] | undefined;
     axisTitle?: string;
     val1?: number[];
     percents?: any[];
@@ -309,6 +319,7 @@ export interface IDrillDownProps extends IFPSCorePinMeReactComponentProps {
   }
 
   export interface ICSSChartSettings {
+    [key: string]: string | number | ICSSChartTypes[] | any[] | boolean | undefined;
     title: string;
 
     chartTypes: ICSSChartTypes[];

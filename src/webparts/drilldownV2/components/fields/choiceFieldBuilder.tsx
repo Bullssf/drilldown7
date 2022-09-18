@@ -4,7 +4,7 @@ import * as React from 'react';
 
 import { ChoiceGroup, IChoiceGroupOption } from 'office-ui-fabric-react/lib/ChoiceGroup';
 
-export function createAdvancedContentChoices( selectedKey: string, _onChange){
+export function createAdvancedContentChoices( selectedKey: string, _onChange: any){
 
   let options : IChoiceGroupOption[] = [];
   let choiceSpacer = '\u00A0\u00A0';
@@ -41,7 +41,7 @@ Entry Type Choices need to match these:  \src\services\propPane\WebPartSettingsP
 
 */
 
-export function creatEntryTypeChoices(selectedKey: string, _onChange){
+export function creatEntryTypeChoices(selectedKey: string, _onChange: any){
 
   let options : IChoiceGroupOption[] = [];
   let choiceSpacer = '\u00A0\u00A0';
@@ -66,7 +66,7 @@ export function creatEntryTypeChoices(selectedKey: string, _onChange){
   );
 }
 
-export function creatChartChoices( selectedKey: string, _onChange){
+export function creatChartChoices( selectedKey: string, _onChange: any){
 
   let options : IChoiceGroupOption[] = [];
   let choiceSpacer = '\u00A0\u00A0';
@@ -96,7 +96,7 @@ export function creatChartChoices( selectedKey: string, _onChange){
 
 
 
-export function creatInfoChoices( selectedKey: string, _onChange){
+export function creatInfoChoices( selectedKey: string, _onChange: any){
 
   let options : IChoiceGroupOption[] = [];
   let choiceSpacer = '\u00A0\u00A0';

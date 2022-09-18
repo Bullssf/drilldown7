@@ -150,7 +150,7 @@ export default class ReactListItems extends React.Component<IReactListItemsProps
 
   private _componentWidth: number = null;
 
-    private createAttachPanel () {
+    private createAttachPanel () : any {
         return null;
     }
 
@@ -280,7 +280,7 @@ export default class ReactListItems extends React.Component<IReactListItemsProps
                             {buttons}
                         </Stack>;
     
-                        let styleRows = {paddingBottom: 10};
+                        let styleRows: any = {paddingBottom: 10};
                         if ( quickCommands.styleRow ) {
                             try {
                                 Object.keys(quickCommands.styleRow).map( k => {
@@ -497,7 +497,7 @@ export default class ReactListItems extends React.Component<IReactListItemsProps
              *                                                              
              */
 
-            let toggles = !this.state.showPanel ? null : <div style={{ float: 'right' }}> { makeToggles(this.getPageToggles( this.state.panelWidth )) } </div>;
+            let toggles = !this.state.showPanel ? null : <div style={{ float: 'right' }}> { makeToggles(this.getPageToggles( )) } </div>;
 
             const itemLink: any = <div style={{ cursor: 'pointer', fontSize: 'larger', 'fontWeight': 600, color: 'darkblue', padding: '10px 10px 10px 0px', margin: '20px 0px' }} 
               onClick={ () => { window.open( this.state.panelItem.goToPropsLink, '_blank' ) ; }}>Click to open item</div>;
@@ -562,7 +562,7 @@ export default class ReactListItems extends React.Component<IReactListItemsProps
                 </Panel>;
             }
 
-            let viewFieldsBase = this.state.viewFields;
+            let viewFieldsBase: IViewField[] = this.state.viewFields;
             let attachField = [];
             if ( this.props.includeAttach ) {
                 //Add attachments column:
@@ -583,8 +583,7 @@ export default class ReactListItems extends React.Component<IReactListItemsProps
 
             let viewFields = attachField.concat( viewFieldsBase );
 
-
-            let filtered = [];
+            let filtered : IDrillItemInfo[]= [];
             this.props.items.map( ( item, idx ) => {
 
               if ( idx >= this.state.firstVisible && idx <= this.state.lastVisible ) {
@@ -755,7 +754,7 @@ export default class ReactListItems extends React.Component<IReactListItemsProps
 
  //private async ensureTrackTimeList(myListName: string, myListDesc: string, ProjectOrTime: string): Promise<boolean> {
      
-    private _panelButtonClicked = ( item ) : void => {
+    private _panelButtonClicked = ( item: any ) : void => {
 
         let e: any = event;
         let thisID = findParentElementPropLikeThis(e.target, 'id', 'ButtonID', 5, 'begins');
@@ -779,7 +778,7 @@ export default class ReactListItems extends React.Component<IReactListItemsProps
      * Open the dialog
      */
     //private _confirmUpdateDialog = () => {
-    private _confirmUpdateDialog = (item): void => {
+    private _confirmUpdateDialog = (item: any): void => {
 
         let e: any = event;
         
@@ -804,12 +803,12 @@ export default class ReactListItems extends React.Component<IReactListItemsProps
 
     private async startThisQuickUpdate ( thisID: string ) {
 
-        let buttonID = thisID.split(this.delim);
+        const buttonID = thisID.split(this.delim);
         //let buttonID = ['ButtonID', r, i , item.Id].join(this.delim);
-        let buttonRow = buttonID[1];
-        let buttonIndex = buttonID[2];
-        let itemId = buttonID[3];
-        let thisButtonObject : IQuickButton = this.props.quickCommands.buttons[ buttonRow ][ buttonIndex ];
+        const buttonRow: any = buttonID[1];
+        const buttonIndex: any = buttonID[2];
+        const itemId = buttonID[3];
+        const thisButtonObject : IQuickButton = this.props.quickCommands.buttons[ buttonRow ][ buttonIndex ];
 
         if ( !thisButtonObject ) {
             alert('_panelButtonClicked - can not find thisButtonObject - ' + thisID );
@@ -898,7 +897,7 @@ export default class ReactListItems extends React.Component<IReactListItemsProps
  *                                                                                         
  */
 
-    private _onShowPanel = (item): void => {
+    private _onShowPanel = (item: any): void => {
   
         let e: any = event;
         console.log('_onShowPanel: e',e);
@@ -960,7 +959,7 @@ export default class ReactListItems extends React.Component<IReactListItemsProps
 
     private _getItemFromId( items: IDrillItemInfo[], key: string, val: any ) {
         let panelItem : IDrillItemInfo =  null;
-        let showIndex = doesObjectExistInArray(this.props.items, key, val, false);
+        let showIndex: any | false = doesObjectExistInArray(this.props.items, key, val, false);
         if (showIndex !== false ) {
             panelItem = this.props.items[showIndex];
             console.log('showPanelPropsItem', panelItem );
@@ -1019,7 +1018,7 @@ export default class ReactListItems extends React.Component<IReactListItemsProps
      *                                                                   
      */
 
-    private getPageToggles( showStats ) {
+    private getPageToggles( ) {
 
         let togRefinerCounts = {
             //label: <span style={{ color: 'red', fontWeight: 900}}>Rails Off!</span>,

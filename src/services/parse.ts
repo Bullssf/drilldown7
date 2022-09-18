@@ -20,7 +20,7 @@ import { GetFirstWord, GetLastWord } from '@mikezimm/npmfunctions/dist/Services/
 import { checkDeepProperty } from '@mikezimm/npmfunctions/dist/Services/Objects/properties';
 import { replaceHTMLEntities } from '@mikezimm/npmfunctions/dist/Services/Strings/html';
 
-import { getDetailValueType } from '../webparts/drilldown7/fpsReferences';
+import { getDetailValueType } from '../webparts/drilldownV2/fpsReferences';
 import { truncate } from '@microsoft/sp-lodash-subset';
 
 
@@ -103,7 +103,7 @@ export function createItemFunctionProp ( staticColumn: string, item: any, defaul
 
   let splitCol = staticColumn.split("/");
   let rightSide = splitCol[ splitCol.length -1 ];
-  let leftSide = [];
+  let leftSide: string[] = [];
   let itemLeftSide: any = null;
 
     /**
@@ -166,7 +166,7 @@ export function createItemFunctionProp ( staticColumn: string, item: any, defaul
 
   //Get an array of all the individual item types (for multi-select items)
   if ( isMultiSelect === true ) {
-    itemLeftSide.map ( singleItem => { itemTypes.push( getDetailValueType( singleItem ) ) ; } );
+    itemLeftSide.map ( ( singleItem: any ) => { itemTypes.push( getDetailValueType( singleItem ) ) ; } );
   } else { itemTypes.push( detailType ) ; }
 
 
