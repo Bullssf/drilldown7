@@ -2045,7 +2045,7 @@ public componentDidUpdate( prevProps: IDrillDownProps ){
 
 
 
-    public _createPivotObject(setPivot, display, layer){
+    public _createPivotObject(setPivot: string, display: string, layer:number){
 
         let theseStyles = null;
         let onLinkClick : any = null;
@@ -2141,7 +2141,7 @@ public componentDidUpdate( prevProps: IDrillDownProps ){
 
     }
 
-    private _getPageToggles( showStats ) {
+    private _getPageToggles( showStats: boolean ) {
 
         let togRefinerCounts = {
             //label: <span style={{ color: 'red', fontWeight: 900}}>Rails Off!</span>,
