@@ -129,9 +129,9 @@ export function saveViewAnalytics( Title: string, Result: string, thisProps: IDr
     };
 
 
-    const zzzRichText1Obj = null;
-    const zzzRichText2Obj = null;
-    const zzzRichText3Obj = null;
+    const zzzRichText1Obj: any = null;
+    const zzzRichText2Obj: any = null;
+    const zzzRichText3Obj: any = null;
 
     console.log( 'zzzRichText1Obj:', zzzRichText1Obj);
     console.log( 'zzzRichText2Obj:', zzzRichText2Obj);

@@ -341,7 +341,7 @@ public componentDidUpdate(prevProps: IResizeGroupOverflowSetExampleProps){
   }
 
   
-  private _sampleOnClick = (item): void => {
+  private _sampleOnClick = (item: any): void => {
     //This sends back the correct pivot category which matches the category on the tile.
     let e: any = event;
     alert('Hi! you clicked: ' +  e.target.innerText );
