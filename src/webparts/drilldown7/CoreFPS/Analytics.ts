@@ -104,7 +104,7 @@ export const analyticsWeb: string = "/sites/Templates/Analytics/";
 // }
 
 
-export const CodeVersion = 'SPFx 1.14 v2';  //  ==>  https://github.com/mikezimm/drilldown7/issues/190
+export const CodeVersion = 'v1.3.2.3 +';  //  ==>  https://github.com/mikezimm/drilldown7/issues/190
 export function saveViewAnalytics( Title: string, Result: string, thisProps: IDrillDownProps, analyticsWasExecuted: boolean, performanceObj: ILoadPerformance ) : boolean {
 
   if ( analyticsWasExecuted === true ) {

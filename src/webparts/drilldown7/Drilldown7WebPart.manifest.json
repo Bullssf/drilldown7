@@ -13,14 +13,15 @@
   // https://support.office.com/en-us/article/Turn-scripting-capabilities-on-or-off-1f2c515f-5d7e-448a-9fd7-835da935584f
   "requiresCustomScript": false,
   "supportsFullBleed": true,
+  // "hiddenFromToolbox": true,
   "supportedHosts": ["SharePointWebPart", "SharePointFullPage"],
 
   "preconfiguredEntries": [{
     "groupId": "5c03119e-3074-46fd-976b-c60198311f70", // Other
     "group": { "default": "Other" },
-    "title": { "default": "Drilldown Filters" },
-    "description": { "default": "Drilldown cascading filters" },
-    "officeFabricIconFontName": "DrillExpand",
+    "title": { "default": "Deprecated - Drilldown Filters" },
+    "description": { "default": "Deprecated - Drilldown cascading filters" },
+    "officeFabricIconFontName": "IncidentTriangle", // "DrillExpand",
     "properties": {
       "viewJSON1": "[{ \"name\": \"Id\", \"displayName\": \"Id\", \"minWidth\": 50 },{ \"name\": \"Title\", \"displayName\": \"Title\", \"minWidth\": 200 },{ \"name\": \"Created\", \"displayName\": \"Created\", \"minWidth\": 200 },{ \"name\": \"Modified\", \"displayName\": \"Modified\", \"minWidth\": 200 }]",
       "viewJSON2": "[{ \"name\": \"Id\", \"displayName\": \"Id\", \"minWidth\": 50 },{ \"name\": \"Title\", \"displayName\": \"Title\", \"minWidth\": 200 },{ \"name\": \"Modified\", \"displayName\": \"Modified\", \"minWidth\": 200 }]",

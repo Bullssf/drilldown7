@@ -1,9 +1,9 @@
 {
   "$schema": "https://developer.microsoft.com/json-schemas/spfx-build/package-solution.schema.json",
   "solution": {
-    "name": "Drilldown7 Unique functionality to drill down on data",
+    "name": "DEPRECATED Drilldown7 please Upgrade",
     "id": "bdcf72e6-9215-4cba-9b02-892e5eab42f8",
-    "version": "1.3.2.1",
+    "version": "1.3.2.3",
     "includeClientSideAssets": true,
     "isDomainIsolated": false,
     "developer": {
@@ -15,10 +15,10 @@
     },
     "metadata": {
       "shortDescription": {
-        "default": "drilldown-7 description"
+        "default": "DEPRECATED - drilldown-7 description"
       },
       "longDescription": {
-        "default": "drilldown-7 description"
+        "default": "DEPRECATED - drilldown-7 description"
       },
       "screenshotPaths": [],
       "videoUrl": "",
