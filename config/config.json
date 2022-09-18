@@ -2,19 +2,17 @@
   "$schema": "https://developer.microsoft.com/json-schemas/spfx-build/config.2.0.schema.json",
   "version": "2.0",
   "bundles": {
-    "drilldown-7-web-part": {
+    "drilldown-v-2-web-part": {
       "components": [
         {
-          "entrypoint": "./lib/webparts/drilldown7/Drilldown7WebPart.js",
-          "manifest": "./src/webparts/drilldown7/Drilldown7WebPart.manifest.json"
+          "entrypoint": "./lib/webparts/drilldownV2/DrilldownV2WebPart.js",
+          "manifest": "./src/webparts/drilldownV2/DrilldownV2WebPart.manifest.json"
         }
       ]
     }
   },
   "externals": {},
   "localizedResources": {
-    "Drilldown7WebPartStrings": "lib/webparts/drilldown7/loc/{locale}.js",
-    "ControlStrings": "node_modules/@pnp/spfx-controls-react/lib/loc/{locale}.js",
-    "PropertyControlStrings": "node_modules/@pnp/spfx-property-controls/lib/loc/{locale}.js"
+    "DrilldownV2WebPartStrings": "lib/webparts/drilldownV2/loc/{locale}.js"
   }
 }
