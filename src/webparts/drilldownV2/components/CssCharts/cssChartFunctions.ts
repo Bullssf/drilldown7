@@ -23,7 +23,7 @@ export function buildCountChartsObject( title: string, callBackID: string, refin
         valueIsCount: true,
 
         //This needs to match the property in chartData that has the data so it's hard coded to match it below
-        barValues: 'val1',  
+        barValues: 'val1',
 
         stylesChart: { paddingBottom: 0, marginBottom: 0, marginTop: 0},
         isCollapsed: 1,
@@ -54,6 +54,14 @@ export function buildCountChartsObject( title: string, callBackID: string, refin
 
 }
 
+/**
+ * 
+ * @param stats 
+ * @param callBackID 
+ * @param refinerObj 
+ * @param consumer 
+ * @returns 
+ */
 export function buildStatChartsArray(  stats: IRefinerStat[], callBackID: string, refinerObj: IRefinerLayer , consumer: 0 | 1 | 2 | 3 = 0 ) {
     let resultStatObject = null;
     let theseCharts : any[] = [];
@@ -66,18 +74,20 @@ export function buildStatChartsArray(  stats: IRefinerStat[], callBackID: string
     } else {
         stats.map( s => {
             i ++;
+            const statKey : string = `stat${i}`;
+            const statKeyCount : string = `stat${i}Count`;
             let thisConsumer = s.consumer ? s.consumer : 0 ;
 
             if ( consumer === thisConsumer ) {
 
                 let labels = refinerObj.childrenKeys ;
-                let theseStats = refinerObj['stat' + i] ;
+                let theseStats: number[] = refinerObj[statKey] as  number[] ;
                 let finalStats = [];
-                let theseCount = refinerObj['stat' + i + 'Count'];
+                let theseCount: number[] = refinerObj[statKeyCount] as  number[] ;
                 let total: number | null = null;
                 let totalDiv: number | null = null;
                 if ( s.stat === 'avg' ) {
-                    theseStats.map( ( v, iV ) => {
+                    theseStats.map( ( v: number, iV: number ) => {
                         finalStats.push( theseCount[ iV ] == 0 ? null : v / theseCount[ iV ] ) ;
                         total += v;
                         totalDiv += theseCount[ iV ];
@@ -86,13 +96,13 @@ export function buildStatChartsArray(  stats: IRefinerStat[], callBackID: string
                 } else { 
                     finalStats = JSON.parse( JSON.stringify( theseStats ) ) ;
                     if ( s.stat === 'count' ) {
-                        theseCount.map( ( v: any ) => { total += v; });
+                        theseCount.map( ( v: number ) => { total += v; });
                     } else if ( s.stat === 'min' ) {
-                        theseStats.map( ( v: any ) => { if ( total === null || v < total ) { total = v; }  });
+                        theseStats.map( ( v: number ) => { if ( total === null || v < total ) { total = v; }  });
                     } else if ( s.stat === 'max' ) {
-                        theseStats.map( ( v: any ) => { if ( total === null || v > total ) { total = v; }  });
+                        theseStats.map( ( v: number ) => { if ( total === null || v > total ) { total = v; }  });
                     } else if ( s.stat === 'sum' ) {
-                        theseStats.map( ( v: any ) => { total += v; });
+                        theseStats.map( ( v: number ) => { total += v; });
                     }
 
                 }

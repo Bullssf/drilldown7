@@ -319,7 +319,7 @@ export interface IDrillDownProps extends IFPSCorePinMeReactComponentProps {
   }
 
   export interface ICSSChartSettings {
-    [key: string]: string | number | ICSSChartTypes[] | any[] | boolean | undefined;
+    [key: string]: string | number | ICSSChartTypes[] | ILabelColor[] | any | boolean | undefined;
     title: string;
 
     chartTypes: ICSSChartTypes[];

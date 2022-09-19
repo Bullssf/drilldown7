@@ -1715,7 +1715,6 @@ public componentDidUpdate( prevProps: IDrillDownProps ){
 
   public _searchForItems = (text: string, newMeta: string[] , layer: number, searchType: 'meta' | 'text' ): void => {
 
-            
     consoleMe( 'searchForItems1: ' + text , this.state.allItems, this.state.drillList );
     let searchItems : IDrillItemInfo[] = this.state.allItems;
     let searchCount = searchItems.length;
@@ -1874,7 +1873,7 @@ public componentDidUpdate( prevProps: IDrillDownProps ){
             for ( let m in meta ) {
                 let itemMeta = thisSearchItem.refiners['lev' + m];
                 let metaM = typeof meta[m] === 'string' ? meta[m] : JSON.stringify(meta[m]); //Only make this so it's easier to debug.
-                if ( metaM == 'All' || metaM == '' || itemMeta.indexOf(metaM) > -1 ) {
+                if ( metaM == 'All' || metaM == '' || ( Array.isArray(itemMeta) && itemMeta.indexOf(metaM) > -1 ) ) {
                     if( searchString === '' || searchString.indexOf(text.toLowerCase()) > -1 ) {
                         showItem = true;
                     } else { showItem = false; searchFails ++; }

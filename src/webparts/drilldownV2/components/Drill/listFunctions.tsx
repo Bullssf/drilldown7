@@ -147,7 +147,7 @@ export function getAppropriateViewProp ( OrigViewDefs: ICustViewDef[], currentWi
     }
 }
 
-export async function updateReactListItem( webUrl: string, listName: string, Id: number, thisButtonObject : IQuickButton, sourceUserInfo: IUser, panelItem: IDrillItemInfo ): Promise<void>{
+export async function updateReactListItem( webUrl: string, listName: string, Id: number, thisButtonObject : IQuickButton, sourceUserInfo: IUser, panelItem: IDrillItemInfo ): Promise<string>{
 
 
     //lists.getById(listGUID).webs.orderBy("Title", true).get().then(function(result) {

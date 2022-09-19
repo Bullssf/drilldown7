@@ -563,7 +563,7 @@ export default class ReactListItems extends React.Component<IReactListItemsProps
             }
 
             let viewFieldsBase: IViewField[] = this.state.viewFields;
-            let attachField = [];
+            let attachField: IViewField[] = [];
             if ( this.props.includeAttach ) {
                 //Add attachments column:
                 let callBack = this.props.includeDetails ? null : this._onShowPanel.bind(this);

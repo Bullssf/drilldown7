@@ -24,7 +24,7 @@ import { PropertyFieldMultiSelect } from '@pnp/spfx-property-controls/lib/Proper
 // import { getHelpfullErrorV2 } from '../Logging/ErrorHandler';
 // import { JSON_Edit_Link } from './zReusablePropPane';
 
-import * as strings from 'Drilldown7WebPartStrings';
+import * as strings from 'DrilldownV2WebPartStrings';
 import { IDrilldown7WebPartProps } from '../../IDrilldown7WebPartProps';
 
 import { refinerRuleItems } from '../../fpsReferences';

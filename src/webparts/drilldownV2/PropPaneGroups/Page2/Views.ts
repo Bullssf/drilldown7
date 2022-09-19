@@ -18,7 +18,7 @@ import {
     // PropertyPaneHorizontalRule,
     PropertyPaneSlider
 } from '@microsoft/sp-property-pane';
-// import * as strings from 'Drilldown7WebPartStrings';
+// import * as strings from 'DrilldownV2WebPartStrings';
 // import { IDrilldown7WebPartProps } from '../IDrilldown7WebPartProps';
 import { JSON_Edit_Link  } from '../../fpsReferences';  //ValidLocalLanguages, 
 

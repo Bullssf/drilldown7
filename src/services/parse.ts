@@ -171,7 +171,7 @@ export function createItemFunctionProp ( staticColumn: string, item: any, defaul
 
 
   //Added this to apply rules to multi-select items
-  arrayOfItemValues.map( ( singleItemValue, idx ) => {
+  arrayOfItemValues.map( ( singleItemValue: any, idx: number ) => {
 
     let singleItemType = itemTypes[ idx ];
 
