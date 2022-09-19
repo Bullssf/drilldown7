@@ -8,8 +8,6 @@ declare interface IDrilldownV2WebPartStrings {
   AppSharePointEnvironment: string;
   AppTeamsTabEnvironment: string;
 
-
-  
   // 0 - Context
   PropertyPaneDescription: string;
   BasicGroupName: string;

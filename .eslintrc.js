@@ -162,7 +162,7 @@ module.exports = {
         'accessor-pairs': 1,
         // RATIONALE:         In TypeScript, if you write x["y"] instead of x.y, it disables type checking.
         'dot-notation': [
-          1,
+          0,
           {
             'allowPattern': '^_'
           }
@@ -196,13 +196,13 @@ module.exports = {
         // STANDARDIZED BY:   eslint\conf\eslint-recommended.js
         'no-duplicate-case': 2,
         // STANDARDIZED BY:   eslint\conf\eslint-recommended.js
-        'no-empty': 1,
+        'no-empty': 0,
         // STANDARDIZED BY:   eslint\conf\eslint-recommended.js
         'no-empty-character-class': 2,
         // STANDARDIZED BY:   eslint\conf\eslint-recommended.js
         'no-empty-pattern': 1,
         // RATIONALE:         Eval is a security concern and a performance concern.
-        'no-eval': 1,
+        'no-eval': 0,
         // RATIONALE:         Catches code that is likely to be incorrect
         // STANDARDIZED BY:   eslint\conf\eslint-recommended.js
         'no-ex-assign': 2,
@@ -225,7 +225,7 @@ module.exports = {
         // RATIONALE:         Catches a common coding mistake.
         'no-label-var': 2,
         // RATIONALE:         Eliminates redundant code.
-        'no-lone-blocks': 1,
+        'no-lone-blocks': 0,
         // STANDARDIZED BY:   eslint\conf\eslint-recommended.js
         'no-misleading-character-class': 2,
         // RATIONALE:         Catches a common coding mistake.
@@ -290,7 +290,7 @@ module.exports = {
         //                    Always use "let" or "const" instead.
         //
         // STANDARDIZED BY:   @typescript-eslint\eslint-plugin\dist\configs\recommended.json
-        'no-var': 2,
+        'no-var': 0,
         // RATIONALE:         Generally not needed in modern code.
         'no-void': 1,
         // RATIONALE:         Obsolete language feature that is deprecated.

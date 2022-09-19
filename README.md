@@ -32,3 +32,14 @@ Copied CoreFPS, PropPaneGroups, fpsReferences
 
   '@typescript-eslint/explicit-function-return-type': [
   1,
+
+  'no-var': 2,
+
+  'no-lone-blocks': 1,
+
+  'no-eval': 1,
+
+  'no-empty': 1,
+
+  'dot-notation': [
+  1,
