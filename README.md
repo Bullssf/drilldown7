@@ -21,4 +21,14 @@ Copied CoreFPS, PropPaneGroups, fpsReferences
 
 
 ## .eslintrc.js updates
-  '@typescript-eslint/no-explicit-any': 0,
+  '@typescript-eslint/no-explicit-any': 1,
+
+  '@typescript-eslint/no-unused-vars': [
+          1,
+
+  'prefer-const': 1,
+
+  'eqeqeq': 1,
+
+  '@typescript-eslint/explicit-function-return-type': [
+  1,

@@ -626,25 +626,30 @@ export function updateRefinerStats( i: IDrillItemInfo , topKeyZ: number,  refine
             const statKeyCount : string = `stat${i2}Count`;
 
             let thisStat = drillList.refinerStats[i2].stat;
-            let thisValue = i.refiners[statKey];
-            let currentRefinerValue = refiners[statKey][topKeyZ];
+            let thisValue = i.refiners[statKey] ;
+            
+            const refinersStat: number[] = refiners[statKey] as number[];
+            const refinersStatCount: number[] = refiners[statKeyCount] as number[];
+
+            let currentRefinerValue = refinersStat[topKeyZ] ;
+            let currentRefinerCount = refinersStatCount[topKeyZ] ;
 
             if ( thisStat === 'count' ) {
-                refiners[statKey][topKeyZ] ++;
-                refiners[statKeyCount][topKeyZ] ++;
+                currentRefinerValue ++;
+                currentRefinerCount ++;
 
             } else if ( thisStat === 'sum' || thisStat === 'avg' || thisStat === 'daysAgo' || thisStat === 'monthsAgo' ) {
                 //Add numbers up here and divide by total count later
                 //Only add and count if there is an actual value.
                 if ( typeof thisValue === 'number' || typeof thisValue === 'bigint' ) {
-                    refiners[statKey][topKeyZ] += thisValue;
-                    refiners[statKeyCount][topKeyZ] ++;
+                    currentRefinerValue += thisValue as number;
+                    currentRefinerCount ++;
                 }
             } else if ( thisStat === 'max' ) {
                 if ( thisValue > currentRefinerValue || currentRefinerValue === null ) {
                     //Add numbers up here and divide by total count later
-                    refiners[statKey][topKeyZ] = thisValue;
-                    refiners[statKeyCount][topKeyZ] ++;
+                    currentRefinerValue = thisValue as number;
+                    currentRefinerCount ++;
                 } else {
                     console.log( 'no update: ' + thisValue + ' is NOT LARGER than ' +currentRefinerValue );
                 }
@@ -652,14 +657,17 @@ export function updateRefinerStats( i: IDrillItemInfo , topKeyZ: number,  refine
             } else if ( thisStat === 'min' ) {
                 if ( thisValue < currentRefinerValue || currentRefinerValue === null ) {
                     //Add numbers up here and divide by total count later
-                    refiners[statKey][topKeyZ] = thisValue;
-                    refiners[statKeyCount][topKeyZ] ++;
+                    currentRefinerValue = thisValue as number;
+                    currentRefinerCount ++;
                 } else {
                     console.log( 'no update: ' + thisValue + ' is NOT LESS than ' +currentRefinerValue );
                 }
 
 
             } else { console.log('Not sure what to do with this stat: ', thisStat, i.refiners ) ; }
+            
+            refinersStat[topKeyZ] = currentRefinerValue;
+            refinersStatCount[topKeyZ] = currentRefinerCount;
 
         }
     //}
@@ -682,13 +690,17 @@ export function updateThisRefiner( r0: any, topKeyZ: number,  thisRefiner0: any,
         topKeyZ = refiners.childrenKeys.length -1;
         //Add empty object in array for later use
         for ( let i2 in drillList.refinerStats ) {
+          //Updated this for ESLinting errors
             const statKey : string = `stat${i2}`;
             const statKeyCount : string = `stat${i2}Count`;
-            refiners[statKey].push(null);
-            refiners[statKeyCount].push(0);
+            const refinerStat: number[] = refiners[statKey] as number[] ;
+            const refinerStatCount: number[] = refiners[statKeyCount] as number[] ;
+            refinerStat.push(null);
+            refinerStatCount.push(0);
         }
 
     }
+
     refiners.multiCount ++;
     refiners.childrenCounts[topKeyZ] ++;
     refiners.childrenMultiCounts[topKeyZ] ++;
@@ -738,7 +750,7 @@ export function buildRefinersObject ( items: IDrillItemInfo[], drillList: IDrill
 
                 let topKey0 = refiners.childrenKeys.indexOf( thisRefiner0Str );
 
-                refiners =updateThisRefiner( r0, topKey0,  thisRefiner0, refiners, drillList );
+                refiners = updateThisRefiner( r0, topKey0,  thisRefiner0, refiners, drillList );
                 if (topKey0 < 0 ) { topKey0 = refiners.childrenKeys.length -1; }
                 refiners = updateRefinerStats( i , topKey0,  refiners, drillList );
 
