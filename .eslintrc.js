@@ -12,6 +12,30 @@ module.exports = {
         'sourceType': 'module'
       },
       rules: {
+
+        // https://www.voitanos.io/blog/sharepoint-framework-v1.15-and-the-attack-of-eslint
+        "@microsoft/spfx/no-async-await": "off",
+        "react/jsx-no-bind": "off",
+
+        //These I added just to clean up the warning messages
+        "react/no-unescaped-entities": "off",
+        "react/jsx-key": "off",
+        "no-useless-escape": "off",
+        "react/jsx-no-target-blank": "off",
+        "@typescript-eslint/no-for-in-array": "off",
+        "react/self-closing-comp": "off",
+        "no-cond-assign": "off",
+        "guard-for-in": "off",
+        "no-useless-concat": "off",
+        "@typescript-eslint/no-floating-promises": "off",
+        "@typescript-eslint/no-non-null-assertion": "off",
+        "@typescript-eslint/no-empty-function": "off",
+        "no-unused-expressions": "off",
+
+
+
+
+
         // Prevent usage of the JavaScript null value, while allowing code to access existing APIs that may require null. https://www.npmjs.com/package/@rushstack/eslint-plugin
         '@rushstack/no-new-null': 1,
         // Require Jest module mocking APIs to be called before any other statements in their code block. https://www.npmjs.com/package/@rushstack/eslint-plugin
