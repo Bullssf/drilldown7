@@ -38,6 +38,7 @@ export { IQuickCommands } from '@mikezimm/npmfunctions/dist/QuickCommands/IQuick
 
 export { IRefinerLayer, IRefinerRules, IRefinerStat, RefineRuleValues } from '@mikezimm/npmfunctions/dist/Refiners/IRefiners';
 export { IRefiners, IItemRefiners, IRefinerStats, IRefinerStatType, RefinerStatTypes, } from '@mikezimm/npmfunctions/dist/Refiners/IRefiners';
+export { IRefinerRulesInts, IRefinerRulesNums, IRefinerRulesStrs, IRefinerRulesTime, IRefinerRulesUser } from '@mikezimm/npmfunctions/dist/Refiners/IRefiners'; 
 
 export { IDrillItemInfo } from '@mikezimm/npmfunctions/dist/WebPartInterfaces/DrillDown/IDrillItem';
 

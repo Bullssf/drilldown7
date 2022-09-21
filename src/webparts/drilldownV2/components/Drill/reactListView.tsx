@@ -866,8 +866,8 @@ export default class ReactListItems extends React.Component<IReactListItemsProps
                 return k;
             });
             let bannerMessage: any = <div style={{ marginTop: '5px'}}> { [
-                <h3 style={{paddingTop: '10px'}}>Finished updating item [ {itemId} ]</h3>,
-                <div>Including: { updates.join(', ')} </div>
+                <h3 key="h3Finished" style={{paddingTop: '10px'}}>Finished updating item [ {itemId} ]</h3>,
+                <div  key="bannerIncluding">Including: { updates.join(', ')} </div>
             ] }</div>;
 
             this.props.quickCommands.refreshCallback( bannerMessage, false );

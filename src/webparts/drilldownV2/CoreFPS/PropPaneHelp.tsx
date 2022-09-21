@@ -13,6 +13,11 @@ import { RefinerRulesStrs, RefinerRulesInts, RefinerRulesNums, RefinerRulesTime,
 
 import { gitRepoDrillDownSmall } from '@mikezimm/npmfunctions/dist/Links/LinksRepos';
 
+import { ITrimB4, ITrimAfter, ITrimFunctions, ITrimLink, ITrimSpecial, ITrimTimes, ITrimWords } from '../../../services/getInterfaceV2';
+import { IRefinerLayer, IRefinerRules, IRefinerStat, RefineRuleValues } from '../fpsReferences';
+import { IRefiners, IItemRefiners, IRefinerStats, IRefinerStatType, RefinerStatTypes, } from '../fpsReferences';
+import { IRefinerRulesInts, IRefinerRulesNums, IRefinerRulesStrs, IRefinerRulesTime, IRefinerRulesUser } from '../fpsReferences';  //../fpsReferences
+
 import { BannerHelp, FPSBasicHelp, FPSExpandHelp, ImportHelp, SinglePageAppHelp, VisitorHelp, PinMeHelp } from '../fpsReferences';
 
 import { ISitePreConfigProps, SitePresetsInfo } from '../fpsReferences';
@@ -22,6 +27,7 @@ import { ISitePreConfigProps, SitePresetsInfo } from '../fpsReferences';
 import { DoNotExpandLinkColumns, DoNotExpandTrimB4, DoNotExpandTrimAfter, DoNotExpandTrimWords, DoNotExpandTrimTimes, DoNotExpandTrimSpecial } from '../../../services/getInterfaceV2';
 
 import ReactJson from "react-json-view";
+
 
 const SampleViewJSON : any = [
   // https://github.com/mikezimm/drilldown7/issues/161
@@ -167,23 +173,23 @@ export function getWebPartHelpElement ( sitePresets : ISitePreConfigProps ) {
 
             <div style={{ display: 'flex' }}>
                 <div style={ padRight40 }><div className={ 'fps-pph-topic' }>Split before character</div><ul>
-                  { DoNotExpandTrimB4.map( rule => <li>{ '/' + rule }</li> ) }
+                  { DoNotExpandTrimB4.map( ( rule : ITrimB4, idx: number) => <li key={ idx }>{ '/' + rule }</li> ) }
                 </ul></div>
                 <div style={ padRight40 }><div className={ 'fps-pph-topic' }>Split after character</div><ul>
-                  { DoNotExpandTrimAfter.map( rule => <li>{ '/' + rule }</li> ) }
+                  { DoNotExpandTrimAfter.map( ( rule : ITrimAfter, idx: number) => <li key={ idx }>{ '/' + rule }</li> ) }
                 </ul></div>
                 <div style={ padRight40 }><div className={ 'fps-pph-topic' }>Words</div><ul>
-                  { DoNotExpandTrimWords.map( rule => <li>{ '/' + rule }</li> ) }
+                  { DoNotExpandTrimWords.map( ( rule : ITrimWords, idx: number) => <li key={ idx }>{ '/' + rule }</li> ) }
                 </ul></div>
                 <div style={ padRight40 }><div className={ 'fps-pph-topic' }>Initials</div><ul>
-                  { DoNotExpandTrimSpecial.map( rule => <li>{ '/' + rule }</li> ) }
+                  { DoNotExpandTrimSpecial.map( ( rule : ITrimSpecial, idx: number) => <li key={ idx }>{ '/' + rule }</li> ) }
                 </ul></div>
                 <div>
                   <div style={ padRight40 }><div className={ 'fps-pph-topic' }>Link columns</div><ul>
-                    { DoNotExpandLinkColumns.map( rule => <li>{ '/' + rule }</li> ) }
+                    { DoNotExpandLinkColumns.map( ( rule : ITrimLink, idx: number) => <li key={ idx }>{ '/' + rule }</li> ) }
                   </ul></div>
                   <div style={ padRight40 }><div className={ 'fps-pph-topic' }>Time columns</div><ul>
-                    { DoNotExpandTrimTimes.map( rule => <li>{ '/' + rule }</li> ) }
+                    { DoNotExpandTrimTimes.map( ( rule : ITrimTimes, idx: number) => <li key={ idx }>{ '/' + rule }</li> ) }
                   </ul></div>
                 </div>
 
@@ -229,19 +235,19 @@ export function getWebPartHelpElement ( sitePresets : ISitePreConfigProps ) {
             <div>Generally speaking, only select one per refiner.</div>
             <div style={{ display: 'flex' }}>
                 <div style={ padRight15 }><div className={ 'fps-pph-topic' }>Number rules</div><ul>
-                  { RefinerRulesNums.map( rule => <li>{ rule }</li> ) }
+                  { RefinerRulesNums.map( ( rule : IRefinerRulesNums, idx: number) => <li key={ idx }>{ rule }</li> ) }
                 </ul></div>
                 <div style={ padRight15 }><div className={ 'fps-pph-topic' }>Integer rules</div><ul>
-                  { RefinerRulesInts.map( rule => <li>{ rule }</li> ) }
+                  { RefinerRulesInts.map( ( rule : IRefinerRulesInts, idx: number) => <li key={ idx }>{ rule }</li> ) }
                 </ul></div>
                 <div style={ padRight15 }><div className={ 'fps-pph-topic' }>String rules</div><ul>
-                  { RefinerRulesStrs.map( rule => <li>{ rule }</li> ) }
+                  { RefinerRulesStrs.map( ( rule : IRefinerRulesStrs, idx: number) => <li key={ idx }>{ rule }</li> ) }
                 </ul></div>
                 <div style={ padRight15 }><div className={ 'fps-pph-topic' }>Time rules</div><ul>
-                  { RefinerRulesTime.map( rule => <li>{ rule }</li> ) }
+                  { RefinerRulesTime.map( ( rule : IRefinerRulesTime, idx: number) => <li key={ idx }>{ rule }</li> ) }
                 </ul></div>
                 <div style={ padRight15 }><div className={ 'fps-pph-topic' }>User rules</div><ul>
-                  { RefinerRulesUser.map( rule => <li>{ rule }</li> ) }
+                  { RefinerRulesUser.map( ( rule : IRefinerRulesUser, idx: number) => <li key={ idx }>{ rule }</li> ) }
                 </ul></div>
             </div>
         </div>
@@ -365,11 +371,11 @@ export function getWebPartHelpElement ( sitePresets : ISitePreConfigProps ) {
 
 
             <div style={ padRight15 }><div className={ 'fps-pph-topic' }>Valid User Props</div><ul>
-              { UserColumnRestPropertiesSPO.map( rule => <li>{ rule }</li> ) }
+              { UserColumnRestPropertiesSPO.map( ( rule : string, idx: number) => <li key={ idx }>{ rule }</li> ) }
               </ul></div>
 
             <div style={ padRight15 }><div className={ 'fps-pph-topic' }>May not work in SPO</div><ul>
-                { UserColumnRestPropertiesSPONOTWORK.map( rule => <li>{ rule }</li> ) }
+                { UserColumnRestPropertiesSPONOTWORK.map( ( rule : string, idx: number) => <li key={ idx }>{ rule }</li> ) }
                 </ul></div>
 
             <div>

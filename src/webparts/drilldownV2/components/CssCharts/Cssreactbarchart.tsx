@@ -620,7 +620,7 @@ public componentDidUpdate(prevProps: ICssreactbarchartProps){
       }
 
 
-      return <div className={ stylesC.row } style={ thisRowStyle }>
+      return <div key={j} className={ stylesC.row } style={ thisRowStyle }>
 
         <div className={ stylesC.chart } style= { stylesChart } >
           { titleEle1 }

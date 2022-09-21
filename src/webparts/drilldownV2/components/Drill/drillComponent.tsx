@@ -712,8 +712,8 @@ public componentDidUpdate( prevProps: IDrillDownProps ){
 
         let drillListErrors = this.state.drillList.errors.length === 0 ? null : <div style={{ padding: '20px'}}>
             <h3>These column functions have errors... Check refiners or ViewFields :)</h3>
-            { this.state.drillList.errors.map( message => {
-                return <li> { message }</li>;
+            { this.state.drillList.errors.map( ( message: string, idx : number ) => {
+                return <li key={idx}> { message }</li>;
             }) }
         </div>;
         
@@ -737,7 +737,7 @@ public componentDidUpdate( prevProps: IDrillDownProps ){
 
         // let farBannerElementsArray = [];
         let farBannerElementsArray = [...this._farBannerElements,
-            <Icon iconName='BookAnswers' onClick={ this._forceInstructions.bind(this) } style={ this._debugCmdStyles }/>,
+            <Icon key={ 'forceInstructions' } iconName='BookAnswers' onClick={ this._forceInstructions.bind(this) } style={ this._debugCmdStyles }/>,
         ];
 
         const FPSUser : IFPSUser = this.props.bannerProps.FPSUser;
@@ -789,8 +789,8 @@ public componentDidUpdate( prevProps: IDrillDownProps ){
 
             if ( this.props.errMessage ) {
                 let issues : string[] = this.props.errMessage.split(';');
-                let issueElements = issues.map( issue => {
-                    return <li>{ issue } </li>;
+                let issueElements = issues.map( ( issue: string, idx : number ) => {
+                    return <li key={idx}>{ issue } </li>;
                 });
                 thisPage = <div>
                     { Banner }
@@ -805,8 +805,8 @@ public componentDidUpdate( prevProps: IDrillDownProps ){
                     issues = this.state.errMessage.split('--');
                 } else { issues = [this.state.errMessage] ; }
 
-                let issueElements = issues.map( issue => {
-                    return <li>{ issue } </li>;
+                let issueElements = issues.map( ( issue: any, idx : number ) => {
+                    return <li key={idx}>{ issue } </li>;
                 });
                 thisPage = <div>
                     { Banner }
@@ -825,8 +825,8 @@ public componentDidUpdate( prevProps: IDrillDownProps ){
                 </div>;
                 if ( performanceMessage === true && typeof this.state.errMessage === 'string' ) {
                     let issues = this.state.errMessage.split('--');
-                    let issueElements = issues.map( issue => {
-                        return <li>{ issue } </li>;
+                    let issueElements = issues.map( ( issue: any, idx : number ) => {
+                        return <li key={idx}>{ issue } </li>;
                     });
                     errMessage = this.state.errMessage === '' ? null : <div>
                     <h2>{escape(`Detected potential performance issues... :(`)}</h2>

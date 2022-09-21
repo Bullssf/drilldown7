@@ -1,6 +1,6 @@
 
 import * as React from 'react';
-import { Icon  } from 'office-ui-fabric-react/lib/Icon';
+// import { Icon  } from 'office-ui-fabric-react/lib/Icon';
 
 import { IDrillItemInfo } from '../../fpsReferences';
 
@@ -109,18 +109,18 @@ export default class MyDrillItems extends React.Component<IMyDrillItemsProps, IM
         if ( this.props.items != null && this.props.items.length > 0 ) { 
 
         let logItems : IDrillItemInfo[] = this.props.items;
-        let styleDesc = this.props.showDesc ? styles.showCell : styles.hideMe;
-        let styleIDs = this.props.showIDs ? styles.showCell : styles.hideMe;
+        // let styleDesc = this.props.showDesc ? styles.showCell : styles.hideMe;
+        // let styleIDs = this.props.showIDs ? styles.showCell : styles.hideMe;
 
-        let itemRows = logItems.length === 0 ? null : logItems.map( h => { 
+        let itemRows = logItems.length === 0 ? null : logItems.map( ( h: IDrillItemInfo, idx: number ) => { 
 
-            let itemIcon = null;
+            // let itemIcon = null;
 
-            let iconStyles: any = { root: {
+            // let iconStyles: any = { root: {
                 //color: h.color ? h.color : "blue",
-            }};
+            // }};
 
-            let normalIcon = <Icon iconName={ "Info"} className={iconClassInfo} styles = {iconStyles}/>;
+            // let normalIcon = <Icon iconName={ "Info"} className={iconClassInfo} styles = {iconStyles}/>;
 
             //import { buildPropsHoverCard } from '../../../../../services/hoverCardService';
             let detailsCard = buildPropsHoverCard(h, ["property","value"], ["meta","searchString"] , true, null );
@@ -131,7 +131,7 @@ export default class MyDrillItems extends React.Component<IMyDrillItemsProps, IM
             else ( comments = h.Comments.slice(0,40) + '...');
 
 
-            return <tr>
+            return <tr key={ idx }>
                 <td> { h.Id } </td>
                 <td> { h.Story } </td>
                 <td> { h.Chapter } </td>
