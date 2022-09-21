@@ -147,7 +147,7 @@ export default class DrillDown extends React.Component<IDrillDownProps, IDrillDo
        let elements: any[] = [];
        // defaultBannerCommandStyles.fontWeight = 'bolder';
        // elements.push(<div style={{ paddingRight: null }} className={ '' } title={ title}>
-       //   <Icon iconName='WindDirection' onClick={ this.jumpToParentSite.bind(this) } style={ defaultBannerCommandStyles }></Icon>
+       //   <Icon iconName='WindDirection' onClick={ this.jumpToParentSite.bind(this) } style={ defaultBannerCommandStyles }/>
        // </div>);
        return elements;
      }
@@ -198,7 +198,7 @@ export default class DrillDown extends React.Component<IDrillDownProps, IDrillDo
             callBackID = { resultSummaryObject.callBackID }
             WebpartWidth = { this.state.WebpartWidth }
             //onAltClick = { this._changeRefinerOrder.bind(this) }
-        ></Cssreactbarchart>;
+        />;
 
         return resultSummary;
 
@@ -236,7 +236,7 @@ export default class DrillDown extends React.Component<IDrillDownProps, IDrillDo
                     callBackID = { chartDataObject.callBackID }
                     WebpartWidth = { this.state.WebpartWidth }
                     //onAltClick = { this._changeRefinerOrder.bind(this) }
-                ></Cssreactbarchart>;
+                />;
 
                 theseCharts.push( statChart );
 
@@ -296,7 +296,7 @@ export default class DrillDown extends React.Component<IDrillDownProps, IDrillDo
         defaultBannerCommandStyles.fontSize = 'normal';
         
         elements.push(<span style={{ paddingLeft: '20px' }} className={ '' } title={ 'Hide instructions based on webpart settings' }>
-          <Icon iconName='Hide3' onClick={ this._hideInstructions.bind(this) } style={ defaultBannerCommandStyles }></Icon></span>);
+          <Icon iconName='Hide3' onClick={ this._hideInstructions.bind(this) } style={ defaultBannerCommandStyles }/></span>);
         return elements;
       }
 
@@ -308,7 +308,7 @@ export default class DrillDown extends React.Component<IDrillDownProps, IDrillDo
         else if ( row === 1 && this.state.searchMeta[ 0 ] === 'All' ) { isNext = false ; }
 
         let itemStyle = isDone ? stylesD.complete : stylesD.incomplete;
-        const liIcon = <Icon iconName={ isDone === true ? 'CheckboxComposite' : 'Error' } styles={{ root: { } }}></Icon>;
+        const liIcon = <Icon iconName={ isDone === true ? 'CheckboxComposite' : 'Error' } styles={{ root: { } }}/>;
         const itemTextEnd = isDone ? <span style={{paddingLeft: '10px'}}><b>{this.state.searchMeta[row]}</b>  is selected</span> : null;
         let rowText = row === 0 ? 'First... ' : isNext === true ? 'Now... ' : 'Then... ';
         rowText += this.state.drillList.refinerInstructions[ row ];
@@ -737,7 +737,7 @@ public componentDidUpdate( prevProps: IDrillDownProps ){
 
         // let farBannerElementsArray = [];
         let farBannerElementsArray = [...this._farBannerElements,
-            <Icon iconName='BookAnswers' onClick={ this._forceInstructions.bind(this) } style={ this._debugCmdStyles }></Icon>,
+            <Icon iconName='BookAnswers' onClick={ this._forceInstructions.bind(this) } style={ this._debugCmdStyles }/>,
         ];
 
         const FPSUser : IFPSUser = this.props.bannerProps.FPSUser;
@@ -910,7 +910,7 @@ public componentDidUpdate( prevProps: IDrillDownProps ){
                         onClick = { this._onSearchForMetaCmd0.bind(this) }
                         showRefinerCounts = { this.state.showRefinerCounts }
                         regroupKey = { this.state.cmdCats.length === 0 ? 'showRefiner0' : this.state.cmdCats[0].map( i => { return i.name;  }).join('|||') }
-                    ></ResizeGroupOverflowSetExample></div> : null;
+                    /></div> : null;
 
                     thisIsRefiner1 = showRefiner1 ?  <div style={{ display: 'inline-block', width: '100%' }}><div style={ pinSpanStyle }>{pinCmd1}</div><div style={{ marginLeft: '40px', left: '0px'}}><ResizeGroupOverflowSetExample
                         items={ this.state.cmdCats[1] }
@@ -919,7 +919,7 @@ public componentDidUpdate( prevProps: IDrillDownProps ){
                         onClick = { this._onSearchForMetaCmd1.bind(this)}
                         showRefinerCounts = { this.state.showRefinerCounts }
                         regroupKey = { this.state.cmdCats.length === 0 ? 'showRefiner1' : this.state.cmdCats[1].map( i => { return i.name;  }).join('|||') }
-                    ></ResizeGroupOverflowSetExample></div></div> : null;
+                    /></div></div> : null;
 
                     thisIsRefiner2 = showRefiner2 ?  <div style={{ display: 'inline-block', width: '100%' }}><div style={ pinSpanStyle }>{pinCmd2}</div><div style={{ marginLeft: '40px', left: '0px'}}><ResizeGroupOverflowSetExample
                         items={ this.state.cmdCats[2] }
@@ -928,7 +928,7 @@ public componentDidUpdate( prevProps: IDrillDownProps ){
                         onClick = { this._onSearchForMetaCmd2.bind(this)}
                         showRefinerCounts = { this.state.showRefinerCounts }
                         regroupKey = { this.state.cmdCats.length === 0 ? 'showRefiner2' : this.state.cmdCats[2].map( i => { return i.name;  }).join('|||') }
-                    ></ResizeGroupOverflowSetExample></div></div> : null;
+                    /></div></div> : null;
 
                     if ( showRefiner0 ) { refinersObjects.push( thisIsRefiner0 ) ; }
                     if ( showRefiner1 ) { refinersObjects.push( thisIsRefiner1 ) ; }
@@ -1040,7 +1040,7 @@ public componentDidUpdate( prevProps: IDrillDownProps ){
                                 createItemLink = { createItemLink }
                                 quickCommands={ this.state.quickCommands }
                             
-                            ></ReactListItems>;
+                            />;
                         }
                     }
 

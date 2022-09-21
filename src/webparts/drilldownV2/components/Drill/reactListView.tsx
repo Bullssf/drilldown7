@@ -522,7 +522,7 @@ export default class ReactListItems extends React.Component<IReactListItemsProps
                       <PivotItem headerText="Commands" itemKey= "Commands"><div>
                           {/* https://github.com/mikezimm/drilldown7/issues/168 */}
                           { itemLink }
-                          <div id='20pxSpacer' style={{ height: '20px'}}></div>
+                          <div id='20pxSpacer' style={{ height: '20px'}}/>
                           { attachments }
                           { this.createPanelButtons( this.props.quickCommands, this.state.panelItem, this.props.sourceUserInfo ) }
                         </div>
@@ -576,7 +576,7 @@ export default class ReactListItems extends React.Component<IReactListItemsProps
                     maxWidth: 35,
                     render: (item: IDrillItemInfo) => {
                         let cursor = item.Attachments ? "pointer" : '';
-                        return <div id= { 'ButtonID' + item.Id } onClick={ callBack } style={{ fontSize: 'larger' , fontWeight: 'bolder', width: '25px', textAlign: 'center', cursor: cursor }}><Icon iconName= { item.Attachments ? "Attach" : ''}></Icon></div>;
+                        return <div id= { 'ButtonID' + item.Id } onClick={ callBack } style={{ fontSize: 'larger' , fontWeight: 'bolder', width: '25px', textAlign: 'center', cursor: cursor }}><Icon iconName= { item.Attachments ? "Attach" : ''}/></div>;
                     },
                 });
             }

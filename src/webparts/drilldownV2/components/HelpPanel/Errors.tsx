@@ -10,7 +10,7 @@ export function errorsContent( ) {
     messageRows.push( <tr><td>Click to open item does not work</td><td>  </td><td>Make sure the <b>Is List or Library toggle</b> in Your List Info is set properly.</td></tr> );
 
     messageRows.push( <tr><td>Refiner just shows "All"</td><td>  </td><td>Refiner Rule must be compatible with the refiner.  For instance, you can't have a date rule for a person field.</td></tr> );
-    messageRows.push( <tr><td></td><td>  </td><td>Check for extra 'space' characters in the refiner string.  NOTE as of #135, removing all spaces from refiners and viewField 'name' and 'linkPropertyName' strings before passing to react component.</td></tr> );
+    messageRows.push( <tr><td>-</td><td>-</td><td>Check for extra 'space' characters in the refiner string.  NOTE as of #135, removing all spaces from refiners and viewField 'name' and 'linkPropertyName' strings before passing to react component.</td></tr> );
 
 
     messageRows.push( <tr><td>Dates formatted as <b>YYYY-MM</b></td><td>  </td><td><b>Any Calc or Choice column values</b> that could be interpreted as a Date, should use <b>Refiner Rule: groupByString</b>.  If not, it will convert it to a UTC date which may be shifted from the expected YYYY-MM</td></tr> );
@@ -19,13 +19,13 @@ export function errorsContent( ) {
 
 
     messageRows.push( <tr><td>Separate Charts webpart empty</td><td>  </td><td>1.) Be sure your <b>Summary Stats</b> object (in main webpart) contains <b>"consumer": 1, -- this tells the webpart to publish chart to other webpart.</b>.</td></tr> );
-    messageRows.push( <tr><td></td><td>  </td><td>2.) Be sure <b>Consumer webpart (chart)</b> is <b>connected</b> to main webpart.</td></tr> );
+    messageRows.push( <tr><td>-</td><td>-</td><td>2.) Be sure <b>Consumer webpart (chart)</b> is <b>connected</b> to main webpart.</td></tr> );
    
 
 
 
     thisPage = <div>
-        <h2></h2>
+        <h2>-</h2>
         <table className={ 'single-page-info-table' } style={{ width: '100%' }}>
             <tr><th style={{ minWidth: '200px' }}>Issue</th><th>Links</th><th>Notes</th></tr>
             { messageRows }

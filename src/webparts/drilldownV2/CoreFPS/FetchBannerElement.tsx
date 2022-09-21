@@ -321,7 +321,7 @@ export default class FetchBanner extends React.Component<IFetchBannerProps, IFet
       showBeAUserIcon = { bannerProps.showBeAUserIcon }
       beAUserFunction={ bannerProps.beAUserFunction }
 
-    ></WebpartBanner> ) ;
+    /> ) ;
 
   }
 
