@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { escape } from '@microsoft/sp-lodash-subset';
 
 require('@mikezimm/npmfunctions/dist/PropPaneHelp/PropPanelHelp.css');
 
@@ -138,7 +139,7 @@ export function getWebPartHelpElement ( sitePresets : ISitePreConfigProps ) {
       >
       <PivotItem headerText={ 'Refiner Columns' } > 
         <div className={ 'fps-pph-content' }>
-          <div className={ 'fps-pph-topic' }>Setting the Refiner 'Column Value'</div>
+          <div className={ 'fps-pph-topic' }>{escape(`Setting the Refiner 'Column Value'`)}</div>
           <div><mark><b>NOTE:</b></mark> ColumnNames in this webpart <b>MUST BE Internal Column names</b>.</div>
           <div><b>Internal Column names</b> ARE NOT the Column Titles you see. { LinkFindInternalName }</div>
           <div className={ 'fps-pph-topic' }>Simple column types (Text, Date, Number, Single/Multi Select Choice)</div>
@@ -147,8 +148,8 @@ export function getWebPartHelpElement ( sitePresets : ISitePreConfigProps ) {
 
           {/* <div>User columns (Single/Multi) on the main list (can not be part of lookup column)</div> */}
 
-          <div className={ 'fps-pph-topic' }>User columns (Single/Multi) on the main list (can not be part of lookup column)</div>
-          <div><b>UserColumnName/Title</b> - /Title shows the person's Name</div>
+          <div className={ 'fps-pph-topic' }>{escape(`User columns (Single/Multi) on the main list (can not be part of lookup column)`)}</div>
+          <div><b>UserColumnName/Title</b>{escape(` - /Title shows the person's Name`)}</div>
           <div>See the Users tab in this page for more information on using User columns</div>
 
           <div className={ 'fps-pph-topic' }>Lookup columns (Single/Multi) - that are brought in under the LookupColumn</div>
@@ -156,7 +157,7 @@ export function getWebPartHelpElement ( sitePresets : ISitePreConfigProps ) {
           <div><b>LookupColumnName/OtherField</b> - /OtherField is the InternalColumnName of the lookup column from the other list</div>
 
           <div className={ 'fps-pph-topic' } style={{ textDecoration: 'underline'}}>Example with real column names</div> 
-          <div style={{ paddingTop: '8px'}}>Say you have a lookup column like 'CustomerPlant' which has a Title column (Plant name) and Country column (where it is located)</div>
+          <div style={{ paddingTop: '8px'}}>{escape(`Say you have a lookup column like 'CustomerPlant' which has a Title column (Plant name) and Country column (where it is located)`)}</div>
           <div>To show Customer Plant Title, use <b>CustomerPlant/Title</b></div>
           <div>To show Customer Plant Country, use <b>CustomerPlant/Country</b></div>
         </div>
@@ -197,8 +198,8 @@ export function getWebPartHelpElement ( sitePresets : ISitePreConfigProps ) {
             <div className={ 'fps-pph-topic' }>Notes: </div>
             <div>Words ending in Capital C - the C stands for Characters so FirstWord2C = First 2 characters of the first word</div>
             <div>Words ending in Capital D - includes digits so InitalsD includes all Initials AND numbers</div>
-            <div>at this time, 'TrimB42ndDot', 'FirstAcronym', 'SecondAcronym' are not implimented :( </div>
-            <div>Object. : If string column is parsable JSON:  ColumnName/Object.propKey to get the value for propKey in Text column called 'ColumnName'</div>
+            <div>{escape(`at this time, 'TrimB42ndDot', 'FirstAcronym', 'SecondAcronym' are not implimented :( `)}</div>
+            <div>{escape(`Object. : If string column is parsable JSON:  ColumnName/Object.propKey to get the value for propKey in Text column called 'ColumnName'`)}</div>
 
         </div>
       </PivotItem>
@@ -228,8 +229,8 @@ export function getWebPartHelpElement ( sitePresets : ISitePreConfigProps ) {
         <div className={ 'fps-pph-content' }>
             <div className={ 'fps-pph-topic' }>Rules are like calculated columns without the work - Only applies to refiners.</div>
             <div><b>Example:</b>  If you have a date column, actual dates or times are not good refiners because they typically will have to many values to choose from.<br/>
-            However if you apply a rule like 'groupByYears', it will bucket all your items into years based on the values in the column.<br/></div>
-            <div><b>NOTE:</b>  The web part only shows refiners based on the items it intially reads in. So in the case of 'groupByYears', <b>you will not see a year if there are no items for that year</b>.</div>
+            {escape(`However if you apply a rule like 'groupByYears', it will bucket all your items into years based on the values in the column.`)}<br/></div>
+            <div><b>NOTE:</b>{escape(`  The web part only shows refiners based on the items it intially reads in. So in the case of 'groupByYears', `)}<b>you will not see a year if there are no items for that year</b>.</div>
             <div><b>parseBy...</b> will take a string column and create Refiners by splitting the string by commas and semi-colons.</div>
             <div><b>groupBy...</b> will take number or date column values and group them into larger buckets.</div>
             <div>Generally speaking, only select one per refiner.</div>
@@ -309,15 +310,15 @@ export function getWebPartHelpElement ( sitePresets : ISitePreConfigProps ) {
                   <li><b>primaryField:</b> InternalColumnName</li>
                   <li><b>title:</b> Title above the chart</li>
                   <li><b>stat:</b> What math operation you want to do on the primaryField</li>
-                  <div>Available stats: 'sum' , 'avg' , 'max' , 'min' , 'count', 'daysAgo' , 'monthsAgo' , 'eval'</div>
+                  <div>{escape(`Available stats: 'sum' , 'avg' , 'max' , 'min' , 'count', 'daysAgo' , 'monthsAgo' , 'eval'`)}</div>
 
                   <li><b>chartTypes:</b> Differnt types of charts you toggle through when you click on the chart bars.</li>
-                  <div>Available types: 'pareto-asc' | 'pareto-dec' | 'pareto-labels' | 'stacked-column-labels' | 'stacked-column-dec' | 'stacked-column-asc' | 'kpi-tiles'</div>
+                  <div>{escape(`Available types: 'pareto-asc' | 'pareto-dec' | 'pareto-labels' | 'stacked-column-labels' | 'stacked-column-dec' | 'stacked-column-asc' | 'kpi-tiles'`)}</div>
                   <div>The best advice for the types is just try some and see what they do :)</div>
                 </ul>
                 <div className={ 'fps-pph-topic' }>The example shown here will:</div>
                 <ol>
-                  <li>get the field called 'Id'</li>
+                  <li>{escape(`get the field called 'Id'`)}</li>
                   <li>get a count of the items (broken down by your refiner categories)</li>
                   <li>first show a pareto chart decending by the count (highest total count per refiner on top)</li>
                   <li>If you click on a bar in the chart, it will toggle between a pareto chart and a stacked Horizontal bar chart</li>
@@ -344,7 +345,7 @@ export function getWebPartHelpElement ( sitePresets : ISitePreConfigProps ) {
                 <li>Must follow this minimum structure.</li>
                 <li><mark>NOTE: </mark> <b>Quotes</b> are required per the example. <br/>All column names and view properties are <b>Case Sensitive</b>!</li>
                 <li>Quick Commands structure is made up of an array of buttons, view fields may not yet be supported.</li>
-                <li>the "buttons" is an array of rows.  Each row can have specific command buttons in it</li>
+                <li>{escape(`the "buttons" is an array of rows.  Each row can have specific command buttons in it`)}</li>
                 <li>A typical button is made up of these common properites</li>
                 <ul>
                   <li><b>label:</b> Button text</li>

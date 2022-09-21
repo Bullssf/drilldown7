@@ -1,6 +1,7 @@
 
 import * as React from 'react';
 import { Icon  } from 'office-ui-fabric-react/lib/Icon';
+import { escape } from '@microsoft/sp-lodash-subset';
 
 import { Web, IList, IItem, } from "@pnp/sp/presets/all";
 import { Link, ILinkProps } from 'office-ui-fabric-react';
@@ -119,8 +120,8 @@ const NoCommandsInfo = <div>
         <p>Command buttons can be created to make simple item changes like: 
             <ol >
                 <li>Set status to Complete</li>
-                <li>Put today's date in Completed Date column</li>
-                <li>Add current user's name into Completed By column</li>
+                <li>{escape(`Put today's date in Completed Date column`)}</li>
+                <li>{escape(`Add current user's name into Completed By column`)}</li>
             </ol>
         </p>
         <p>You can find out more about quick commands here: { gitRepoDrillDown.wiki }</p>

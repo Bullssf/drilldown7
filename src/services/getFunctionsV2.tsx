@@ -1,5 +1,5 @@
 import * as React from 'react';
-
+import { escape } from '@microsoft/sp-lodash-subset';
 import { DoNotExpandLinkColumns, DoNotExpandColumns, DoNotExpandFuncColumns } from './getInterfaceV2';
 
 /**
@@ -178,7 +178,7 @@ import { DoNotExpandLinkColumns, DoNotExpandColumns, DoNotExpandFuncColumns } fr
           let funcIdx =  DoNotExpandFuncColumnsLC.indexOf( rightSide.toLowerCase() );
           if ( rightSide.toLowerCase().indexOf('before') > -1 && DoNotExpandFuncColumnsLC.indexOf( rightSide.toLowerCase().replace('before','b4'))  > -1 ) {
             // funcErrors.push ( `For: ${thisColumn},  function ${rightSide} is Not Valid :)`);
-            funcErrors.push ( <span>For: <b>{leftSide}/</b><b style={{color: 'red'}}>{rightSide}</b>, replace <b style={{color: 'red'}}>'before'</b> with <b style={{color: 'green'}}>'b4'</b> :)</span> );
+            funcErrors.push ( <span>For: <b>{leftSide}/</b><b style={{color: 'red'}}>{rightSide}</b>, replace <b style={{color: 'red'}}>{escape(`'before'`)}</b> with <b style={{color: 'green'}}>{escape(`'b4'`)}</b> :)</span> );
 
           } else if ( splitCol.length === 3 && funcIdx < 0 ) {
             // funcErrors.push ( `For: ${thisColumn},  function ${rightSide} is Not Valid :)`);

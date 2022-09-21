@@ -5,7 +5,7 @@ import * as React from 'react';
 
 import { HoverCard, HoverCardType } from 'office-ui-fabric-react/lib/HoverCard';
 import { Icon  } from 'office-ui-fabric-react/lib/Icon';
-
+import { escape } from '@microsoft/sp-lodash-subset';
 import styles from '../webparts/drilldownV2/components/Contents/listView.module.scss';
 
 import { mergeStyles } from 'office-ui-fabric-react/lib/Styling';
@@ -88,7 +88,7 @@ export function buildPropsHoverCard (item: any, highlightKeys: string[], special
         //Build Highlighted Props:
         let showTheseProps = autoDetailsList(item, highlightKeys, specialKeys, showOthers);
 
-        let tipLine = showTheseProps.length > 20 ?  <p><span style={{fontSize: 'x-large', fontWeight: 600, color: 'darkblue'}}><mark>TIP: </mark>Use Mouse Wheel to scroll down page, Don't use scroll bar!</span></p> : null ;
+        let tipLine = showTheseProps.length > 20 ?  <p><span style={{fontSize: 'x-large', fontWeight: 600, color: 'darkblue'}}><mark>TIP: </mark>{escape(`Use Mouse Wheel to scroll down page, Don't use scroll bar!`)}</span></p> : null ;
 
         return <div className={styles.hoverCard} style={{padding: 30, maxWidth: 800 }}>
           <div>

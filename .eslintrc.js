@@ -331,18 +331,18 @@ module.exports = {
         // "react/self-closing-comp": "off",  // ==>>> FIX
         // "react/jsx-key": "off",  // ==>>> FIX
         // "no-useless-escape": "off",  // ==>>> FIX
-        // "no-useless-concat": "off",  // ==>>> FIX
+
+        //These I added just to clean up the warning messages
         // "react/no-unescaped-entities": "off",  // ==>>> FIX
+
+        // "no-useless-concat": "off",  // ==>>> FIX
         // "no-sequences": "off", //Unexpected use of comma operator.
 
+        //"@typescript-eslint/no-empty-function": "off",
 
         // https://www.voitanos.io/blog/sharepoint-framework-v1.15-and-the-attack-of-eslint
         "@microsoft/spfx/no-async-await": "off",
         "react/jsx-no-bind": "off",
-
-        //These I added just to clean up the warning messages
-        "react/no-unescaped-entities": "off",  // ==>>> FIX
-
 
         "react/jsx-no-target-blank": "off",
         "@typescript-eslint/no-for-in-array": "off",  // ==>>> FIX

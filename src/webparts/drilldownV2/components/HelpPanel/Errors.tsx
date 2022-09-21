@@ -1,5 +1,5 @@
 import * as React from 'react';
-
+import { escape } from '@microsoft/sp-lodash-subset';
 // import { IRepoLinks } from '@mikezimm/npmfunctions/dist/Links/CreateLinks';
 
 export function errorsContent( ) {
@@ -9,8 +9,8 @@ export function errorsContent( ) {
 
     messageRows.push( <tr><td>Click to open item does not work</td><td>  </td><td>Make sure the <b>Is List or Library toggle</b> in Your List Info is set properly.</td></tr> );
 
-    messageRows.push( <tr><td>Refiner just shows "All"</td><td>  </td><td>Refiner Rule must be compatible with the refiner.  For instance, you can't have a date rule for a person field.</td></tr> );
-    messageRows.push( <tr><td>-</td><td>-</td><td>Check for extra 'space' characters in the refiner string.  NOTE as of #135, removing all spaces from refiners and viewField 'name' and 'linkPropertyName' strings before passing to react component.</td></tr> );
+    messageRows.push( <tr><td>{escape(`Refiner just shows "All"`)}</td><td>  </td><td>{escape(`Refiner Rule must be compatible with the refiner.  For instance, you can't have a date rule for a person field.`)}</td></tr> );
+    messageRows.push( <tr><td>-</td><td>-</td><td>{escape(`Check for extra 'space' characters in the refiner string.  NOTE as of #135, removing all spaces from refiners and viewField 'name' and 'linkPropertyName' strings before passing to react component.`)}</td></tr> );
 
 
     messageRows.push( <tr><td>Dates formatted as <b>YYYY-MM</b></td><td>  </td><td><b>Any Calc or Choice column values</b> that could be interpreted as a Date, should use <b>Refiner Rule: groupByString</b>.  If not, it will convert it to a UTC date which may be shifted from the expected YYYY-MM</td></tr> );
@@ -18,8 +18,8 @@ export function errorsContent( ) {
     messageRows.push( <tr><td>Refiner Summary Stack order</td><td>  </td><td>When you have refiner in date format MMM or DDD (like Jan Feb Mar), refiners are sorted in logical order but stacked bar chart is sorted alphabetically.  Given this is not used as much, adds a lot of complexity, it is not on the roadmap to correct.</td></tr> );
 
 
-    messageRows.push( <tr><td>Separate Charts webpart empty</td><td>  </td><td>1.) Be sure your <b>Summary Stats</b> object (in main webpart) contains <b>"consumer": 1, -- this tells the webpart to publish chart to other webpart.</b>.</td></tr> );
-    messageRows.push( <tr><td>-</td><td>-</td><td>2.) Be sure <b>Consumer webpart (chart)</b> is <b>connected</b> to main webpart.</td></tr> );
+    messageRows.push( <tr><td>Separate Charts webpart empty</td><td>  </td><td>{escape(`1.) Be sure your `)}<b>Summary Stats</b> object (in main webpart) contains <b>{escape(`"consumer": 1, -- this tells the webpart to publish chart to other webpart.`)}</b>.</td></tr> );
+    messageRows.push( <tr><td>-</td><td>-</td><td>{escape(`2.) Be sure `)}<b>Consumer webpart (chart)</b> is <b>connected</b> to main webpart.</td></tr> );
    
 
 
