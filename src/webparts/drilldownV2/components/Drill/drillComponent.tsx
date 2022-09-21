@@ -279,7 +279,7 @@ export default class DrillDown extends React.Component<IDrillDownProps, IDrillDo
             //2022-01-17:  replace does not modify the original value.
             //But I created a new value here because it did modify "itself" which I don't think I wanted to do.
 
-            let newcalcs = calcs.replace(/\\\"/g,'"').replace(/\\'"/g,"'"); //Replace any cases where I copied the hashed characters from JSON file directly.
+            let newcalcs = calcs.replace(/\\"/g,'"').replace(/\\'"/g,"'"); //Replace any cases where I copied the hashed characters from JSON file directly.
             theCalcs = JSON.parse(newcalcs);
         } catch(e) {
             alert('createRefinerRuleCalcs: ' + e);

@@ -330,8 +330,8 @@ module.exports = {
         //These were added just to close all the errors and get clean gulp
         // "react/self-closing-comp": "off",  // ==>>> FIX
         //"react/jsx-key": "off",  // ==>>> FIX
+        // "no-useless-escape": "off",  // ==>>> FIX
 
-        
 
         // https://www.voitanos.io/blog/sharepoint-framework-v1.15-and-the-attack-of-eslint
         "@microsoft/spfx/no-async-await": "off",
@@ -340,7 +340,7 @@ module.exports = {
         //These I added just to clean up the warning messages
         "react/no-unescaped-entities": "off",  // ==>>> FIX
 
-        "no-useless-escape": "off",  // ==>>> FIX
+
         "react/jsx-no-target-blank": "off",
         "@typescript-eslint/no-for-in-array": "off",  // ==>>> FIX
 

@@ -6,6 +6,7 @@ import "@pnp/sp/webs";
 import "@pnp/sp/clientside-pages/web";
 import "@pnp/sp/site-users/web";
 
+import { escape } from '@microsoft/sp-lodash-subset';
 // import { ClientsideWebpart } from "@pnp/sp/clientside-pages";
 // import { CreateClientsidePage, PromotedState, ClientsidePageLayoutType, ClientsideText,  } from "@pnp/sp/clientside-pages";
 
@@ -129,7 +130,7 @@ export async function getAllItems( drillList: IDrillList, addTheseItemsToState: 
               if ( column.indexOf('/') > -1 ) {
                 DoNotExpandColumns.map( doNotExp => {
                   //https://reactgo.com/javascript-variable-regex/
-                  const removeStr = `\/${doNotExp}`;
+                  const removeStr = `/${doNotExp}`;
                   const regex =  new RegExp(removeStr,'gi'); // correct way
                   cleanColumn = cleanColumn.replace(regex,''); // it works  
                 });
@@ -918,11 +919,13 @@ export function getRefinerStatsForItem( drillList: IDrillList, item: IDrillItemI
                 itemRefiners['stat' + i] = item[primaryField] ;
 
             } else if ( primaryType === 'null' || primaryType === 'undefined' ) {
-                itemRefiners.comments.push( 'Sum Err: ' + item['Id'] + ' does not have a value in property: ' + primaryField + '.  assuming it\s Zero for Sum operations.' ) ;
+                const comments = `Sum Err: ${item['Id']} does not have a value in property: ${primaryField}.  assuming it's Zero for Sum operations.`;
+                itemRefiners.comments.push( comments ) ;
                 itemRefiners['stat' + i] = 0 ;
 
             } else {
-                itemRefiners.comments.push( 'Sum Err: ' + 'Unable to do ' + stat + ' on ' + primaryField + ' (' + primaryType + ') Value...: ' + item[primaryField] + '.  assuming it\s null' ) ;
+                const comments = `Sum Err: Unable to do ${stat} on ${primaryField} ( ${primaryType} ) Value...: ${item[primaryField] }.  assuming it's null`
+                itemRefiners.comments.push( comments ) ;
                 itemRefiners['stat' + i] = null ;
 
             }
@@ -941,7 +944,8 @@ export function getRefinerStatsForItem( drillList: IDrillList, item: IDrillItemI
                 itemRefiners['stat' + i] = new Date(item[primaryField]).getTime() ;
 
             } else {
-                itemRefiners.comments.push( 'AvgMaxMin Err: ' + 'Unable to do ' + stat + ' on ' + primaryType + ' Value...: ' + item[primaryField] + '.  assuming it\s null' ) ;
+              const comments = `AvgMaxMin Err: Unable to do ${stat} on ${primaryType}  Value...: ${item[primaryField]}.  assuming it's null`;
+                itemRefiners.comments.push( comments ) ;
                 itemRefiners['stat' + i] = null ;
 
             }
@@ -952,7 +956,8 @@ export function getRefinerStatsForItem( drillList: IDrillList, item: IDrillItemI
                 itemRefiners['stat' + i] = getAge( item[primaryField], stat === 'daysAgo' ? 'days' : 'months' ) ;
 
             } else {
-                itemRefiners.comments.push( 'TimeAgo Err: ' + 'Unable to do ' + stat + ' on ' + primaryType + ' Value...: ' + item[primaryField] + '.  assuming it\s null' ) ;
+              const comments = `TimeAgo Err: Unable to do ${stat} on ${primaryType}  Value...: ${item[primaryField]}.  assuming it's null`;
+                itemRefiners.comments.push( comments ) ;
                 itemRefiners['stat' + i] = null ;
             }
 
@@ -1020,16 +1025,16 @@ function getRefinerFromField ( fieldValue : any, ruleSet: RefineRuleValues[], em
 
         } else if ( ruleSet.indexOf('groupByDateBuckets') > -1 ) {
             if ( tempDate.daysAgo > 360 ) {
-                reFormattedDate = '\> 1 Year' ;
+                reFormattedDate = '> 1 Year' ;
 
             } else if ( tempDate.daysAgo > 30 ) {
-                reFormattedDate = '\> 1 Month' ;
+                reFormattedDate = '> 1 Month' ;
 
             } else if ( tempDate.daysAgo > 7 ) {
-                reFormattedDate = '\> 1 Week' ;
+                reFormattedDate = '> 1 Week' ;
 
             } else if ( tempDate.daysAgo > 1 ) {
-                reFormattedDate = '\> 1 Day' ;
+                reFormattedDate = '> 1 Day' ;
                 
             } else { reFormattedDate = 'Today' ; }
 
