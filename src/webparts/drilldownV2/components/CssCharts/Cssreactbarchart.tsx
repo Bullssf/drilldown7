@@ -581,9 +581,9 @@ public componentDidUpdate(prevProps: ICssreactbarchartProps){
 
       let totalE3 = 1;
       let totalScale = '';
-      if ( cdO.total > 1000000000 ) { totalE3 = 1000000000, totalScale = " B"; }
-      else if ( cdO.total > 1000000 ) { totalE3 = 1000000, totalScale = " M"; }
-      else if ( cdO.total > 1000 ) { totalE3 = 1000, totalScale = " k"; }
+      if ( cdO.total > 1000000000 ) { totalE3 = 1000000000; totalScale = " B"; }
+      else if ( cdO.total > 1000000 ) { totalE3 = 1000000; totalScale = " M"; }
+      else if ( cdO.total > 1000 ) { totalE3 = 1000; totalScale = " k"; }
 
       let chartTotal = cdO.total ? ( cdO.total / totalE3 ).toFixed(1) + totalScale + ' in ': null;
       let subTitle = <span style={{paddingLeft: '15px', fontSize: 'small'}}>( { chartTotal } { barCount} categories ) </span>;

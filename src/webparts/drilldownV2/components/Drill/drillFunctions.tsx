@@ -458,7 +458,7 @@ function sortRefinerObject ( allRefiners: IRefinerLayer, drillList: IDrillList )
 
     //webPartDefs.sort((a, b) => (a.alias > b.alias) ? 1 : -1);
     consoleRef( 'buildRefinersObject1', allRefiners );
-    consoleMe( 'sortRefinerObject1' + '??' , null , drillList );
+    consoleMe( `sortRefinerObject1 ??` , null , drillList );
 
     //Adding collator per:  https://stackoverflow.com/a/52369951
     const collator = new Intl.Collator(drillList.language, { numeric: true, sensitivity: 'base' });
@@ -793,7 +793,7 @@ export function buildRefinersObject ( items: IDrillItemInfo[], drillList: IDrill
         }
     }
 
-    consoleMe( 'buildRefinersObject' + '???' , items , drillList );
+    consoleMe( `buildRefinersObject ???` , items , drillList );
     consoleRef( 'buildRefinersObject', refiners );
     return refiners;
 
@@ -962,7 +962,7 @@ export function getRefinerStatsForItem( drillList: IDrillList, item: IDrillItemI
             }
 
         } else if ( stat === 'eval' ) {
-            itemRefiners.comments.push( 'Eval Err: ' + 'eval is not yet available:  not calculating ' + title ) ;
+            itemRefiners.comments.push( 'Eval Err: eval is not yet available:  not calculating ' + title ) ;
 
         }
 
