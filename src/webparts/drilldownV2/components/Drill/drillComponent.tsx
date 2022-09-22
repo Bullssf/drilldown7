@@ -1858,44 +1858,95 @@ public componentDidUpdate( prevProps: IDrillDownProps ){
     
   } //End searchForItems
 
-    
+
   private _getNewFilteredItems(text: string, meta: string[] , searchItems : IDrillItemInfo[], layer: number ) {
 
     let newFilteredItems : IDrillItemInfo[] = [];
 
-    for (let thisSearchItem of searchItems) {
+    searchItems.map(  thisSearchItem => {
 
-        let showItem = false;
-        let searchFails = 0;
-        let searchString = thisSearchItem.searchString;
+      let showItem : unknown = false;
+      let searchFails = 0;
+      let searchString = thisSearchItem.searchString;
 
-        if ( meta !== undefined && meta !== null && meta.length > 0 ) {
-            // for ( let m in meta ) { // eslint-disable-line guard-for-in
-            meta.map( ( m: string ) => { 
+      if ( meta !== undefined && meta !== null && meta.length > 0 ) {
+          // for ( let m in meta ) { // eslint-disable-line guard-for-in
+          meta.map( ( m: string, idx: number ) => { 
 
-                let itemMeta: string[] = thisSearchItem.refiners['lev' + m] as string[];
-                let metaM = typeof m === 'string' ? m : JSON.stringify(m); // Only make this so it's easier to debug.
+              let itemMeta: string[] = thisSearchItem.refiners[`lev${idx}`] as string[];
+              // let metaM = typeof m === 'string' ? m : JSON.stringify(m); // Only make this so it's easier to debug.
 
-                if ( metaM == 'All' || metaM == '' || ( Array.isArray(itemMeta) && itemMeta.indexOf(metaM) > -1 ) ) {
-                    if( searchString === '' || searchString.indexOf(text.toLowerCase()) > -1 ) {
-                        showItem = true;
-                    } else { showItem = false; searchFails ++; }
-                } else { 
-                  showItem = false; searchFails ++;
-                }
+              if ( m === 'All' || m === '' || itemMeta.indexOf( m ) > -1  ) {
+                  if( searchString === '' || searchString.indexOf(text.toLowerCase()) > -1 ) {
+                      showItem = true;
 
-            });
+                  } else {
+                    showItem = false;
+                    searchFails ++;
+                  }
+
+              } else {
+                showItem = false;
+                searchFails ++;
+              }
+
+          });
+      } else {
+        if( !searchString || searchString.indexOf(text.toLowerCase()) > -1 ) {
+          showItem = true;
         }
-
-        if ( showItem === true && searchFails === 0 ) {
-            newFilteredItems.push(thisSearchItem);
-        }
-
       }
 
-      return newFilteredItems;
+      if ( showItem === true  ) {
+          newFilteredItems.push(thisSearchItem);
+      }
+
+    });
+
+    return newFilteredItems;
 
   }
+
+
+  // private _getNewFilteredItems(text: string, meta: string[] , searchItems : IDrillItemInfo[], layer: number ) {
+
+  //   let newFilteredItems : IDrillItemInfo[] = [];
+
+  //   for (let thisSearchItem of searchItems) {
+
+  //       let showItem = false;
+  //       let searchFails = 0;
+  //       let searchString = thisSearchItem.searchString;
+
+  //       if ( meta !== undefined && meta !== null && meta.length > 0 ) {
+  //           // for ( let m in meta ) { // eslint-disable-line guard-for-in
+  //           meta.map( ( m: string, idx: number ) => { 
+
+  //               let itemMeta: string[] = thisSearchItem.refiners[`lev${idx}`] as string[];
+  //               // let metaM = typeof m === 'string' ? m : JSON.stringify(m); // Only make this so it's easier to debug.
+
+  //               if ( m === 'All' || m === '' || itemMeta.indexOf( m ) > -1  ) {
+  //                   if( searchString === '' || searchString.indexOf(text.toLowerCase()) > -1 ) {
+  //                       showItem = true;
+  //                   } else { 
+  //                     showItem = false; searchFails ++; 
+  //                   }
+  //               } else { 
+  //                 showItem = false; searchFails ++;
+  //               }
+
+  //           });
+  //       }
+
+  //       if ( showItem === true && searchFails === 0 ) {
+  //           newFilteredItems.push(thisSearchItem);
+  //       }
+
+  //     }
+
+  //     return newFilteredItems;
+
+  // }
 
      /**
     * 
