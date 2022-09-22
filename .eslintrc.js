@@ -352,6 +352,8 @@ module.exports = {
         // "no-cond-assign": "off",
         // "guard-for-in": "off",
 
+        // "@typescript-eslint/no-floating-promises": "off",  // ==>>> FIX
+
         // https://www.voitanos.io/blog/sharepoint-framework-v1.15-and-the-attack-of-eslint
         "@microsoft/spfx/no-async-await": "off",
         "react/jsx-no-bind": "off",
