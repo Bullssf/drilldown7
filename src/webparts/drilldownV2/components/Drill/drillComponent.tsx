@@ -1870,9 +1870,11 @@ public componentDidUpdate( prevProps: IDrillDownProps ){
         let searchString = thisSearchItem.searchString;
 
         if ( meta !== undefined && meta !== null && meta.length > 0 ) {
-            for ( let m in meta ) { // eslint-disable-line guard-for-in
-                let itemMeta = thisSearchItem.refiners['lev' + m];
-                let metaM = typeof meta[m] === 'string' ? meta[m] : JSON.stringify(meta[m]); //Only make this so it's easier to debug.
+            // for ( let m in meta ) { // eslint-disable-line guard-for-in
+            meta.map( ( m: string ) => { 
+
+                let itemMeta: string[] = thisSearchItem.refiners['lev' + m] as string[];
+                let metaM = typeof m === 'string' ? m : JSON.stringify(m); // Only make this so it's easier to debug.
 
                 if ( metaM == 'All' || metaM == '' || ( Array.isArray(itemMeta) && itemMeta.indexOf(metaM) > -1 ) ) {
                     if( searchString === '' || searchString.indexOf(text.toLowerCase()) > -1 ) {
@@ -1881,7 +1883,8 @@ public componentDidUpdate( prevProps: IDrillDownProps ){
                 } else { 
                   showItem = false; searchFails ++;
                 }
-            }
+
+            });
         }
 
         if ( showItem === true && searchFails === 0 ) {

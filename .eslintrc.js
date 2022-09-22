@@ -341,7 +341,7 @@ module.exports = {
         //"@typescript-eslint/no-empty-function": "off",
 
         // "react/jsx-no-bind": "off",
-        // "react/jsx-no-target-blank": "off",
+        "react/jsx-no-target-blank": "off",  // == >> Keep disabled... for OLD Browsers
 
         // "no-self-assign": "off",  //'selectCols' is assigned to itself
         // "no-constant-condition": "off", //Unexpected constant condition.
@@ -358,10 +358,8 @@ module.exports = {
         "@microsoft/spfx/no-async-await": "off",
         "react/jsx-no-bind": "off",
 
-        "react/jsx-no-target-blank": "off",
-        "@typescript-eslint/no-for-in-array": "off",  // ==>>> FIX
 
-        "@typescript-eslint/no-floating-promises": "off",  // ==>>> FIX
+        // "@typescript-eslint/no-for-in-array": "off",  // ==>>> FIX
 
         "no-unused-expressions": "off",  // ==>>> FIX
 

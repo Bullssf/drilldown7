@@ -755,7 +755,7 @@ export default class ReactListItems extends React.Component<IReactListItemsProps
 
  //private async ensureTrackTimeList(myListName: string, myListDesc: string, ProjectOrTime: string): Promise<boolean> {
      
-    private _panelButtonClicked = ( item: any ) : void => {
+    private async _panelButtonClicked ( item: any ): Promise<void> {
 
         let e: any = event;
         let thisID = findParentElementPropLikeThis(e.target, 'id', 'ButtonID', 5, 'begins');
@@ -767,24 +767,24 @@ export default class ReactListItems extends React.Component<IReactListItemsProps
 
         } else {
 
-            this.startThisQuickUpdate( thisID );
-
+          try {
+            await this.startThisQuickUpdate( thisID );
+          } catch (ev) {
+            console.log('_panelButtonClicked error:', ev );
+          }
         }
-
     }
 
-
-    
     /**
      * Open the dialog
      */
     //private _confirmUpdateDialog = () => {
-    private _confirmUpdateDialog = (item: any): void => {
+    private async _confirmUpdateDialog (item: any): Promise<void> {
 
         let e: any = event;
-        
+
         let thisButtonObject : IQuickButton = this.state.pickedCommand ;
-        this.completeThisQuickUpdate( this.state.panelId.toString(), thisButtonObject );
+        await this.completeThisQuickUpdate( this.state.panelId.toString(), thisButtonObject );
 
         this.setState({
             myDialog: this.createBlankDialog(),
@@ -802,7 +802,7 @@ export default class ReactListItems extends React.Component<IReactListItemsProps
       this.setState({ fontSize: this._ListViewFontSizes[ nextIdx ] });
     }
 
-    private async startThisQuickUpdate ( thisID: string ) {
+    private async startThisQuickUpdate ( thisID: string ): Promise<void>{
 
         const buttonID = thisID.split(this.delim);
         //let buttonID = ['ButtonID', r, i , item.Id].join(this.delim);
@@ -829,14 +829,14 @@ export default class ReactListItems extends React.Component<IReactListItemsProps
                         myDialog.dialogMessage = thisButtonObject.confirm + '';
                         myDialog.confirmButton = thisButtonObject.label + '';
                         myDialog.showDialog = true;
-    
+
                         this.setState({
                             pickedCommand: thisButtonObject,
                             myDialog: myDialog,
                         });
 
                     } else {
-                        this.completeThisQuickUpdate ( itemId, thisButtonObject );
+                        await this.completeThisQuickUpdate ( itemId, thisButtonObject );
 
                     }
 
@@ -856,7 +856,7 @@ export default class ReactListItems extends React.Component<IReactListItemsProps
 
     }
 
-    private async completeThisQuickUpdate( itemId: string, thisButtonObject : IQuickButton ) {
+    private async completeThisQuickUpdate( itemId: string, thisButtonObject : IQuickButton ): Promise<void> {
 
         let result = await updateReactListItem( this.props.webURL, this.props.listName, parseInt(itemId), thisButtonObject, this.props.sourceUserInfo, this.state.panelItem );
 
@@ -898,7 +898,7 @@ export default class ReactListItems extends React.Component<IReactListItemsProps
  *                                                                                         
  */
 
-    private _onShowPanel = (item: any): void => {
+    private async _onShowPanel (item: any) {
   
         let e: any = event;
         console.log('_onShowPanel: e',e);
@@ -934,7 +934,7 @@ export default class ReactListItems extends React.Component<IReactListItemsProps
                     clickedAttach = true;
                 }
     
-                this.createPanelAttachments(thisID, panelItem );
+                await this.createPanelAttachments(thisID, panelItem );
     
                 let canShowAPanel = thisID === null || thisID === undefined || panelItem === null ? false : true;
                 let showFullPanel = canShowAPanel === true && clickedAttach !== true ? true : false;
