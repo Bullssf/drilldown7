@@ -408,7 +408,7 @@ public componentDidUpdate(prevProps: ICssreactbarchartProps){
        });
 
 
-      let minDivisor = null;
+      let minDivisor: number = null;
       let maxDivisor = null;
       if ( minNumber >= 1000000 ) { minDivisor = 1000000 ; }
 //      else if ( minNumber >= 100000 ) { minDivisor = 100000 ; }
@@ -451,18 +451,21 @@ public componentDidUpdate(prevProps: ICssreactbarchartProps){
        */
 
       let barCount = 0;
-      for ( let i in chartValueArray ){
+      let i: number = -1;
+      chartValueArray.map( ( chartValue: number) => {
+        i ++;
+
         barCount ++;
         let blockStyle : any = stylesBlock != null ? stylesBlock : {} ;
         blockStyle.height = activeChartType === 'kpi-tiles' ? blockStyle.height : stateHeight;
         blockStyle.width = ( cd.percents[i] ) + '%';
-        
+
         if ( randomizeColors && stacked === true ) {
           blockStyle.backgroundColor = getRandomFromArray( randomPallet );
           blockStyle.color = 'black';
 
         } else {
-          let cZ : any = ( parseInt(i, 10) ) % randomPallet.length;
+          let cZ : any = i % randomPallet.length;
           blockStyle.backgroundColor = randomPallet [ cZ ] ;
           blockStyle.color = 'black';
 
@@ -475,15 +478,15 @@ public componentDidUpdate(prevProps: ICssreactbarchartProps){
 
         let barNumber = null;
         if ( minDivisor > 1 ) {
-          barNumber = ( chartValueArray[i] / minDivisor ).toFixed(1) ;
+          barNumber = ( chartValue / minDivisor ).toFixed(1) ;
           
         } else {
           if ( thisChartsSettings.valueIsCount ) {
-            barNumber = chartValueArray[i];
-          } else if ( chartValueArray[i] == null || chartValueArray[i] == undefined ) {
+            barNumber = chartValue;
+          } else if ( chartValue == null || chartValue == undefined ) {
             barNumber = null;
           } else {
-            barNumber = chartValueArray[i].toPrecision(3) ;
+            barNumber = chartValue.toPrecision(3) ;
           }
         }
 
@@ -503,9 +506,9 @@ public componentDidUpdate(prevProps: ICssreactbarchartProps){
           }
 
           //This is on scale of 0 to 100
-          let barPercent = ( chartValueArray[i] / maxNumber ) * 100;
+          let barPercent = ( chartValue / maxNumber ) * 100;
           //This is adjusting the left side of chart for better perato look
-          let scaledBarPercent = 100 * ( chartValueArray[i] - leftEdgeValue ) / ( rightEdgeValue - leftEdgeValue ) ;
+          let scaledBarPercent = 100 * ( chartValue - leftEdgeValue ) / ( rightEdgeValue - leftEdgeValue ) ;
           barPercent = scaledBarPercent;
 
           //This accounts for when all bars are equal.
@@ -551,7 +554,7 @@ public componentDidUpdate(prevProps: ICssreactbarchartProps){
               <span className={ stylesC.value } style={ valueStyle } >{ barLabel }</span>
           </span>
         ) ;
-      }// END MAKE BARS
+      });// END MAKE BARS
 
       if ( stacked === false ) {  thisChart.push( scaleNoteEle ) ; }
 

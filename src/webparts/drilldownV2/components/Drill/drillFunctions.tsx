@@ -44,7 +44,7 @@ import { ensureUserInfo } from '@mikezimm/npmfunctions/dist/Services/Users/userS
 
 // import { mergeAriaAttributeValues } from "office-ui-fabric-react";
 
-import { IRefinerLayer, IItemRefiners, RefineRuleValues, IRefinerStatType, RefinerStatTypes,  } from '../../fpsReferences';
+import { IRefinerLayer, IItemRefiners, RefineRuleValues, IRefinerStatType, RefinerStatTypes, IRefinerStat } from '../../fpsReferences';
 
 import { IUser } from '../../fpsReferences';
 // import { IQuickButton } from '@mikezimm/npmfunctions/dist/QuickCommands/IQuickCommands';
@@ -465,10 +465,13 @@ function sortRefinerObject ( allRefiners: IRefinerLayer, drillList: IDrillList )
     allRefiners.childrenObjs.sort((a, b) => { return collator.compare(a.thisKey, b.thisKey); });
 
     let statsToSort : string[] = ['childrenCounts','childrenMultiCounts'];
-    for ( let i in drillList.refinerStats ) {
-        statsToSort.push('stat' + i);
-        statsToSort.push('stat' + i + 'Count');
-    }
+
+    let i = -1;
+    drillList.refinerStats.map(( ) => {
+      i ++;
+      statsToSort.push('stat' + i);
+      statsToSort.push('stat' + i + 'Count');
+    });
     allRefiners = sortKeysByOtherKey ( allRefiners, 'childrenKeys', 'asc', 'string', statsToSort, null, drillList.language  );
     allRefiners.childrenObjs = sortRefinerLayer( allRefiners.childrenObjs, drillList );
 
@@ -489,10 +492,13 @@ function sortRefinerLayer ( allRefiners: IRefinerLayer[], drillList: IDrillList 
         // refinerLayer.childrenObjs.sort((a, b) => ( a.thisKey.toLowerCase() > b.thisKey.toLowerCase() ) ? 1 : -1);
         let statsToSort : string[] = ['childrenCounts','childrenMultiCounts'];
 
-        for ( let i in drillList.refinerStats ) {
+        let i = -1;
+        drillList.refinerStats.map(( ) => {
+          i ++;
             statsToSort.push('stat' + i);
             statsToSort.push('stat' + i + 'Count');
-        }
+        });
+
         refinerLayer = sortKeysByOtherKey ( refinerLayer, 'childrenKeys', 'asc', 'string', statsToSort, null, drillList.language );
         refinerLayer.childrenObjs = sortRefinerLayer( refinerLayer.childrenObjs, drillList );
     } );
@@ -521,10 +527,12 @@ function createNewRefinerLayer( thisKey: string, drillList: IDrillList ) {
         childrenMultiCounts: [],
     };
 
-    for ( let i in drillList.refinerStats ) {
+    let i = -1;
+    drillList.refinerStats.map(( ) => {
+      i ++;
         newRefiner['stat' + i] = [];
         newRefiner['stat' + i + 'Count'] = [];
-    }
+    });
 
     return newRefiner;
 }
@@ -622,7 +630,9 @@ function createNewRefinerLayer( thisKey: string, drillList: IDrillList ) {
 export function updateRefinerStats( i: IDrillItemInfo , topKeyZ: number,  refiners:IRefinerLayer, drillList: IDrillList ) {
 
     //if ( i.EntryType !== 'start') {
-        for ( let i2 in drillList.refinerStats ) {
+        let i2 = -1;
+        drillList.refinerStats.map(( ) => {
+          i2 ++;
             const statKey : string = `stat${i2}`;
             const statKeyCount : string = `stat${i2}Count`;
 
@@ -670,7 +680,7 @@ export function updateRefinerStats( i: IDrillItemInfo , topKeyZ: number,  refine
             refinersStat[topKeyZ] = currentRefinerValue;
             refinersStatCount[topKeyZ] = currentRefinerCount;
 
-        }
+        });
     //}
 
     return refiners;
@@ -690,7 +700,10 @@ export function updateThisRefiner( r0: any, topKeyZ: number,  thisRefiner0: any,
         refiners.childrenMultiCounts.push( 0 );
         topKeyZ = refiners.childrenKeys.length -1;
         //Add empty object in array for later use
-        for ( let i2 in drillList.refinerStats ) {
+
+        let i2 = -1;
+        drillList.refinerStats.map(( ) => {
+          i2 ++;
           //Updated this for ESLinting errors
             const statKey : string = `stat${i2}`;
             const statKeyCount : string = `stat${i2}Count`;
@@ -698,7 +711,7 @@ export function updateThisRefiner( r0: any, topKeyZ: number,  thisRefiner0: any,
             const refinerStatCount: number[] = refiners[statKeyCount] as number[] ;
             refinerStat.push(null);
             refinerStatCount.push(0);
-        }
+        });
 
     }
 
@@ -724,17 +737,19 @@ export function buildRefinersObject ( items: IDrillItemInfo[], drillList: IDrill
         childrenMultiCounts: [],
     };
 
-    for ( let i in drillList.refinerStats ) {
+    let i = -1;
+    drillList.refinerStats.map(( ) => {
+      i ++;
         refiners['stat' + i] = [];
         refiners['stat' + i + 'Count'] = [];
-    }
+    });
 
 //    drillList.refinerStats.map( s => {
 //    });
     //    refinerStats: IRefinerStat[];
 
     //Go through all items
-    for ( let i of items ) { //Go through all list items
+    items.map( ( i: IDrillItemInfo ) => {
         if ( i.refiners ) { //If Item has refiners (all should)
             if ( i.Id === 2626 || i.Id === 2618 ) {
                 // console.log( 'item:', i );
@@ -743,11 +758,11 @@ export function buildRefinersObject ( items: IDrillItemInfo[], drillList: IDrill
             //Do just level 1 
             let thisRefinerValuesLev0 : any[] = i.refiners['lev' + 0] as any[];
             //Go through each array of refiners... 
-            for ( let r0 in thisRefinerValuesLev0 ) { //Go through all list items
 
-                let thisRefiner0 = thisRefinerValuesLev0[r0];
-                let thisRefiner0Str = typeof thisRefinerValuesLev0[r0] === 'string' ? thisRefinerValuesLev0[r0] : 
-                    typeof thisRefinerValuesLev0[r0] === 'number' ? JSON.stringify( thisRefinerValuesLev0[r0] ) : thisRefinerValuesLev0[r0] ;
+            thisRefinerValuesLev0.map( ( thisRefiner0: any, r0: number ) => {
+
+                let thisRefiner0Str = typeof thisRefiner0 === 'string' ? thisRefiner0 : 
+                    typeof thisRefiner0 === 'number' ? JSON.stringify( thisRefiner0 ) : thisRefiner0 ;
 
                 let topKey0 = refiners.childrenKeys.indexOf( thisRefiner0Str );
 
@@ -757,13 +772,13 @@ export function buildRefinersObject ( items: IDrillItemInfo[], drillList: IDrill
 
                 let thisRefinerValuesLev1 : any[] = i.refiners['lev' + 1] as any[];
                 //Go through each array of refiners... 
-                for ( let r1 in thisRefinerValuesLev1 ) { //Go through all list items
-   
-                    let thisRefiner1 = thisRefinerValuesLev1[r1];
+
+                thisRefinerValuesLev1.map( ( thisRefiner1: any, r1: number ) => {
+
                     let refiners1 = refiners.childrenObjs[topKey0];
 
-                    let thisRefiner1Str = typeof thisRefinerValuesLev1[r1] === 'string' ? thisRefinerValuesLev1[r1] : 
-                        typeof thisRefinerValuesLev1[r1] === 'number' ? JSON.stringify( thisRefinerValuesLev1[r1] ) : thisRefinerValuesLev1[r1] ;
+                    let thisRefiner1Str = typeof thisRefiner1 === 'string' ? thisRefiner1 : 
+                        typeof thisRefiner1 === 'number' ? JSON.stringify( thisRefiner1 ) : thisRefiner1 ;
 
                     let topKey1 = refiners1.childrenKeys.indexOf( thisRefiner1Str );
 
@@ -773,13 +788,12 @@ export function buildRefinersObject ( items: IDrillItemInfo[], drillList: IDrill
 
                     let thisRefinerValuesLev2: any[] = i.refiners['lev' + 2] as any[];
                     //Go through each array of refiners... 
-                    for ( let r2 in thisRefinerValuesLev2 ) { //Go through all list items
+                    thisRefinerValuesLev2.map( ( thisRefiner2: any ) => {
 
-                        let thisRefiner2 = thisRefinerValuesLev2[r2];
                         let refiners2 = refiners1.childrenObjs[topKey1];
 
-                        let thisRefiner2Str = typeof thisRefinerValuesLev2[r2] === 'string' ? thisRefinerValuesLev2[r2] : 
-                            typeof thisRefinerValuesLev2[r2] === 'number' ? JSON.stringify( thisRefinerValuesLev2[r2] ) : thisRefinerValuesLev2[r2] ;
+                        let thisRefiner2Str = typeof thisRefiner2 === 'string' ? thisRefiner2 : 
+                            typeof thisRefiner2 === 'number' ? JSON.stringify( thisRefiner2 ) : thisRefiner2 ;
 
                         let topKey2 = refiners2.childrenKeys.indexOf( thisRefiner2Str );
 
@@ -787,11 +801,11 @@ export function buildRefinersObject ( items: IDrillItemInfo[], drillList: IDrill
                         if (topKey2 < 0 ) { topKey2 = refiners2.childrenKeys.length -1; }
                         refiners2 = updateRefinerStats( i , topKey2,  refiners2, drillList );
 
-                    } //for ( let r2 in thisRefinerValuesLev2 )
-                } //for ( let r1 in thisRefinerValuesLev1 )
-            } //for ( let r0 in thisRefinerValuesLev0 )
+                    }); //for ( let r2 in thisRefinerValuesLev2 )
+                }); //for ( let r1 in thisRefinerValuesLev1 )
+            }); //for ( let r0 in thisRefinerValuesLev0 )
         }
-    }
+    });
 
     consoleMe( `buildRefinersObject ???` , items , drillList );
     consoleRef( 'buildRefinersObject', refiners );
@@ -821,9 +835,12 @@ export function getItemRefiners( drillList: IDrillList, item: IDrillItemInfo ) {
     if ( item.Id === 2626 ) {
         // console.log('Checking Id: 2626 refiners' );
     }
-    for ( let i in drillList.refinerStats ) {
-        itemRefiners['stat' + i] = [];
-    }
+    
+    let ri = -1;
+    drillList.refinerStats.map( () => {
+      ri ++;
+        itemRefiners['stat' + ri] = [];
+    });
 
     if ( refiners && refiners.length > 0 ) {
         let x = 0;
@@ -878,14 +895,14 @@ export function getRefinerStatsForItem( drillList: IDrillList, item: IDrillItemI
         return itemRefiners;
     }
 
-    for ( let i in drillList.refinerStats ) {
+    drillList.refinerStats.map( ( refinerStat: IRefinerStat, i: number ) => {
 
-        let primaryField = drillList.refinerStats[i].primaryField;
-        let secondField = drillList.refinerStats[i].secondField;
-        let title = drillList.refinerStats[i].title;
-        let stat : IRefinerStatType = drillList.refinerStats[i].stat;
-        let chartType = drillList.refinerStats[i].chartTypes;
-        let evalX = drillList.refinerStats[i].eval;
+        let primaryField = refinerStat.primaryField;
+        let secondField = refinerStat.secondField;
+        let title = refinerStat.title;
+        let stat : IRefinerStatType = refinerStat.stat;
+        let chartType = refinerStat.chartTypes;
+        let evalX = refinerStat.eval;
         let x = RefinerStatTypes;
         let thisStat = undefined;
 
@@ -966,7 +983,7 @@ export function getRefinerStatsForItem( drillList: IDrillList, item: IDrillItemI
 
         }
 
-    }
+    });
 
     return itemRefiners;
 }

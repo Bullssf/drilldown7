@@ -349,6 +349,9 @@ module.exports = {
         // "@typescript-eslint/no-non-null-assertion": "off",
         // "@typescript-eslint/no-empty-function": "off",
 
+        // "no-cond-assign": "off",
+        // "guard-for-in": "off",
+
         // https://www.voitanos.io/blog/sharepoint-framework-v1.15-and-the-attack-of-eslint
         "@microsoft/spfx/no-async-await": "off",
         "react/jsx-no-bind": "off",
@@ -356,13 +359,9 @@ module.exports = {
         "react/jsx-no-target-blank": "off",
         "@typescript-eslint/no-for-in-array": "off",  // ==>>> FIX
 
-        "no-cond-assign": "off",
-        "guard-for-in": "off",
-
         "@typescript-eslint/no-floating-promises": "off",  // ==>>> FIX
 
         "no-unused-expressions": "off",  // ==>>> FIX
-
 
         "max-lines": "off", //File has too many lines (2283). Maximum allowed is 2000.
 
