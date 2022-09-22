@@ -257,7 +257,7 @@ public componentDidUpdate(prevProps: IResizeGroupOverflowSetExampleProps){
                   );
                 }}
                 onRenderOverflowButton={overflowItems => {
-                  return <CommandBarButton menuProps={{ items: overflowItems! }} onClick={ this.props.onClick }/>;
+                  return <CommandBarButton menuProps={{ items: overflowItems }} onClick={ this.props.onClick }/>;
                 }}
                 styles={{ root: { height: 40 } }}
               />

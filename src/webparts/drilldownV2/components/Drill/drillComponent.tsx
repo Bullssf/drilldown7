@@ -372,7 +372,7 @@ export default class DrillDown extends React.Component<IDrillDownProps, IDrillDo
         let linkColumns = getLinkColumnsV2(allColumns);
         let funcColumns = getFuncColumnsV2(allColumns);
 
-        selColumns.length > 0 ? selectCols += "," + allColumns.join(",") : selectCols = selectCols;
+        if ( selColumns.length > 0 ) selectCols += "," + allColumns.join(",");
         if (expColumns.length > 0) { expandThese = expColumns.join(","); }
 
         list.selectColumns = selColumns;
@@ -1661,7 +1661,7 @@ public componentDidUpdate( prevProps: IDrillDownProps ){
     if ( phase === 'start' ) {
         this._performance[key] = startPerformOp( `${key} ${ note ? ' - ' + note : '' }`, this.props.displayMode );
 
-    } else if ( phase = 'update' ) {
+    } else if ( phase === 'update' ) {
         this._performance[key] = updatePerformanceEnd( this._performance[key], true , count );
 
     }

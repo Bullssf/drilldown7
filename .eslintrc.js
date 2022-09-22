@@ -340,6 +340,15 @@ module.exports = {
 
         //"@typescript-eslint/no-empty-function": "off",
 
+        // "react/jsx-no-bind": "off",
+        // "react/jsx-no-target-blank": "off",
+
+        // "no-self-assign": "off",  //'selectCols' is assigned to itself
+        // "no-constant-condition": "off", //Unexpected constant condition.
+
+        // "@typescript-eslint/no-non-null-assertion": "off",
+        // "@typescript-eslint/no-empty-function": "off",
+
         // https://www.voitanos.io/blog/sharepoint-framework-v1.15-and-the-attack-of-eslint
         "@microsoft/spfx/no-async-await": "off",
         "react/jsx-no-bind": "off",
@@ -351,13 +360,10 @@ module.exports = {
         "guard-for-in": "off",
 
         "@typescript-eslint/no-floating-promises": "off",  // ==>>> FIX
-        "@typescript-eslint/no-non-null-assertion": "off",
-        "@typescript-eslint/no-empty-function": "off",
+
         "no-unused-expressions": "off",  // ==>>> FIX
 
 
-        "no-self-assign": "off",  //'selectCols' is assigned to itself
-        "no-constant-condition": "off", //Unexpected constant condition.
         "max-lines": "off", //File has too many lines (2283). Maximum allowed is 2000.
 
         "require-atomic-updates": "off", //Possible race condition: `drillList.sourceUserInfo` might be assigned based on an outdated state of `drillList`.
