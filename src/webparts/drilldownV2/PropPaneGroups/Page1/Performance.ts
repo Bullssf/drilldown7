@@ -23,10 +23,10 @@ import {
 // import { JSON_Edit_Link } from './zReusablePropPane';
 
 // import * as strings from 'DrilldownV2WebPartStrings';
-import { IDrilldown7WebPartProps } from '../../IDrilldown7WebPartProps';
+import { IDrilldownV2WebPartProps } from '../../IDrilldownV2WebPartProps';
 // import { JSON_Edit_Link, ValidLocalLanguages } from '../fpsReferences';
 
-export function buildPerformanceGroup( wpProps: IDrilldown7WebPartProps ) {
+export function buildPerformanceGroup( wpProps: IDrilldownV2WebPartProps ) {
 
 // let theListChoices : IPropertyPaneDropdownOption[] = [];
   var groupFields: IPropertyPaneField<any>[] = [];

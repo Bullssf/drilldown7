@@ -23,9 +23,9 @@ import {
 // import { JSON_Edit_Link } from './zReusablePropPane';
 
 // import * as strings from 'FpsPageInfoWebPartStrings';
-import { IDrilldown7WebPartProps } from '../../IDrilldown7WebPartProps';
+import { IDrilldownV2WebPartProps } from '../../IDrilldownV2WebPartProps';
 
-export function buildPreConfigGroup( wpProps: IDrilldown7WebPartProps ) {
+export function buildPreConfigGroup( wpProps: IDrilldownV2WebPartProps ) {
 
     let theListChoices : IPropertyPaneDropdownOption[] = [];
 

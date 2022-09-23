@@ -20,7 +20,7 @@ import {
 } from '@microsoft/sp-property-pane';
 
 import * as strings from 'DrilldownV2WebPartStrings';
-// import { IDrilldown7WebPartProps } from '../IDrilldown7WebPartProps';
+// import { IDrilldownV2WebPartProps } from '../IDrilldownV2WebPartProps';
 import { ValidLocalLanguages } from '../../fpsReferences';  //JSON_Edit_Link, 
 
 export function buildYourListGroup( ) {

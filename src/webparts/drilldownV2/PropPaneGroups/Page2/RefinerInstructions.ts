@@ -20,11 +20,11 @@ import {
     PropertyPaneSlider
 } from '@microsoft/sp-property-pane';
 // import * as strings from 'DrilldownV2WebPartStrings';
-import { IDrilldown7WebPartProps } from '../../IDrilldown7WebPartProps';
+import { IDrilldownV2WebPartProps } from '../../IDrilldownV2WebPartProps';
 
 // import { ValidLocalLanguages } from '../../fpsReferences';  //JSON_Edit_Link, 
 
-export function buildRefinerInstructionsGroup( wpProps: IDrilldown7WebPartProps ) {
+export function buildRefinerInstructionsGroup( wpProps: IDrilldownV2WebPartProps ) {
 // let theListChoices : IPropertyPaneDropdownOption[] = [];
 
     const whenToShowChoices: IPropertyPaneDropdownOption[] = <IPropertyPaneDropdownOption[]>[

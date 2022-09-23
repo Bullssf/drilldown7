@@ -25,11 +25,11 @@ import { PropertyFieldMultiSelect } from '@pnp/spfx-property-controls/lib/Proper
 // import { JSON_Edit_Link } from './zReusablePropPane';
 
 import * as strings from 'DrilldownV2WebPartStrings';
-import { IDrilldown7WebPartProps } from '../../IDrilldown7WebPartProps';
+import { IDrilldownV2WebPartProps } from '../../IDrilldownV2WebPartProps';
 
 import { refinerRuleItems } from '../../fpsReferences';
 
-export function buildRefinerGroup( wpProps: IDrilldown7WebPartProps ) {
+export function buildRefinerGroup( wpProps: IDrilldownV2WebPartProps ) {
 
 // let theListChoices : IPropertyPaneDropdownOption[] = [];
   var groupFields: IPropertyPaneField<any>[] = [];

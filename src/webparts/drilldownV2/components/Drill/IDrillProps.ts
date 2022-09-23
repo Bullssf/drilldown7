@@ -155,7 +155,7 @@ Page owner can set:
   refinerInstruction2: string;
   refinerInstruction3: string;
 
-//Added to IDrillDownProps
+//Added to IDrilldownV2Props
     showItems: {
         whenToShowItems: IWhenToShowItems;
         minItemsForHide: number;
@@ -182,9 +182,8 @@ Page owner can set:
  * Extends IFPSCorePinMeReactComponentProps with all basics required for FPS Banner
  */
 
-export interface IDrillDownProps extends IFPSCorePinMeReactComponentProps {
+export interface IDrilldownV2Props extends IFPSCorePinMeReactComponentProps {
 
-    
     /**
      * Default 1.14 properties
      */

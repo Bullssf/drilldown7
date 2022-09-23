@@ -44,7 +44,7 @@
 
 // import { ILoadPerformanceALVFM, IPerformanceOp } from './components/Performance/IFpsPageInfoWebPartProps';
 
-import { IDrilldown7WebPartProps, exportIgnoreProps, } from '../IDrilldown7WebPartProps';
+import { IDrilldownV2WebPartProps, exportIgnoreProps, } from '../IDrilldownV2WebPartProps';
 
 import { changeCustomHelp, changeExpando, changePageStyle, changefpsOptions2,  } from '../fpsReferences';
 // import { changeBanner,   } from '../fpsReferences';
@@ -57,9 +57,9 @@ import { changeBannerBasics, changeBannerNav, changeBannerTheme, changeBannerUti
 
 // import { changePinMe,  } from '../fpsReferences';
 
-// import { importBlockProps } from '../IDrilldown7WebPartProps';
+// import { importBlockProps } from '../IDrilldownV2WebPartProps';
 import { changeListConfig, changeListInfo, changePerformance, changeRefiners, changeToggles, changeInstructions, changeGrouping,
-      changeViews, changeListToggles, changeStats, changeCommands } from '../IDrilldown7WebPartProps';
+      changeViews, changeListToggles, changeStats, changeCommands } from '../IDrilldownV2WebPartProps';
 
 /***
  *    d88888b db    db d8888b.  .d88b.  d8888b. d888888b      d8888b. d8888b.  .d88b.  d8888b. .d8888. 
@@ -77,7 +77,7 @@ import { changeListConfig, changeListInfo, changePerformance, changeRefiners, ch
  * @returns exportObject
  */
 
- export function buildExportProps( wpProps : IDrilldown7WebPartProps, wpInstanceID: string, currentWeb: string, ) {
+ export function buildExportProps( wpProps : IDrilldownV2WebPartProps, wpInstanceID: string, currentWeb: string, ) {
     let exportStructure :any = {};
     // let wpInstanceIDSplit = wpInstanceID.split('|');
     // exportStructure.wpInstanceID = [ wpInstanceIDSplit[0], wpInstanceIDSplit[1], wpInstanceIDSplit[3]].join(' ~ ');
@@ -120,7 +120,7 @@ import { changeListConfig, changeListInfo, changePerformance, changeRefiners, ch
 
   }
 
-  export function buildFPSAnalyticsProps( wpProps : IDrilldown7WebPartProps, wpInstanceID: string, currentWeb: string, ) {
+  export function buildFPSAnalyticsProps( wpProps : IDrilldownV2WebPartProps, wpInstanceID: string, currentWeb: string, ) {
     let exportStructure :any = {};
 
     exportStructure.wpInstanceID = wpInstanceID;

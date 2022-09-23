@@ -169,7 +169,7 @@ function computeCacheKey(primaryControls: IContextualMenuItem[]): string {
  * Example based on:  https://developer.microsoft.com/en-us/fluentui?fabricVer=6#/controls/web/resizegroup#IResizeGroup
  */
 
- // export default class DrillDown extends React.Component<IDrillDownProps, IDrillDownState> {
+ // export default class DrillDown extends React.Component<IDrilldownV2Props, IDrillDownState> {
 export default class ResizeGroupOverflowSetExample extends React.Component<IResizeGroupOverflowSetExampleProps, IResizeGroupOverflowSetExampleState> {
 
 //export default class ResizeGroupOverflowSetExample extends BaseComponent<IResizeGroupOverflowSetExampleProps, IResizeGroupOverflowSetExampleState> {

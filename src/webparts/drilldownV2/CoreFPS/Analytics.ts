@@ -12,7 +12,7 @@ import { DisplayMode, } from '@microsoft/sp-core-library';
  *                                                                                          
  */
 
-import { IDrillDownProps } from '../components/Drill/IDrillProps';
+import { IDrilldownV2Props } from '../components/Drill/IDrillProps';
 import { saveAnalytics3, IZLoadAnalytics, IZSentAnalytics, getMinPerformanceString } from '../fpsReferences';
 import { ILoadPerformance, } from '../fpsReferences';
 // import { LoadPerformanceOps, IMinPerformance, IMinPerformanceSetting, IMinPerformanceSettingLabels, IMinPerformanceSettingLabelSS7 } from '../fpsReferences';
@@ -106,7 +106,7 @@ export const analyticsWeb: string = "/sites/Templates/Analytics/";
 
 
 export const CodeVersion = 'v1.3.2.3 +';  //  ==>  https://github.com/mikezimm/drilldown7/issues/190
-export function saveViewAnalytics( Title: string, Result: string, thisProps: IDrillDownProps, analyticsWasExecuted: boolean, performanceObj: ILoadPerformance ) : boolean {
+export function saveViewAnalytics( Title: string, Result: string, thisProps: IDrilldownV2Props, analyticsWasExecuted: boolean, performanceObj: ILoadPerformance ) : boolean {
 
   if ( analyticsWasExecuted === true ) {
     console.log('saved view info already');

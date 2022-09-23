@@ -1,6 +1,6 @@
 import { IDrillDownState } from '../Drill/IDrillProps';
 
-import { IDrillDownProps } from '../Drill/IDrillProps';
+import { IDrilldownV2Props } from '../Drill/IDrillProps';
 
 import { IFieldDef } from '@mikezimm/npmfunctions/dist/Fields/Interfaces';
 
@@ -69,7 +69,7 @@ export function createEntryField(name: string, title: string, column: string, ty
     return field;
   }
 
-export function buildFormFields(parentProps:IDrillDownProps , parentState: IDrillDownState ){
+export function buildFormFields(parentProps:IDrilldownV2Props , parentState: IDrillDownState ){
     let fields : IFormFields = {
         //createEntryField(name: string, title: string, column: string, type: string, blinkOnProject: boolean){
         Title: createEntryField("titleProject","Title","Title", "Text", true),
@@ -91,7 +91,7 @@ export function buildFormFields(parentProps:IDrillDownProps , parentState: IDril
 }
 
 
-export function buildProjectFormFields(parentProps:IDrillDownProps , parentState: IDrillDownState ){
+export function buildProjectFormFields(parentProps:IDrilldownV2Props , parentState: IDrillDownState ){
     let fields : IProjectFormFields = {
         //createEntryField(name: string, title: string, column: string, type: string, blinkOnProject: boolean){
         Title: createEntryField("titleProject","Title","Title", "Text", true),

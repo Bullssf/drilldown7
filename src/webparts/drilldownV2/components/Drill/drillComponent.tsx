@@ -3,7 +3,7 @@ import * as React from 'react';
 // import { DisplayMode, } from '@microsoft/sp-core-library';
 
 
-import { IDrillDownProps, IDrillDownState, IDrillList, IViewType, IRefinerStyles, RefinerChartTypes } from './IDrillProps';
+import { IDrilldownV2Props, IDrillDownState, IDrillList, IViewType, IRefinerStyles, RefinerChartTypes } from './IDrillProps';
 import { pivCats } from './IDrillProps';
 
 import { saveViewAnalytics } from '../../CoreFPS/Analytics';
@@ -113,7 +113,7 @@ export interface IClickInfo  {
   validText : string;
 }
 
-export default class DrillDown extends React.Component<IDrillDownProps, IDrillDownState> {
+export default class DrillDown extends React.Component<IDrilldownV2Props, IDrillDownState> {
 
     
     private _performance: ILoadPerformance = null;
@@ -487,7 +487,7 @@ export default class DrillDown extends React.Component<IDrillDownProps, IDrillDo
      *                                                                                                  
      */
 
-    public constructor(props:IDrillDownProps){
+    public constructor(props:IDrilldownV2Props){
         super(props);
 
         if ( this._performance === null ) { this._performance = this.props.loadPerformance;  }
@@ -607,7 +607,7 @@ export default class DrillDown extends React.Component<IDrillDownProps, IDrillDo
  *                                                                                         
  */
 
-public componentDidUpdate( prevProps: IDrillDownProps ){
+public componentDidUpdate( prevProps: IDrilldownV2Props ){
 
     let rebuildPart = false;
 
@@ -668,7 +668,7 @@ public componentDidUpdate( prevProps: IDrillDownProps ){
  *                                                          
  */
 
-    public render(): React.ReactElement<IDrillDownProps> {
+    public render(): React.ReactElement<IDrilldownV2Props> {
 
         // const {
         //     // bannerProps,

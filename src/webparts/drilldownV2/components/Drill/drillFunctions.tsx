@@ -844,7 +844,7 @@ export function getItemRefiners( drillList: IDrillList, item: IDrillItemInfo ) {
         let i = 0;
         let allRules = drillList.refinerRules;
         for ( let r of refiners ) {
-            if ( r != null ) {
+            if ( r != null ) { // eslint-disable-line eqeqeq
                 r = r.replace(/\//g,'');
                 let thisRuleSet : any = allRules[i];
                 let fieldValue = item[r];

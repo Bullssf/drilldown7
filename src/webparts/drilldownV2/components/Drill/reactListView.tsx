@@ -621,7 +621,7 @@ export default class ReactListItems extends React.Component<IReactListItemsProps
 
             //        let logTable = itemRows === null ? <div>Nothing to show</div> : <table style={{ display: 'block'}} className={stylesInfo.infoTable}>
 
-            let barText = this.props.blueBar && this.props.blueBar != null ? this.props.blueBar : <span>Items</span>;
+            let barText = this.props.blueBar && this.props.blueBar != null ? this.props.blueBar : <span>Items</span>;  // eslint-disable-line eqeqeq
 
             let webTitle = null;
             let listLink = !this.props.includeListLink ? null : <div className={ stylesInfo.infoHeading } onClick={ this._onGoToList.bind(this) } 
