@@ -6,7 +6,7 @@ import { repoLink, } from '../../fpsReferences';
 
 import { createAboutRow } from '../../fpsReferences';
 
-export const panelVersionNumber = '2022-09-16 -  1.3.2.3'; //Added to show in panel
+export const panelVersionNumber = '2022-09-24 -  2.4.0.1'; //Added to show in panel
 
 export function aboutTable( showrepoLink: boolean ) {
 
@@ -15,6 +15,8 @@ export function aboutTable( showrepoLink: boolean ) {
         headers: ['Date','Version','Focus'],
         rows: [],
     };
+
+    table.rows.push( createAboutRow('2022-09-24','2.4.0.1'  ,'SPFx v1.15.2', showrepoLink === true ? repoLink : null ) );
 
     table.rows.push( createAboutRow('2022-09-16','1.3.2.3'  ,'#169 - Quality of life', showrepoLink === true ? repoLink : null ) );
     table.rows.push( createAboutRow('',''  ,'#177, #181, #191, #192, #195 - Features', showrepoLink === true ? repoLink : null ) );
