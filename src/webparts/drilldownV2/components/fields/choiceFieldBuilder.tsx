@@ -8,7 +8,7 @@ export function createAdvancedContentChoices( selectedKey: string, _onChange: an
 
   let options : IChoiceGroupOption[] = [];
   let choiceSpacer = '\u00A0\u00A0';
-  let spacer4x = choiceSpacer + choiceSpacer + choiceSpacer + choiceSpacer;
+  // let spacer4x = choiceSpacer + choiceSpacer + choiceSpacer + choiceSpacer;
   let spacer3x = choiceSpacer + choiceSpacer + choiceSpacer;
   options.push(  {key: 'normal', text: 'Normal' + spacer3x });
   options.push(  {key: 'advanced', text: 'Advanced' + spacer3x });

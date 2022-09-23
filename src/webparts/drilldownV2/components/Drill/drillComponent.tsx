@@ -27,7 +27,8 @@ import { monthStr3 } from '../../fpsReferences';
 
 import styles from '../Contents/contents.module.scss';
 
-import { createIconButton , defCommandIconStyles} from "../createButtons/IconButton";
+import { createIconButton ,} from "../createButtons/IconButton";
+// import { defCommandIconStyles} from "../createButtons/IconButton";
 
 import { IContentsToggles, makeToggles } from '../fields/toggleFieldBuilder';
 
@@ -35,7 +36,7 @@ import { IMyProgress, ICSSChartTypes, IMyPivCat } from '../../fpsReferences';
 
 import { ICustViewDef } from '../../fpsReferences';
 
-// import { IUser } from '@mikezimm/npmfunctions/dist/Services/Users/IUserInterfaces';
+import { IUser } from '../../fpsReferences';
 import { IQuickCommands } from '../../fpsReferences';
 
 import { IListViewDDDrillDown } from '../../fpsReferences';
@@ -53,7 +54,7 @@ import { getExpandColumnsV2, getSelectColumnsV2, getLinkColumnsV2, getFuncColumn
 
 // import { DoNotExpandLinkColumns, DoNotExpandTrimB4, DoNotExpandTrimAfter, DoNotExpandTrimSpecial } from '../../../../services/getInterface';
 
-// import { getHelpfullError } from '@mikezimm/npmfunctions/dist/Services/Logging/ErrorHandler';
+import { getHelpfullError } from '@mikezimm/npmfunctions/dist/Services/Logging/ErrorHandler';
 
 // import MyDrillItems from './drillListView';
 
@@ -61,7 +62,7 @@ import ReactListItems from './reactListView';
 
 //parentListFieldTitles
 
-import { getAllItems, buildRefinersObject, processAllItems, consoleMe, consoleRef, } from './drillFunctions';
+import { getAllItems, buildRefinersObject, processAllItems, consoleMe, consoleRef, getIUser, } from './drillFunctions';
 
 import ResizeGroupOverflowSetExample from './refiners/commandBar';
 
@@ -372,8 +373,8 @@ export default class DrillDown extends React.Component<IDrillDownProps, IDrillDo
         let linkColumns = getLinkColumnsV2(allColumns);
         let funcColumns = getFuncColumnsV2(allColumns);
 
-        if ( selColumns.length > 0 ) selectCols += "," + allColumns.join(",");
-        if (expColumns.length > 0) { expandThese = expColumns.join(","); }
+        if ( selColumns.length > 0 ) selectCols += "," + allColumns.join(","); // eslint-disable-line @typescript-eslint/no-unused-vars
+        if (expColumns.length > 0) { expandThese = expColumns.join(","); } // eslint-disable-line @typescript-eslint/no-unused-vars
 
         list.selectColumns = selColumns;
         list.staticColumns = allColumns;
@@ -430,7 +431,6 @@ export default class DrillDown extends React.Component<IDrillDownProps, IDrillDo
                 Title: this.props.bannerProps.pageContext.user.displayName,
                 email: this.props.bannerProps.pageContext.user.email,
             },
-            sourceUserInfo: stateSourceUserInfo === true ? this.state.drillList.sourceUserInfo : null,
             fetchCount: this.props.performance.fetchCount,
             fetchCountMobile: this.props.performance.fetchCountMobile,
             restFilter: !this.props.performance.restFilter ? ' ' : this.props.performance.restFilter,
@@ -528,6 +528,7 @@ export default class DrillDown extends React.Component<IDrillDownProps, IDrillDo
             WebpartWidth:  this.props.WebpartElement.getBoundingClientRect().width - 50 ,
 
             drillList: drillList,
+            sourceUserInfo: null,
 
             bannerMessage: null,
             showPropsHelp: false,
@@ -669,13 +670,13 @@ public componentDidUpdate( prevProps: IDrillDownProps ){
 
     public render(): React.ReactElement<IDrillDownProps> {
 
-        const {
-            bannerProps,
-            // isDarkTheme,
-            // environmentMessage,
-            // hasTeamsContext,
-            // userDisplayName,
-          } = this.props;
+        // const {
+        //     // bannerProps,
+        //     // isDarkTheme,
+        //     // environmentMessage,
+        //     // hasTeamsContext,
+        //     // userDisplayName,
+        //   } = this.props;
 
         let x = 1;
         if ( x === 1 ) {
@@ -779,7 +780,7 @@ public componentDidUpdate( prevProps: IDrillDownProps ){
  */
 
             let thisPage = null;
-            let tipsStyles = defCommandIconStyles;
+            // let tipsStyles = defCommandIconStyles;
 
             let performanceMessage = false;
 
@@ -817,8 +818,8 @@ public componentDidUpdate( prevProps: IDrillDownProps ){
 
             } else {
 
-                let toggleTipsButton = <div style={{marginRight: "20px", background: 'white', opacity: '.7', borderRadius: '10px' }}>
-                { createIconButton('Help','Toggle Tips',this._toggleTips.bind(this), null, tipsStyles ) } </div>;
+                // let toggleTipsButton = <div style={{marginRight: "20px", background: 'white', opacity: '.7', borderRadius: '10px' }}>
+                // { createIconButton('Help','Toggle Tips',this._toggleTips.bind(this), null, tipsStyles ) } </div>;
 
                 let errMessage = this.state.errMessage === '' ? null : <div>
                     { this.state.errMessage }
@@ -1028,7 +1029,7 @@ public componentDidUpdate( prevProps: IDrillDownProps ){
                                 isLibrary = { this.state.drillList.isLibrary }
     
                                 contextUserInfo = { this.state.drillList.contextUserInfo }
-                                sourceUserInfo = { this.state.drillList.sourceUserInfo }
+                                sourceUserInfo = { this.state.sourceUserInfo }
     
                                 viewFields={ currentViewFields }
                                 groupByFields={ currentViewGroups }
@@ -1241,11 +1242,34 @@ public componentDidUpdate( prevProps: IDrillDownProps ){
          */
 
         let drillList = this._createDrillList(this.props.webURL, this.props.listName, this.props.isLibrary, refiners, this.state.rules, this.props.stats, viewDefs, this.props.toggles.togOtherChartpart, '', false, this.props.language, 'getAllItemsCall', this.state.drillList.itteration );
-        let errMessage = drillList.refinerRules === undefined ? 'Invalid Rule set: ' +  this.state.rules : '';
+        // let errMessage = drillList.refinerRules === undefined ? 'Invalid Rule set: ' +  this.state.rules : '';
         if ( drillList.refinerRules === undefined ) { drillList.refinerRules = [[],[],[]] ; } 
 
-        let result : any = getAllItems( drillList, this._addTheseItemsToState.bind(this), this._setProgress.bind(this), null,  this._updatePerformance.bind( this ), this.props.quickCommands ? this.props.quickCommands.quickCommandsRequireUser : false );
+        getAllItems( drillList, this._addTheseItemsToState.bind(this), this._setProgress.bind(this), null,  this._updatePerformance.bind( this ),  ); // eslint-disable-line @typescript-eslint/no-floating-promises
 
+    }
+
+    private _doGetUser() {
+
+      if ( this.props.quickCommands ) {
+        this._updatePerformance( 'fetch1', 'start', 'getUser', null );
+        try {
+          getIUser( this.props.webURL, this.props.bannerProps.pageContext.user.loginName, this._updateUserState.bind(this) ); // eslint-disable-line @typescript-eslint/no-floating-promises
+
+        } catch(e){
+          const errMessage = getHelpfullError(e, false, true);
+          this._updatePerformance( 'fetch1', 'update', '', 1 );
+          this.setState({ errMessage: errMessage });
+
+        }
+      }
+    }
+
+    private _updateUserState( sourceUserInfo: IUser, ) {
+      this._updatePerformance( 'fetch1', 'update', '', 1 );
+      this.setState({
+        sourceUserInfo: sourceUserInfo,
+      });
     }
 
     private _addTheseItemsToState( drillList: IDrillList, allItems: IDrillItemInfo[] , errMessage : string, refinerObj: IRefinerLayer ) {
@@ -1296,7 +1320,7 @@ public componentDidUpdate( prevProps: IDrillDownProps ){
                 groupByFields: null, // This is derived from viewDefs
         
                 contextUserInfo: drillList.contextUserInfo,  //For site you are on ( aka current page context )
-                sourceUserInfo: drillList.sourceUserInfo,   //For site where the list is stored
+                sourceUserInfo: this.state.sourceUserInfo,   //For site where the list is stored
 
                 quickCommands: this.state.quickCommands,
         
@@ -1346,7 +1370,7 @@ public componentDidUpdate( prevProps: IDrillDownProps ){
         //End tracking performance
         this._performance.analyze2 = updatePerformanceEnd( this._performance.analyze2, true, allItems.length );
 
-        const analyticsWasExecuted: boolean = saveViewAnalytics( 'Drilldown Webpart', 'addItems', this.props, this.state.analyticsWasExecuted, this._performance );
+        saveViewAnalytics( 'Drilldown Webpart', 'addItems', this.props, this.state.analyticsWasExecuted, this._performance );
 
         this.setState({
             allItems: allItems,
@@ -1405,10 +1429,11 @@ public componentDidUpdate( prevProps: IDrillDownProps ){
         let hasItemKey = item.props && item.props.itemKey ? true : false ;
         let hasTargetInnerText = item.target && item.target.innerText ? true : false;
         if ( hasTargetInnerText === true ) {  //This loop is just for debugging if needed.
-            let testString = item.target.innerText;
-            let testStringL = testString.length;
-            let arr0 = arr[0];
-            let arr0L = arr0.length;
+            // let testString = item.target.innerText;
+            // let testStringL = testString.length;
+            // let arr0 = arr[0];
+            // let arr0L = arr0.length;
+            console.log('_findMatchtingElementTextOriginal')
 
         }
         let hasTargetChildInnerText = item.target && item.target.lastElementChild && item.target.lastElementChild.innerText ? true : false;
@@ -1461,8 +1486,8 @@ public componentDidUpdate( prevProps: IDrillDownProps ){
         let hasTargetNextElemSib = hasTargetInnerIcon && item.target.nextElementSibling !== null ? true : false;
         let nextElemSibInnerText = hasTargetNextElemSib ? item.target.nextElementSibling.innerText : null;
         if ( hasTargetInnerText === true ) {  //This loop is just for debugging if needed.
-            let testString = item.target.innerText;
-            let testStringL = testString.length;
+            // let testString = item.target.innerText;
+            // let testStringL = testString.length;
 
         }
         let hasTargetChildInnerText = item.target && item.target.lastElementChild && item.target.lastElementChild.innerText ? true : false;
@@ -1699,7 +1724,7 @@ public componentDidUpdate( prevProps: IDrillDownProps ){
             multiTree.push( this.state.refinerObj.childrenObjs[newKeyIndex0].childrenObjs[newKeyIndex1].childrenObjs.map( o => { return o.multiCount; }) );
 
             //let searchMeta2 =  this.state.searchMeta.length > 2 ? this.state.searchMeta[ 2 ] : null;
-            let newKeyIndex2 = this.state.refinerObj.childrenObjs[newKeyIndex0].childrenObjs[newKeyIndex1].childrenKeys.indexOf(newMeta[ 2 ]);
+            // let newKeyIndex2 = this.state.refinerObj.childrenObjs[newKeyIndex0].childrenObjs[newKeyIndex1].childrenKeys.indexOf(newMeta[ 2 ]);
         }
     }
 
@@ -1723,7 +1748,7 @@ public componentDidUpdate( prevProps: IDrillDownProps ){
 
     let pivotCats : any = [];
     let cmdCats : any = [];
-    let prevLayer = this.state.pivotCats.length ;
+    // let prevLayer = this.state.pivotCats.length ;
 
     let prevMetaString = JSON.stringify( this.state.searchMeta );
     let thisMetaString = JSON.stringify( newMeta );
@@ -1747,7 +1772,7 @@ public componentDidUpdate( prevProps: IDrillDownProps ){
         let refinerTreeObj = this._getCurrentRefinerTree( newMeta );
         let refinerTree = refinerTreeObj.refinerTree;
         let refinerCount = refinerTreeObj.countTree;
-        let refinerMulit = refinerTreeObj.multiTree;
+        // let refinerMulit = refinerTreeObj.multiTree;
         let sendCount = refinerCount;
 
         pivotCats.push ( refinerTree[0].map( ( r: any ) => { return this._createThisPivotCat(r,'',0); })); // Recreate first layer of pivots
@@ -1801,7 +1826,7 @@ public componentDidUpdate( prevProps: IDrillDownProps ){
             groupByFields: null, // This is derived from viewDefs
     
             contextUserInfo: this.state.drillList.contextUserInfo,  //For site you are on ( aka current page context )
-            sourceUserInfo: this.state.drillList.sourceUserInfo,   //For site where the list is stored
+            sourceUserInfo: this.state.sourceUserInfo,   //For site where the list is stored
 
             quickCommands: this.state.quickCommands,
     
@@ -1826,7 +1851,7 @@ public componentDidUpdate( prevProps: IDrillDownProps ){
             groupByFields: null, // This is derived from viewDefs
     
             contextUserInfo: this.state.drillList.contextUserInfo,  //For site you are on ( aka current page context )
-            sourceUserInfo: this.state.drillList.sourceUserInfo,   //For site where the list is stored
+            sourceUserInfo: this.state.sourceUserInfo,   //For site where the list is stored
 
             quickCommands: null,
     
@@ -1897,7 +1922,7 @@ public componentDidUpdate( prevProps: IDrillDownProps ){
         }
       }
 
-      if ( showItem === true  ) {
+      if ( showItem === true && searchFails === 0 ) {
           newFilteredItems.push(thisSearchItem);
       }
 
@@ -2008,6 +2033,7 @@ public componentDidUpdate( prevProps: IDrillDownProps ){
 
         consoleMe( '_reloadOnUpdate' , this.state.allItems, this.state.drillList );
 
+        this._doGetUser();
         this._getAllItemsCall( viewDefs, this.state.refiners );
 
         let delay = hasError === true ? 10000 : this.state.quickCommands.successBanner;
@@ -2024,6 +2050,7 @@ public componentDidUpdate( prevProps: IDrillDownProps ){
          * After deeper testing, adding this to getBestFitView solved it but that was getting called a lot so I'm just doing it once in the render
          */
         let viewDefs: ICustViewDef[] = JSON.parse(JSON.stringify(this.props.viewDefs));
+        this._doGetUser();
         this._getAllItemsCall( viewDefs, this.props.refiners );
     }
 
@@ -2148,12 +2175,12 @@ public componentDidUpdate( prevProps: IDrillDownProps ){
     private _buildFilterPivot(pivCat: IMyPivCat) {
 
         if ( pivCat === undefined || pivCat === null ) {
-            let p = <PivotItem 
-                headerText={ 'ErrPivCat' }
-                itemKey={ 'ErrPivCat' }
-                >
-                { 'ErrPivCat' }
-            </PivotItem>;
+            // let p = <PivotItem 
+            //     headerText={ 'ErrPivCat' }
+            //     itemKey={ 'ErrPivCat' }
+            //     >
+            //     { 'ErrPivCat' }
+            // </PivotItem>;
 
         } else {
         let p = <PivotItem 
@@ -2235,17 +2262,17 @@ public componentDidUpdate( prevProps: IDrillDownProps ){
             styles: '',
         };
 
-        let togRefinerStyle = {
-            //label: <span style={{ color: 'red', fontWeight: 900}}>Rails Off!</span>,
-            label: <span>Style</span>,
-            key: 'togggleRefinerStyle',
-            _onChange: this._updateTogggleRefinerStyle.bind(this),
-            checked: this.state.style === 'pivot' ? true : false,
-            onText: 'Pivot',
-            offText: 'CommandBar',
-            className: '',
-            styles: '',
-        };
+        // let togRefinerStyle = {
+        //     //label: <span style={{ color: 'red', fontWeight: 900}}>Rails Off!</span>,
+        //     label: <span>Style</span>,
+        //     key: 'togggleRefinerStyle',
+        //     _onChange: this._updateTogggleRefinerStyle.bind(this),
+        //     checked: this.state.style === 'pivot' ? true : false,
+        //     onText: 'Pivot',
+        //     offText: 'CommandBar',
+        //     className: '',
+        //     styles: '',
+        // };
 
 
         let theseToggles = [];

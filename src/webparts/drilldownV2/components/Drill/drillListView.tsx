@@ -6,8 +6,8 @@ import { IDrillItemInfo } from '../../fpsReferences';
 
 import { buildPropsHoverCard } from '../../../../services/hoverCardService';
 
-import { mergeStyles } from 'office-ui-fabric-react/lib/Styling';
-import { IStackTokens } from 'office-ui-fabric-react';
+// import { mergeStyles } from 'office-ui-fabric-react/lib/Styling';
+// import { IStackTokens } from 'office-ui-fabric-react';
 
 
 import styles from '../Contents/listView.module.scss';
@@ -30,23 +30,23 @@ export interface IMyDrillItemsState {
   maxChars?: number;
 }
 
-const stackFormRowTokens: IStackTokens = { childrenGap: 10 };
+// const stackFormRowTokens: IStackTokens = { childrenGap: 10 };
 
-const iconClassAction = mergeStyles({
-  fontSize: 18,
-  fontWeight: "bolder",
-  color: "black",
-  //margin: '0px 2px',
-  paddingRight: '10px',
-  verticalAlign: 'bottom',
-});
+// const iconClassAction = mergeStyles({
+//   fontSize: 18,
+//   fontWeight: "bolder",
+//   color: "black",
+//   //margin: '0px 2px',
+//   paddingRight: '10px',
+//   verticalAlign: 'bottom',
+// });
 
-const iconClassInfo = mergeStyles({
-  fontSize: 18,
-  //margin: '0px 2px',
-  paddingRight: '10px',
-  verticalAlign: 'bottom',
-});
+// const iconClassInfo = mergeStyles({
+//   fontSize: 18,
+//   //margin: '0px 2px',
+//   paddingRight: '10px',
+//   verticalAlign: 'bottom',
+// });
 
 
 export default class MyDrillItems extends React.Component<IMyDrillItemsProps, IMyDrillItemsState> {

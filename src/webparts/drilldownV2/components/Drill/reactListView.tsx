@@ -3,10 +3,10 @@ import * as React from 'react';
 import { Icon  } from 'office-ui-fabric-react/lib/Icon';
 import { escape } from '@microsoft/sp-lodash-subset';
 
-import { Web, IList, IItem, } from "@pnp/sp/presets/all";
-import { Link, ILinkProps } from 'office-ui-fabric-react';
+import { Web,  } from "@pnp/sp/presets/all";
+import { Link,  } from 'office-ui-fabric-react';
 
-import { Pivot, PivotItem, IPivotItemProps} from 'office-ui-fabric-react/lib/Pivot';
+import { Pivot, PivotItem,} from 'office-ui-fabric-react/lib/Pivot';
 
 import ReactJson from "react-json-view";
 
@@ -28,10 +28,10 @@ import { buildConfirmDialog, IMyDialogProps } from '@mikezimm/npmfunctions/dist/
 
 // import stylesL from '../ListView/listView.module.scss';
 
-import { ListView, IViewField, SelectionMode, GroupOrder, IGrouping, } from "@pnp/spfx-controls-react/lib/ListView";
+import { ListView, IViewField, SelectionMode, IGrouping, } from "@pnp/spfx-controls-react/lib/ListView";
 // import { IGroup } from 'office-ui-fabric-react/lib/components/DetailsList';
 
-import { mergeStyles } from 'office-ui-fabric-react/lib/Styling';
+// import { mergeStyles } from 'office-ui-fabric-react/lib/Styling';
 import { Stack, IStackTokens } from 'office-ui-fabric-react';
 import { Panel, PanelType } from 'office-ui-fabric-react/lib/Panel';
 import { PrimaryButton, DefaultButton } from 'office-ui-fabric-react/lib/Button';
@@ -128,23 +128,23 @@ const NoCommandsInfo = <div>
     </div>;
 
 
-const stackFormRowTokens: IStackTokens = { childrenGap: 10 };
+// const stackFormRowTokens: IStackTokens = { childrenGap: 10 };
 
-const iconClassAction = mergeStyles({
-  fontSize: 18,
-  fontWeight: "bolder",
-  color: "black",
-  //margin: '0px 2px',
-  paddingRight: '10px',
-  verticalAlign: 'bottom',
-});
+// const iconClassAction = mergeStyles({
+//   fontSize: 18,
+//   fontWeight: "bolder",
+//   color: "black",
+//   //margin: '0px 2px',
+//   paddingRight: '10px',
+//   verticalAlign: 'bottom',
+// });
 
-const iconClassInfo = mergeStyles({
-  fontSize: 18,
-  //margin: '0px 2px',
-  paddingRight: '10px',
-  verticalAlign: 'bottom',
-});
+// const iconClassInfo = mergeStyles({
+//   fontSize: 18,
+//   //margin: '0px 2px',
+//   paddingRight: '10px',
+//   verticalAlign: 'bottom',
+// });
 
 
 export default class ReactListItems extends React.Component<IReactListItemsProps, IReactListItemsState> {
@@ -184,7 +184,7 @@ export default class ReactListItems extends React.Component<IReactListItemsProps
                     });
                 }
             } catch (e) {
-                errMessage = getHelpfullError(e, true, true);
+                errMessage = getHelpfullError(e, true, true); // eslint-disable-line @typescript-eslint/no-unused-vars
             }
         }
 
@@ -442,6 +442,7 @@ export default class ReactListItems extends React.Component<IReactListItemsProps
  */
 
     public componentDidUpdate(prevProps: IReactListItemsProps): void {
+        /* eslint-disable @typescript-eslint/no-unused-vars */
         let redraw = false;
         let updateViewFields = false;
 
@@ -458,6 +459,7 @@ export default class ReactListItems extends React.Component<IReactListItemsProps
         if ( prevProps.items.length !== this.props.items.length ) { redraw = true; }
         if ( prevProps.parentListURL !== this.props.parentListURL ) { redraw = true; }
 
+        /* eslint-enable @typescript-eslint/no-unused-vars */
 
         this._updateStateOnPropsChange( updateViewFields );
     }
@@ -781,7 +783,7 @@ export default class ReactListItems extends React.Component<IReactListItemsProps
     //private _confirmUpdateDialog = () => {
     private async _confirmUpdateDialog (item: any): Promise<void> {
 
-        let e: any = event;
+        let e: any = event; // eslint-disable-line @typescript-eslint/no-unused-vars
 
         let thisButtonObject : IQuickButton = this.state.pickedCommand ;
         await this.completeThisQuickUpdate( this.state.panelId.toString(), thisButtonObject );

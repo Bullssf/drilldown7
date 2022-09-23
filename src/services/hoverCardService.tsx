@@ -9,7 +9,7 @@ import { escape } from '@microsoft/sp-lodash-subset';
 import styles from '../webparts/drilldownV2/components/Contents/listView.module.scss';
 
 import { mergeStyles } from 'office-ui-fabric-react/lib/Styling';
-import { Fabric, Stack, IStackTokens, initializeIcons } from 'office-ui-fabric-react';
+// import { Fabric, Stack, IStackTokens, initializeIcons } from 'office-ui-fabric-react';
 
 export const autoDetailsList = ( item: any, highlightKeys: string[], specialKeys: string[], showOthers: boolean ): any[] => {
 

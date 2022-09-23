@@ -2,7 +2,7 @@
 
 import * as React from 'react';
 
-import { TextField,  IStyleFunctionOrObject, ITextFieldStyleProps, ITextFieldStyles } from "office-ui-fabric-react";
+import { IStyleFunctionOrObject, ITextFieldStyleProps, ITextFieldStyles } from "office-ui-fabric-react";
 
 // import { IFormFields, IProjectFormFields, } from '../fields/fieldDefinitions';
 

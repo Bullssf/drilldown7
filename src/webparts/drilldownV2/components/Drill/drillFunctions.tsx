@@ -6,7 +6,7 @@ import "@pnp/sp/webs";
 import "@pnp/sp/clientside-pages/web";
 import "@pnp/sp/site-users/web";
 
-import { escape } from '@microsoft/sp-lodash-subset';
+// import { escape } from '@microsoft/sp-lodash-subset';
 // import { ClientsideWebpart } from "@pnp/sp/clientside-pages";
 // import { CreateClientsidePage, PromotedState, ClientsidePageLayoutType, ClientsideText,  } from "@pnp/sp/clientside-pages";
 
@@ -36,7 +36,7 @@ import { getHelpfullError } from '../../fpsReferences';
 // import { IViewLog, addTheseViews } from '../../../../services/listServices/viewServices'; //Import view arrays for Time list
 
 // import { IAnyArray } from  '../../../../services/listServices/listServices';
-import { DoNotExpandFuncColumns, convertArrayToLC } from  '../../../../services/getInterfaceV2';
+// import { DoNotExpandFuncColumns, convertArrayToLC } from  '../../../../services/getInterfaceV2';
 
 import { getDetailValueType, ITypeStrings } from '@mikezimm/npmfunctions/dist/Services/typeServices';
 
@@ -44,15 +44,29 @@ import { ensureUserInfo } from '@mikezimm/npmfunctions/dist/Services/Users/userS
 
 // import { mergeAriaAttributeValues } from "office-ui-fabric-react";
 
-import { IRefinerLayer, IItemRefiners, RefineRuleValues, IRefinerStatType, RefinerStatTypes, IRefinerStat } from '../../fpsReferences';
+import { IRefinerLayer, IItemRefiners, RefineRuleValues, IRefinerStatType, IRefinerStat } from '../../fpsReferences';
 
 import { IUser } from '../../fpsReferences';
 // import { IQuickButton } from '@mikezimm/npmfunctions/dist/QuickCommands/IQuickCommands';
 
 import { createItemFunctionProp,  } from '../../../../services/parse'; //Main function to update item
 
-import { ILoadPerformance, startPerformOp, updatePerformanceEnd } from "../../fpsReferences";
 import { DoNotExpandColumns } from "../../../../services/getInterfaceV2";
+
+
+export async function getIUser ( webURL: string, email: string, callBack: any )   {
+
+  // try {
+    const sourceUser: IUser = await ensureUserInfo( webURL, email );
+    callBack( sourceUser, '' );
+
+  // } catch (e) {
+  //   const errMessage = getHelpfullError(e, false, true);
+  //   callBack( null, errMessage );
+
+  // }
+
+}
 
 //   d888b  d88888b d888888b  .d8b.  db      db      d888888b d888888b d88888b .88b  d88. .d8888. 
 //  88' Y8b 88'     `~~88~~' d8' `8b 88      88        `88'   `~~88~~' 88'     88'YbdP`88 88'  YP 
@@ -64,107 +78,90 @@ import { DoNotExpandColumns } from "../../../../services/getInterfaceV2";
 //        
 
 // This is what it was before I split off the other part
-export async function getAllItems( drillList: IDrillList, addTheseItemsToState: any, setProgress: any, markComplete: any, updatePerformance: any, getUser: boolean ): Promise<void>{
+export async function getAllItems( drillList: IDrillList, addTheseItemsToState: any, setProgress: any, markComplete: any, updatePerformance: any, ): Promise<void>{
 
     let errMessage = '';
     let allItems : IDrillItemInfo[] = [];
-    let sourceUserInfo: IUser = null;
-    updatePerformance( 'fetch1', 'start', 'getUser', null );
-    if ( getUser === true ) {
-        try {
-            sourceUserInfo = await ensureUserInfo( drillList.webURL, drillList.contextUserInfo.email );
-        } catch (e) {
-            errMessage = getHelpfullError(e, false, true);
-        }
-    }
-
-    updatePerformance( 'fetch1', 'update', '', 1 );
 
     updatePerformance( 'fetch2', 'start', 'items', null  );
 
-    if ( errMessage !== '' ) {
-        allItems = processAllItems( allItems, errMessage, drillList, addTheseItemsToState, setProgress, updatePerformance );
+    //lists.getById(listGUID).webs.orderBy("Title", true).get().then(function(result) {
+    //let allItems : IDrillItemInfo[] = await sp.web.webs.get();
 
-    } else {
-        drillList.sourceUserInfo = sourceUserInfo;
-        //lists.getById(listGUID).webs.orderBy("Title", true).get().then(function(result) {
-        //let allItems : IDrillItemInfo[] = await sp.web.webs.get();
+    let thisListWeb = Web(drillList.webURL);
+    let selColumns = drillList.selectColumnsStr;
 
-        let thisListWeb = Web(drillList.webURL);
-        let selColumns = drillList.selectColumnsStr;
-
-        //Needed to add these to select columns as well as say it's a library
-        if ( drillList.isLibrary !== true ) {
-            if ( drillList.staticColumns.indexOf( 'FileLeafRef' ) > -1 ) {
-                drillList.isLibrary = true;
-            } else if ( drillList.staticColumns.indexOf( 'FileRef' ) > -1 ) {
-                drillList.isLibrary = true;
-            }
+    //Needed to add these to select columns as well as say it's a library
+    if ( drillList.isLibrary !== true ) {
+        if ( drillList.staticColumns.indexOf( 'FileLeafRef' ) > -1 ) {
+            drillList.isLibrary = true;
+        } else if ( drillList.staticColumns.indexOf( 'FileRef' ) > -1 ) {
+            drillList.isLibrary = true;
         }
-
-        //Always add these columns if it's a library to get links
-        if ( drillList.isLibrary === true ) {
-            selColumns += ',FileLeafRef,FileRef,OData__UIVersion';//,_ComplianceTag,_ISRecord,_IpLabelHash,_IpLabelPromotionCtagVersion,OData__ComplianceTag is not available on the library
-        }
-        //Always add this column to fetch an embed url
-        selColumns += ',ServerRedirectedEmbedUrl';
-
-        let expandThese = drillList.expandColumnsStr;
-        let staticCols = drillList.staticColumns.length > 0 ? drillList.staticColumns.join(',') : '';
-        // let selectCols = '*,' + staticCols;
-        // let selectCols = drillList.getAllProps === true ? '*,' + selColumns : selColumns;
-
-        // let selectCols = '*,' + staticCols;
-        let selectCols = drillList.getAllProps === true ? '*,' + selColumns : selColumns;
-
-        //Added for https://github.com/mikezimm/drilldown7/issues/176.... Can be improved though.
-        if ( drillList.getAllProps === false ) {
-          const selectColsArr = selectCols.split(',');
-          if ( drillList.staticColumns.length > 0 ) {
-            drillList.staticColumns.map( column => {
-              if ( selectColsArr.indexOf( column ) < 0 ) { selectColsArr.push( column ) ;}
-            });
-            const cleanSelectCols: string[] = [];
-            selectColsArr.map( column => { 
-              let cleanColumn: string = `${column}`;
-              if ( column.indexOf('/') > -1 ) {
-                DoNotExpandColumns.map( doNotExp => {
-                  //https://reactgo.com/javascript-variable-regex/
-                  const removeStr = `/${doNotExp}`;
-                  const regex =  new RegExp(removeStr,'gi'); // correct way
-                  cleanColumn = cleanColumn.replace(regex,''); // it works  
-                });
-              }
-              cleanSelectCols.push( cleanColumn ); // it works  
-            });
-
-            selectCols = cleanSelectCols.join(',');
-
-          }
-        }
-
-
-        let thisListObject = thisListWeb.lists.getByTitle(drillList.name);
-
-        /**
-         * IN FUTURE, ALWAYS BE SURE TO PUT SELECT AND EXPAND AFTER .ITEMS !!!!!!
-         */
-
-        try {
-            let fetchCount = drillList.fetchCount > 0 ? drillList.fetchCount : 200;
-
-            if ( drillList.restFilter.length > 1 ) {
-                allItems = await thisListObject.items.select(selectCols).expand(expandThese).orderBy('ID',false).top(fetchCount).filter(drillList.restFilter).get();
-            } else {
-                allItems = await thisListObject.items.select(selectCols).expand(expandThese).orderBy('ID',false).top(fetchCount).get();
-            }
-        } catch (e) {
-            errMessage = getHelpfullError(e, false, true);
-    
-        }
-        consoleMe( 'getAllItems' , allItems, drillList );
-        allItems = processAllItems( allItems, errMessage, drillList, addTheseItemsToState, setProgress, updatePerformance );
     }
+
+    //Always add these columns if it's a library to get links
+    if ( drillList.isLibrary === true ) {
+        selColumns += ',FileLeafRef,FileRef,OData__UIVersion';//,_ComplianceTag,_ISRecord,_IpLabelHash,_IpLabelPromotionCtagVersion,OData__ComplianceTag is not available on the library
+    }
+    //Always add this column to fetch an embed url
+    selColumns += ',ServerRedirectedEmbedUrl';
+
+    let expandThese = drillList.expandColumnsStr;
+    // let staticCols = drillList.staticColumns.length > 0 ? drillList.staticColumns.join(',') : '';
+    // let selectCols = '*,' + staticCols;
+    // let selectCols = drillList.getAllProps === true ? '*,' + selColumns : selColumns;
+
+    // let selectCols = '*,' + staticCols;
+    let selectCols = drillList.getAllProps === true ? '*,' + selColumns : selColumns;
+
+    //Added for https://github.com/mikezimm/drilldown7/issues/176.... Can be improved though.
+    if ( drillList.getAllProps === false ) {
+      const selectColsArr = selectCols.split(',');
+      if ( drillList.staticColumns.length > 0 ) {
+        drillList.staticColumns.map( column => {
+          if ( selectColsArr.indexOf( column ) < 0 ) { selectColsArr.push( column ) ;}
+        });
+        const cleanSelectCols: string[] = [];
+        selectColsArr.map( column => { 
+          let cleanColumn: string = `${column}`;
+          if ( column.indexOf('/') > -1 ) {
+            DoNotExpandColumns.map( doNotExp => {
+              //https://reactgo.com/javascript-variable-regex/
+              const removeStr = `/${doNotExp}`;
+              const regex =  new RegExp(removeStr,'gi'); // eslint-disable-line @rushstack/security/no-unsafe-regexp
+              cleanColumn = cleanColumn.replace(regex,''); // it works  
+            });
+          }
+          cleanSelectCols.push( cleanColumn ); // it works  
+        });
+
+        selectCols = cleanSelectCols.join(',');
+
+      }
+    }
+
+
+    let thisListObject = thisListWeb.lists.getByTitle(drillList.name);
+
+    /**
+     * IN FUTURE, ALWAYS BE SURE TO PUT SELECT AND EXPAND AFTER .ITEMS !!!!!!
+     */
+
+    try {
+        let fetchCount = drillList.fetchCount > 0 ? drillList.fetchCount : 200;
+
+        if ( drillList.restFilter.length > 1 ) {
+            allItems = await thisListObject.items.select(selectCols).expand(expandThese).orderBy('ID',false).top(fetchCount).filter(drillList.restFilter).get();
+        } else {
+            allItems = await thisListObject.items.select(selectCols).expand(expandThese).orderBy('ID',false).top(fetchCount).get();
+        }
+    } catch (e) {
+        errMessage = getHelpfullError(e, false, true);
+
+    }
+    consoleMe( 'getAllItems' , allItems, drillList );
+    allItems = processAllItems( allItems, errMessage, drillList, addTheseItemsToState, setProgress, updatePerformance );
 
 
 }
@@ -175,7 +172,7 @@ export function processAllItems( allItems : IDrillItemInfo[], errMessage: string
 
     updatePerformance( 'analyze1', 'start', 'process'  );
 
-    const DoNotExpandFuncColumnsLC = convertArrayToLC(DoNotExpandFuncColumns);
+    // const DoNotExpandFuncColumnsLC = convertArrayToLC(DoNotExpandFuncColumns);
 
     let allRefiners : IRefinerLayer = null;
     let itemRefinerErrors: string[] = [];
@@ -263,7 +260,7 @@ export function processAllItems( allItems : IDrillItemInfo[], errMessage: string
                 if ( drillList.linkColumns.indexOf( staticColumn ) > -1 ) {
                     let splitCol = staticColumn.split("/");
                     let leftSide = splitCol[0];
-                    let rightSide = splitCol[1];
+                    // let rightSide = splitCol[1];
 
                     let detailType = getDetailValueType(  item[leftSide] );
 
@@ -308,9 +305,9 @@ export function processAllItems( allItems : IDrillItemInfo[], errMessage: string
 
             drillList.multiSelectColumns.map( msColumn => {
 
-                let splitCol = msColumn.split("/");
-                let leftSide = [];
-                let rightSide = splitCol[ splitCol.length -1 ];  
+                // let splitCol = msColumn.split("/");
+                // let leftSide = [];
+                // let rightSide = splitCol[ splitCol.length -1 ];  
 
                 /**
                  * Example object (Multi-select lookup value )
@@ -843,7 +840,7 @@ export function getItemRefiners( drillList: IDrillList, item: IDrillItemInfo ) {
     });
 
     if ( refiners && refiners.length > 0 ) {
-        let x = 0;
+        // let x = 0;
         let i = 0;
         let allRules = drillList.refinerRules;
         for ( let r of refiners ) {
@@ -901,10 +898,10 @@ export function getRefinerStatsForItem( drillList: IDrillList, item: IDrillItemI
         let secondField = refinerStat.secondField;
         let title = refinerStat.title;
         let stat : IRefinerStatType = refinerStat.stat;
-        let chartType = refinerStat.chartTypes;
-        let evalX = refinerStat.eval;
-        let x = RefinerStatTypes;
-        let thisStat = undefined;
+        // let chartType = refinerStat.chartTypes;
+        // let evalX = refinerStat.eval;
+        // let x = RefinerStatTypes;
+        // let thisStat = undefined;
 
         let testPrimary = false;
         let primaryType : ITypeStrings = 'unknown';
@@ -919,10 +916,10 @@ export function getRefinerStatsForItem( drillList: IDrillList, item: IDrillItemI
         }
 
         let testSecond = false;
-        let secondType : ITypeStrings = 'unknown';
+        let secondType : ITypeStrings = 'unknown'; // eslint-disable-line @typescript-eslint/no-unused-vars
         if ( secondField !== undefined || secondField !== null ) { testSecond = true; }
         if ( testSecond === true) {
-            secondType = getDetailValueType(  item[secondField] );
+            secondType = getDetailValueType(  item[secondField] );  // eslint-disable-line @typescript-eslint/no-unused-vars
         }
 
         if ( stat === 'count' ) { 
@@ -1215,10 +1212,8 @@ export function getGroupByNumber( fieldValue : any, type : ITypeStrings , ruleSe
 
 export function getBestFieldType ( item: any ) {
 
-let thisType = 'unknown';
-
-
-
+// let thisType = 'unknown';
+  console.log('doing nothing here')
 
 }
 

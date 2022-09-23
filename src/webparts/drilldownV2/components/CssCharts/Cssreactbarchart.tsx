@@ -97,9 +97,9 @@ export function makeChartData( qty: number, label: string, chartTypes : ICSSChar
  */
 
 
-const barValueAsPercentDef : boolean = false;
+// const barValueAsPercentDef : boolean = false;
 const heightDef: number | string = "50px"; //This would be horizonal bar height... one horizontal layer
-const barValuesDef: 'val1' | 'sums' | 'avgs' | 'percents' = 'val1';
+// const barValuesDef: 'val1' | 'sums' | 'avgs' | 'percents' = 'val1';
 const titleLocationDef: 'top' | 'side' = 'top';
 const randomPallets = [ColorsBlue, ColorsBrown, ColorsGray, ColorsGreen, ColorsRed];
 
@@ -188,7 +188,7 @@ public componentDidUpdate(prevProps: ICssreactbarchartProps){
     let rebuildPart = false;
     let settingsChanged = false;
     let dataChanged = false;
-    let otherChanged = false;
+    // let otherChanged = false;
     console.log('DIDUPDATE setting chartData:', this.props.chartData);
 
     let prevChartKeys = prevProps.chartData.map( cd => {
@@ -345,13 +345,13 @@ public componentDidUpdate(prevProps: ICssreactbarchartProps){
 
       let chartShowStyle = isCollapsed === 1 ? stylesC.chartHide : stylesC.chartShow ;
       
-      let stylesAccor = thisChartsSettings.stylesChart && thisChartsSettings.stylesChart[activeType] ? thisChartsSettings.stylesChart[activeType] : null;
+      // let stylesAccor = thisChartsSettings.stylesChart && thisChartsSettings.stylesChart[activeType] ? thisChartsSettings.stylesChart[activeType] : null;
 
       let stylesChart = thisChartsSettings.stylesChart && thisChartsSettings.stylesChart[activeType] ? thisChartsSettings.stylesChart[activeType] : null;
       let stylesRow = thisChartsSettings.stylesRow && thisChartsSettings.stylesRow[activeType] ? thisChartsSettings.stylesRow[activeType] : null;
       let stylesTitle = thisChartsSettings.stylesTitle && thisChartsSettings.stylesTitle[activeType] ? thisChartsSettings.stylesTitle[activeType] : null;
       let stylesBlock = thisChartsSettings.stylesBlock && thisChartsSettings.stylesBlock[activeType] ? thisChartsSettings.stylesBlock[activeType] : null;
-      let stylesLabel = thisChartsSettings.stylesLabel && thisChartsSettings.stylesLabel[activeType] ? thisChartsSettings.stylesLabel[activeType] : null;
+      // let stylesLabel = thisChartsSettings.stylesLabel && thisChartsSettings.stylesLabel[activeType] ? thisChartsSettings.stylesLabel[activeType] : null;
       let stylesValue = thisChartsSettings.stylesValue && thisChartsSettings.stylesValue[activeType] ? thisChartsSettings.stylesValue[activeType] : null;
 
       let stylesFigure = thisChartsSettings.stylesFigure && thisChartsSettings.stylesFigure[activeType] ? thisChartsSettings.stylesFigure[activeType] : null;
@@ -409,7 +409,7 @@ public componentDidUpdate(prevProps: ICssreactbarchartProps){
 
 
       let minDivisor: number = null;
-      let maxDivisor = null;
+      // let maxDivisor = null;
       if ( minNumber >= 1000000 ) { minDivisor = 1000000 ; }
 //      else if ( minNumber >= 100000 ) { minDivisor = 100000 ; }
 //      else if ( minNumber >= 10000 ) { minDivisor = 10000 ; }
@@ -472,7 +472,7 @@ public componentDidUpdate(prevProps: ICssreactbarchartProps){
         }
 
         let valueStyle : any = stylesValue != null ? stylesValue : {} ;
-        let labelStyle : any = stylesLabel != null ? stylesLabel : {} ; 
+        // let labelStyle : any = stylesLabel != null ? stylesLabel : {} ; 
 
         
 
@@ -523,7 +523,7 @@ public componentDidUpdate(prevProps: ICssreactbarchartProps){
             console.log('chartData barPercent < 50' );
             blockStyle.overflow = 'visible';
 
-            let leftValue = barPercent < 1 ? '7%' : ( 1 + ( 1.2 * barPercent / 100 ) * 100 ) + '%'; 
+            // let leftValue = barPercent < 1 ? '7%' : ( 1 + ( 1.2 * barPercent / 100 ) * 100 ) + '%'; 
             valueStyle.left = '20px';
             valueStyle.transform = 'translateX(100%)';
             valueStyle.position = 'relative';

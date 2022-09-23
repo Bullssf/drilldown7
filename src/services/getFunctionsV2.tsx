@@ -88,7 +88,7 @@ import { DoNotExpandLinkColumns, DoNotExpandColumns, DoNotExpandFuncColumns } fr
         let isLookup = thisColumn.indexOf("/");
         if(isLookup) {
           let splitCol = thisColumn.split("/");
-          let baseColumn = splitCol[ 0 ] ; //This is always the zero index splitCol period
+          // let baseColumn = splitCol[ 0 ] ; //This is always the zero index splitCol period
           let nextPart = splitCol[ 1 ];
           let rightSide = splitCol[ splitCol.length -1 ];
 
@@ -135,7 +135,7 @@ import { DoNotExpandLinkColumns, DoNotExpandColumns, DoNotExpandFuncColumns } fr
       // Only look at columns with / in the name
 
           let splitCol = thisColumn.split("/");
-          let leftSide = splitCol[0];
+          // let leftSide = splitCol[0];
           let rightSide = splitCol[ splitCol.length -1 ];
           if ( rightSide && DoNotExpandLinkColumnsLC.indexOf( rightSide.toLowerCase() ) > -1 ) {
             //Then do nothing since this column is a 'faux expanded column' used in Drilldown for Link Columns

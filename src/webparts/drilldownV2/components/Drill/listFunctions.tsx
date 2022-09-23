@@ -155,7 +155,7 @@ export async function updateReactListItem( webUrl: string, listName: string, Id:
 
     let currentTime = new Date().toLocaleString();
 
-    let results : any[] = [];
+    // let results : any[] = [];
 
     let thisListWeb = Web(webUrl);
 

@@ -14,7 +14,8 @@ import { DisplayMode, } from '@microsoft/sp-core-library';
 
 import { IDrillDownProps } from '../components/Drill/IDrillProps';
 import { saveAnalytics3, IZLoadAnalytics, IZSentAnalytics, getMinPerformanceString } from '../fpsReferences';
-import { ILoadPerformance, LoadPerformanceOps, IMinPerformance, IMinPerformanceSetting, IMinPerformanceSettingLabels, IMinPerformanceSettingLabelSS7 } from '../fpsReferences';
+import { ILoadPerformance, } from '../fpsReferences';
+// import { LoadPerformanceOps, IMinPerformance, IMinPerformanceSetting, IMinPerformanceSettingLabels, IMinPerformanceSettingLabelSS7 } from '../fpsReferences';
 
 
 /***
@@ -28,7 +29,7 @@ import { ILoadPerformance, LoadPerformanceOps, IMinPerformance, IMinPerformanceS
  *                                             
  */
 
- import { buildExportProps, buildFPSAnalyticsProps } from './BuildExportProps';
+//  import { buildExportProps, buildFPSAnalyticsProps } from './BuildExportProps';
 
 
 export const analyticsViewsList: string = "Drilldown";

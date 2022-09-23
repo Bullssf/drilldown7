@@ -2,9 +2,12 @@
  * Eventually this should be in npmFunctions, possibly under Services/Strings
  * 
  */
-import { DoNotExpandLinkColumns, DoNotExpandTrimB4, DoNotExpandTrimAfter, DoNotExpandTrimTimes, DoNotExpandTrimSpecial } from './getInterfaceV2';
-import { ITrimLink, ITrimB4, ITrimAfter, ITrimSpecial, ITrimTimes, IDoNotExpandColumns } from './getInterfaceV2';
-import { DoNotExpandFuncColumns, DoNotExpandColumns, } from './getInterfaceV2';
+import { DoNotExpandTrimB4, DoNotExpandTrimAfter, DoNotExpandTrimTimes, } from './getInterfaceV2';
+import { ITrimB4, ITrimAfter, ITrimTimes, } from './getInterfaceV2';
+// import { DoNotExpandColumns, } from './getInterfaceV2';
+// import { DoNotExpandLinkColumns, DoNotExpandTrimSpecial } from './getInterfaceV2';
+// import { ITrimLink, ITrimSpecial, IDoNotExpandColumns } from './getInterfaceV2';
+// import { DoNotExpandFuncColumns, } from './getInterfaceV2';
 import { convertArrayToLC, } from './getInterfaceV2';
 
 /**
@@ -21,7 +24,7 @@ import { checkDeepProperty } from '@mikezimm/npmfunctions/dist/Services/Objects/
 import { replaceHTMLEntities } from '@mikezimm/npmfunctions/dist/Services/Strings/html';
 
 import { getDetailValueType } from '../webparts/drilldownV2/fpsReferences';
-import { truncate } from '@microsoft/sp-lodash-subset';
+// import { truncate } from '@microsoft/sp-lodash-subset';
 
 
 // import XRegExp from 'xregexp/lib/addons/unicode-scripts';
@@ -52,7 +55,7 @@ export function createItemFunctionProp ( staticColumn: string, item: any, defaul
   const DoNotExpandTrimB4LC = convertArrayToLC( DoNotExpandTrimB4 );
   const DoNotExpandTrimAfterLC = convertArrayToLC( DoNotExpandTrimAfter );
   const DoNotExpandTrimTimesLC = convertArrayToLC( DoNotExpandTrimTimes );
-  const DoNotExpandColumnsLC = convertArrayToLC( DoNotExpandColumns );
+  // const DoNotExpandColumnsLC = convertArrayToLC( DoNotExpandColumns );
 
   /**
    * MEMO TO SELF... WHere you left off...
@@ -376,8 +379,8 @@ export function trimB4( str: string, trimCommand: ITrimB4, ) {
   else if ( trimCommand === 'TrimB4Dot'.toLowerCase() ) { parser = '.'; }
   else if ( trimCommand === 'TrimB42ndDot'.toLowerCase() ) { 
     //This does not currently work... DO NOT USE
-    var pos1 = str.indexOf(".");           // 3
-    var pos2 = str.indexOf(".", pos1 + 1); // 7
+    // var pos1 = str.indexOf(".");           // 3
+    // var pos2 = str.indexOf(".", pos1 + 1); // 7
     result= str.split('.')[0].trim() ;
   }
 

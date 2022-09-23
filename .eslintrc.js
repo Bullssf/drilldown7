@@ -125,7 +125,7 @@ module.exports = {
         //
         // STANDARDIZED BY:   @typescript-eslint\eslint-plugin\dist\configs\recommended.json
         '@typescript-eslint/no-unused-vars': [
-          0,
+          1,
           {
             'vars': 'all',
             // Unused function arguments often indicate a mistake in JavaScript code.  However in TypeScript code,
@@ -354,6 +354,11 @@ module.exports = {
 
         // "@typescript-eslint/no-floating-promises": "off",  // ==>>> FIX
 
+        // "require-atomic-updates": "off", //Possible race condition: `drillList.sourceUserInfo` might be assigned based on an outdated state of `drillList`.
+
+        // "@rushstack/security/no-unsafe-regexp": "off", //Regular expressions should be constructed from string constants. Dynamically building strings at runtime may introduce security vulnerabilities, performance concerns, and bugs involving incorrect escaping of special characters.
+
+
         // https://www.voitanos.io/blog/sharepoint-framework-v1.15-and-the-attack-of-eslint
         "@microsoft/spfx/no-async-await": "off",
         "react/jsx-no-bind": "off",
@@ -361,12 +366,12 @@ module.exports = {
 
         // "@typescript-eslint/no-for-in-array": "off",  // ==>>> FIX
 
-        "no-unused-expressions": "off",  // ==>>> FIX
+        // "no-unused-expressions": "off",  // ==>>> FIX
 
         "max-lines": "off", //File has too many lines (2283). Maximum allowed is 2000.
 
-        "require-atomic-updates": "off", //Possible race condition: `drillList.sourceUserInfo` might be assigned based on an outdated state of `drillList`.
-        "@rushstack/security/no-unsafe-regexp": "off", //Regular expressions should be constructed from string constants. Dynamically building strings at runtime may introduce security vulnerabilities, performance concerns, and bugs involving incorrect escaping of special characters.
+
+        // "@rushstack/security/no-unsafe-regexp": "off", //Regular expressions should be constructed from string constants. Dynamically building strings at runtime may introduce security vulnerabilities, performance concerns, and bugs involving incorrect escaping of special characters.
 
 
       }

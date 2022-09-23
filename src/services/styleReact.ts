@@ -1,4 +1,4 @@
-import * as React from 'react';
+// import * as React from 'react';
 
 export const myLilac = "#EBD0FF";
 export const myGreen = "#BBFFB0";
@@ -30,8 +30,8 @@ export const colorMap: IColorMap = {
     charts: myRed,
 };
 
-let piv = myLilac;
-let proj = myOrange;
+// let piv = myLilac;
+// let proj = myOrange;
 
 
 export function styleRootBGColor(debugMode: string, part: PaneType ) {

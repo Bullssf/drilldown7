@@ -6,7 +6,8 @@ import { ResizeGroup } from 'office-ui-fabric-react/lib/ResizeGroup';
 import { OverflowSet } from 'office-ui-fabric-react/lib/OverflowSet';
 // import { Checkbox } from 'office-ui-fabric-react/lib/Checkbox';
 import { IContextualMenuItem } from 'office-ui-fabric-react/lib/ContextualMenu';
-import { Dropdown, IDropdownOption } from 'office-ui-fabric-react/lib/Dropdown';
+import { IDropdownOption } from 'office-ui-fabric-react/lib/Dropdown';
+// import { Dropdown,  } from 'office-ui-fabric-react/lib/Dropdown';
 import { mergeStyleSets } from 'office-ui-fabric-react';
 // import { IRenderFunction } from 'office-ui-fabric-react/lib/Utilities';
 
@@ -214,7 +215,8 @@ public componentDidUpdate(prevProps: IResizeGroupOverflowSetExampleProps){
 }
 
   public render(): JSX.Element {
-    const { numberOfItems, cachingEnabled, buttonsChecked, short, onGrowDataEnabled } = this.state;
+    const {  short, onGrowDataEnabled } = this.state;
+    // const { numberOfItems, cachingEnabled, buttonsChecked, } = this.state;
     //const dataToRender = generateData(numberOfItems, cachingEnabled, buttonsChecked);
     const commandsToRender = generateData( this.props.items , this.props.checkedItem, this.props.cachingEnabled, this.props.showRefinerCounts, this.props.onClick );
 

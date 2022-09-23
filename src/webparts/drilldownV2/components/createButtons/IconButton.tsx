@@ -1,7 +1,7 @@
 import * as React from 'react';
-import { IconButton, IIconProps, } from 'office-ui-fabric-react';
+import { IconButton, } from 'office-ui-fabric-react';
 
-const emojiIcon: IIconProps = { iconName: 'BarChartVerticalFill' };
+// const emojiIcon: IIconProps = { iconName: 'BarChartVerticalFill' };
 
 import styles from './CreateButtons.module.scss';
 

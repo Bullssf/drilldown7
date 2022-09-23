@@ -9,7 +9,7 @@ import {
     //   PropertyPaneLink, IPropertyPaneLinkProps,
     // PropertyPaneDropdown, IPropertyPaneDropdownProps,
     // IPropertyPaneDropdownOption,
-    PropertyPaneToggle,
+    // PropertyPaneToggle,
     IPropertyPaneField,
     //  IPropertyPaneConfiguration,
     //  PropertyPaneButton,

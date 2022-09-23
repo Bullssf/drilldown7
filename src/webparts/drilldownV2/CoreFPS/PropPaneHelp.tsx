@@ -10,16 +10,19 @@ import { Pivot, PivotItem, PivotLinkFormat, PivotLinkSize,} from 'office-ui-fabr
 // import { IQuickCommands } from '@mikezimm/npmfunctions/dist/QuickCommands/IQuickCommands';
 
 // import { IRefinerRulesStrs, IRefinerRulesInts, IRefinerRulesNums, IRefinerRulesTime, IRefinerRulesUser, IRefinerRulesEXPE, IRefinerRulesNone } from '@mikezimm/npmfunctions/dist/Refiners/IRefiners';
-import { RefinerRulesStrs, RefinerRulesInts, RefinerRulesNums, RefinerRulesTime, RefinerRulesUser, RefinerRulesEXPE, RefinerRulesNone } from '../fpsReferences';
+import { RefinerRulesStrs, RefinerRulesInts, RefinerRulesNums, RefinerRulesTime, RefinerRulesUser,  } from '../fpsReferences';
+// import { RefinerRulesEXPE, RefinerRulesNone } from '../fpsReferences';
 
 import { gitRepoDrillDownSmall } from '@mikezimm/npmfunctions/dist/Links/LinksRepos';
 
-import { ITrimB4, ITrimAfter, ITrimFunctions, ITrimLink, ITrimSpecial, ITrimTimes, ITrimWords } from '../../../services/getInterfaceV2';
-import { IRefinerLayer, IRefinerRules, IRefinerStat, RefineRuleValues } from '../fpsReferences';
-import { IRefiners, IItemRefiners, IRefinerStats, IRefinerStatType, RefinerStatTypes, } from '../fpsReferences';
+import { ITrimB4, ITrimAfter, ITrimLink, ITrimSpecial, ITrimTimes, ITrimWords } from '../../../services/getInterfaceV2';
+// import { ITrimFunctions, } from '../../../services/getInterfaceV2';
+
+// import { IRefinerLayer, IRefinerRules, IRefinerStat, RefineRuleValues } from '../fpsReferences';
+// import { IRefiners, IItemRefiners, IRefinerStats, IRefinerStatType, RefinerStatTypes, } from '../fpsReferences';
 import { IRefinerRulesInts, IRefinerRulesNums, IRefinerRulesStrs, IRefinerRulesTime, IRefinerRulesUser } from '../fpsReferences';  //../fpsReferences
 
-import { BannerHelp, FPSBasicHelp, FPSExpandHelp, ImportHelp, SinglePageAppHelp, VisitorHelp, PinMeHelp } from '../fpsReferences';
+import { BannerHelp, FPSBasicHelp, FPSExpandHelp, ImportHelp, SinglePageAppHelp, VisitorHelp, } from '../fpsReferences';
 
 import { ISitePreConfigProps, SitePresetsInfo } from '../fpsReferences';
 
@@ -120,7 +123,7 @@ const LinkFindInternalName = <a href="https://tomriha.com/what-is-sharepoint-col
 const padRight15: React.CSSProperties = { paddingRight: '15px' };
 const padRight40: React.CSSProperties = { paddingRight: '40px' };
 
-const tenantServiceRequestURL = `https://servicenow.${window.location.hostname}.com/`;
+// const tenantServiceRequestURL = `https://servicenow.${window.location.hostname}.com/`;
 
 export function getWebPartHelpElement ( sitePresets : ISitePreConfigProps ) {
 

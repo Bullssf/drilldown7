@@ -46,7 +46,8 @@
 
 import { IDrilldown7WebPartProps, exportIgnoreProps, } from '../IDrilldown7WebPartProps';
 
-import { changeCustomHelp, changeExpando, changeBanner, changePageStyle, changefpsOptions2,  } from '../fpsReferences';
+import { changeCustomHelp, changeExpando, changePageStyle, changefpsOptions2,  } from '../fpsReferences';
+// import { changeBanner,   } from '../fpsReferences';
 
 import { changeBannerBasics, changeBannerNav, changeBannerTheme, changeBannerUtility,  } from '../fpsReferences';
 

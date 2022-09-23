@@ -1,5 +1,5 @@
 import { Web, } from "@pnp/sp/presets/all";
-import { sp } from "@pnp/sp";
+// import { sp } from "@pnp/sp";
 import "@pnp/sp/sites";
 
 import "@pnp/sp/webs";

@@ -55,7 +55,7 @@ import { IDrillItemInfo } from '../../fpsReferences';
     togStats: boolean;
     parentListURL?: string;
     contextUserInfo?: IUser;  //For site you are on ( aka current page context )
-    sourceUserInfo?: IUser;   //For site where the list is stored
+    // sourceUserInfo?: IUser;   //For site where the list is stored
 
     refinerInstructions: string[];
 
@@ -432,6 +432,7 @@ export interface IDrillDownState extends IFPSCorePinMeReactComponentState {
     errMessage: string | JSX.Element;
 
     drillList: IDrillList;
+    sourceUserInfo?: IUser;   //For site where the list is stored
 
     WebpartHeight?:  number;    //Size courtesy of https://www.netwoven.com/2018/11/13/resizing-of-spfx-react-web-parts-in-different-scenarios/
     WebpartWidth?:   number;    //Size courtesy of https://www.netwoven.com/2018/11/13/resizing-of-spfx-react-web-parts-in-different-scenarios/
