@@ -437,7 +437,7 @@ export default class DrilldownV2WebPart extends BaseClientSideWebPart<IDrilldown
 
       // DEFAULTS SECTION:  Performance   <<< ================================================================
       this._performance = createBasePerformanceInit( this.displayMode, false );
-      this._performance.superOnInit = startPerformOp( 'superOnInit', this.displayMode );
+      this._performance.ops.superOnInit = startPerformOp( 'superOnInit', this.displayMode );
 
       //NEED TO APPLY THIS HERE as well as follow-up in render for it to not visibly change
       this._sitePresets = applyPresetCollectionDefaults( this._sitePresets, PreConfiguredProps, this.properties, this.context.pageContext.web.serverRelativeUrl ) ;
@@ -460,7 +460,7 @@ export default class DrilldownV2WebPart extends BaseClientSideWebPart<IDrilldown
           displayMode: this.displayMode,
           doHeadings: false } ); //doHeadings is currently only used in PageInfo so set to false.
 
-      this._performance.superOnInit = updatePerformanceEnd( this._performance.superOnInit, true, null );  
+      this._performance.ops.superOnInit = updatePerformanceEnd( this._performance.ops.superOnInit, true, null );  
 
 
     });
@@ -542,7 +542,7 @@ export default class DrilldownV2WebPart extends BaseClientSideWebPart<IDrilldown
     if ( str === null || str === undefined ) { return result; }
     try {
       //Replace any cases where I copied the hashed characters from JSON file directly.  
-      str = str.replace(/\\\"/g,'"').replace(/\\'"/g,"'"); // eslint-disable-line no-useless-escape
+      str = str.replace(/\\"/g,'"').replace(/\\'"/g,"'");
       if ( str === '[]' || str === '' ) { str = '{}' ; }
       result = JSON.parse(str);
       if ( !result.buttons ) { result.buttons = []; }
@@ -640,9 +640,9 @@ export default class DrilldownV2WebPart extends BaseClientSideWebPart<IDrilldown
 
   /**
    * PERFORMANCE - START
-   * This is how you can start a performance snapshot - make the _performance.KEYHERE = startPerforOp('KEYHERE', this.displayMode)
+   * This is how you can start a performance snapshot - make the _performance.ops.KEYHERE = startPerforOp('KEYHERE', this.displayMode)
    */ 
-   this._performance.renderWebPartStart = startPerformOp( 'renderWebPartStart', this.displayMode );
+   this._performance.ops.renderWebPartStart = startPerformOp( 'renderWebPartStart', this.displayMode );
 
     renderCustomStyles(  { wpInstanceID: this._wpInstanceID, domElement: this.domElement, wpProps: this.properties, 
       displayMode: this.displayMode,
@@ -740,12 +740,13 @@ export default class DrilldownV2WebPart extends BaseClientSideWebPart<IDrilldown
 
     /** 
      * PERFORMANCE - UPDATE
-     * This is how you can UPDATE a performance snapshot - make the _performance.KEYHERE = startPerforOp('KEYHERE', this.displayMode)
+     * This is how you can UPDATE a performance snapshot - make the _performance.ops.KEYHERE = startPerforOp('KEYHERE', this.displayMode)
      * NOTE IN THIS CASE to do it before you refreshPanelHTML :)
      */
 
-    this._performance.renderWebPartStart = updatePerformanceEnd( this._performance.renderWebPartStart, true, null );
-    this._performance.getAllProps = this.properties.getAllProps;
+    this._performance.ops.renderWebPartStart = updatePerformanceEnd( this._performance.ops.renderWebPartStart, true, null );
+    // this._performance.sets.getAllProps = { label: 'getAllProps', value: this.properties.getAllProps };
+    this._performance.getAllProps =this.properties.getAllProps ;
 
     let language = this.properties.language;
     try {

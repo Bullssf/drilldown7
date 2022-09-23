@@ -105,7 +105,7 @@ export const analyticsWeb: string = "/sites/Templates/Analytics/";
 // }
 
 
-export const CodeVersion = 'v1.3.2.3 +';  //  ==>  https://github.com/mikezimm/drilldown7/issues/190
+export const CodeVersion = 'v2.0.0.0 +';  //  ==>  https://github.com/mikezimm/drilldown7/issues/190
 export function saveViewAnalytics( Title: string, Result: string, thisProps: IDrilldownV2Props, analyticsWasExecuted: boolean, performanceObj: ILoadPerformance ) : boolean {
 
   if ( analyticsWasExecuted === true ) {

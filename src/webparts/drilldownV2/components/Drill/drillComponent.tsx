@@ -48,7 +48,7 @@ import { IRefinerLayer, IRefinerRules, IRefinerStat } from '../../fpsReferences'
 // import { PageContext } from '@microsoft/sp-page-context';
 
 import { pivotOptionsGroup, } from '../../fpsReferences';
-import { IFPSUser, } from '../../fpsReferences';
+// import { IFPSUser, } from '../../fpsReferences';
 
 import { getExpandColumnsV2, getSelectColumnsV2, getLinkColumnsV2, getFuncColumnsV2 } from '../../../../services/getFunctionsV2';
 
@@ -82,7 +82,7 @@ import { getAppropriateViewFields, getAppropriateViewGroups, getAppropriateViewP
 import FetchBanner from '@mikezimm/npmfunctions/dist/HelpPanelOnNPM/onNpm/FetchBannerElement';
 // import FetchBanner from '../../CoreFPS/FetchBannerElement';
 
-import { ISpecialMessage, specialUpgrade } from '@mikezimm/npmfunctions/dist/HelpPanelOnNPM/special/interface';
+// import { ISpecialMessage, specialUpgrade } from '@mikezimm/npmfunctions/dist/HelpPanelOnNPM/special/interface';
 
 
 import { getWebPartHelpElement } from '../../CoreFPS/PropPaneHelp';
@@ -741,9 +741,9 @@ public componentDidUpdate( prevProps: IDrilldownV2Props ){
             <Icon key={ 'forceInstructions' } iconName='BookAnswers' onClick={ this._forceInstructions.bind(this) } style={ this._debugCmdStyles }/>,
         ];
 
-        const FPSUser : IFPSUser = this.props.bannerProps.FPSUser;
-        const showSpecial = FPSUser.manageWeb === true || FPSUser.managePermissions === true || FPSUser.manageLists === true ? true : false;
-        const Special : ISpecialMessage = showSpecial === true ? specialUpgrade( 'warn', '/sites/TheSharePointHub/SitePages/DrillDown-WebPart-Upgrade---v2.aspx', ) : undefined;
+        // const FPSUser : IFPSUser = this.props.bannerProps.FPSUser;
+        // const showSpecial = FPSUser.manageWeb === true || FPSUser.managePermissions === true || FPSUser.manageLists === true ? true : false;
+        // const Special : ISpecialMessage = showSpecial === true ? specialUpgrade( 'warn', '/sites/TheSharePointHub/SitePages/DrillDown-WebPart-Upgrade---v2.aspx', ) : undefined;
         // Special.style = { color: 'black', background: 'limegreen' };
 
         const Banner = <FetchBanner 
@@ -761,7 +761,7 @@ public componentDidUpdate( prevProps: IDrilldownV2Props ){
             contentPages={ this._contentPages }
             WebPartHelpElement={ this._webPartHelpElement }
 
-            SpecialMessage = { Special }
+            // SpecialMessage = { Special }
 
             updatePinState = { null }
             pinState = { this.state.pinState }
@@ -1235,7 +1235,7 @@ public componentDidUpdate( prevProps: IDrilldownV2Props ){
     private _getAllItemsCall( viewDefs: ICustViewDef[], refiners: string[] ) {
 
         //Start tracking performance
-        this._performance.fetch1 = startPerformOp( 'fetch1 data', this.props.displayMode );
+        this._performance.ops.fetch1 = startPerformOp( 'fetch1 data', this.props.displayMode );
 
         /**
          * This is copied from constructor when you have to call the data in case something changed.
@@ -1274,7 +1274,7 @@ public componentDidUpdate( prevProps: IDrilldownV2Props ){
 
     private _addTheseItemsToState( drillList: IDrillList, allItems: IDrillItemInfo[] , errMessage : string, refinerObj: IRefinerLayer ) {
 
-        this._performance.analyze2 = startPerformOp( 'analyze2 addItems', this.props.displayMode );
+        this._performance.ops.analyze2 = startPerformOp( 'analyze2 addItems', this.props.displayMode );
 
         consoleRef( 'addTheseItems1REF', refinerObj );
         consoleMe( 'addTheseItems1' , allItems, drillList );
@@ -1368,7 +1368,7 @@ public componentDidUpdate( prevProps: IDrilldownV2Props ){
         console.log('addTheseItemsToState: refinerStats', drillList.refinerStats );
 
         //End tracking performance
-        this._performance.analyze2 = updatePerformanceEnd( this._performance.analyze2, true, allItems.length );
+        this._performance.ops.analyze2 = updatePerformanceEnd( this._performance.ops.analyze2, true, allItems.length );
 
         saveViewAnalytics( 'Drilldown Webpart', 'addItems', this.props, this.state.analyticsWasExecuted, this._performance );
 
@@ -1684,10 +1684,10 @@ public componentDidUpdate( prevProps: IDrilldownV2Props ){
   private _updatePerformance( key: ILoadPerformanceOps, phase: 'start' | 'update', note: string = '', count: number ) {
 
     if ( phase === 'start' ) {
-        this._performance[key] = startPerformOp( `${key} ${ note ? ' - ' + note : '' }`, this.props.displayMode );
+        this._performance.ops[key] = startPerformOp( `${key} ${ note ? ' - ' + note : '' }`, this.props.displayMode );
 
     } else if ( phase === 'update' ) {
-        this._performance[key] = updatePerformanceEnd( this._performance[key], true , count );
+        this._performance.ops[key] = updatePerformanceEnd( this._performance.ops[key], true , count );
 
     }
   }

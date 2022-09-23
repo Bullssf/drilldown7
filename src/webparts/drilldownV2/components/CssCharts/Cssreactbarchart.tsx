@@ -673,20 +673,21 @@ public componentDidUpdate(prevProps: ICssreactbarchartProps){
 
     
     //This sends back the correct pivot category which matches the category on the tile.
-    let e: any = event;
+    let e: any = item;
     let value = 'TBD';
-    let chartIdx = null;
-    if ( !e.target.innerText ) {
-      value = e.target.innerText; 
-      chartIdx = e.target.id;
-      if ( chartIdx === '' && item.currentTarget ) { chartIdx = item.currentTarget.id; }
+    let chartIdx = item?.currentTarget?.id ? item.currentTarget.id : item?.target?.id ? item.target.id : null ;
 
-    } else if ( !item.currentTarget.innerText ){
-      value = item.currentTarget.innerText;
-      chartIdx = item.currentTarget.id;
-      if ( chartIdx === '' && item.target ) { chartIdx = item.target.id; }
+    // if ( !item.target.innerText ) {
+    //   value = item.target.innerText; 
+    //   chartIdx = item.target.id;
+    //   if ( chartIdx === '' && item.currentTarget ) { chartIdx = item.currentTarget.id; }
 
-    }
+    // } else if ( !item.currentTarget.innerText ){
+    //   value = item.currentTarget.innerText;
+    //   chartIdx = item.currentTarget.id;
+    //   if ( chartIdx === '' && item.target ) { chartIdx = item.target.id; }
+
+    // }
 
     let isAltClick = e.altKey;
     let isShfitClick = e.shiftKey;
@@ -737,24 +738,24 @@ public componentDidUpdate(prevProps: ICssreactbarchartProps){
   private onClick(item: any ) {
 
     //This sends back the correct pivot category which matches the category on the tile.
-    let e: any = event;
+    // let e: any = item;
     let value = 'TBD';
-    let chartIdx = null;
-    if ( !e.target.innerText ) {
-      value = e.target.innerText;   
-      chartIdx = e.target.id;
-      if ( chartIdx === '' && item.currentTarget ) { chartIdx = item.currentTarget.id; }
+    let chartIdx = item?.currentTarget?.id ? item.currentTarget.id : item?.target?.id ? item.target.id : null ;
+    // if ( !e.target.innerText ) {
+    //   value = e.target.innerText;   
+    //   chartIdx = e.target.id;
+    //   if ( chartIdx === '' && item.currentTarget ) { chartIdx = item.currentTarget.id; }
 
-    } else if ( !item.currentTarget.innerText ){
-      value = item.currentTarget.innerText;
-      chartIdx = item.currentTarget.id;
-      if ( chartIdx === '' && item.target ) { chartIdx = item.target.id; }
+    // } else if ( !item.currentTarget.innerText ){
+    //   value = item.currentTarget.innerText;
+    //   chartIdx = item.currentTarget.id;
+    //   if ( chartIdx === '' && item.target ) { chartIdx = item.target.id; }
 
-    }
+    // }
 
-    let isAltClick = e.altKey;
-    let isShfitClick = e.shiftKey;
-    let isCtrlClick = e.ctrlKey;
+    let isAltClick = item.altKey;
+    let isShfitClick = item.shiftKey;
+    let isCtrlClick = item.ctrlKey;
 
     console.log('clicked:  ' , chartIdx, value );
     console.log('AltClick, ShfitClick, CtrlClick:', isAltClick, isShfitClick, isCtrlClick );
