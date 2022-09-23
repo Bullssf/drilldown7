@@ -715,7 +715,7 @@ export function updateThisRefiner( r0: any, topKeyZ: number,  thisRefiner0: any,
     refiners.multiCount ++;
     refiners.childrenCounts[topKeyZ] ++;
     refiners.childrenMultiCounts[topKeyZ] ++;
-    if ( r0 == '0') { refiners.itemCount ++; }
+    if ( r0 === '0' || r0 === 0 ) { refiners.itemCount ++; }
 
     return refiners;
 
@@ -863,12 +863,10 @@ export function getItemRefiners( drillList: IDrillList, item: IDrillItemInfo ) {
                         });
                     }
 
-                    
                 } else {
                     itemRefiners['lev' + i] = getRefinerFromField( fieldValue , thisRuleSet , drillList.emptyRefiner );
-                    
+
                 }
-                
             }
             i++;
         }

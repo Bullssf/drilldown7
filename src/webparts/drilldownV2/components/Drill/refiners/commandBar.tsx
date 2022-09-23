@@ -198,10 +198,10 @@ export default class ResizeGroupOverflowSetExample extends React.Component<IResi
 
 public componentDidUpdate(prevProps: IResizeGroupOverflowSetExampleProps){
   let rebuildPart = false;
-  if ( prevProps.checkedItem != this.props.checkedItem ) {
+  if ( prevProps.checkedItem !== this.props.checkedItem ) {
       rebuildPart = true;
   }
-  if ( prevProps.regroupKey != this.props.regroupKey ) {
+  if ( prevProps.regroupKey !== this.props.regroupKey ) {
     rebuildPart = true;
   }
   

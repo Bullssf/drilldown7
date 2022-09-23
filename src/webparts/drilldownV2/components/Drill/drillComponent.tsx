@@ -224,7 +224,7 @@ export default class DrillDown extends React.Component<IDrillDownProps, IDrillDo
 
         let statChart = null;
         let theseCharts : any[] = [];
-        if ( statArray == null || statArray.length === 0 ) {
+        if ( statArray === null || statArray.length === 0 ) {
             //Do nothing
 
         } else {
@@ -939,8 +939,8 @@ public componentDidUpdate( prevProps: IDrillDownProps ){
 
                 let noInfo = [];
                 noInfo.push( <h3>{'Found ' + this.state.searchCount + ' items with this search criteria:'}</h3> )  ;
-                if ( this.state.searchText != '' ) { noInfo.push( <p>{'Search Text: ' + this.state.searchText}</p> )  ; }
-                if ( this.state.searchMeta[0] != '' ) { noInfo.push( <p>{'Refiner: ' + this.state.searchMeta[0]}</p> ) ; }
+                if ( !this.state.searchText ) { noInfo.push( <p>{'Search Text: ' + this.state.searchText}</p> )  ; }
+                if ( !this.state.searchMeta[0] ) { noInfo.push( <p>{'Refiner: ' + this.state.searchMeta[0]}</p> ) ; }
 
                 if ( this.state.allItems.length === 0 ) {
                     thisPage = <div style={{ paddingBottom: 30 }}className={styles.contents}>

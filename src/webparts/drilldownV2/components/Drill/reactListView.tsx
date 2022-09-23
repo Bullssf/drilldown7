@@ -482,7 +482,7 @@ export default class ReactListItems extends React.Component<IReactListItemsProps
         let thisLog = null;
 
         //2022-02-01:  Updated this from drilldown7
-        if ( this.props.items != null && this.props.items.length > 0 ) { 
+        if ( this.props.items !== null && this.props.items.length > 0 ) { 
 
             let attachments = this.state.panelAttachments.length > 0 ? this.state.panelAttachments : null ;
 
@@ -632,7 +632,7 @@ export default class ReactListItems extends React.Component<IReactListItemsProps
             style={{ marginRight: 30, whiteSpace: 'nowrap', paddingTop: 0, cursor: 'pointer', fontSize: 'larger',background: 'transparent' }}>
                 <span style={{ background: 'transparent' }} className={ stylesInfo.listLink }><Icon iconName="AddTo"/></span></div>;
 
-            if ( barText != null ) {
+            if ( barText !== null ) {
                 webTitle =<div  style={{ display: 'flex', justifyContent: 'space-between', }} className={ [stylesInfo.infoHeading, stylesInfo.innerShadow].join(' ') }>
                   <span style={{ paddingLeft: 20, whiteSpace: 'nowrap' }}>( { this.props.items.length }  ) Items in: { barText }</span>
                    { pageArrows }
@@ -692,7 +692,7 @@ export default class ReactListItems extends React.Component<IReactListItemsProps
 
     private _onGoToList = () : void => {
 
-        if ( !this.props.parentListURL || this.props.parentListURL == null || this.props.parentListURL == undefined || this.props.parentListURL.length === 0 ) {
+        if ( !this.props.parentListURL || this.props.parentListURL === null || this.props.parentListURL === undefined || this.props.parentListURL.length === 0 ) {
             return; // Do nothing
         }
         let e: any = event;
@@ -922,7 +922,7 @@ export default class ReactListItems extends React.Component<IReactListItemsProps
 
         } else {
 
-            let clickedAttachIcon = e !== undefined && e != null && e.target.dataset && e.target.dataset.iconName === 'Attach' ? true : false;
+            let clickedAttachIcon = e?.target?.dataset?.iconName === 'Attach' ? true : false;
 
             if (clickedAttachIcon === true || item.length > 0 ) {
                 let thisID = clickedAttachIcon === true ? findParentElementPropLikeThis(e.target, 'id', 'ButtonID', 5, 'begins') : item[0].Id;

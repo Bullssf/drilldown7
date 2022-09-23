@@ -68,7 +68,7 @@ export function buildStatChartsArray(  stats: IRefinerStat[], callBackID: string
     let i = -1;
     console.log('buildStatChartsArray - stats:', stats);
 
-    if ( refinerObj == null || stats == null || stats.length === 0 ) {
+    if ( refinerObj === null || stats === null || stats.length === 0 ) {
         //Do nothing
 
     } else {
@@ -88,7 +88,7 @@ export function buildStatChartsArray(  stats: IRefinerStat[], callBackID: string
                 let totalDiv: number | null = null;
                 if ( s.stat === 'avg' ) {
                     theseStats.map( ( v: number, iV: number ) => {
-                        finalStats.push( theseCount[ iV ] == 0 ? null : v / theseCount[ iV ] ) ;
+                        finalStats.push( theseCount[ iV ] === 0 ? null : v / theseCount[ iV ] ) ;
                         total += v;
                         totalDiv += theseCount[ iV ];
                     });
@@ -120,16 +120,16 @@ export function buildStatChartsArray(  stats: IRefinerStat[], callBackID: string
                     barValues: 'val1',  
 
                     stylesChart: s.stylesChart ? s.stylesChart : defStylesChart,
-                    stylesTitle: s.stylesTitle == null ? null : s.stylesTitle,
+                    stylesTitle: s.stylesTitle === null ? null : s.stylesTitle,
                     stylesRow: s.stylesRow ? s.stylesRow : defStylesRow,
-                    stylesBlock: s.stylesBlock == null ? null : s.stylesBlock,
-                    stylesLabel: s.stylesLabel == null ? null : s.stylesLabel,
-                    stylesValue: s.stylesValue == null ? null : s.stylesValue,
+                    stylesBlock: s.stylesBlock === null ? null : s.stylesBlock,
+                    stylesLabel: s.stylesLabel === null ? null : s.stylesLabel,
+                    stylesValue: s.stylesValue === null ? null : s.stylesValue,
 
-                    stylesFigure: s.stylesFigure == null ? null : s.stylesFigure,
-                    stylesGraphic: s.stylesGraphic == null ? null : s.stylesGraphic,
+                    stylesFigure: s.stylesFigure === null ? null : s.stylesFigure,
+                    stylesGraphic: s.stylesGraphic === null ? null : s.stylesGraphic,
 
-                    isCollapsed: s.isCollapsed == null ? null : s.isCollapsed ,
+                    isCollapsed: s.isCollapsed === null ? null : s.isCollapsed ,
 
                 };
 

@@ -32,15 +32,15 @@ export function createPeopleField(field: IFieldDef, maxCount: number, _onChange:
 
     let users: IUser[] = maxCount === 1 ? [this.state.selectedProject[field.name]] : this.state.selectedProject[field.name];
 
-    let emails: string[] = users == null ? [] : users.map( u => {
-      if ( u == null ) { 
+    let emails: string[] = users === null ? [] : users.map( u => {
+      if ( u === null ) { 
         //alert('Unknown User Structure for createPeopleField: ' +  JSON.stringify(u));
         return null;
       }
    
       let uName = u.Name;
 
-      if ( uName == undefined ) { // Added because when you remove the person in react comp, the user still is there, the name just gets removed.
+      if ( uName === undefined ) { // Added because when you remove the person in react comp, the user still is there, the name just gets removed.
         console.log('createPeopleField - did you remove a person from the array?', users, u);
         alert('createPeopleField - did you remove a person from the array?' +  JSON.stringify(u));
         return null;

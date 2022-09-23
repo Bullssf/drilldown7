@@ -42,8 +42,8 @@ export function makeToggles( makeTheseToggles: IContentsToggles ){
             //  If you pass in '-', it will be blank
             //  Else it will be the value
 
-            let onText = toggle.onText != '' ? toggle.onText != '-' ? toggle.onText : '' : 'On';
-            let offText = toggle.offText != '' ? toggle.offText != '-' ? toggle.offText : '' : 'Off';
+            let onText = toggle.onText != '' ? toggle.onText != '-' ? toggle.onText : '' : 'On'; // eslint-disable-line eqeqeq
+            let offText = toggle.offText != '' ? toggle.offText != '-' ? toggle.offText : '' : 'Off';// eslint-disable-line eqeqeq
 
             let thisToggle = <Toggle label={ toggle.label ? toggle.label : '' } 
                 onText={ onText } 

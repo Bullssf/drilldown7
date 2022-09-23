@@ -456,7 +456,7 @@ public componentDidUpdate(prevProps: ICssreactbarchartProps){
         i ++;
 
         barCount ++;
-        let blockStyle : any = stylesBlock != null ? stylesBlock : {} ;
+        let blockStyle : any = stylesBlock ?? {} ;
         blockStyle.height = activeChartType === 'kpi-tiles' ? blockStyle.height : stateHeight;
         blockStyle.width = ( cd.percents[i] ) + '%';
 
@@ -471,7 +471,7 @@ public componentDidUpdate(prevProps: ICssreactbarchartProps){
 
         }
 
-        let valueStyle : any = stylesValue != null ? stylesValue : {} ;
+        let valueStyle : any = stylesValue ?? {} ;
         // let labelStyle : any = stylesLabel != null ? stylesLabel : {} ; 
 
         
@@ -483,7 +483,7 @@ public componentDidUpdate(prevProps: ICssreactbarchartProps){
         } else {
           if ( thisChartsSettings.valueIsCount ) {
             barNumber = chartValue;
-          } else if ( chartValue == null || chartValue == undefined ) {
+          } else if ( chartValue === null || chartValue === undefined ) {
             barNumber = null;
           } else {
             barNumber = chartValue.toPrecision(3) ;
@@ -558,12 +558,12 @@ public componentDidUpdate(prevProps: ICssreactbarchartProps){
 
       if ( stacked === false ) {  thisChart.push( scaleNoteEle ) ; }
 
-      let thisTitleStyle : any = stylesTitle != null ? stylesTitle : {} ;
+      let thisTitleStyle : any = stylesTitle ?? {} ;
       thisTitleStyle.lineHeight = '40px';
       thisTitleStyle.fontSize = 18;
       thisTitleStyle.fontWeight = '600';
 
-      let thisRowStyle : any = stylesRow != null ? stylesRow : {} ;
+      let thisRowStyle : any = stylesRow ?? {} ;
       thisRowStyle.lineHeight = stateHeight;
       thisRowStyle.fontSize = 18;
       thisRowStyle.fontWeight = '600';
@@ -676,12 +676,12 @@ public componentDidUpdate(prevProps: ICssreactbarchartProps){
     let e: any = event;
     let value = 'TBD';
     let chartIdx = null;
-    if ( e.target.innerText != '' ) {
-      value = e.target.innerText;   
+    if ( !e.target.innerText ) {
+      value = e.target.innerText; 
       chartIdx = e.target.id;
       if ( chartIdx === '' && item.currentTarget ) { chartIdx = item.currentTarget.id; }
 
-    } else if ( item.currentTarget.innerText != '' ){
+    } else if ( !item.currentTarget.innerText ){
       value = item.currentTarget.innerText;
       chartIdx = item.currentTarget.id;
       if ( chartIdx === '' && item.target ) { chartIdx = item.target.id; }
@@ -740,12 +740,12 @@ public componentDidUpdate(prevProps: ICssreactbarchartProps){
     let e: any = event;
     let value = 'TBD';
     let chartIdx = null;
-    if ( e.target.innerText != '' ) {
+    if ( !e.target.innerText ) {
       value = e.target.innerText;   
       chartIdx = e.target.id;
       if ( chartIdx === '' && item.currentTarget ) { chartIdx = item.currentTarget.id; }
 
-    } else if ( item.currentTarget.innerText != '' ){
+    } else if ( !item.currentTarget.innerText ){
       value = item.currentTarget.innerText;
       chartIdx = item.currentTarget.id;
       if ( chartIdx === '' && item.target ) { chartIdx = item.target.id; }

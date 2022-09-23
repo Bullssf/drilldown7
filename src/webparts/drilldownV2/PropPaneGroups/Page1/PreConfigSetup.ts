@@ -46,7 +46,7 @@ export function buildPreConfigGroup( wpProps: IDrilldown7WebPartProps ) {
     groupFields.push(PropertyPaneDropdown('listDefinition', <IPropertyPaneDropdownProps>{
         label: 'Pre-defined setup choices',
         options: theListChoices,
-        selectedKey: wpProps.listDefinition != '' ? wpProps.listDefinition : 'na',
+        selectedKey: wpProps.listDefinition !== '' ? wpProps.listDefinition : 'na',
         disabled: wpProps.definitionToggle,
     }));
 

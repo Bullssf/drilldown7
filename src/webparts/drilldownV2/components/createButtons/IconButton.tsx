@@ -17,11 +17,11 @@ export const defCommandIconStyles = {
 
 export function createIconButton(iconName: string, titleText: string, _onClick: any, thisID: string,  iconStyles: any){
 
-    if ( iconStyles == null ) { iconStyles = defCommandIconStyles ; }
+    if ( !iconStyles ) { iconStyles = defCommandIconStyles ; }
 
     if ( iconName === 'Help' ) { iconStyles.icon.fontWeight = '900' ; }
 
-    if (thisID == null ) { thisID = Math.random().toString(36).substring(7);} else {
+    if ( !thisID ) { thisID = Math.random().toString(36).substring(7);} else {
 
       //2020-05-11:  Issue 44 Added so activity can have / or \ from partial URLs
       //First replace slashes with words so that they will go through and can be returned back to those values in the onclick url
