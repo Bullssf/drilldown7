@@ -1235,7 +1235,7 @@ public componentDidUpdate( prevProps: IDrilldownV2Props ){
     private _getAllItemsCall( viewDefs: ICustViewDef[], refiners: string[] ) {
 
         //Start tracking performance
-        this._performance.ops.fetch1 = startPerformOp( 'fetch1 data', this.props.displayMode );
+        this._performance.ops.fetch1 = startPerformOp( 'fetch1 - getUser', this.props.displayMode );
 
         /**
          * This is copied from constructor when you have to call the data in case something changed.
