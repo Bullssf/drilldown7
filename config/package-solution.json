@@ -3,7 +3,7 @@
   "solution": {
     "name": "drilldown-15-v-2-client-side-solution",
     "id": "d32e3e47-848e-4b0b-9db5-7dc7dd93a0e8",
-    "version": "2.4.0.1",
+    "version": "2.0.0.1",
     "includeClientSideAssets": true,
     "skipFeatureDeployment": true,
     "isDomainIsolated": false,
