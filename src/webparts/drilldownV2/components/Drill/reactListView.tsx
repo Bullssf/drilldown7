@@ -61,6 +61,8 @@ export interface IReactListItemsProps extends IPageArrowsParentProps {
     maxChars?: number;
     items: IDrillItemInfo[];
 
+    resetArrows?: string;  //unique Id used to reset arrows to starting position
+
     webURL: string; //Used for attachments
     listName: string; //Used for attachments
     parentListURL: string;
@@ -445,6 +447,7 @@ export default class ReactListItems extends React.Component<IReactListItemsProps
         /* eslint-disable @typescript-eslint/no-unused-vars */
         let redraw = false;
         let updateViewFields = false;
+        let resetArrows = false;
 
         if ( JSON.stringify(prevProps.viewFields) !== JSON.stringify(this.props.viewFields )) {
             updateViewFields = true;
@@ -454,6 +457,15 @@ export default class ReactListItems extends React.Component<IReactListItemsProps
         if ( JSON.stringify(prevProps.groupByFields) !== JSON.stringify(this.props.groupByFields )) {
             updateViewFields = true;
             redraw = true;
+        }
+
+        if ( prevProps.resetArrows !== this.props.resetArrows ) {
+            // updateViewFields = true;
+            resetArrows = true;
+            this.setState({
+              firstVisible: 0,
+              lastVisible: this.props.itemsPerPage - 1,
+            });
         }
 
         if ( prevProps.items.length !== this.props.items.length ) { redraw = true; }
@@ -588,7 +600,6 @@ export default class ReactListItems extends React.Component<IReactListItemsProps
 
             let filtered : IDrillItemInfo[]= [];
             this.props.items.map( ( item, idx ) => {
-
               if ( idx >= this.state.firstVisible && idx <= this.state.lastVisible ) {
                 filtered.push( item );
               }
@@ -600,6 +611,7 @@ export default class ReactListItems extends React.Component<IReactListItemsProps
               setParentStateFirstLast={ this._updateFirstLastVisible.bind(this) }
               debugMode = { this.props.debugMode }
               fontSize = { this._componentWidth && this._componentWidth > 800 ? 28 : 24 }
+              resetArrows = { this.props.resetArrows }
             />;
 
             //=>> address:  https://github.com/mikezimm/drilldown7/issues/169
@@ -740,6 +752,7 @@ export default class ReactListItems extends React.Component<IReactListItemsProps
             this.setState({
                 viewFields: viewFields,
                 groupByFields: groupByFields,
+
             });
         }
     }

@@ -287,6 +287,7 @@ export { defaultBannerCommandStyles, } from "@mikezimm/npmfunctions/dist/HelpPan
 export { BannerHelp, FPSBasicHelp, FPSExpandHelp, ImportHelp, SinglePageAppHelp, VisitorHelp, PinMeHelp, SitePresetsInfo } from '@mikezimm/npmfunctions/dist/PropPaneHelp/FPSCommonOnNpm';
 
 export { HandleBarReplacements } from '@mikezimm/npmfunctions/dist/Services/Strings/handleBars';
+export { makeid } from '@mikezimm/npmfunctions/dist/Services/Strings/stringServices';
 
 
 // from src\webparts\fpsCore115Banner\CoreFPS\PreConfiguredSettings.ts

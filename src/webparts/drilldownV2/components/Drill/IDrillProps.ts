@@ -427,6 +427,7 @@ export interface IDrillDownState extends IFPSCorePinMeReactComponentState {
     viewType?: IViewType;
 
     meta: string[];
+    resetArrows?: string;  //unique Id used to reset arrows to starting position
 
     errMessage: string | JSX.Element;
 

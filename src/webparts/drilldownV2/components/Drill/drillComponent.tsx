@@ -24,6 +24,7 @@ import "@pnp/sp/webs";
 // import { ITheTime, } from '@mikezimm/npmfunctions/dist/Services/Time/Interfaces';
 import { weekday3,  } from '../../fpsReferences';
 import { monthStr3 } from '../../fpsReferences';
+import { makeid } from '../../fpsReferences';
 
 import styles from '../Contents/contents.module.scss';
 
@@ -555,6 +556,7 @@ export default class DrillDown extends React.Component<IDrilldownV2Props, IDrill
             instructionsHidden: 'dynamic',
 
             meta: [],
+            resetArrows: makeid(4),
 
             webURL: this.props.webURL,
 
@@ -1035,6 +1037,7 @@ public componentDidUpdate( prevProps: IDrilldownV2Props ){
                                 groupByFields={ currentViewGroups }
                                 items={ this.state.searchedItems }
                                 itemsPerPage={ this.props.performance.itemsPerPage }
+                                resetArrows={ this.state.resetArrows }
                                 includeDetails= { includeDetails }
                                 includeAttach= { includeAttach }
                                 includeListLink = { includeListLink }
@@ -1872,6 +1875,7 @@ public componentDidUpdate( prevProps: IDrilldownV2Props ){
       searchCount: searchCount,
       searchText: text.toLowerCase(),
       searchMeta: newMeta,
+      resetArrows: metaChanged === true ? makeid(4) : this.state.resetArrows,
       pivotCats: pivotCats,
       cmdCats: cmdCats,
       refinerObj: refinerObj,
