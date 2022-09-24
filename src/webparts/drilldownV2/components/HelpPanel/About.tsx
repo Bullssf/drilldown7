@@ -20,10 +20,8 @@ export function aboutTable( showrepoLink: boolean ) {
     // table.rows.push( createAboutRow('',''  ,'#205 - Bugs', showrepoLink === true ? repoLink : null ) );
     // table.rows.push( createAboutRow('',''  ,'#205 - Featres', showrepoLink === true ? repoLink : null ) );
 
-    table.rows.push( createAboutRow('2022-09-24','2.0.0.1'  ,'SPFx v1.15.2', showrepoLink === true ? repoLink : null ) );
-    table.rows.push( createAboutRow('',''  ,'#203 - General', showrepoLink === true ? repoLink : null ) );
-    table.rows.push( createAboutRow('',''  ,'#198 - Bugs', showrepoLink === true ? repoLink : null ) );
-    table.rows.push( createAboutRow('',''  ,'#205 - Featres', showrepoLink === true ? repoLink : null ) );
+    table.rows.push( createAboutRow('2022-09-24','2.0.0.2'  ,'SPFx v1.15.2', showrepoLink === true ? repoLink : null ) );
+    table.rows.push( createAboutRow('',''  ,'#198, #207 - Bugs, #203 - General, #205 - Features', showrepoLink === true ? repoLink : null ) );
 
     table.rows.push( createAboutRow('2022-09-16','1.3.2.3'  ,'#169 - Quality of life', showrepoLink === true ? repoLink : null ) );
     table.rows.push( createAboutRow('',''  ,'#177, #181, #191, #192, #195 - Features', showrepoLink === true ? repoLink : null ) );
