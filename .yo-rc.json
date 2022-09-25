@@ -1,11 +1,15 @@
 {
   "@microsoft/generator-sharepoint": {
-    "isCreatingSolution": false,
+    "plusBeta": false,
+    "isCreatingSolution": true,
+    "version": "1.15.2",
+    "libraryName": "drilldown-15-v-2",
+    "libraryId": "d32e3e47-848e-4b0b-9db5-7dc7dd93a0e8",
     "environment": "spo",
-    "version": "1.14.0",
-    "libraryName": "drilldown-7",
-    "libraryId": "bdcf72e6-9215-4cba-9b02-892e5eab42f8",
     "packageManager": "npm",
+    "solutionName": "drilldown-15-v-2",
+    "solutionShortDescription": "drilldown-15-v-2 description",
+    "skipFeatureDeployment": true,
     "isDomainIsolated": false,
     "componentType": "webpart"
   }

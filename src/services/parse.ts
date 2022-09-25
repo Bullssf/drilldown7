@@ -2,9 +2,12 @@
  * Eventually this should be in npmFunctions, possibly under Services/Strings
  * 
  */
-import { DoNotExpandLinkColumns, DoNotExpandTrimB4, DoNotExpandTrimAfter, DoNotExpandTrimTimes, DoNotExpandTrimSpecial } from './getInterfaceV2';
-import { ITrimLink, ITrimB4, ITrimAfter, ITrimSpecial, ITrimTimes, IDoNotExpandColumns } from './getInterfaceV2';
-import { DoNotExpandFuncColumns, DoNotExpandColumns, } from './getInterfaceV2';
+import { DoNotExpandTrimB4, DoNotExpandTrimAfter, DoNotExpandTrimTimes, } from './getInterfaceV2';
+import { ITrimB4, ITrimAfter, ITrimTimes, } from './getInterfaceV2';
+// import { DoNotExpandColumns, } from './getInterfaceV2';
+// import { DoNotExpandLinkColumns, DoNotExpandTrimSpecial } from './getInterfaceV2';
+// import { ITrimLink, ITrimSpecial, IDoNotExpandColumns } from './getInterfaceV2';
+// import { DoNotExpandFuncColumns, } from './getInterfaceV2';
 import { convertArrayToLC, } from './getInterfaceV2';
 
 /**
@@ -20,8 +23,8 @@ import { GetFirstWord, GetLastWord } from '@mikezimm/npmfunctions/dist/Services/
 import { checkDeepProperty } from '@mikezimm/npmfunctions/dist/Services/Objects/properties';
 import { replaceHTMLEntities } from '@mikezimm/npmfunctions/dist/Services/Strings/html';
 
-import { getDetailValueType } from '../webparts/drilldown7/fpsReferences';
-import { truncate } from '@microsoft/sp-lodash-subset';
+import { getDetailValueType } from '../webparts/drilldownV2/fpsReferences';
+// import { truncate } from '@microsoft/sp-lodash-subset';
 
 
 // import XRegExp from 'xregexp/lib/addons/unicode-scripts';
@@ -52,7 +55,7 @@ export function createItemFunctionProp ( staticColumn: string, item: any, defaul
   const DoNotExpandTrimB4LC = convertArrayToLC( DoNotExpandTrimB4 );
   const DoNotExpandTrimAfterLC = convertArrayToLC( DoNotExpandTrimAfter );
   const DoNotExpandTrimTimesLC = convertArrayToLC( DoNotExpandTrimTimes );
-  const DoNotExpandColumnsLC = convertArrayToLC( DoNotExpandColumns );
+  // const DoNotExpandColumnsLC = convertArrayToLC( DoNotExpandColumns );
 
   /**
    * MEMO TO SELF... WHere you left off...
@@ -103,7 +106,7 @@ export function createItemFunctionProp ( staticColumn: string, item: any, defaul
 
   let splitCol = staticColumn.split("/");
   let rightSide = splitCol[ splitCol.length -1 ];
-  let leftSide = [];
+  let leftSide: string[] = [];
   let itemLeftSide: any = null;
 
     /**
@@ -166,12 +169,12 @@ export function createItemFunctionProp ( staticColumn: string, item: any, defaul
 
   //Get an array of all the individual item types (for multi-select items)
   if ( isMultiSelect === true ) {
-    itemLeftSide.map ( singleItem => { itemTypes.push( getDetailValueType( singleItem ) ) ; } );
+    itemLeftSide.map ( ( singleItem: any ) => { itemTypes.push( getDetailValueType( singleItem ) ) ; } );
   } else { itemTypes.push( detailType ) ; }
 
 
   //Added this to apply rules to multi-select items
-  arrayOfItemValues.map( ( singleItemValue, idx ) => {
+  arrayOfItemValues.map( ( singleItemValue: any, idx: number ) => {
 
     let singleItemType = itemTypes[ idx ];
 
@@ -376,8 +379,8 @@ export function trimB4( str: string, trimCommand: ITrimB4, ) {
   else if ( trimCommand === 'TrimB4Dot'.toLowerCase() ) { parser = '.'; }
   else if ( trimCommand === 'TrimB42ndDot'.toLowerCase() ) { 
     //This does not currently work... DO NOT USE
-    var pos1 = str.indexOf(".");           // 3
-    var pos2 = str.indexOf(".", pos1 + 1); // 7
+    // var pos1 = str.indexOf(".");           // 3
+    // var pos2 = str.indexOf(".", pos1 + 1); // 7
     result= str.split('.')[0].trim() ;
   }
 

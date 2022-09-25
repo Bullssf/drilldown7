@@ -1,5 +1,5 @@
 import { Web, } from "@pnp/sp/presets/all";
-import { sp } from "@pnp/sp";
+// import { sp } from "@pnp/sp";
 import "@pnp/sp/sites";
 
 import "@pnp/sp/webs";
@@ -7,7 +7,7 @@ import "@pnp/sp/clientside-pages/web";
 // import { ClientsideWebpart } from "@pnp/sp/clientside-pages";
 // import { CreateClientsidePage, PromotedState, ClientsidePageLayoutType, ClientsideText,  } from "@pnp/sp/clientside-pages";
 
-import { getHelpfullError } from '../../webparts/drilldown7/fpsReferences';
+import { getHelpfullError } from '../../webparts/drilldownV2/fpsReferences';
 
 // import { IViewLog, addTheseViews } from '../../services/listServices/viewServices'; //Import view arrays for Time list
 
@@ -40,7 +40,7 @@ export async function getAllItems( configWebURL: string, propsListName: string, 
 
         theseProps.map( i => {  //Loop through all items
             // i = preConfigProps list item.
-            let iProps = {};
+            let iProps: any = {};
             let currentItemProps = Object.keys(i); //All the props in the pre-configured list
 
             selectProps.map( p => { //Loop through all select props
@@ -78,9 +78,6 @@ export async function getAllItems( configWebURL: string, propsListName: string, 
 
     }
 
-    for (let i in returnProps ) {
-
-    }
 
     if ( errMessage === '' && returnProps.length === 0 ) { 
         errMessage = 'This list or library does not have any items that you can see.';

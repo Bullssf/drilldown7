@@ -1,32 +1,40 @@
 {
   "$schema": "https://developer.microsoft.com/json-schemas/spfx-build/package-solution.schema.json",
   "solution": {
-    "name": "DEPRECATED Drilldown7 please Upgrade",
-    "id": "bdcf72e6-9215-4cba-9b02-892e5eab42f8",
-    "version": "1.3.2.3",
+    "name": "drilldown-15-v-2-client-side-solution",
+    "id": "d32e3e47-848e-4b0b-9db5-7dc7dd93a0e8",
+    "version": "2.0.0.2",
     "includeClientSideAssets": true,
+    "skipFeatureDeployment": true,
     "isDomainIsolated": false,
     "developer": {
       "name": "",
       "websiteUrl": "",
       "privacyUrl": "",
       "termsOfUseUrl": "",
-      "mpnId": ""
+      "mpnId": "Undefined-1.15.2"
     },
     "metadata": {
       "shortDescription": {
-        "default": "DEPRECATED - drilldown-7 description"
+        "default": "Drilldown v2 - Drilldown filters"
       },
       "longDescription": {
-        "default": "DEPRECATED - drilldown-7 description"
+        "default": "Drilldown v2 - Fast column driven filters with many advanced capabilities"
       },
       "screenshotPaths": [],
       "videoUrl": "",
       "categories": []
-    }
-
+    },
+    "features": [
+      {
+        "title": "drilldown-15-v-2 Feature",
+        "description": "The feature that activates elements of the drilldown-15-v-2 solution.",
+        "id": "1ab8f0fe-536d-4aa8-8796-a1d646bb763e",
+        "version": "2.0.0.2"
+      }
+    ]
   },
   "paths": {
-    "zippedPackage": "solution/drilldown-7.sppkg"
+    "zippedPackage": "solution/drilldown-15-v-2.sppkg"
   }
 }

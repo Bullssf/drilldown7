@@ -1,5 +1,5 @@
 import * as React from 'react';
-
+import { escape } from '@microsoft/sp-lodash-subset';
 import { DoNotExpandLinkColumns, DoNotExpandColumns, DoNotExpandFuncColumns } from './getInterfaceV2';
 
 /**
@@ -88,7 +88,7 @@ import { DoNotExpandLinkColumns, DoNotExpandColumns, DoNotExpandFuncColumns } fr
         let isLookup = thisColumn.indexOf("/");
         if(isLookup) {
           let splitCol = thisColumn.split("/");
-          let baseColumn = splitCol[ 0 ] ; //This is always the zero index splitCol period
+          // let baseColumn = splitCol[ 0 ] ; //This is always the zero index splitCol period
           let nextPart = splitCol[ 1 ];
           let rightSide = splitCol[ splitCol.length -1 ];
 
@@ -135,7 +135,7 @@ import { DoNotExpandLinkColumns, DoNotExpandColumns, DoNotExpandFuncColumns } fr
       // Only look at columns with / in the name
 
           let splitCol = thisColumn.split("/");
-          let leftSide = splitCol[0];
+          // let leftSide = splitCol[0];
           let rightSide = splitCol[ splitCol.length -1 ];
           if ( rightSide && DoNotExpandLinkColumnsLC.indexOf( rightSide.toLowerCase() ) > -1 ) {
             //Then do nothing since this column is a 'faux expanded column' used in Drilldown for Link Columns
@@ -178,7 +178,7 @@ import { DoNotExpandLinkColumns, DoNotExpandColumns, DoNotExpandFuncColumns } fr
           let funcIdx =  DoNotExpandFuncColumnsLC.indexOf( rightSide.toLowerCase() );
           if ( rightSide.toLowerCase().indexOf('before') > -1 && DoNotExpandFuncColumnsLC.indexOf( rightSide.toLowerCase().replace('before','b4'))  > -1 ) {
             // funcErrors.push ( `For: ${thisColumn},  function ${rightSide} is Not Valid :)`);
-            funcErrors.push ( <span>For: <b>{leftSide}/</b><b style={{color: 'red'}}>{rightSide}</b>, replace <b style={{color: 'red'}}>'before'</b> with <b style={{color: 'green'}}>'b4'</b> :)</span> );
+            funcErrors.push ( <span>For: <b>{leftSide}/</b><b style={{color: 'red'}}>{rightSide}</b>, replace <b style={{color: 'red'}}>{escape(`'before'`)}</b> with <b style={{color: 'green'}}>{escape(`'b4'`)}</b> :)</span> );
 
           } else if ( splitCol.length === 3 && funcIdx < 0 ) {
             // funcErrors.push ( `For: ${thisColumn},  function ${rightSide} is Not Valid :)`);
