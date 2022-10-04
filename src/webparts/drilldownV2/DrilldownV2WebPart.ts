@@ -224,7 +224,7 @@ import { ICSSChartDD } from './fpsReferences';
 import { IListViewDDDrillDown } from './fpsReferences';
 import { ICustViewDef, } from './fpsReferences';
 
-import { IQuickCommands, } from './fpsReferences';
+import { IQuickCommands, IQuickButton } from './fpsReferences';
 
 import { IRefinerLayer, RefineRuleValues, IRefinerStat } from './fpsReferences'; // eslint-disable-line @typescript-eslint/no-unused-vars
 
@@ -550,6 +550,44 @@ export default class DrilldownV2WebPart extends BaseClientSideWebPart<IDrilldown
       if ( !result.onUpdateReload ) { result.onUpdateReload = true; }
 
       this.properties.quickCommands = JSON.stringify(result);
+
+      if ( result.buttons.length > 0 ) {
+
+        result.buttons.map( ( buttonRow: IQuickButton[] ) => {
+          if ( buttonRow.length > 0 ) {
+            buttonRow.map( ( thisButtonObjectOriginal: IQuickButton ) => {
+
+              const thisButtonObject = JSON.parse(JSON.stringify( thisButtonObjectOriginal ))
+              const str1: RegExp = thisButtonObject.str1 ? new RegExp(`{str1}`,'gi') : undefined;
+              const str2: RegExp = thisButtonObject.str2 ? new RegExp(`{str2}`,'gi') : undefined;
+              const str3: RegExp = thisButtonObject.str3 ? new RegExp(`{str3}`,'gi') : undefined;
+
+              Object.keys( thisButtonObject ).map( (key: string) => {
+
+                if ( key !== 'str1' && key !== 'str2'  && key !== 'str3' ) {
+                  let oldValue: any = thisButtonObject[key] ;
+
+                  if ( typeof oldValue === 'string' ) {
+                    if ( str1 ) oldValue = oldValue.replace( str1, thisButtonObject.str1.toString() );
+                    if ( str2 ) oldValue = oldValue.replace( str2, thisButtonObject.str2.toString() );
+                    if ( str3 ) oldValue = oldValue.replace( str3, thisButtonObject.str3.toString() );
+                    thisButtonObjectOriginal[key] = oldValue;
+  
+                  } else if ( typeof oldValue === 'object' || Array.isArray( oldValue ) ) {
+                    let objString = JSON.stringify( oldValue ); //Stringify to update all children
+                    if ( str1 ) objString = objString.replace( str1, thisButtonObject.str1.toString() );
+                    if ( str2 ) objString = objString.replace( str2, thisButtonObject.str2.toString() );
+                    if ( str3 ) objString = objString.replace( str3, thisButtonObject.str3.toString() );
+                    thisButtonObjectOriginal[key] = JSON.parse( objString );
+                  }
+                }
+
+              });
+            });
+          }
+        });
+      }
+
       this._quickCommands = result;
 
       if ( this.properties.quickCommands.indexOf('sourceUserInfo') > 1 ) {

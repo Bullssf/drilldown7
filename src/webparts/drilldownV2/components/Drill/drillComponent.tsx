@@ -1899,7 +1899,10 @@ public componentDidUpdate( prevProps: IDrilldownV2Props ){
       let searchString = thisSearchItem.searchString;
 
 
-      if ( meta !== undefined && meta !== null && meta.length > 0 ) {
+      // Changed from this
+      // if ( meta !== undefined && meta !== null && meta.length > 0 ) {
+      // To this based on Jared's reply in thread:  "What am I missing? false and true have no overlap"
+      if ( meta?.length && meta.length > 0 ) {
           // for ( let m in meta ) { // eslint-disable-line guard-for-in
           meta.map( ( m: string, idx: number ) => { 
 

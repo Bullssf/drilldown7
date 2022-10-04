@@ -13,6 +13,7 @@ import { getHelpfullError } from '@mikezimm/npmfunctions/dist/Services/Logging/E
 import { removeItemFromArrayAll, } from '@mikezimm/npmfunctions/dist/Services/Arrays/manipulation';
 
 import { IDrillItemInfo } from '@mikezimm/npmfunctions/dist/WebPartInterfaces/DrillDown/IDrillItem';
+import { getInitials } from "../../../../services/parse";
 
  /***
  *     d888b  d88888b d888888b      db    db d888888b d88888b db   d8b   db      d88888b db    db d8b   db  .o88b. d888888b d888888b  .d88b.  d8b   db .d8888. 
@@ -147,17 +148,30 @@ export function getAppropriateViewProp ( OrigViewDefs: ICustViewDef[], currentWi
     }
 }
 
+export function findAllMatches( command: string, regEx: RegExp) {
+
+  // let regEx = /text|rich|append/ig;
+  let result: any = null;
+  const matches: string[] = [];
+  while ((result = regEx.exec(command)) !== null) {
+    matches.push(result[0]);
+  }
+  return matches;
+
+}
+
+
 export async function updateReactListItem( webUrl: string, listName: string, Id: number, thisButtonObject : IQuickButton, sourceUserInfo: IUser, panelItem: IDrillItemInfo ): Promise<string>{
 
 
     //lists.getById(listGUID).webs.orderBy("Title", true).get().then(function(result) {
     //let allItems : IDrillItemInfo[] = await sp.web.webs.get();
 
-    let currentTime = new Date().toLocaleString();
+    const currentTime = new Date().toLocaleString();
 
     // let results : any[] = [];
 
-    let thisListWeb = Web(webUrl);
+    const thisListWeb = Web(webUrl);
 
     let errMessage = null;
 
@@ -166,41 +180,83 @@ export async function updateReactListItem( webUrl: string, listName: string, Id:
     //Replace [Today] with currect time
     newUpdateItem = newUpdateItem.replace(/\B\[Today\]\B/gi, currentTime);
 
+
     //Regex looks for anything matching [Today-+xxx] and replaces with date string
     var newUpdateItem2 = newUpdateItem.replace(/\[Today(.*?)\]/gi, (match =>  {
         let numb = parseInt(match.toLowerCase().substring(6).replace("]",""),10);
-        var today = new Date();
+        const today = new Date();
         var newdate = new Date();
         newdate.setDate(today.getDate()+numb);
         let newDateString = newdate.toLocaleString();
         return newDateString;
     }) );
 
+
+
     // Replace [MyName] with userId.Title
     newUpdateItem2 = newUpdateItem2.replace(/\[MyName\]/gi, sourceUserInfo.Title );
 
     let newUpdateItemObj = JSON.parse(newUpdateItem2);
 
+
     //Replace [Me]
     Object.keys(newUpdateItemObj).map( k => {
         let thisColumn: any = newUpdateItemObj[k];
         if ( typeof thisColumn === 'string' ) { 
-
+            const thisColumnLC = thisColumn?.toLowerCase();
             //Single value set to current user
-            if ( thisColumn.toLowerCase() === '[me]' ) {
+
+            // const CommentCommands = [ 'append rich text', 'new rich text', 'append rich stamp', 'new rich stamp'  ].map( ( cmd: string ) => { return cmd.toLowerCase() });
+
+            const isSpecial = thisColumnLC.indexOf('{{') === 0 && thisColumnLC.indexOf('}}') > 2 ? true : false;
+
+            if ( isSpecial === true ) {
+
+              const makeNew = thisColumnLC.indexOf('append') < 0 ? true : false; // Replaces current value if it doesn't find append
+              const addStamp = thisColumnLC.indexOf('stamp') > 1 ? true : false; // Replaces current value if it doesn't find append
+              const detectedRich: unknown = panelItem[k] && panelItem[k].indexOf('<div class="ExternalClass') === 0 ? true : null; // Treats as rich text if finds rich
+              const detectedPlain: unknown = panelItem[k] && panelItem[k].indexOf('<div class="ExternalClass') !== 0 ? true : null; // Treats as rich text if finds rich
+
+              // If existing data says it's rich or plain, goes with that.  Else goes by command
+              const makeRich = detectedRich === true ? true : detectedPlain === true ? false : thisColumnLC.indexOf('rich') > 1 ? true : false; 
+
+              const lineFeed = makeRich === true || detectedRich === true ? '</br></br>' : `\n\n`;
+
+              let timeStamp : string = '';
+
+              if ( addStamp === true ) {   //Add User Intials and Date Stamp
+                const userInitals = sourceUserInfo?.Title ? getInitials( sourceUserInfo.Title, true, false ) : '';
+
+                if ( makeRich === true ) {
+                  timeStamp = `<span style="font-weight:bold">${userInitals} - ${currentTime}</span>${lineFeed}`;
+
+                } else {
+                  timeStamp = `${userInitals} - ${currentTime}${lineFeed}`;
+                }
+              }
+
+              const userComment = prompt( `Add comment to:  ${k} - ${  timeStamp ? 'Is auto-date-stamped :)' : '' }`, 'Enter comment' );
+              console.log('userComment:',userComment );
+
+              if ( userComment && makeNew === false ) {  //Append else make new
+                thisColumn = panelItem[k] ? `${timeStamp}${userComment}${lineFeed}${panelItem[k]}` : userComment ;
+
+              } else { thisColumn = `${timeStamp}${userComment}` ; }
+
+            } else if ( thisColumnLC === '[me]' ) {
                 thisColumn = sourceUserInfo.Id; 
                 console.log('thisColumn is: ', thisColumn ) ;
 
             //Single value only remove you
-            } else if ( thisColumn.toLowerCase() === '[-me]' ) {
+            } else if ( thisColumnLC === '[-me]' ) {
                 thisColumn = panelItem[k] === sourceUserInfo.Id ? null : panelItem[k]; 
 
             //Multi value set to current user
-            } else if ( thisColumn.toLowerCase() === '{me}' ) { 
+            } else if ( thisColumnLC === '{me}' ) { 
                 thisColumn = { results: [ sourceUserInfo.Id ]}; 
 
             //Multi value add current user
-            } else if ( thisColumn.toLowerCase() === '{+me}' ) { 
+            } else if ( thisColumnLC === '{+me}' ) { 
 
                 if ( panelItem[k] ) {
                     try {
@@ -219,7 +275,7 @@ export async function updateReactListItem( webUrl: string, listName: string, Id:
                 }
 
             //Multi value remove current user
-            } else if ( thisColumn.toLowerCase() === '{-me}' ) { 
+            } else if ( thisColumnLC === '{-me}' ) { 
 
                 if ( panelItem[k] ) {
                     try {
