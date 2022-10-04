@@ -75,19 +75,21 @@ const SampleViewJSON : any = [
 
 const SampleCommands: any = {
   "buttons": [[{
-      "label": "Press Me",
+      "str1": "In Process",
+      "label": "Set to {str1}",
       "primary": false,
-      "confirm": "Are you sure?",
+      "confirm": "Are you sure you want to Set to {str1}",
       "alert": "We made our updates!",
       "console": "Message to browser console",
-      "panelMessage": "Complete Panel Text",
+      "panelMessage": "Updated item to {str1}",
       "icon": "User",
       "updateItem": {
         "DueDate": "[today+14]",
         "AssignedToId": "[Me]",
-        "Status": "In Process",
+        "Status": "{str1}",
         "ReviewDays": 99,
-        "Body": "Hi! It's [Today+3] and I'm $MyName$"
+        "Body": "Hi! It's [Today+3] and I'm $MyName$",
+        "Comments": "{{append rich stamp}}"
       },
       "showWhenEvalTrue": "item.AssignedToTitle !== sourceUserInfo.Title"
     }
@@ -96,6 +98,7 @@ const SampleCommands: any = {
 
 };
  
+
 const SampleCharts: any = [
   {
     "primaryField": "Id",
@@ -351,13 +354,26 @@ export function getWebPartHelpElement ( sitePresets : ISitePreConfigProps ) {
                 <li>{escape(`the "buttons" is an array of rows.  Each row can have specific command buttons in it`)}</li>
                 <li>A typical button is made up of these common properites</li>
                 <ul>
+                  <li><b>str1:</b> Use this like a variable to add a string to multiple places</li>
+                  <li><b>str2:</b> ^^^^^^^^, use like this:  label:{escape(`{str1}`)}</li>
                   <li><b>label:</b> Button text</li>
                   <li><b>primary:</b> true for highlighted button, false for typical button</li>
                   <li><b>secondary:</b> Additional button text for primary buttons</li>
                   <li><b>confirm:</b> Popup text asking to confirm update</li>
                   <li><b>alert:</b> Popup text alert after save</li>
                   <li><b>icon:</b> Icon name.  Go to <a href="https://www.flicon.io/" target="_blank">www.flicon.io</a> for complete list.</li>
-                  <li><b>updateItem:</b> JSON structure of the item to save.  See the full web part wiki for how to update dates, users and other list values.</li>
+                  <li><b>updateItem:</b> JSON structure of the item to save.  See the full web part wiki for how to update dates, users and other list values.
+                    <div><b>How to prompt for comments or text?</b></div>
+                    <ul>
+                      <li>{escape(`ColumnName: {{append rich stamp}}`)} will append a comment with settings in the curley braces listed below</li>
+                      <li><b>append</b> keyword:  will add comments to top of existing multi-line text field</li>
+                      <li><b>stamp</b> keyword:  will add User Initials and Date Stamp above your comment</li>
+                      <li><b>rich</b> keyword:  will <b>bold the Date Stamp</b> above your comment</li>
+                      <li>{escape(`ColumnName: {{}}`)} Use this syntax to replace current text with unformatted comment</li>
+                    </ul>
+                    <div><mark>NOTE:</mark>If you press Cancel to inputing a text comment, the item will still Update but set the value to null</div>
+                  </li>
+                  
                   <li><b>showWhenEvalTrue:</b> Shows button for specific user.  In this example, when the current user is NOT the person in the AssignedTo column.</li>
                 </ul>
               </ul>

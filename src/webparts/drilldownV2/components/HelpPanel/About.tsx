@@ -6,7 +6,7 @@ import { repoLink, } from '../../fpsReferences';
 
 import { createAboutRow } from '../../fpsReferences';
 
-export const panelVersionNumber = '2022-09-24 -  2.0.0.2'; //Added to show in panel
+export const panelVersionNumber = '2022-09-24 -  2.0.0.3'; //Added to show in panel
 
 export function aboutTable( showrepoLink: boolean ) {
 
@@ -19,6 +19,8 @@ export function aboutTable( showrepoLink: boolean ) {
     // table.rows.push( createAboutRow('',''  ,'#205 - General', showrepoLink === true ? repoLink : null ) );
     // table.rows.push( createAboutRow('',''  ,'#205 - Bugs', showrepoLink === true ? repoLink : null ) );
     // table.rows.push( createAboutRow('',''  ,'#205 - Featres', showrepoLink === true ? repoLink : null ) );
+
+    table.rows.push( createAboutRow('2022-10-03','2.0.0.3'  ,'#144, #174 - Update QuickCommands capability, #142 - Link functions', showrepoLink === true ? repoLink : null ) );
 
     table.rows.push( createAboutRow('2022-09-24','2.0.0.2'  ,'SPFx v1.15.2', showrepoLink === true ? repoLink : null ) );
     table.rows.push( createAboutRow('',''  ,'#198, #207 - Bugs, #203 - General, #205 - Features', showrepoLink === true ? repoLink : null ) );

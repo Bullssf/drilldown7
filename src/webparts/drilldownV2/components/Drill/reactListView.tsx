@@ -24,7 +24,7 @@ import { findParentElementPropLikeThis } from '@mikezimm/npmfunctions/dist/Eleme
 
 import { getHelpfullError } from '../../fpsReferences';
 
-import { buildConfirmDialog, IMyDialogProps } from '@mikezimm/npmfunctions/dist/Elements/dialogBox'; 
+import { buildConfirmDialogBig, IMyBigDialogProps } from '@mikezimm/npmfunctions/dist/Elements/dialogBox'; 
 
 // import stylesL from '../ListView/listView.module.scss';
 
@@ -110,7 +110,7 @@ export interface IReactListItemsState extends IMinPageArrowsState {
   lastAttachId: number;
   panelMessage?: any;
 
-  myDialog? : IMyDialogProps;
+  myDialog? : IMyBigDialogProps;
   pickedCommand?: IQuickButton; //Index of command and ID of panel item
 
 }
@@ -357,7 +357,7 @@ export default class ReactListItems extends React.Component<IReactListItemsProps
 
     private createBlankDialog() {
 
-        let myDialog: IMyDialogProps = {
+        let myDialog: IMyBigDialogProps = {
             title: '',
             dialogMessage: '',
             showDialog: false,
@@ -498,7 +498,7 @@ export default class ReactListItems extends React.Component<IReactListItemsProps
 
             let attachments = this.state.panelAttachments.length > 0 ? this.state.panelAttachments : null ;
 
-            let dialog = !this.state.myDialog.showDialog ? null : buildConfirmDialog( this.state.myDialog );
+            let dialog = !this.state.myDialog.showDialog ? null : buildConfirmDialogBig( this.state.myDialog );
 
 
             /***
@@ -839,15 +839,16 @@ export default class ReactListItems extends React.Component<IReactListItemsProps
                     //Attempt to update item:
                     if ( thisButtonObject.confirm && thisButtonObject.confirm.length > 0 ) { 
 
-                        let myDialog = this.createBlankDialog();
+                        let myDialog: IMyBigDialogProps = this.createBlankDialog();
                         myDialog.title = "Are you sure you want to make this update?";
                         myDialog.dialogMessage = thisButtonObject.confirm + '';
                         myDialog.confirmButton = thisButtonObject.label + '';
                         myDialog.showDialog = true;
+                        myDialog.maxWidth = 600;
 
                         this.setState({
                             pickedCommand: thisButtonObject,
-                            myDialog: myDialog,
+                            myDialog: myDialog as IMyBigDialogProps,
                         });
 
                     } else {

@@ -265,12 +265,35 @@ export function processAllItems( allItems : IDrillItemInfo[], errMessage: string
                     let detailType = getDetailValueType(  item[leftSide] );
 
                     if ( detailType === 'link' ) {
-                        item[ leftSide + 'GetLinkUrl' ] = item[ leftSide ].Url ? item[ leftSide ].Url : null;
+                        const itemUrl: string = item[ leftSide ].Url;
+                        item[ leftSide + 'GetLinkUrl' ] = itemUrl ? itemUrl : null;
+                        item[ leftSide + 'ShowSitesUrl' ] = itemUrl ? itemUrl : null;
+                        const firstSites: number = itemUrl.indexOf('/sites/');
+                        item[ leftSide + 'ShowSitesUrl' ] = itemUrl && firstSites > -1 ? itemUrl.substring( firstSites ) : `<>SharePoint`;
+                        item[ leftSide + 'ShowCollUrl' ] = itemUrl  && firstSites > -1 ? item[ leftSide + 'ShowSitesUrl' ].replace(`/sites`,'' ) : null;  //ShowPageName
+                        // item[ leftSide + 'ShowSitesUrl' ] = itemUrl ? itemUrl.replace(window.location.origin,'' ) : null;
+                        // item[ leftSide + 'ShowCollUrl' ] = itemUrl ? itemUrl.replace(`${window.location.origin}/sites`,'' ) : null;  //ShowPageName
+                        if ( item[ leftSide + 'ShowCollUrl' ] ) {
+                          const collUrl: string = item[ leftSide + 'ShowSitesUrl' ];
+                          const aspx: number = collUrl.indexOf('.aspx');
+                          const pageRelUrl: string = aspx > 5 ? collUrl.substring( 0, aspx > 15 ? aspx + 5: 250 ) : item[ leftSide + 'ShowCollUrl' ];
+
+                          const lastSlash: number = pageRelUrl && pageRelUrl.toLowerCase().indexOf('.aspx') > 0 ? pageRelUrl.lastIndexOf('/') : -1;
+                          const pageName: string = lastSlash > -1 ? collUrl.substring( lastSlash + 1, aspx > 15 ? aspx: 250 ) : pageRelUrl;
+
+                          if ( pageRelUrl )  item[ leftSide + 'ShowPageUrl' ] = pageRelUrl;
+                          if ( pageName )  item[ leftSide + 'ShowPageName' ] = pageName;
+
+                        }
                         item[ leftSide + 'GetLinkDesc' ] = item[ leftSide ].Description;
 
                     } else {
                         //This is not a link column but set props anyway
                         item[ leftSide + 'GetLinkUrl' ] = null;
+                        item[ leftSide + 'ShowSitesUrl' ] = 'No Link - No Clicky!';
+                        item[ leftSide + 'ShowCollUrl' ] = 'No Link - No Clicky!';
+                        item[ leftSide + 'ShowPageName' ] = 'No Link - No Clicky!';
+                        item[ leftSide + 'ShowPageUrl' ] = 'No Link - No Clicky!';
                         item[ leftSide + 'GetLinkDesc' ] = 'No Link Description';
                     }
                 } else if ( drillList.funcColumns.indexOf( staticColumn ) > -1 ) {

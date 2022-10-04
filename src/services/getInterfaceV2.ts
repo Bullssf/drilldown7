@@ -6,8 +6,8 @@
     *  
     */
 
-  export type ITrimLink = 'GetLinkDesc' | 'GetLinkUrl';
-  export const DoNotExpandLinkColumns : ITrimLink[] = [ 'GetLinkDesc', 'GetLinkUrl' ];
+  export type ITrimLink = 'GetLinkDesc' | 'GetLinkUrl' | 'ShowSitesUrl' | 'ShowCollUrl' | 'ShowPageName' | 'ShowPageUrl';
+  export const DoNotExpandLinkColumns : ITrimLink[] = [ 'GetLinkDesc', 'GetLinkUrl', 'ShowSitesUrl', 'ShowCollUrl' , 'ShowPageName', 'ShowPageUrl'];
 
   export type ITrimB4 = 'TrimB4Hyphen' | 'TrimB4Dash' | 'TrimB4Space'| 'TrimB4Tilda' | 'TrimB4Colon' |  'TrimB4Dot' |  'TrimB4Par' | 'TrimB4LPar' | 'TrimB42ndDot' ;
   export const DoNotExpandTrimB4 : ITrimB4[] = [ 'TrimB4Hyphen', 'TrimB4Dash', 'TrimB4Space', 'TrimB4Tilda', 'TrimB4Colon', 'TrimB4Dot', 'TrimB4Par', 'TrimB4LPar', 'TrimB42ndDot' ];

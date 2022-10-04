@@ -341,7 +341,7 @@ module.exports = {
         //"@typescript-eslint/no-empty-function": "off",
 
         // "react/jsx-no-bind": "off",
-        "react/jsx-no-target-blank": "off",  // == >> Keep disabled... for OLD Browsers
+  
 
         // "no-self-assign": "off",  //'selectCols' is assigned to itself
         // "no-constant-condition": "off", //Unexpected constant condition.
@@ -362,6 +362,7 @@ module.exports = {
         // https://www.voitanos.io/blog/sharepoint-framework-v1.15-and-the-attack-of-eslint
         "@microsoft/spfx/no-async-await": "off",
         "react/jsx-no-bind": "off",
+        "react/jsx-no-target-blank": "off",  // == >> Keep disabled... for OLD Browsers
 
 
         // "@typescript-eslint/no-for-in-array": "off",  // ==>>> FIX
