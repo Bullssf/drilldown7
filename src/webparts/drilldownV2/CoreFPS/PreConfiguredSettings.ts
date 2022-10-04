@@ -76,7 +76,7 @@ export const WPPresetEverywhere : IPreConfigSettings = {
       viewJSON3: "[{ \"name\": \"Id\", \"displayName\": \"Id\", \"minWidth\": 50 },{ \"name\": \"Title\", \"displayName\": \"Title\", \"minWidth\": 200 }]",
 
       stats: "[{ \"primaryField\": \"Created\", \"secondField\": \"currentTime\", \"title\": \"Created Age\", \"stat\": \"avg\", \"chartTypes\": [\"pareto-dec\"],\"ignore\": [{\"field\": \"EntryType\",\"op\" : \"eq\",\"val\" : \"start\"}] },{ \"primaryField\": \"Modified\", \"secondField\": \"currentTime\", \"title\": \"Modified Age\", \"stat\": \"avg\", \"chartTypes\": [\"pareto-dec\"],\"ignore\": [{\"field\": \"EntryType\",\"op\" : \"eq\",\"val\" : \"start\"}] }]",
-      quickCommand: `{"buttons":[],"fields":[]}`,  //Do not set here.
+      quickCommand: `{"buttons":[],"fields":[],"onUpdateReload":true}`,  //Do not set here.   https://github.com/mikezimm/drilldown7/issues/211
 
       rules0: [],
       rules1: [],

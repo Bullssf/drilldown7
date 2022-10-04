@@ -209,7 +209,8 @@ export default class ReactListItems extends React.Component<IReactListItemsProps
 
         let allButtonRows : any[] = [];
 
-        if ( quickCommands && quickCommands.buttons.length === 0 ) { 
+        //Adjusted per:  https://github.com/mikezimm/drilldown7/issues/211
+        if ( !quickCommands || !quickCommands.buttons || quickCommands.buttons.length === 0 ) { 
             return NoCommandsInfo;
 
         } else {
