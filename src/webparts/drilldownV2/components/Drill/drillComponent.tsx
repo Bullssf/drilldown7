@@ -94,6 +94,7 @@ import { ILoadPerformance, startPerformOp, updatePerformanceEnd, ILoadPerformanc
 
 import { IDrillItemInfo } from '../../fpsReferences';
 import { defaultBannerCommandStyles } from '../../fpsReferences';
+import { ensureUserInfo } from '@mikezimm/npmfunctions/dist/Services/Users/userServices';
 
 
 /***
@@ -116,13 +117,17 @@ export interface IClickInfo  {
 
 export default class DrillDown extends React.Component<IDrilldownV2Props, IDrillDownState> {
 
-    
+
     private _performance: ILoadPerformance = null;
 
     private _webPartHelpElement = getWebPartHelpElement( this.props.sitePresets );
     private _contentPages : IBannerPages = getBannerPages( this.props.bannerProps );
 
-    
+    private _fetchUserId: string = '';  //Caching fetch Id and Web as soon as possible to prevent race
+    private _fetchWeb: string = this.props.webURL ? this.props.webURL : '';  //Caching fetch Id and Web as soon as possible to prevent race
+    private _sourceUser: IUser = null;
+
+
     private _newRefreshId() {
 
         const startTime = new Date();
@@ -406,6 +411,37 @@ export default class DrillDown extends React.Component<IDrilldownV2Props, IDrill
      *                                                                                                                                          
      */
 
+    private async _presetDrillListUser( webURL: string, email: string ) {
+
+      if ( webURL === this._fetchWeb && this._sourceUser ) {
+        return this._sourceUser;
+
+      } else {
+
+        try {
+          this._updatePerformance( 'fetch9', 'start', 'getUserD', null );
+          const sourceUser: IUser = await ensureUserInfo( webURL, email );
+  
+          this._fetchUserId = sourceUser.id;
+          this._fetchWeb = webURL;
+          this._sourceUser = sourceUser;
+
+          this._updatePerformance( 'fetch9', 'update', '', 1 );
+  
+          return this._sourceUser;
+  
+        } catch(e){
+          const errMessage = getHelpfullError(e, false, true);
+          this._updatePerformance( 'fetch9', 'update', '', 1 );
+          this.setState({ errMessage: errMessage });
+          return null;
+        }
+
+      }
+ 
+    }
+
+
     private _createDrillList(webURL: string, name: string, isLibrary: boolean, refiners: string[], rules: string, stats: string, 
         OrigViewDefs: ICustViewDef[], togOtherChartpart: boolean, title: string = null, stateSourceUserInfo: boolean, language: string, location: string, itteration: number ) {
 
@@ -418,6 +454,14 @@ export default class DrillDown extends React.Component<IDrilldownV2Props, IDrill
             refinerStats.map( s => {
                 if ( s.consumer === undefined || s.consumer === null ) { s.consumer = 1 ; }
             });
+        }
+
+        let restFilter: string = !this.props.performance.restFilter ? ' ' : this.props.performance.restFilter;
+
+        if ( !this.props.webURL || this.props.context.pageContext.site.absoluteUrl.indexOf( this.props.webURL.toLowerCase() ) > -1 ) {  //The web part is on the current page context... get user object from Context instead.
+          if ( restFilter && restFilter.indexOf('[Me]') > 1 ) {
+            restFilter = restFilter.replace('[Me]',  this.props.bannerProps.FPSUser.Id ? this.props.bannerProps.FPSUser.Id : this.props.bannerProps.FPSUser.id ) ; 
+          }
         }
 
         let list: IDrillList = {
@@ -434,7 +478,7 @@ export default class DrillDown extends React.Component<IDrilldownV2Props, IDrill
             },
             fetchCount: this.props.performance.fetchCount,
             fetchCountMobile: this.props.performance.fetchCountMobile,
-            restFilter: !this.props.performance.restFilter ? ' ' : this.props.performance.restFilter,
+            restFilter: restFilter,
             hideFolders: this.props.hideFolders,
             isLibrary: isLibrary,
             getAllProps: this.props.performance.getAllProps,
@@ -510,7 +554,7 @@ export default class DrillDown extends React.Component<IDrilldownV2Props, IDrill
 
         if ( quickCommands !== null ) {
             if ( quickCommands.onUpdateReload === true ) {
-                quickCommands.refreshCallback = this._reloadOnUpdate.bind(this);
+                quickCommands.refreshCallback = this._updateStateOnPropsChange.bind(this);
             }
             if ( quickCommands.successBanner === undefined || quickCommands.successBanner === null ) {
                 quickCommands.successBanner = 3.5 * 1000;
@@ -593,7 +637,7 @@ export default class DrillDown extends React.Component<IDrilldownV2Props, IDrill
   public componentDidMount() {
     // const analyticsWasExecuted: boolean = saveViewAnalytics( 'Drilldown Webpart', 'didMount', this.props, this.state.analyticsWasExecuted );
 
-    this._updateStateOnPropsChange();
+    this._updateStateOnPropsChange( '', false, true );
     console.log('DrillComponent Mounted!');
   }
 
@@ -655,7 +699,7 @@ public componentDidUpdate( prevProps: IDrilldownV2Props ){
       }
 
     if (rebuildPart === true) {
-      this._updateStateOnPropsChange();
+      this._updateStateOnPropsChange( '', false, true );
     }
   }
 
@@ -1235,7 +1279,7 @@ public componentDidUpdate( prevProps: IDrilldownV2Props ){
 
     }   //End Public Render
 
-    private _getAllItemsCall( viewDefs: ICustViewDef[], refiners: string[] ) {
+    private async _getAllItemsCall( viewDefs: ICustViewDef[], refiners: string[] ) {
 
         //Start tracking performance
         this._performance.ops.fetch1 = startPerformOp( 'fetch1 - getUser', this.props.displayMode );
@@ -1248,32 +1292,51 @@ public componentDidUpdate( prevProps: IDrilldownV2Props ){
         // let errMessage = drillList.refinerRules === undefined ? 'Invalid Rule set: ' +  this.state.rules : '';
         if ( drillList.refinerRules === undefined ) { drillList.refinerRules = [[],[],[]] ; } 
 
+
+        let restFilter: string = !this.props.performance.restFilter ? '' : this.props.performance.restFilter;
+
+        if ( restFilter && restFilter.indexOf('[Me]') > 1 ) {
+          const sourceUser: IUser = await this._presetDrillListUser( this.props.webURL, this.props.bannerProps.FPSUser.email );
+          if ( sourceUser.Id ) restFilter = restFilter.replace('[Me]',  sourceUser.Id ) ; 
+        }
+
+        drillList.restFilter = restFilter;
+
         getAllItems( drillList, this._addTheseItemsToState.bind(this), this._setProgress.bind(this), null,  this._updatePerformance.bind( this ),  ); // eslint-disable-line @typescript-eslint/no-floating-promises
 
     }
 
-    private _doGetUser() {
+    // private _doGetUser() {
 
-      if ( this.props.quickCommands ) {
-        this._updatePerformance( 'fetch1', 'start', 'getUser', null );
-        try {
-          getIUser( this.props.webURL, this.props.bannerProps.pageContext.user.loginName, this._updateUserState.bind(this) ); // eslint-disable-line @typescript-eslint/no-floating-promises
+    //   if ( this.props.quickCommands ) {
+    //     this._updatePerformance( 'fetch1', 'start', 'getUser', null );
 
-        } catch(e){
-          const errMessage = getHelpfullError(e, false, true);
-          this._updatePerformance( 'fetch1', 'update', '', 1 );
-          this.setState({ errMessage: errMessage });
+    //     if ( !this.props.webURL || this.props.context.pageContext.site.absoluteUrl.indexOf( this.props.webURL.toLowerCase() ) > -1 ) {  //The web part is on the current page context... get user object from Context instead.
 
-        }
-      }
-    }
+    //       this.setState({
+    //         sourceUserInfo: this.props.bannerProps.FPSUser,
+    //       });
 
-    private _updateUserState( sourceUserInfo: IUser, ) {
-      this._updatePerformance( 'fetch1', 'update', '', 1 );
-      this.setState({
-        sourceUserInfo: sourceUserInfo,
-      });
-    }
+    //     } else {
+    //       //Move try getIUser in here....
+    //       try {
+    //         getIUser( this.props.webURL, this.props.bannerProps.pageContext.user.loginName, this._updateUserState.bind(this) ); // eslint-disable-line @typescript-eslint/no-floating-promises
+ 
+    //       } catch(e){
+    //         const errMessage = getHelpfullError(e, false, true);
+    //         this._updatePerformance( 'fetch1', 'update', '', 1 );
+    //         this.setState({ errMessage: errMessage });
+    //       }
+    //     }
+    //   }
+    // }
+
+    // private _updateUserState( sourceUserInfo: IUser, ) {
+    //   this._updatePerformance( 'fetch1', 'update', '', 1 );
+    //   this.setState({
+    //     sourceUserInfo: sourceUserInfo,
+    //   });
+    // }
 
     private _addTheseItemsToState( drillList: IDrillList, allItems: IDrillItemInfo[] , errMessage : string, refinerObj: IRefinerLayer ) {
 
@@ -2027,7 +2090,7 @@ public componentDidUpdate( prevProps: IDrilldownV2Props ){
  *                                                                                                          
  */
 
-    private _reloadOnUpdate( message: string, hasError: boolean ) : void {
+    private _updateStateOnPropsChange( message: string, hasError: boolean, hasNewProps: boolean = false ) : void {
 
         /**
          * 2022-01-17:  Added this to see if this gets mutated and breaks on refresh items.  
@@ -2035,32 +2098,36 @@ public componentDidUpdate( prevProps: IDrilldownV2Props ){
          */
         let viewDefs: ICustViewDef[] = JSON.parse(JSON.stringify(this.props.viewDefs));
 
-        this.setState({
+        if ( message ) {
+          this.setState({
             bannerMessage: message,
-        });
+          });
+        }
 
         consoleMe( '_reloadOnUpdate' , this.state.allItems, this.state.drillList );
 
-        this._doGetUser();
-        this._getAllItemsCall( viewDefs, this.state.refiners );
+        // this._doGetUser();
+        this._getAllItemsCall( viewDefs, hasNewProps === true ? this.props.refiners : this.state.refiners );
 
-        let delay = hasError === true ? 10000 : this.state.quickCommands.successBanner;
-
-        setTimeout(() => {
+        if ( message ) {
+          const delay = hasError === true ? 10000 : this.state.quickCommands.successBanner;
+          setTimeout(() => {
             this.setState({ bannerMessage: null });
-        } , delay);
+          } , delay);
+        }
+
 
     }
 
-    private _updateStateOnPropsChange(): void {
-        /**
-         * 2022-01-17:  Added this to see if this gets mutated and breaks on refresh items.  
-         * After deeper testing, adding this to getBestFitView solved it but that was getting called a lot so I'm just doing it once in the render
-         */
-        let viewDefs: ICustViewDef[] = JSON.parse(JSON.stringify(this.props.viewDefs));
-        this._doGetUser();
-        this._getAllItemsCall( viewDefs, this.props.refiners );
-    }
+    // private _updateStateOnPropsChange( ): void {
+    //     /**
+    //      * 2022-01-17:  Added this to see if this gets mutated and breaks on refresh items.  
+    //      * After deeper testing, adding this to getBestFitView solved it but that was getting called a lot so I'm just doing it once in the render
+    //      */
+    //     let viewDefs: ICustViewDef[] = JSON.parse(JSON.stringify(this.props.viewDefs));
+    //     // this._doGetUser();
+    //     this._getAllItemsCall( viewDefs, this.props.refiners );
+    // }
 
     /**
      * 
