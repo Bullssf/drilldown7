@@ -270,16 +270,17 @@ export default class ReactListItems extends React.Component<IReactListItemsProps
                             if ( buildThisButton === true ) {
 
                               const buttonStyles: React.CSSProperties = b.styleButton ? b.styleButton as React.CSSProperties :  { minWidth: buttonRow.length === 1 ? '350px' : '', padding: '25px', marginBottom: '10px', fontSize: 'larger' };
-                              const icon = b.icon ? { iconName: b.icon } : null;
+
+                              const IconElement = b.icon ? <Icon iconName= { b.icon }/> : undefined;
                               const buttonID = ['ButtonID', r, i , item.Id].join(this.delim);
                               const buttonTitle = b.label;
                               const thisButton = b.primary === true ?
 
-                                    <div id={ buttonID } title={ buttonTitle } >
-                                      <PrimaryButton style= { buttonStyles } text={b.label} iconProps= { icon } onClick={this._panelButtonClicked.bind(this)} disabled={b.disabled} checked={b.checked} /></div>:
+                                    <div id={ buttonID } title={ buttonTitle } >{ IconElement }
+                                      <PrimaryButton style= { buttonStyles } text={b.label} onClick={this._panelButtonClicked.bind(this)} disabled={b.disabled} checked={b.checked} /></div>:
 
-                                      <div id={ buttonID } title={ buttonTitle } >
-                                        <DefaultButton style= { buttonStyles } text={b.label} iconProps= { icon } onClick={this._panelButtonClicked.bind(this)} disabled={b.disabled} checked={b.checked} /></div>;
+                                      <div id={ buttonID } title={ buttonTitle } >{ IconElement }
+                                        <DefaultButton style= { buttonStyles } text={b.label} onClick={this._panelButtonClicked.bind(this)} disabled={b.disabled} checked={b.checked} /></div>;
 
                                 buttons.push( thisButton );
                             }

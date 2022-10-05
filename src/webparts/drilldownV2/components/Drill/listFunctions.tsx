@@ -246,7 +246,7 @@ export async function updateReactListItem( webUrl: string, listName: string, Id:
               console.log('userComment:',userComment );
 
               if ( userComment && makeNew === false ) {  //Append else make new
-                thisColumn = panelItem[k] ? `${timeStamp}${userComment}${lineFeed}${panelItem[k]}` : `${timeStamp}${userComment}` ;
+                thisColumn = panelItem[k] ? `${timeStamp}${userComment}${lineFeed}${panelItem[k]}` : `${timeStamp}${userComment}` ;  // https://github.com/mikezimm/drilldown7/issues/215
 
               } else { thisColumn = `${timeStamp}${userComment}` ; }
               console.log('thisColumn:',thisColumn );

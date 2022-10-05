@@ -195,7 +195,9 @@ import { mainWebPartRenderBannerSetup, refreshPanelHTML } from '@mikezimm/npmfun
   *
   *     USED BY BANNER COMPONENTS
   */
- 
+
+  import { initializeIcons } from '@uifabric/icons';
+  initializeIcons();
 
 require('@mikezimm/npmfunctions/dist/Services/PropPane/GrayPropPaneAccordions.css');
 require('@mikezimm/npmfunctions/dist/Services/DOM/PinMe/FPSPinMe.css');
