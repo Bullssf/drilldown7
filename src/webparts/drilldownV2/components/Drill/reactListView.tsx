@@ -165,11 +165,11 @@ export default class ReactListItems extends React.Component<IReactListItemsProps
 
     private async createPanelAttachments( thisId: any, panelItem: IDrillItemInfo ): Promise<void>{
 
-        let thisListWeb = Web(this.props.webURL);
-        let thisListObject = thisListWeb.lists.getByTitle( this.props.listName );
+        const thisListWeb = Web(this.props.webURL);
+        const thisListObject = thisListWeb.lists.getByTitle( this.props.listName );
         let allItems : any[] = [];
         let errMessage = null;
-        let attachments: any[] = [];
+        const attachments: any[] = [];
 
         if ( panelItem.Attachments && panelItem.Attachments === true ) {
 
@@ -238,8 +238,8 @@ export default class ReactListItems extends React.Component<IReactListItemsProps
                 quickCommands.buttons.map( (buttonRow, r) => {
 
                     if ( buttonRow && buttonRow.length > 0 ) {
-                        let rowResult : any = null;
-                        let buttons : any[] = [];
+                      let rowResult : any = null;
+                      const buttons : any[] = [];
     
                         buttonRow.map( (b,i) => {
     
@@ -253,12 +253,12 @@ export default class ReactListItems extends React.Component<IReactListItemsProps
 
                                 //2022-01-18:  Added Try catch when testing and found my typed in quick command had error.
                                 try {
-                                    let buildButtonTest = eval( b.showWhenEvalTrue );
+                                  const buildButtonTest = eval( b.showWhenEvalTrue );
                                     if ( buildButtonTest === true ) {
                                         //build all the buttons
                                     } else { buildThisButton = false; }
                                 } catch (e) {
-                                    let errMessage = getHelpfullError(e, false, false);
+                                  const errMessage = getHelpfullError(e, false, false);
                                     console.log(`createPanelButtons: b[${i}].showWhenEvalTrue error !!!`, b.showWhenEvalTrue);
                                     console.log(`createPanelButtons: b[${i}].showWhenEvalTrue Error Details`, errMessage);
 
@@ -268,12 +268,19 @@ export default class ReactListItems extends React.Component<IReactListItemsProps
                             }
 
                             if ( buildThisButton === true ) {
-                                let icon = b.icon ? { iconName: b.icon } : null;
-                                let buttonID = ['ButtonID', r, i , item.Id].join(this.delim);
-                                let buttonTitle = b.label;
-                                let thisButton = b.primary === true ?
-                                    <div id={ buttonID } title={ buttonTitle } ><PrimaryButton text={b.label} iconProps= { icon } onClick={this._panelButtonClicked.bind(this)} disabled={b.disabled} checked={b.checked} /></div>:
-                                    <div id={ buttonID } title={ buttonTitle } ><DefaultButton text={b.label} iconProps= { icon } onClick={this._panelButtonClicked.bind(this)} disabled={b.disabled} checked={b.checked} /></div>;
+
+                              const buttonStyles: React.CSSProperties = b.styleButton ? b.styleButton as React.CSSProperties :  { minWidth: buttonRow.length === 1 ? '350px' : '', padding: '25px', marginBottom: '10px', fontSize: 'larger' };
+                              const icon = b.icon ? { iconName: b.icon } : null;
+                              const buttonID = ['ButtonID', r, i , item.Id].join(this.delim);
+                              const buttonTitle = b.label;
+                              const thisButton = b.primary === true ?
+
+                                    <div id={ buttonID } title={ buttonTitle } >
+                                      <PrimaryButton style= { buttonStyles } text={b.label} iconProps= { icon } onClick={this._panelButtonClicked.bind(this)} disabled={b.disabled} checked={b.checked} /></div>:
+
+                                      <div id={ buttonID } title={ buttonTitle } >
+                                        <DefaultButton style= { buttonStyles } text={b.label} iconProps= { icon } onClick={this._panelButtonClicked.bind(this)} disabled={b.disabled} checked={b.checked} /></div>;
+
                                 buttons.push( thisButton );
                             }
     
@@ -284,7 +291,7 @@ export default class ReactListItems extends React.Component<IReactListItemsProps
                             {buttons}
                         </Stack>;
     
-                        let styleRows: any = {paddingBottom: 10};
+                        const styleRows: any = {paddingBottom: 10};
                         if ( quickCommands.styleRow ) {
                             try {
                                 Object.keys(quickCommands.styleRow).map( k => {
@@ -534,6 +541,7 @@ export default class ReactListItems extends React.Component<IReactListItemsProps
                     <Pivot 
                         aria-label="Basic Pivot Example"
                         defaultSelectedIndex ={ 0 }
+                        style={{ paddingTop: '16px'}}
                     >
                       <PivotItem headerText="Commands" itemKey= "Commands"><div>
                           {/* https://github.com/mikezimm/drilldown7/issues/168 */}
@@ -638,11 +646,11 @@ export default class ReactListItems extends React.Component<IReactListItemsProps
 
             let webTitle = null;
             let listLink = !this.props.includeListLink ? null : <div className={ stylesInfo.infoHeading } onClick={ this._onGoToList.bind(this) } 
-                style={{ marginRight: 20, whiteSpace: 'nowrap', paddingTop: 0, cursor: 'pointer', fontSize: 'smaller',background: 'transparent' }}>
+                style={{ marginRight: 30, whiteSpace: 'nowrap', paddingTop: 0, cursor: 'pointer', fontSize: 'smaller',background: 'transparent' }}>
                     <span style={{ background: 'transparent' }} className={ stylesInfo.listLink }>Go to list</span></div>;
 
             let createItemLink = !this.props.createItemLink ? null : <div title="Create new item" className={ stylesInfo.infoHeading } onClick={ this._CreateNewItem.bind(this) } 
-            style={{ marginRight: 30, whiteSpace: 'nowrap', paddingTop: 0, cursor: 'pointer', fontSize: 'larger',background: 'transparent' }}>
+            style={{ whiteSpace: 'nowrap', paddingTop: 0, cursor: 'pointer', fontSize: 'larger',background: 'transparent' }}>
                 <span style={{ background: 'transparent' }} className={ stylesInfo.listLink }><Icon iconName="AddTo"/></span></div>;
 
             if ( barText !== null ) {
@@ -651,7 +659,7 @@ export default class ReactListItems extends React.Component<IReactListItemsProps
                    { pageArrows }
                    {/* //=>> address:  https://github.com/mikezimm/drilldown7/issues/169 */}
                    { changeFont }   
-                   <span style={{ whiteSpace: 'nowrap', display: 'flex' }}>
+                   <span style={{ whiteSpace: 'nowrap', display: 'flex', marginRight: '25px' }}>
                     { createItemLink }
                     { listLink }
                     </span>

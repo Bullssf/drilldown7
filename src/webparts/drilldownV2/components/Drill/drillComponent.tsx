@@ -419,20 +419,20 @@ export default class DrillDown extends React.Component<IDrilldownV2Props, IDrill
       } else {
 
         try {
-          this._updatePerformance( 'fetch9', 'start', 'getUserD', null );
+          this._updatePerformance( 'fetch1', 'start', 'getUserD', null );
           const sourceUser: IUser = await ensureUserInfo( webURL, email );
   
           this._fetchUserId = sourceUser.id;
           this._fetchWeb = webURL;
           this._sourceUser = sourceUser;
 
-          this._updatePerformance( 'fetch9', 'update', '', 1 );
+          this._updatePerformance( 'fetch1', 'update', '', 1 );
   
           return this._sourceUser;
   
         } catch(e){
           const errMessage = getHelpfullError(e, false, true);
-          this._updatePerformance( 'fetch9', 'update', '', 1 );
+          this._updatePerformance( 'fetch1', 'update', '', 1 );
           this.setState({ errMessage: errMessage });
           return null;
         }
@@ -573,7 +573,7 @@ export default class DrillDown extends React.Component<IDrilldownV2Props, IDrill
             WebpartWidth:  this.props.WebpartElement.getBoundingClientRect().width - 50 ,
 
             drillList: drillList,
-            sourceUserInfo: null,
+            // sourceUserInfo: null,
 
             bannerMessage: null,
             showPropsHelp: false,
@@ -1075,7 +1075,7 @@ public componentDidUpdate( prevProps: IDrilldownV2Props ){
                                 isLibrary = { this.state.drillList.isLibrary }
     
                                 contextUserInfo = { this.state.drillList.contextUserInfo }
-                                sourceUserInfo = { this.state.sourceUserInfo }
+                                sourceUserInfo = { this._sourceUser }
     
                                 viewFields={ currentViewFields }
                                 groupByFields={ currentViewGroups }
@@ -1279,10 +1279,10 @@ public componentDidUpdate( prevProps: IDrilldownV2Props ){
 
     }   //End Public Render
 
-    private async _getAllItemsCall( viewDefs: ICustViewDef[], refiners: string[] ) {
+    private async _getAllItemsCall( viewDefs: ICustViewDef[], refiners: string[] ): Promise<void> {
 
         //Start tracking performance
-        this._performance.ops.fetch1 = startPerformOp( 'fetch1 - getUser', this.props.displayMode );
+        // this._performance.ops.fetch1 = startPerformOp( 'fetch1 - getUser', this.props.displayMode );
 
         /**
          * This is copied from constructor when you have to call the data in case something changed.
@@ -1386,7 +1386,7 @@ public componentDidUpdate( prevProps: IDrilldownV2Props ){
                 groupByFields: null, // This is derived from viewDefs
         
                 contextUserInfo: drillList.contextUserInfo,  //For site you are on ( aka current page context )
-                sourceUserInfo: this.state.sourceUserInfo,   //For site where the list is stored
+                sourceUserInfo: this._sourceUser,// this.state.sourceUserInfo,   //For site where the list is stored
 
                 quickCommands: this.state.quickCommands,
         
@@ -1892,7 +1892,7 @@ public componentDidUpdate( prevProps: IDrilldownV2Props ){
             groupByFields: null, // This is derived from viewDefs
     
             contextUserInfo: this.state.drillList.contextUserInfo,  //For site you are on ( aka current page context )
-            sourceUserInfo: this.state.sourceUserInfo,   //For site where the list is stored
+            sourceUserInfo: this._sourceUser, //this.state.sourceUserInfo,   //For site where the list is stored
 
             quickCommands: this.state.quickCommands,
     
@@ -1917,7 +1917,7 @@ public componentDidUpdate( prevProps: IDrilldownV2Props ){
             groupByFields: null, // This is derived from viewDefs
     
             contextUserInfo: this.state.drillList.contextUserInfo,  //For site you are on ( aka current page context )
-            sourceUserInfo: this.state.sourceUserInfo,   //For site where the list is stored
+            sourceUserInfo: this._sourceUser, // this.state.sourceUserInfo,   //For site where the list is stored
 
             quickCommands: null,
     
