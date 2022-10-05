@@ -1,6 +1,8 @@
 
 import * as React from 'react';
-import { Icon  } from 'office-ui-fabric-react/lib/Icon';
+import { Icon, IIconProps  } from 'office-ui-fabric-react/lib/Icon';
+// import { Icon, IIconProps } from 'office-ui-fabric-react';
+
 import { escape } from '@microsoft/sp-lodash-subset';
 
 import { Web,  } from "@pnp/sp/presets/all";
@@ -53,6 +55,7 @@ import PageArrows from '@mikezimm/npmfunctions/dist/zComponents/Arrows/PageArrow
 import { IMinPageArrowsState, IPageArrowsParentProps } from '@mikezimm/npmfunctions/dist/zComponents/Arrows/PageArrows';
 // import { IView } from '@pnp/sp/views';
 
+import { defaultBannerCommandStyles } from '../../fpsReferences'
 require('./reactListView.css');
 
 export interface IReactListItemsProps extends IPageArrowsParentProps {
@@ -241,7 +244,7 @@ export default class ReactListItems extends React.Component<IReactListItemsProps
                       let rowResult : any = null;
                       const buttons : any[] = [];
     
-                        buttonRow.map( (b,i) => {
+                        buttonRow.map( (b: IQuickButton,i: number) => {
     
                             let buildThisButton = true;
     
@@ -271,16 +274,23 @@ export default class ReactListItems extends React.Component<IReactListItemsProps
 
                               const buttonStyles: React.CSSProperties = b.styleButton ? b.styleButton as React.CSSProperties :  { minWidth: buttonRow.length === 1 ? '350px' : '', padding: '25px', marginBottom: '10px', fontSize: 'larger' };
 
-                              const IconElement = b.icon ? <Icon iconName= { b.icon }/> : undefined;
+                              //Tried adding 
+                              // const IconElement = b.icon ? <Icon iconName= { 'Emoji2' } style={ defaultBannerCommandStyles }/> : undefined;
                               const buttonID = ['ButtonID', r, i , item.Id].join(this.delim);
                               const buttonTitle = b.label;
+                              // const iconName: string = b.icon;
+                              const buttonIcon : IIconProps = { iconName: b.icon, style: defaultBannerCommandStyles }
                               const thisButton = b.primary === true ?
 
-                                    <div id={ buttonID } title={ buttonTitle } >{ IconElement }
-                                      <PrimaryButton style= { buttonStyles } text={b.label} onClick={this._panelButtonClicked.bind(this)} disabled={b.disabled} checked={b.checked} /></div>:
+                               //Tried adding  iconName into Primary Button, does not work,
+                               //Tried adding IconElement into icon Props, can't see it.
+                               //Tried adding Icon Element into the div next to Primary button and could see it.
+                               //
+                                    <div id={ buttonID } title={ buttonTitle } >
+                                      <PrimaryButton style= { buttonStyles } iconProps= { buttonIcon } text={b.label} onClick={this._panelButtonClicked.bind(this)} disabled={b.disabled} checked={b.checked} /></div>:
 
-                                      <div id={ buttonID } title={ buttonTitle } >{ IconElement }
-                                        <DefaultButton style= { buttonStyles } text={b.label} onClick={this._panelButtonClicked.bind(this)} disabled={b.disabled} checked={b.checked} /></div>;
+                                      <div id={ buttonID } title={ buttonTitle } >
+                                        <DefaultButton style= { buttonStyles } iconProps= { buttonIcon } text={b.label} onClick={this._panelButtonClicked.bind(this)} disabled={b.disabled} checked={b.checked} /></div>;
 
                                 buttons.push( thisButton );
                             }
@@ -290,6 +300,7 @@ export default class ReactListItems extends React.Component<IReactListItemsProps
                         const stackQuickCommands: IStackTokens = { childrenGap: 10 };
                         rowResult = <Stack horizontal={ true } tokens={stackQuickCommands}>
                             {buttons}
+
                         </Stack>;
     
                         const styleRows: any = {paddingBottom: 10};
@@ -303,11 +314,13 @@ export default class ReactListItems extends React.Component<IReactListItemsProps
                             }
                         }
                         allButtonRows.push( <div style={ styleRows }> { rowResult } </div> );
+
     
                     } //END   if ( buttonRow && buttonRow.length > 0 ) {
     
                 }); //END  quickCommands.buttons.map( (buttonRow, r) => {
-
+                allButtonRows.push( <Icon iconName= { 'Emoji2' } style={ { fontSize: '24px', } }/> );
+                
             } //END   if ( buildAllButtonsTest === true ) {
 
 
@@ -550,6 +563,7 @@ export default class ReactListItems extends React.Component<IReactListItemsProps
                           <div id='20pxSpacer' style={{ height: '20px'}}/>
                           { attachments }
                           { this.createPanelButtons( this.props.quickCommands, this.state.panelItem, this.props.sourceUserInfo ) }
+                          {/* { <Icon iconName= { 'Add' } style={ defaultBannerCommandStyles }/> } */}
                         </div>
                       </PivotItem>
                       <PivotItem headerText="Details" itemKey= "Details">
@@ -651,7 +665,7 @@ export default class ReactListItems extends React.Component<IReactListItemsProps
                     <span style={{ background: 'transparent' }} className={ stylesInfo.listLink }>Go to list</span></div>;
 
             let createItemLink = !this.props.createItemLink ? null : <div title="Create new item" className={ stylesInfo.infoHeading } onClick={ this._CreateNewItem.bind(this) } 
-            style={{ whiteSpace: 'nowrap', paddingTop: 0, cursor: 'pointer', fontSize: 'larger',background: 'transparent' }}>
+            style={{ marginRight: 30, whiteSpace: 'nowrap', paddingTop: 0, cursor: 'pointer', fontSize: 'larger',background: 'transparent' }}>
                 <span style={{ background: 'transparent' }} className={ stylesInfo.listLink }><Icon iconName="AddTo"/></span></div>;
 
             if ( barText !== null ) {
@@ -724,7 +738,7 @@ export default class ReactListItems extends React.Component<IReactListItemsProps
         
         console.log('AltClick, ShfitClick, CtrlClick:', isAltClick, isShfitClick, isCtrlClick );
 
-        window.open(this.props.parentListURL, "_blank");
+        window.open( `${this.props.parentListURL}?Source=${window.location.pathname}`, "_blank");
 
     }
 
@@ -734,7 +748,7 @@ export default class ReactListItems extends React.Component<IReactListItemsProps
         window.open( `${this.props.parentListURL}`, "_blank");
 
       } else {
-        window.open( `${this.props.parentListURL}/NewForm.aspx?source=${window.location.href}`, "_blank");
+        window.open( `${this.props.parentListURL}/NewForm.aspx?Source=${window.location.pathname}&${window.location.search}`, "_blank");
 
       }
 

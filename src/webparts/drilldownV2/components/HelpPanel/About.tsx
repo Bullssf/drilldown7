@@ -20,8 +20,8 @@ export function aboutTable( showrepoLink: boolean ) {
     // table.rows.push( createAboutRow('',''  ,'#205 - Bugs', showrepoLink === true ? repoLink : null ) );
     // table.rows.push( createAboutRow('',''  ,'#205 - Featres', showrepoLink === true ? repoLink : null ) );
 
-    table.rows.push( createAboutRow('2022-10-05','2.0.0.4'  ,'#172, #208, #214, #215, #158, #217, #218', showrepoLink === true ? repoLink : null ) );
-
+    table.rows.push( createAboutRow('2022-10-05','2.0.0.4'  ,'#73, #84, #106, #156, #172, #158, #217, #218, #220 - Improvements', showrepoLink === true ? repoLink : null ) );
+    table.rows.push( createAboutRow('',''  ,'#113, #208, #214, #215, #158, - Fixes', showrepoLink === true ? repoLink : null ) );
 
     table.rows.push( createAboutRow('2022-10-03','2.0.0.3'  ,'#144, #174 - Update QuickCommands capability, #142 - Link functions', showrepoLink === true ? repoLink : null ) );
 

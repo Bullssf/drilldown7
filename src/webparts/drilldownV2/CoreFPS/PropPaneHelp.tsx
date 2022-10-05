@@ -264,6 +264,7 @@ export function getWebPartHelpElement ( sitePresets : ISitePreConfigProps ) {
         <div className={ 'fps-pph-content' }>
           <div>Views are how  you define your list view in the web part.</div>
           <div>The easiest way to get started, is to unlock our Pre-Configured List definitions in page 1 of properties.  Then select one of the pre-configured lists. Or contact your local SharePoint team if you have a good candidate for a company wide template.</div>
+          <div>TIP:  Enable sync views option in Wide View to copy those settings to all widths</div>
           <div style={{ display: 'flex' }}>
             <div>
               <div className={ 'fps-pph-topic' }>Sample view</div>

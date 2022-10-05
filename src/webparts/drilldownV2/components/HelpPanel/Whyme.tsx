@@ -1,77 +1,79 @@
-// import * as React from 'react';
+import * as React from 'react';
 
-// import { IHelpTable, } from '../../fpsReferences';
-// import { repoLink, } from '../../fpsReferences';
-// import { convertIssuesMarkdownStringToSpan } from '../../fpsReferences';
+import { IHelpTable, } from '../../fpsReferences';
+import { repoLink, IRepoLinks } from '../../fpsReferences';
+import { convertIssuesMarkdownStringToSpan } from '../../fpsReferences';
+import { makeid } from '../../fpsReferences';
 
 // import { createAboutRow } from '../../fpsReferences';
 
 
 export function whyContent( ): any{
 
-    return null;
+    // return null;
 
-    // let table : IHelpTable  = {
-    //     heading: 'Why use Pivot Tiles',
-    //     headers: ['Web part','Features benefits, comparison'],
-    //     rows: [],
-    // };
+    let table : IHelpTable  = {
+        heading: 'Why use Pivot Tiles',
+        headers: ['Web part','Features benefits, comparison'],
+        rows: [],
+    };
 
-    // // let iconSize = 'large';
+    // let iconSize = 'large';
 
-    // // let iconStyles: any = { root: {
-    // //     fontSize: 'x-large',
-    // //     fontWeight: 600,
-    // //     paddingRight: '10px',
-    // //     paddingLeft: '10px',
-    // // }};
+    // let iconStyles: any = { root: {
+    //     fontSize: 'x-large',
+    //     fontWeight: 600,
+    //     paddingRight: '10px',
+    //     paddingLeft: '10px',
+    // }};
 
-    // // let gridIcon = <Icon iconName={"GridViewSmall"}  style={ iconStyles } />; 
+    // let gridIcon = <Icon iconName={"GridViewSmall"}  style={ iconStyles } />; 
 
-    // let thisBenefits = <div>
-    //     <ul>
-    //         <li>Require HTML/Scripts to be contained in approved locations.</li>
-    //         <li>Log who edits webpart properties (ie who is determining what scritps site users will run). <b> - Optional</b></li>
-    //         <li>Log what scripts were executed by users and when - to allow tracability of there is a security issue. <b> - Optional</b></li>
-    //         <li>Content Editor Code breakdown - including all js, css, links, images referenced in the html</li>
-    //         <li>Code breakdown - of the loaded web part or entire page</li>
-    //         <li>Performance analytics right in the web part</li>
-    //         <li>Easy visiblity and access to the Site, Library and file that is embeded/loaded.</li>
-    //         <li>FPS Web part options - Banner, Gear, Expando, Go to Home, Go to Parent site etc...</li>
-    //     </ul>
-    // </div>;
+    let thisBenefits = <div>
+        <ul>
+            <li>Get the benefits of grouping by columns.</li>
+            <li>You can group in ways not possible using out of the box functionality</li>
+            <li>Consolidate values using built in string functions - like FirstWord or First Character - See PropPaneHelp.</li>
+            <div>There are over 20 Refiner rules and 40 String functions built in</div>
+            <li>You can group by multi-select columns like choice, lookup</li>
+            <li>You can group by date groups like converting date values to Years or Months</li>
+            <li>You can group by Lookup value extended properties... the properties tied to lookup items</li>
+            <li>Performance analytics right in the web part</li>
+        </ul>
+    </div>;
 
-    // table.rows.push( createWhyRow(<b>ALV Financial Manual</b>, <span style={{ color: 'darkgreen', fontSize: 'larger' }}><b>{ `Benefits` } </b></span>, repoLinks ) );
-    // table.rows.push( createWhyRow(``, thisBenefits, repoLinks ) );
+    table.rows.push( createWhyRow(<b>Drilldown Webpart</b>, <span style={{ color: 'darkgreen', fontSize: 'larger' }}><b>{ `Benefits` } </b></span>, repoLink ) );
+    table.rows.push( createWhyRow(``, thisBenefits, repoLink ) );
+    table.rows.push( createWhyRow(<b>Drilldown Webpart</b>, <span style={{ color: 'red', fontSize: 'larger' }}><b>{ `Limitations` } </b></span>, repoLink ) );
+    table.rows.push( createWhyRow( ``, <div>Can not use Out of box Column and View Formatting</div>, repoLink ) );
 
-    // table.rows.push( createWhyRow(<b>Pnp Script Editor</b>, <span>See notes below.</span>, repoLinks ) );
-    // table.rows.push( createWhyRow(<b>Pnp Content Editor</b>, <span>See notes below.</span>, repoLinks ) );
-    // table.rows.push( createWhyRow(<b>Classic Content Editor</b>, <span>See notes below.</span>, repoLinks ) );
-    // table.rows.push( createWhyRow(<b>Classic Content Editor</b>, <span>See notes below.</span>, repoLinks ) );
-    
-    // table.rows.push( createWhyRow(``, ``, repoLinks ) );
 
-    // let ootbLimitations = <div>
-    //     <ul>
-    //         <li><span>Anyone can run any code contained anywhere without any tenant controls or logging.</span></li>
-    //     </ul>
-    // </div>;
+    // table.rows.push( createWhyRow(<b>Out of box list view</b>, <span>See notes below.</span>, repoLink ) );
 
-    // table.rows.push( createWhyRow(<b>All MSFT Webparts</b>, <span  style={{ color: 'red', fontSize: 'larger' }}><b>Limitations</b></span>, repoLinks ) );
-    // table.rows.push( createWhyRow(``, ootbLimitations, repoLinks ) );
+    table.rows.push( createWhyRow(``, ``, repoLink ) );
 
-    // table.rows.push( createWhyRow( ``, ``, repoLinks ) );
+    let ootbLimitations = <div>
+        <ul>
+            <li>Can not group by multi-select columns</li>
+        </ul>
+    </div>;
 
-    // return { table: table };
+    table.rows.push( createWhyRow(<b>All MSFT Webparts</b>, <span  style={{ color: 'red', fontSize: 'larger' }}><b>Limitations</b></span>, repoLink ) );
+    table.rows.push( createWhyRow(``, ootbLimitations, repoLink ) );
+
+    table.rows.push( createWhyRow(<b>All MSFT Webparts</b>, <span  style={{ color: 'green', fontSize: 'larger' }}><b>Benefits</b></span>, repoLink ) );
+    table.rows.push( createWhyRow(``, <li>Can use column and view formatting</li>, repoLink ) );
+
+    return { table: table };
 
 }
   
-// function createWhyRow( webpart: any, comments: any, repoLinks: IRepoLinks | null ) {
+function createWhyRow( webpart: any, comments: any, repoLink: IRepoLinks | undefined ) {
 
-//     let fullFocus = convertIssuesMarkdownStringToSpan( comments, repoLinks );
+    let fullFocus = convertIssuesMarkdownStringToSpan( comments, repoLink );
 
-//     let tds = [<span style={{whiteSpace: 'nowrap'}} >{ webpart }</span>,
-//         <span>{ fullFocus }</span>,] ;
+    let tds = [<span key={ makeid( 6 )}style={{whiteSpace: 'nowrap'}} >{ webpart }</span>,
+        <span key={ makeid( 6 )}>{ fullFocus }</span>,] ;
 
-//     return tds;
-// }
+    return tds;
+}

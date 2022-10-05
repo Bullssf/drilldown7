@@ -412,8 +412,17 @@ export default class DrillDown extends React.Component<IDrilldownV2Props, IDrill
      */
 
     private async _presetDrillListUser( webURL: string, email: string ) {
+      const webURLOnCurrentCollection = !webURL || webURL.toLowerCase().indexOf(this.props.context.pageContext.site.serverRelativeUrl.toLowerCase()) > -1 ? true : false;
+      console.log('xxxxxxxxxx');
+      if ( !webURL || ( !this._sourceUser && webURLOnCurrentCollection === true ) ) {
+        //If current web is the sourceListWeb, then just use the context FPSUser
+        this._sourceUser = this.props.bannerProps.FPSUser;
+        this._fetchUserId = this._sourceUser.Id;
+        this._fetchWeb = webURL;
 
-      if ( webURL === this._fetchWeb && this._sourceUser ) {
+        return this._sourceUser;
+
+      } else if ( webURL === this._fetchWeb && this._sourceUser ) {
         return this._sourceUser;
 
       } else {
@@ -1298,6 +1307,10 @@ public componentDidUpdate( prevProps: IDrilldownV2Props ){
         if ( restFilter && restFilter.indexOf('[Me]') > 1 ) {
           const sourceUser: IUser = await this._presetDrillListUser( this.props.webURL, this.props.bannerProps.FPSUser.email );
           if ( sourceUser.Id ) restFilter = restFilter.replace('[Me]',  sourceUser.Id ) ; 
+
+        } else if ( this.props.quickCommands?.quickCommandsRequireUser === true ) {
+          const sourceUser: IUser = await this._presetDrillListUser( this.props.webURL, this.props.bannerProps.FPSUser.email );
+          console.log('fetched sourceUser:', sourceUser );
         }
 
         drillList.restFilter = restFilter;
