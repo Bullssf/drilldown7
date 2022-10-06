@@ -54,19 +54,19 @@ import { createItemFunctionProp,  } from '../../../../services/parse'; //Main fu
 import { DoNotExpandColumns } from "../../../../services/getInterfaceV2";
 
 
-export async function getIUser ( webURL: string, email: string, callBack: any )   {
+// export async function getIUser ( webURL: string, email: string, callBack: any )   {
 
-  // try {
-    const sourceUser: IUser = await ensureUserInfo( webURL, email );
-    callBack( sourceUser, '' );
+//   // try {
+//     const sourceUser: IUser = await ensureUserInfo( webURL, email );
+//     callBack( sourceUser, '' );
 
-  // } catch (e) {
-  //   const errMessage = getHelpfullError(e, false, true);
-  //   callBack( null, errMessage );
+//   // } catch (e) {
+//   //   const errMessage = getHelpfullError(e, false, true);
+//   //   callBack( null, errMessage );
 
-  // }
+//   // }
 
-}
+// }
 
 //   d888b  d88888b d888888b  .d8b.  db      db      d888888b d888888b d88888b .88b  d88. .d8888. 
 //  88' Y8b 88'     `~~88~~' d8' `8b 88      88        `88'   `~~88~~' 88'     88'YbdP`88 88'  YP 

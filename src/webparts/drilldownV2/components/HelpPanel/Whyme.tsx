@@ -45,7 +45,8 @@ export function whyContent( ): any{
     table.rows.push( createWhyRow(<b>Drilldown Webpart</b>, <span style={{ color: 'darkgreen', fontSize: 'larger' }}><b>{ `Benefits` } </b></span>, repoLink ) );
     table.rows.push( createWhyRow(``, thisBenefits, repoLink ) );
     table.rows.push( createWhyRow(<b>Drilldown Webpart</b>, <span style={{ color: 'red', fontSize: 'larger' }}><b>{ `Limitations` } </b></span>, repoLink ) );
-    table.rows.push( createWhyRow( ``, <div>Can not use Out of box Column and View Formatting</div>, repoLink ) );
+    table.rows.push( createWhyRow( ``, <li>Can not use Out of box Column and View Formatting</li>, repoLink ) );
+    table.rows.push( createWhyRow( ``, <li>More complicated setup</li>, repoLink ) );
 
 
     // table.rows.push( createWhyRow(<b>Out of box list view</b>, <span>See notes below.</span>, repoLink ) );
@@ -63,6 +64,7 @@ export function whyContent( ): any{
 
     table.rows.push( createWhyRow(<b>All MSFT Webparts</b>, <span  style={{ color: 'green', fontSize: 'larger' }}><b>Benefits</b></span>, repoLink ) );
     table.rows.push( createWhyRow(``, <li>Can use column and view formatting</li>, repoLink ) );
+    table.rows.push( createWhyRow(``, <li>Full Microsoft support and documentation</li>, repoLink ) );
 
     return { table: table };
 

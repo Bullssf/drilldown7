@@ -32,6 +32,9 @@ import { DoNotExpandLinkColumns, DoNotExpandTrimB4, DoNotExpandTrimAfter, DoNotE
 
 import ReactJson from "react-json-view";
 
+import ListFieldsHook from './PropPaneCols'
+
+import {IFieldPanelProps } from './PropPaneCols';
 
 const SampleViewJSON : any = [
   // https://github.com/mikezimm/drilldown7/issues/161
@@ -128,7 +131,7 @@ const padRight40: React.CSSProperties = { paddingRight: '40px' };
 
 // const tenantServiceRequestURL = `https://servicenow.${window.location.hostname}.com/`;
 
-export function getWebPartHelpElement ( sitePresets : ISitePreConfigProps ) {
+export function getWebPartHelpElement ( sitePresets : ISitePreConfigProps, fieldPanel : IFieldPanelProps = null ) {
 
   let preSetsContent = SitePresetsInfo( sitePresets );
 
@@ -418,6 +421,12 @@ export function getWebPartHelpElement ( sitePresets : ISitePreConfigProps ) {
         </div>
       </PivotItem>
       {/* { PinMeHelp } */}
+      { !fieldPanel ? null : 
+        <PivotItem headerText={ null } itemIcon='ColumnOptions'>
+          { ListFieldsHook( fieldPanel) }
+          </PivotItem>
+      }
+
       { VisitorHelp }
       { BannerHelp }
       { FPSBasicHelp }

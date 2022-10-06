@@ -63,7 +63,7 @@ import ReactListItems from './reactListView';
 
 //parentListFieldTitles
 
-import { getAllItems, buildRefinersObject, processAllItems, consoleMe, consoleRef, getIUser, } from './drillFunctions';
+import { getAllItems, buildRefinersObject, processAllItems, consoleMe, consoleRef, } from './drillFunctions';
 
 import ResizeGroupOverflowSetExample from './refiners/commandBar';
 
@@ -96,6 +96,9 @@ import { IDrillItemInfo } from '../../fpsReferences';
 import { defaultBannerCommandStyles } from '../../fpsReferences';
 import { ensureUserInfo } from '@mikezimm/npmfunctions/dist/Services/Users/userServices';
 
+import { IFieldPanelProps } from '../../CoreFPS/PropPaneCols';
+import { DisplayMode } from '@microsoft/sp-core-library';
+
 
 /***
  *    d88888b db    db d8888b.  .d88b.  d8888b. d888888b      d8888b. d88888b d88888b       .o88b. db       .d8b.  .d8888. .d8888. 
@@ -120,7 +123,7 @@ export default class DrillDown extends React.Component<IDrilldownV2Props, IDrill
 
     private _performance: ILoadPerformance = null;
 
-    private _webPartHelpElement = getWebPartHelpElement( this.props.sitePresets );
+    private _webPartHelpElement = getWebPartHelpElement( this.props.sitePresets, null );
     private _contentPages : IBannerPages = getBannerPages( this.props.bannerProps );
 
     private _fetchUserId: string = '';  //Caching fetch Id and Web as soon as possible to prevent race
@@ -686,6 +689,12 @@ public componentDidUpdate( prevProps: IDrilldownV2Props ){
     if ( prevProps.listName !== this.props.listName || prevProps.webURL !== this.props.webURL ) {
       rebuildPart = true ;
     }
+
+    if ( this.props.displayMode === DisplayMode.Edit ) {
+      this._webPartHelpElement = getWebPartHelpElement( this.props.sitePresets, ); //{ webURL: this.props.webURL, listTitle: this.props.listName }
+    }
+
+
 
     if ( prevProps.performance.fetchCount !== this.props.performance.fetchCount ) {
         rebuildPart = true ;
