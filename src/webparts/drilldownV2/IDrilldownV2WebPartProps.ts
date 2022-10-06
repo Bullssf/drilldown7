@@ -15,7 +15,7 @@ import { ICssChartProps } from './components/CssCharts/ICssChartProps';
  
  import { IMinBannerUIProps, IMinPinMeProps, IMinPandoramicProps, IMinBannerThemeProps, IMinCustomHelpProps, 
    IMinPageStyleProps, IMinBannerUtilityProps, IMinFPSLegacyProps } from "@mikezimm/npmfunctions/dist/HelpPanelOnNPM/onNpm/BannerInterface";
-import { IWebpartHistory } from '@mikezimm/npmfunctions/dist/Services/PropPane/WebPartHistory/Interface';
+// import { IWebpartHistory } from '@mikezimm/npmfunctions/dist/Services/PropPane/WebPartHistory/Interface';
 
    
 //Specific for this web part
@@ -44,7 +44,7 @@ export const changeRefiners : string[] = [ 'refiner0', 'rules0def' , 'rules0' , 
 export const changeToggles : string[] = [ 'togOtherListview', 'togRefinerCounts', 'togCountChart' , 'togOtherChartpart', 'togStats' , ];
 export const changeInstructions : string[] = [ 'whenToShowItems', 'minItemsForHide' , 'instructionIntro' , 'refinerInstruction1' , 'refinerInstruction2', 'refinerInstruction3', ];
 export const changeGrouping : string[] = [ 'groupByFields',  ];
-export const changeViews : string[] = [ 'viewWidth1', 'viewJSON1' , 'viewWidth2' , 'viewJSON2' , 'viewWidth3', 'viewJSON3',];
+export const changeViews : string[] = [ 'syncViews', 'viewWidth1', 'viewJSON1' , 'viewWidth2' , 'viewJSON2' , 'viewWidth3', 'viewJSON3',];
 
 export const changeListToggles : string[] = [ 'includeDetails', 'detailsAudience', 'includeAttach', 'includeListLink', 'listLinkAudience', 'createItemLink', 'createItemAudience' ];
 
@@ -59,7 +59,8 @@ export const changeCommands : string[] = [ 'quickCommands', ];
 
   export interface IDrilldownV2WebPartProps  extends IMinBannerUIProps, IMinPinMeProps, IMinPandoramicProps, IMinBannerThemeProps, IMinCustomHelpProps, IMinPageStyleProps, IMinBannerUtilityProps, IMinFPSLegacyProps {
 
-    [key: string]: string | number | number[] | any[] | boolean | string[] | IMyProgress | PageContext | ICssChartProps | IWebpartHistory | undefined;
+    // [key: string]: string | number | number[] | any[] | boolean | string[] | IMyProgress | PageContext | ICssChartProps | IWebpartHistory | undefined;
+    [key: string]: any;
 
     description: string;
   
@@ -133,6 +134,9 @@ export const changeCommands : string[] = [ 'quickCommands', ];
 
 
     // Page 2 Group 4,5,6 - View Definitions   
+
+    syncViews: boolean;
+
     viewWidth1: number;
     viewWidth2: number;
     viewWidth3: number;

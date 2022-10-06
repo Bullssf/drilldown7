@@ -32,6 +32,9 @@ import { DoNotExpandLinkColumns, DoNotExpandTrimB4, DoNotExpandTrimAfter, DoNotE
 
 import ReactJson from "react-json-view";
 
+import ListFieldsHook from './PropPaneCols'
+
+import {IFieldPanelProps } from './PropPaneCols';
 
 const SampleViewJSON : any = [
   // https://github.com/mikezimm/drilldown7/issues/161
@@ -128,7 +131,7 @@ const padRight40: React.CSSProperties = { paddingRight: '40px' };
 
 // const tenantServiceRequestURL = `https://servicenow.${window.location.hostname}.com/`;
 
-export function getWebPartHelpElement ( sitePresets : ISitePreConfigProps ) {
+export function getWebPartHelpElement ( sitePresets : ISitePreConfigProps, fieldPanel : IFieldPanelProps = null ) {
 
   let preSetsContent = SitePresetsInfo( sitePresets );
 
@@ -264,6 +267,7 @@ export function getWebPartHelpElement ( sitePresets : ISitePreConfigProps ) {
         <div className={ 'fps-pph-content' }>
           <div>Views are how  you define your list view in the web part.</div>
           <div>The easiest way to get started, is to unlock our Pre-Configured List definitions in page 1 of properties.  Then select one of the pre-configured lists. Or contact your local SharePoint team if you have a good candidate for a company wide template.</div>
+          <div>TIP:  Enable sync views option in Wide View to copy those settings to all widths</div>
           <div style={{ display: 'flex' }}>
             <div>
               <div className={ 'fps-pph-topic' }>Sample view</div>
@@ -417,6 +421,12 @@ export function getWebPartHelpElement ( sitePresets : ISitePreConfigProps ) {
         </div>
       </PivotItem>
       {/* { PinMeHelp } */}
+      { !fieldPanel ? null : 
+        <PivotItem headerText={ null } itemIcon='ColumnOptions'>
+          { ListFieldsHook( fieldPanel) }
+          </PivotItem>
+      }
+
       { VisitorHelp }
       { BannerHelp }
       { FPSBasicHelp }

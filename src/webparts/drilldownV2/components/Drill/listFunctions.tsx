@@ -220,7 +220,7 @@ export async function updateReactListItem( webUrl: string, listName: string, Id:
               // If existing data says it's rich or plain, goes with that.  Else goes by command
               const makeRich = detectedRich === true ? true : detectedPlain === true ? false : thisColumnLC.indexOf('rich') > 1 ? true : false; 
 
-              const lineFeed = makeRich === true || detectedRich === true ? '</br></br>' : `\n\n`;
+              const lineFeed = makeRich === true || detectedRich === true ? '<br>' : `\n`;
 
               let timeStamp : string = '';
 
@@ -235,13 +235,21 @@ export async function updateReactListItem( webUrl: string, listName: string, Id:
                 }
               }
 
-              const userComment = prompt( `Add comment to:  ${k} - ${  timeStamp ? 'Is auto-date-stamped :)' : '' }`, 'Enter comment' );
+              let userComment = prompt( `Add comment to:  ${k} - ${  timeStamp ? 'Is auto-date-stamped :)' : '' }`, 'Enter comment' );
+
+              //https://github.com/mikezimm/drilldown7/issues/215
+              if ( makeRich === true ) userComment = `<span>${userComment}</span>`;
+              if ( makeNew === false ) userComment = `${userComment}${lineFeed}${lineFeed}`;
+
+              console.log('timeStamp: ', timeStamp );
+
               console.log('userComment:',userComment );
 
               if ( userComment && makeNew === false ) {  //Append else make new
-                thisColumn = panelItem[k] ? `${timeStamp}${userComment}${lineFeed}${panelItem[k]}` : userComment ;
+                thisColumn = panelItem[k] ? `${timeStamp}${userComment}${lineFeed}${panelItem[k]}` : `${timeStamp}${userComment}` ;  // https://github.com/mikezimm/drilldown7/issues/215
 
               } else { thisColumn = `${timeStamp}${userComment}` ; }
+              console.log('thisColumn:',thisColumn );
 
             } else if ( thisColumnLC === '[me]' ) {
                 thisColumn = sourceUserInfo.Id; 

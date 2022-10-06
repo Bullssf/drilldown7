@@ -195,7 +195,9 @@ import { mainWebPartRenderBannerSetup, refreshPanelHTML } from '@mikezimm/npmfun
   *
   *     USED BY BANNER COMPONENTS
   */
- 
+
+  import { initializeIcons } from '@uifabric/icons';
+  initializeIcons();
 
 require('@mikezimm/npmfunctions/dist/Services/PropPane/GrayPropPaneAccordions.css');
 require('@mikezimm/npmfunctions/dist/Services/DOM/PinMe/FPSPinMe.css');
@@ -730,8 +732,8 @@ export default class DrilldownV2WebPart extends BaseClientSideWebPart<IDrilldown
 
     //2022-07-21:  Tried to case as any to get rid of incompatibility issues
     const viewFields1Any : any[] = this.getViewFieldsObject('Full Size view', this.properties.viewJSON1, this.properties.groupByFields );
-    const viewFields2Any : any[] = this.getViewFieldsObject('Med Size view', this.properties.viewJSON2, this.properties.groupByFields );
-    const viewFields3Any : any[] = this.getViewFieldsObject('Small Size view', this.properties.viewJSON3, this.properties.groupByFields );
+    const viewFields2Any : any[] = this.properties.syncViews === true ? viewFields1Any : this.getViewFieldsObject('Med Size view', this.properties.viewJSON2, this.properties.groupByFields );
+    const viewFields3Any : any[] = this.properties.syncViews === true ? viewFields1Any : this.getViewFieldsObject('Small Size view', this.properties.viewJSON3, this.properties.groupByFields );
 
     let viewFields1 : IViewField[] = viewFields1Any;
     let viewFields2 : IViewField[] = viewFields2Any;
@@ -1177,9 +1179,9 @@ export default class DrilldownV2WebPart extends BaseClientSideWebPart<IDrilldown
             buildCustomizeGroup(  ),
             buildRefinerInstructionsGroup( this.properties ),
             buildListGroupingGroup( ),
-            buildViewGroupFields( 'Wide', 1),
-            buildViewGroupFields( 'Medium', 2),
-            buildViewGroupFields( 'Small', 3),
+            buildViewGroupFields( 'Wide', 1, true, false ),
+            buildViewGroupFields( 'Medium', 2, false, this.properties.syncViews ),
+            buildViewGroupFields( 'Small', 3, false, this.properties.syncViews ),
 
             buildViewTogglesGroup( this.properties ),
             buildStatsGroup( ),
@@ -1439,6 +1441,18 @@ export default class DrilldownV2WebPart extends BaseClientSideWebPart<IDrilldown
         }
       });
 
+    } else if ( propertyPath === 'viewJSON1' || propertyPath === 'syncViews' ) {  //Update viewJSON if synced is selected
+
+      let doSync = propertyPath === 'syncViews' ? newValue : this.properties.syncViews;
+
+      if ( doSync === true ) {
+        if ( propertyPath === 'viewJSON1' ) { this.properties.viewJSON1 = newValue; }
+        const syncValue = propertyPath === 'viewJSON1' ? newValue : this.properties.viewJSON1;
+        this.properties.viewJSON2 = syncValue;
+        this.properties.viewJSON3 = syncValue;
+
+      }
+
     }
 
     /**
@@ -1447,7 +1461,7 @@ export default class DrilldownV2WebPart extends BaseClientSideWebPart<IDrilldown
     let updateOnThese = [
       'setSize','setTab','otherTab','setTab','otherTab','setTab','otherTab','setTab','otherTab',
       'parentListFieldTitles','progress','UpdateTitles','parentListTitle','childListTitle','parentListWeb','childListWeb', 'stats',
-      'rules0','rules1','rules2',
+      'rules0','rules1','rules2', 'syncViews',
       'togRefinerCounts', 'togCountChart', 'togStats', 'togOtherListview', 'togOtherChartpart',
       'fetchCount', 'fetchCountMobile', 'restFilter', 'quickCommands', 'definitionToggle', 'includeListLink',
     ];

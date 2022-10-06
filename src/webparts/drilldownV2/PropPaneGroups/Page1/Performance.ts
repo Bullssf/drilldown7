@@ -35,7 +35,7 @@ export function buildPerformanceGroup( wpProps: IDrilldownV2WebPartProps ) {
     PropertyPaneSlider('fetchCount', {
       label: 'Load this many items from PC',
       min: 100,
-      max: 2000,
+      max: 3000,
       step: 100,
       value: wpProps.fetchCount,
   }));

@@ -8,8 +8,9 @@ export function gettingStartedContent(  ) {
     <h2>First:  Create a Parent List or Library in your site</h2>
       <ol>
           <li>Go to <b>WebPart Properties</b> - Edit Page, Edit Webpart.</li>
-          <li>Expand <b>Create-Verify Lists</b> section.</li>
-          <li>Press <b>Create-Verify List</b> button.</li>
+          <li>Press yellow PropPaneHelp button</li>
+          <li>Go to Get pre-configured setup section</li>
+          <li>Disable toggle and pick a list definition</li>
           <li>Fill in your Refiner Fields</li>
           <li>Fill in your Rules - optional settings telling us how to handle certain field types</li>
           <li>Choose your refiner style</li>

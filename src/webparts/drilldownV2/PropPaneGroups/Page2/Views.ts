@@ -9,7 +9,7 @@ import {
     //   PropertyPaneLink, IPropertyPaneLinkProps,
     // PropertyPaneDropdown, IPropertyPaneDropdownProps,
     // IPropertyPaneDropdownOption,
-    // PropertyPaneToggle,
+    PropertyPaneToggle,
     IPropertyPaneField,
     //  IPropertyPaneConfiguration,
     //  PropertyPaneButton,
@@ -24,7 +24,7 @@ import { JSON_Edit_Link  } from '../../fpsReferences';  //ValidLocalLanguages,
 
 
 
-export function buildViewGroupFields ( title: string, view: 1 | 2 | 3, ) {
+export function buildViewGroupFields ( title: string, view: 1 | 2 | 3, showSyncViews: boolean, disabled: boolean = false ) {
     var groupFields: IPropertyPaneField<any>[] = [];
     groupFields.push(
         PropertyPaneSlider(`viewWidth${view}`, {
@@ -33,15 +33,27 @@ export function buildViewGroupFields ( title: string, view: 1 | 2 | 3, ) {
             max: 1600,
             step: 100,
             value: 800,
+            disabled: disabled,
             }));
     
       groupFields.push( JSON_Edit_Link );
     
+      if ( showSyncViews === true ) {
+        groupFields.push(
+          PropertyPaneToggle('syncViews', {
+            label: 'Sync other views to this one?',
+            offText: 'No',
+            onText: 'Yes',
+          }));
+      }
+
+
       groupFields.push(
         PropertyPaneTextField(`viewJSON${view}`, {
             label: 'View settings',
             description: 'For changing webpart field titles',
             multiline: true,
+            disabled: disabled,
             }));
     
         const ExportThisGroup: IPropertyPaneGroup = {

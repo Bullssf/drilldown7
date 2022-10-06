@@ -37,6 +37,7 @@ import { IDrillItemInfo } from '../../fpsReferences';
  */
 
  export interface IDrillList extends Partial<IPickedList> {
+  [key: string]: string | string[] | boolean | IRefinerRules[][] | IUser | IRefinerStat[] | ICustViewDef[] | any[] | any | undefined;
     itteration: number;
     location: string;
 
@@ -183,7 +184,7 @@ Page owner can set:
  */
 
 export interface IDrilldownV2Props extends IFPSCorePinMeReactComponentProps {
-
+  [key: string]: string | string[] | boolean | any | undefined;
     /**
      * Default 1.14 properties
      */
@@ -387,7 +388,8 @@ export const RefinerChartTypes : ICSSChartTypes[] = ['stacked-column-labels', 'p
  */
 
 export interface IDrillDownState extends IFPSCorePinMeReactComponentState {
-
+  [key: string]: string | string[] | boolean | IDrillItemInfo[] | IStat[] | IMyProgress | IQuickCommands | 
+    IWhenToShowItems | IViewType | any[] | IMyPivCat[][] | ICMDItem[][] | IRefinerStyles | IGrouping[] | IRefinerLayer | any | undefined;
     allowOtherSites?: boolean; //default is local only.  Set to false to allow provisioning parts on other sites.
 
     webURL?: string;
@@ -432,7 +434,7 @@ export interface IDrillDownState extends IFPSCorePinMeReactComponentState {
     errMessage: string | JSX.Element;
 
     drillList: IDrillList;
-    sourceUserInfo?: IUser;   //For site where the list is stored
+    // sourceUserInfo?: IUser;   //For site where the list is stored
 
     WebpartHeight?:  number;    //Size courtesy of https://www.netwoven.com/2018/11/13/resizing-of-spfx-react-web-parts-in-different-scenarios/
     WebpartWidth?:   number;    //Size courtesy of https://www.netwoven.com/2018/11/13/resizing-of-spfx-react-web-parts-in-different-scenarios/
@@ -442,7 +444,7 @@ export interface IDrillDownState extends IFPSCorePinMeReactComponentState {
     maxRefinersToShow: number;
     refinerObj: IRefinerLayer;
     showDisabled?: boolean;  //This will show disabled refiners for DaysOfWeek/Months when the day or month has no data
-
+  // ICMDItem[][] | IRefinerStyles | IGrouping[] | IRefinerLayer
     pivotCats: IMyPivCat[][];
     cmdCats: ICMDItem[][];
 
