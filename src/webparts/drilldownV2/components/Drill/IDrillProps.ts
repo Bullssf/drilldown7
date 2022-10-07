@@ -68,10 +68,14 @@ import { IDrillItemInfo } from '../../fpsReferences';
     staticColumns: string[];
     selectColumns: string[];
     expandColumns: string[];
+    richColumns: string[];  //This is for:  https://github.com/mikezimm/drilldown7/issues/224
+    imageColumns: string[]
     staticColumnsStr: string;
     selectColumnsStr: string;
     expandColumnsStr: string;
     linkColumnsStr: string;
+    richColumnsStr: string;  //This is for:  https://github.com/mikezimm/drilldown7/issues/224
+    imageColumnsStr: string
     multiSelectColumns: string[];
     linkColumns: string[];
     funcColumns: string[];

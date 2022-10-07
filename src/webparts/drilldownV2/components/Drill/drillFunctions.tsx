@@ -252,6 +252,14 @@ export function processAllItems( allItems : IDrillItemInfo[], errMessage: string
                 } 
             });
     
+            //This checks for richText columns:  https://github.com/mikezimm/drilldown7/issues/224
+            drillList.staticColumns.map( staticColumn => {
+              if ( drillList.richColumns.indexOf(staticColumn) < 0 && typeof item[staticColumn] === 'string' ) {
+                if ( item[staticColumn].indexOf('<div') === 0 && item[staticColumn].lastIndexOf('</div>') === item[staticColumn].length-6 )
+                  drillList.richColumns.push( staticColumn );
+              }
+            });
+
             if ( item.Id === 8 ) {
                 console.log('Check item 8' );
             }
