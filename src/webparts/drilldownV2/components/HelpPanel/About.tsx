@@ -20,6 +20,8 @@ export function aboutTable( showrepoLink: boolean ) {
     // table.rows.push( createAboutRow('',''  ,'#205 - Bugs', showrepoLink === true ? repoLink : null ) );
     // table.rows.push( createAboutRow('',''  ,'#205 - Featres', showrepoLink === true ? repoLink : null ) );
 
+    table.rows.push( createAboutRow('2022-10-07','2.0.0.5'  ,'#225 - Fix', showrepoLink === true ? repoLink : null ) );
+
     table.rows.push( createAboutRow('2022-10-06','2.0.0.4'  ,'#72, #73, #84, #106, #156, #172, #158, #217, #218, #220 - Improvements', showrepoLink === true ? repoLink : null ) );
     table.rows.push( createAboutRow('',''  ,'#113, #208, #214, #215, #158, - Fixes', showrepoLink === true ? repoLink : null ) );
 
