@@ -592,9 +592,13 @@ export default class DrilldownV2WebPart extends BaseClientSideWebPart<IDrilldown
 
       this._quickCommands = result;
 
-      if ( this.properties.quickCommands.indexOf('sourceUserInfo') > 1 ) {
+      if ( this.properties.quickCommands.indexOf('sourceUserInfo') > 1 || 
+        // Needed to add these for later https://github.com/mikezimm/drilldown7/issues/225
+        this.properties.quickCommands.indexOf('[MyName]') > 1 || 
+        this.properties.quickCommands.indexOf('$MyName$') > 1 || 
+        this.properties.quickCommands.match(/{{.*?append\s.*?}}/i  ) 
+      ) {
         this._quickCommands.quickCommandsRequireUser = true;
-
       }
 
     } catch(e) {

@@ -193,8 +193,9 @@ export async function updateReactListItem( webUrl: string, listName: string, Id:
 
 
 
+    // Fix https://github.com/mikezimm/drilldown7/issues/225
     // Replace [MyName] with userId.Title
-    newUpdateItem2 = newUpdateItem2.replace(/\[MyName\]/gi, sourceUserInfo.Title );
+    newUpdateItem2 = sourceUserInfo && sourceUserInfo.Title ? newUpdateItem2.replace(/\[MyName\]/gi, sourceUserInfo.Title ) : newUpdateItem2;
 
     let newUpdateItemObj = JSON.parse(newUpdateItem2);
 

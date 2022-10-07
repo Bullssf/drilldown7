@@ -514,6 +514,9 @@ export default class DrillDown extends React.Component<IDrilldownV2Props, IDrill
             staticColumns: [],
             selectColumns: [],
             expandColumns: [],
+            richColumns: [],  //This is for:  https://github.com/mikezimm/drilldown7/issues/224
+            imageColumns: [],
+
             multiSelectColumns: [],
             linkColumns: [],
             funcColumns: [],
@@ -522,6 +525,9 @@ export default class DrillDown extends React.Component<IDrilldownV2Props, IDrill
             selectColumnsStr: '',
             expandColumnsStr: '',
             linkColumnsStr: '',
+            richColumnsStr: '',   //This is for:  https://github.com/mikezimm/drilldown7/issues/224
+            imageColumnsStr: '',
+
             removeFromSelect: ['currentTime','currentUser'],
             errors:  [],
         };
@@ -772,6 +778,10 @@ public componentDidUpdate( prevProps: IDrilldownV2Props ){
                 // Since linkPropertyName is optional, first check to make sure it exists and is a string.
                 if ( typeof field.linkPropertyName === 'string' ) { field.linkPropertyName = field.linkPropertyName.replace(/\//g,''); }
 
+                //This is for:  https://github.com/mikezimm/drilldown7/issues/224
+                if ( this.state.drillList.richColumns.indexOf( field.name ) > -1 ) {
+                  field.render = ( item: string) => { return <div dangerouslySetInnerHTML={{ __html: item[ field.name ] }} /> }
+                }
             });
         });
 
