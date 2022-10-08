@@ -469,6 +469,7 @@ export default class DrillDown extends React.Component<IDrilldownV2Props, IDrill
         }
 
         let restFilter: string = !this.props.performance.restFilter ? ' ' : this.props.performance.restFilter;
+        const evalFilter: string = !this.props.performance.evalFilter ? '' : this.props.performance.evalFilter;
 
         if ( !this.props.webURL || this.props.context.pageContext.site.absoluteUrl.indexOf( this.props.webURL.toLowerCase() ) > -1 ) {  //The web part is on the current page context... get user object from Context instead.
           if ( restFilter && restFilter.indexOf('[Me]') > 1 ) {
@@ -491,6 +492,7 @@ export default class DrillDown extends React.Component<IDrilldownV2Props, IDrill
             fetchCount: this.props.performance.fetchCount,
             fetchCountMobile: this.props.performance.fetchCountMobile,
             restFilter: restFilter,
+            evalFilter: evalFilter,
             hideFolders: this.props.hideFolders,
             isLibrary: isLibrary,
             getAllProps: this.props.performance.getAllProps,
@@ -1334,7 +1336,7 @@ public componentDidUpdate( prevProps: IDrilldownV2Props ){
 
         drillList.restFilter = restFilter;
 
-        getAllItems( drillList, this._addTheseItemsToState.bind(this), this._setProgress.bind(this), null,  this._updatePerformance.bind( this ),  ); // eslint-disable-line @typescript-eslint/no-floating-promises
+        getAllItems( drillList, this._addTheseItemsToState.bind(this), this._setProgress.bind(this), null,  this._updatePerformance.bind( this ), this._sourceUser ); // eslint-disable-line @typescript-eslint/no-floating-promises
 
     }
 
@@ -1775,7 +1777,7 @@ public componentDidUpdate( prevProps: IDrilldownV2Props ){
     let errMessage = drillList.refinerRules === undefined ? 'Invalid Rule set: ' +  this.state.rules : '';
     if ( drillList.refinerRules === undefined ) { drillList.refinerRules = [[],[],[]] ; }
 
-    processAllItems( this.state.allItems, errMessage, drillList, this._addTheseItemsToState.bind(this), this._setProgress.bind(this), null, );
+    processAllItems( this.state.allItems, errMessage, drillList, this._addTheseItemsToState.bind(this), this._setProgress.bind(this), null, this._sourceUser );
 
   }
 

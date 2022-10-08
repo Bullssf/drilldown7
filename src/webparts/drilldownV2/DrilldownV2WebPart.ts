@@ -861,6 +861,7 @@ export default class DrilldownV2WebPart extends BaseClientSideWebPart<IDrilldown
           fetchCountMobile: this.properties.fetchCountMobile,
           getAllProps: this.properties.getAllProps,
           restFilter: !this.properties.restFilter ? '' : this.properties.restFilter,
+          evalFilter: !this.properties.evalFilter ? '' : this.properties.evalFilter,
       },
 
       showItems: {
