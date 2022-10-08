@@ -1324,12 +1324,13 @@ public componentDidUpdate( prevProps: IDrilldownV2Props ){
 
 
         let restFilter: string = !this.props.performance.restFilter ? '' : this.props.performance.restFilter;
+        let evalFilter: string = this.props.performance.evalFilter;
 
-        if ( restFilter && restFilter.indexOf('[Me]') > 1 ) {
+        if ( restFilter && restFilter.indexOf('[Me]') > 1 ) {   
           const sourceUser: IUser = await this._presetDrillListUser( this.props.webURL, this.props.bannerProps.FPSUser.email );
-          if ( sourceUser.Id ) restFilter = restFilter.replace('[Me]',  sourceUser.Id ) ; 
+          if ( sourceUser.Id ) restFilter = restFilter.replace('[Me]',  sourceUser.Id ) ;
 
-        } else if ( this.props.quickCommands?.quickCommandsRequireUser === true ) {
+        } else if ( this.props.quickCommands?.quickCommandsRequireUser === true || evalFilter && evalFilter.indexOf('sourceUser') > -1 ) {
           const sourceUser: IUser = await this._presetDrillListUser( this.props.webURL, this.props.bannerProps.FPSUser.email );
           console.log('fetched sourceUser:', sourceUser );
         }

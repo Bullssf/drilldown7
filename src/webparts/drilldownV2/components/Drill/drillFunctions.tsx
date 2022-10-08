@@ -172,6 +172,7 @@ export function processAllItems( allItems : IDrillItemInfo[], errMessage: string
 
     updatePerformance( 'analyze1', 'start', 'process'  );
 
+    console.log('processAllItems: sourceUser', sourceUser ); //Added console log so no unused var eslint error
     // const DoNotExpandFuncColumnsLC = convertArrayToLC(DoNotExpandFuncColumns);
 
     let allRefiners : IRefinerLayer = null;
@@ -197,7 +198,7 @@ export function processAllItems( allItems : IDrillItemInfo[], errMessage: string
         if ( drillList.evalFilter ) {
           try {
             skipItem = eval( drillList.evalFilter ) === true ? false : true ;
-
+            console.log('drillFunctions ~ 200 - evalFilter failed:', drillList.evalFilter );
           } catch (e) {
             console.log('drillFunctions ~ 200 - evalFilter failed:', drillList.evalFilter );
             skipItem = true;
