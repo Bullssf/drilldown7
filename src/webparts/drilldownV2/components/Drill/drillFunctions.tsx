@@ -1302,7 +1302,7 @@ function buildMetaFromItem( theItem: IDrillItemInfo ) {
         }
     });
 
-    meta = addItemToArrayIfItDoesNotExist(meta, theItem.sort );
+    meta = addItemToArrayIfItDoesNotExist( meta, theItem.sort );
 
     return meta;
 }
