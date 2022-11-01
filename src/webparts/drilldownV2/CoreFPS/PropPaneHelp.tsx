@@ -78,7 +78,9 @@ const SampleViewJSON : any = [
 
 const SampleCommands: any = {
   "buttons": [[{
+      "strPrev": "PREVIOUS Choice Value",  // https://github.com/mikezimm/drilldown7/issues/246
       "str1": "In Process",
+      "strNext": "NEXT Choice Value",  // https://github.com/mikezimm/drilldown7/issues/246
       "label": "Set to {str1}",
       "primary": false,
       "confirm": "Are you sure you want to Set to {str1}",
@@ -92,9 +94,14 @@ const SampleCommands: any = {
         "Status": "{str1}",
         "ReviewDays": 99,
         "Body": "Hi! It's [Today+3] and I'm $MyName$",
-        "Comments": "{{append rich stamp}}"
+        "Comments": "{{append rich stamp}}",
+          // https://github.com/mikezimm/drilldown7/issues/245
+        "CaptchaAutor":"{{captcha=Author/Title?Verify Created By Name}}",
+        //https://github.com/mikezimm/drilldown7/issues/244,   // https://github.com/mikezimm/drilldown7/issues/246
+        "ConditionalDate": "eval( item.TESTCOLUMN===`{str1}` ? `[Today]` : item.TESTCOLUMN===`{strNext}` ? null : item.TESTCOLUMN )",
       },
-      "showWhenEvalTrue": "item.AssignedToTitle !== sourceUserInfo.Title"
+        // https://github.com/mikezimm/drilldown7/issues/246
+      "showWhenEvalTrue": "item.AssignedToTitle !== sourceUserInfo.Title && item.Status === {strPrev}"
     }
   ]],
   "fields": [],
