@@ -20,7 +20,7 @@ export function aboutTable( showrepoLink: boolean ) {
     // table.rows.push( createAboutRow('',''  ,'#205 - Bugs', showrepoLink === true ? repoLink : null ) );
     // table.rows.push( createAboutRow('',''  ,'#205 - Featres', showrepoLink === true ? repoLink : null ) );
 
-    table.rows.push( createAboutRow('2022-10-10','2.0.0.6'  ,'#230 - evalFilter, #235, #236, #243', showrepoLink === true ? repoLink : null ) );
+    table.rows.push( createAboutRow('2022-10-10','2.0.0.6'  ,'#230 - evalFilter, #233, #235, #236, #243, #247', showrepoLink === true ? repoLink : null ) );
 
     table.rows.push( createAboutRow('2022-10-07','2.0.0.5'  ,'#225 - Fix', showrepoLink === true ? repoLink : null ) );
 

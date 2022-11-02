@@ -40,7 +40,7 @@ import { getHelpfullError } from '../../fpsReferences';
 
 import { getDetailValueType, ITypeStrings } from '@mikezimm/npmfunctions/dist/Services/typeServices';
 
-import { ensureUserInfo } from '@mikezimm/npmfunctions/dist/Services/Users/userServices';
+// import { ensureUserInfo } from '@mikezimm/npmfunctions/dist/Services/Users/userServices';
 
 // import { mergeAriaAttributeValues } from "office-ui-fabric-react";
 

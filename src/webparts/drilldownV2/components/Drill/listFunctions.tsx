@@ -19,6 +19,8 @@ import { getInitials } from "../../../../services/parse";
 export const CommandItemNotUpdatedMessage: string = `Sorry, There was nothing to update :(`;
 export const CommandUpdateFailedMessage: string = `Update Failed :(`;
 export const CommandEnterCommentString: string = 'Enter comment';
+export const CommandCancelRequired: string = 'Did NOT leave required comment, Cancelling update';
+export const CommandEmptyCommentMessage: string = 'I have nothing new to add at this time';
 
 /***
  *     d888b  d88888b d888888b      db    db d888888b d88888b db   d8b   db      d88888b db    db d8b   db  .o88b. d888888b d888888b  .d88b.  d8b   db .d8888. 
@@ -180,6 +182,8 @@ export async function updateReactListItem( webUrl: string, listName: string, Id:
 
     let errMessage = null;
 
+    let failedRequiredUpdate : any = false;
+
     let newUpdateItem = JSON.stringify(thisButtonObject.updateItem);
 
     //Replace [Today] with currect time
@@ -242,7 +246,10 @@ export async function updateReactListItem( webUrl: string, listName: string, Id:
                 }
               }
 
-              let userComment = prompt( `Add comment to:  ${k} - ${  timeStamp ? 'Is auto-date-stamped :)' : '' }`, CommandEnterCommentString );
+              let userComment = prompt( `Add comment to:  ${k} - ${  timeStamp ? 'Is auto-date-stamped :)' : '' } ${ requireComment ? ' - IS REQUIRED to Save' : '' }`, '' );
+              if ( requireComment === true && ( userComment === CommandEnterCommentString || !userComment ) ) {
+                failedRequiredUpdate = true;
+              }
 
               //https://github.com/mikezimm/drilldown7/issues/215
               if ( makeRich === true ) userComment = `<span>${userComment}</span>`;
@@ -252,6 +259,9 @@ export async function updateReactListItem( webUrl: string, listName: string, Id:
 
               console.log('userComment:',userComment );
 
+              //If user presses 'Ok' and it's not required, use the default message.
+              if ( userComment === '' ) userComment = CommandEmptyCommentMessage;
+
               // https://github.com/mikezimm/drilldown7/issues/233
               if ( userComment === CommandEnterCommentString ) {
                 //Later on if the value is the same then do not do anything.... like canceling this prompt
@@ -260,7 +270,7 @@ export async function updateReactListItem( webUrl: string, listName: string, Id:
               } else if ( userComment && makeNew === false ) {  //Append else make new
                 thisColumn = panelItem[k] ? `${timeStamp}${userComment}${lineFeed}${panelItem[k]}` : `${timeStamp}${userComment}` ;  // https://github.com/mikezimm/drilldown7/issues/215
 
-              } else { thisColumn = `${timeStamp}${userComment}` ; }
+              } else if ( userComment ) { thisColumn = `${timeStamp}${userComment}` ; }
               console.log('thisColumn:',thisColumn );
 
             } else if ( thisColumnLC === '[me]' ) {
@@ -318,7 +328,10 @@ export async function updateReactListItem( webUrl: string, listName: string, Id:
         } // END This key value is string
     });
 
-    if ( Object.keys(newUpdateItemObj).length === 0  ) {
+    if ( failedRequiredUpdate === true ) {
+      return CommandCancelRequired;
+
+    } else if ( Object.keys(newUpdateItemObj).length === 0  ) {
       return CommandItemNotUpdatedMessage;
     }
 

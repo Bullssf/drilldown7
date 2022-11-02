@@ -77,7 +77,7 @@ import Cssreactbarchart from '../CssCharts/Cssreactbarchart';
 
 import {buildCountChartsObject ,  buildStatChartsArray} from '../CssCharts/cssChartFunctions';
 
-import { getAppropriateViewFields, getAppropriateViewGroups, getAppropriateViewProp, CommandItemNotUpdatedMessage, CommandUpdateFailedMessage } from './listFunctions';
+import { getAppropriateViewFields, getAppropriateViewGroups, getAppropriateViewProp, CommandItemNotUpdatedMessage, CommandUpdateFailedMessage, CommandCancelRequired } from './listFunctions';
 
 // import FetchBanner from '../CoreFPS/FetchBannerElement';
 import FetchBanner from '@mikezimm/npmfunctions/dist/HelpPanelOnNPM/onNpm/FetchBannerElement';
@@ -96,6 +96,7 @@ import { IDrillItemInfo } from '../../fpsReferences';
 import { defaultBannerCommandStyles } from '../../fpsReferences';
 import { ensureUserInfo } from '@mikezimm/npmfunctions/dist/Services/Users/userServices';
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { IFieldPanelProps } from '../../CoreFPS/PropPaneCols';
 import { DisplayMode } from '@microsoft/sp-core-library';
 
@@ -800,7 +801,8 @@ public componentDidUpdate( prevProps: IDrilldownV2Props ){
 
         let createBanner = quickCommands !== null && quickCommands.successBanner > 0 ? true : false; //CommandItemNotUpdatedMessage
         const bannerEleClasses = [ stylesD.bannerStyles, bannerMessage === null ? stylesD.bannerHide : stylesD.bannerShow ];
-        if ( bannerMessage &&  ( bannerMessage.indexOf(CommandItemNotUpdatedMessage) > -1 || bannerMessage.indexOf(CommandUpdateFailedMessage) > -1 ) ) bannerEleClasses.push( stylesD.bannerWarn); 
+        if ( bannerMessage && ( [CommandCancelRequired, CommandItemNotUpdatedMessage ].indexOf(bannerMessage) > -1 ) ) bannerEleClasses.push( stylesD.bannerWarn); 
+        if ( typeof bannerMessage === 'string' && bannerMessage.indexOf( CommandUpdateFailedMessage) > -1 ) bannerEleClasses.push( stylesD.bannerWarn); 
 
         let bannerMessageEle = createBanner === false ? null : <div style={{ width: '100%'}} 
             className={ bannerEleClasses.join(' ') }>
@@ -1618,7 +1620,8 @@ public componentDidUpdate( prevProps: IDrilldownV2Props ){
     }
     public _searchForText = (item: any): void => {
         //This sends back the correct pivot category which matches the category on the tile.
-        let searchString = item && item.target && item.target.value ? item.target.value : '';
+        //https://github.com/mikezimm/drilldown7/issues/242
+        let searchString = item && item.target && item.target.value ? item.target.value : typeof item === 'string' ? item : '';
         this._searchForItems( searchString, this.state.searchMeta, 0, 'text' );
     }
 
