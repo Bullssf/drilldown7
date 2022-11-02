@@ -670,7 +670,7 @@ export default class ReactListItems extends React.Component<IReactListItemsProps
 
             if ( barText !== null ) {
                 webTitle =<div  style={{ display: 'flex', justifyContent: 'space-between', }} className={ [stylesInfo.infoHeading, stylesInfo.innerShadow].join(' ') }>
-                  <span style={{ paddingLeft: 20, whiteSpace: 'nowrap' }}>( { this.props.items.length }  ) Items in: { barText }</span>
+                  <span style={{ paddingLeft: 20, whiteSpace: 'nowrap' }}>( { this.props.items.length }  ) { barText }</span>
                    { pageArrows }
                    {/* //=>> address:  https://github.com/mikezimm/drilldown7/issues/169 */}
                    { changeFont }   

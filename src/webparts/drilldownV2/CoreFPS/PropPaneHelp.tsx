@@ -22,7 +22,8 @@ import { ITrimB4, ITrimAfter, ITrimLink, ITrimSpecial, ITrimTimes, ITrimWords } 
 // import { IRefiners, IItemRefiners, IRefinerStats, IRefinerStatType, RefinerStatTypes, } from '../fpsReferences';
 import { IRefinerRulesInts, IRefinerRulesNums, IRefinerRulesStrs, IRefinerRulesTime, IRefinerRulesUser } from '../fpsReferences';  //../fpsReferences
 
-import { BannerHelp, FPSBasicHelp, FPSExpandHelp, ImportHelp, SinglePageAppHelp, VisitorHelp, } from '../fpsReferences';
+
+import { BannerHelp, FPSBasicHelp, FPSExpandHelp, ImportHelp, VisitorHelp, } from '../fpsReferences'; //removed since this now has SPA version SinglePageAppHelp
 
 import { ISitePreConfigProps, SitePresetsInfo } from '../fpsReferences';
 

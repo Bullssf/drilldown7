@@ -1268,12 +1268,9 @@ public componentDidUpdate( prevProps: IDrilldownV2Props ){
                                     <div className={ this.state.searchCount !== 0 ? styles.hideMe : styles.showErrorMessage  }>{ noInfo } </div>
                                     { bannerMessageEle }
 
-                                    <Stack horizontal={false} wrap={true} horizontalAlign={"stretch"} tokens={stackPageTokens}>{/* Stack for Buttons and Webs */}
-                                        {/* { this.state.viewType === 'React' ? reactListItems : drillItems } */}
+                                    {/* Removed stack due to issue:  https://github.com/mikezimm/drilldown7/issues/240 */}
+                                    { reactListItems }
 
-                                        { reactListItems }
-                                        {   }
-                                    </Stack>
                                 </div> { /* Close tag from above noInfo */}
                             </div>
                         </div>
