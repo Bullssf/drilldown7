@@ -77,7 +77,7 @@ import Cssreactbarchart from '../CssCharts/Cssreactbarchart';
 
 import {buildCountChartsObject ,  buildStatChartsArray} from '../CssCharts/cssChartFunctions';
 
-import { getAppropriateViewFields, getAppropriateViewGroups, getAppropriateViewProp } from './listFunctions';
+import { getAppropriateViewFields, getAppropriateViewGroups, getAppropriateViewProp, CommandItemNotUpdatedMessage, CommandUpdateFailedMessage } from './listFunctions';
 
 // import FetchBanner from '../CoreFPS/FetchBannerElement';
 import FetchBanner from '@mikezimm/npmfunctions/dist/HelpPanelOnNPM/onNpm/FetchBannerElement';
@@ -750,6 +750,10 @@ public componentDidUpdate( prevProps: IDrilldownV2Props ){
         //     // userDisplayName,
         //   } = this.props;
 
+        const { 
+          bannerMessage, quickCommands
+        } = this.state;
+
         let x = 1;
         if ( x === 1 ) {
 
@@ -793,11 +797,14 @@ public componentDidUpdate( prevProps: IDrilldownV2Props ){
                 return <li key={idx}> { message }</li>;
             }) }
         </div>;
-        
-        let createBanner = this.state.quickCommands !== null && this.state.quickCommands.successBanner > 0 ? true : false;
-        let bannerMessage = createBanner === false ? null : <div style={{ width: '100%'}} 
-            className={ [ stylesD.bannerStyles,  this.state.bannerMessage === null ? stylesD.bannerHide : stylesD.bannerShow ].join(' ') }>
-            { this.state.bannerMessage }
+
+        let createBanner = quickCommands !== null && quickCommands.successBanner > 0 ? true : false; //CommandItemNotUpdatedMessage
+        const bannerEleClasses = [ stylesD.bannerStyles, bannerMessage === null ? stylesD.bannerHide : stylesD.bannerShow ];
+        if ( bannerMessage &&  ( bannerMessage.indexOf(CommandItemNotUpdatedMessage) > -1 || bannerMessage.indexOf(CommandUpdateFailedMessage) > -1 ) ) bannerEleClasses.push( stylesD.bannerWarn); 
+
+        let bannerMessageEle = createBanner === false ? null : <div style={{ width: '100%'}} 
+            className={ bannerEleClasses.join(' ') }>
+            { bannerMessage }
         </div>;
 
         /***
@@ -1116,7 +1123,7 @@ public componentDidUpdate( prevProps: IDrilldownV2Props ){
                                 includeAttach= { includeAttach }
                                 includeListLink = { includeListLink }
                                 createItemLink = { createItemLink }
-                                quickCommands={ this.state.quickCommands }
+                                quickCommands={ quickCommands }
                             
                             />;
                         }
@@ -1257,7 +1264,7 @@ public componentDidUpdate( prevProps: IDrilldownV2Props ){
                                 <div>
 
                                     <div className={ this.state.searchCount !== 0 ? styles.hideMe : styles.showErrorMessage  }>{ noInfo } </div>
-                                    { bannerMessage }
+                                    { bannerMessageEle }
 
                                     <Stack horizontal={false} wrap={true} horizontalAlign={"stretch"} tokens={stackPageTokens}>{/* Stack for Buttons and Webs */}
                                         {/* { this.state.viewType === 'React' ? reactListItems : drillItems } */}
@@ -2141,8 +2148,8 @@ public componentDidUpdate( prevProps: IDrilldownV2Props ){
 
         consoleMe( '_reloadOnUpdate' , this.state.allItems, this.state.drillList );
 
-        // this._doGetUser();
-        this._getAllItemsCall( viewDefs, hasNewProps === true ? this.props.refiners : this.state.refiners );
+        // eslint-disable-next-line no-void
+        void this._getAllItemsCall( viewDefs, hasNewProps === true ? this.props.refiners : this.state.refiners );
 
         if ( message ) {
           const delay = hasError === true ? 10000 : this.state.quickCommands.successBanner;

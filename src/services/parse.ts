@@ -591,6 +591,9 @@ export function convertUTCTime( trimmedItem: string, rightSide: ITrimTimes ) {
     case 'YYYY-MM-DD':
       result = `${year}-${monthStamp}-${theDate}`;
       break;
+    case 'YYYY-MM-DD-HH:mm': case 'YYYY-MM-DD-HH:mm_AM':
+      result = `${year}-${monthStamp}-${theDate} ${hourStamp}:${minStamp}${AMStamp}`;
+      break;
     case 'HH:mm' : case 'HH:mm_AM':
       result = `${hourStamp}:${minStamp}${AMStamp}`;
       break;
