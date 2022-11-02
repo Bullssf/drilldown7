@@ -45,6 +45,7 @@ const ListFieldsHook: React.FC<IFieldPanelProps> = ( props ) => {
   const [ listFields, setListFields ] = useState<IMinField[]>([]);
 
   useEffect(() => {
+    // eslint-disable-next-line no-unused-expressions
     ( async () => {
       if ( fetch === true ) {
         console.log( 'ListFieldsHook: started', webURL, listTitle, fetch );

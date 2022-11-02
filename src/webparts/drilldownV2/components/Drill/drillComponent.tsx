@@ -77,7 +77,12 @@ import Cssreactbarchart from '../CssCharts/Cssreactbarchart';
 
 import {buildCountChartsObject ,  buildStatChartsArray} from '../CssCharts/cssChartFunctions';
 
-import { getAppropriateViewFields, getAppropriateViewGroups, getAppropriateViewProp, CommandItemNotUpdatedMessage, CommandUpdateFailedMessage, CommandCancelRequired } from './listFunctions';
+import { getAppropriateViewFields, getAppropriateViewGroups, getAppropriateViewProp, } from './listFunctions';
+
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import { CommandItemNotUpdatedMessage, CommandUpdateFailedMessage, CommandEnterCommentString, 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  CommandCancelRequired, CommandEmptyCommentMessage } from '../../fpsReferences';
 
 // import FetchBanner from '../CoreFPS/FetchBannerElement';
 import FetchBanner from '@mikezimm/npmfunctions/dist/HelpPanelOnNPM/onNpm/FetchBannerElement';
@@ -793,7 +798,7 @@ public componentDidUpdate( prevProps: IDrilldownV2Props ){
         });
 
         let drillListErrors = this.state.drillList.errors.length === 0 ? null : <div style={{ padding: '20px'}}>
-            <h3>These column functions have errors... Check refiners or ViewFields :)</h3>
+            <h3>{`These column functions have errors... Check refiners or ViewFields :)`}</h3>
             { this.state.drillList.errors.map( ( message: string, idx : number ) => {
                 return <li key={idx}> { message }</li>;
             }) }
@@ -804,7 +809,7 @@ public componentDidUpdate( prevProps: IDrilldownV2Props ){
         if ( bannerMessage && ( [CommandCancelRequired, CommandItemNotUpdatedMessage ].indexOf(bannerMessage) > -1 ) ) bannerEleClasses.push( stylesD.bannerWarn); 
         if ( typeof bannerMessage === 'string' && bannerMessage.indexOf( CommandUpdateFailedMessage) > -1 ) bannerEleClasses.push( stylesD.bannerWarn); 
 
-        let bannerMessageEle = createBanner === false ? null : <div style={{ width: '100%'}} 
+        let bannerMessageEle = createBanner === false ? null : <div style={{ width: '100%' }}
             className={ bannerEleClasses.join(' ') }>
             { bannerMessage }
         </div>;
@@ -1103,6 +1108,13 @@ public componentDidUpdate( prevProps: IDrilldownV2Props ){
                             instructionBlock = instructionContent;
 
                         } else {
+                            const blueBarFontSize: string = this.state.searchMeta.length > 1 ? 'smaller' : null;  // https://github.com/mikezimm/drilldown7/issues/249
+                            let blueBar = this.state.searchMeta.map( m => { 
+                              return <span  key={ m }>
+                                  <span style={{ paddingLeft: 0 }}> {'>'} </span>
+                                  <span style={{ paddingLeft: 10, paddingRight: 20, fontSize: blueBarFontSize }}> { m } </span>
+                                </span>; });
+
                             instructionBlock = null;
                             reactListItems  = this.state.searchedItems.length === 0 ? <div>NO ITEMS FOUND</div> : 
                             <ReactListItems 
@@ -1112,7 +1124,9 @@ public componentDidUpdate( prevProps: IDrilldownV2Props ){
                                 parentListURL = { this.state.drillList.parentListURL }
                                 listName = { this.state.drillList.name }
                                 isLibrary = { this.state.drillList.isLibrary }
-    
+                                blueBar={ blueBar }
+                                blueBarTitleText= { `Refiners selected: ${ this.state.searchMeta.join( ' > ') }` }
+
                                 contextUserInfo = { this.state.drillList.contextUserInfo }
                                 sourceUserInfo = { this._sourceUser }
     

@@ -35,6 +35,8 @@ export { ICustViewDef } from '@mikezimm/npmfunctions/dist/Views/IListViews';
 export { IUser } from '@mikezimm/npmfunctions/dist/Services/Users/IUserInterfaces';
 
 export { IQuickCommands, IQuickButton } from '@mikezimm/npmfunctions/dist/QuickCommands/IQuickCommands';
+export { CommandItemNotUpdatedMessage, CommandUpdateFailedMessage, CommandEnterCommentString, 
+  CommandCancelRequired, CommandEmptyCommentMessage } from '@mikezimm/npmfunctions/dist/QuickCommands/IQuickCommands';
 
 export { IRefinerLayer, IRefinerRules, IRefinerStat, RefineRuleValues } from '@mikezimm/npmfunctions/dist/Refiners/IRefiners';
 export { IRefiners, IItemRefiners, IRefinerStats, IRefinerStatType, RefinerStatTypes, } from '@mikezimm/npmfunctions/dist/Refiners/IRefiners';

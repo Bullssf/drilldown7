@@ -15,12 +15,8 @@ import { removeItemFromArrayAll, } from '@mikezimm/npmfunctions/dist/Services/Ar
 import { IDrillItemInfo } from '@mikezimm/npmfunctions/dist/WebPartInterfaces/DrillDown/IDrillItem';
 import { getInitials } from "../../../../services/parse";
 
-// NOTE:  GET THIS FROM '@mikezimm/npmfunctions/dist/QuickCommands/IQuickCommands'; in 2.1.89
-export const CommandItemNotUpdatedMessage: string = `Sorry, There was nothing to update :(`;
-export const CommandUpdateFailedMessage: string = `Update Failed :(`;
-export const CommandEnterCommentString: string = 'Enter comment';
-export const CommandCancelRequired: string = 'Did NOT leave required comment, Cancelling update';
-export const CommandEmptyCommentMessage: string = 'I have nothing new to add at this time';
+import { CommandItemNotUpdatedMessage, CommandUpdateFailedMessage, CommandEnterCommentString,
+  CommandCancelRequired, CommandEmptyCommentMessage } from '../../fpsReferences';
 
 /***
  *     d888b  d88888b d888888b      db    db d888888b d88888b db   d8b   db      d88888b db    db d8b   db  .o88b. d888888b d888888b  .d88b.  d8b   db .d8888. 
