@@ -59,6 +59,14 @@ export function buildPerformanceGroup( wpProps: IDrilldownV2WebPartProps ) {
   }));
 
   groupFields.push(
+    PropertyPaneTextField('evalFilter', {
+      label: 'Javascript eval filter',
+      description: 'See Github Wiki for examples',
+      multiline: true,
+      value: wpProps.jsFilter,
+  }));
+
+  groupFields.push(
     PropertyPaneToggle('updateRefinersOnTextSearch', {
       label: 'Update Refiners on text search',
       offText: 'No = Faster',

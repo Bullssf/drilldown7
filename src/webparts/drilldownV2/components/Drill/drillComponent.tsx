@@ -77,7 +77,12 @@ import Cssreactbarchart from '../CssCharts/Cssreactbarchart';
 
 import {buildCountChartsObject ,  buildStatChartsArray} from '../CssCharts/cssChartFunctions';
 
-import { getAppropriateViewFields, getAppropriateViewGroups, getAppropriateViewProp } from './listFunctions';
+import { getAppropriateViewFields, getAppropriateViewGroups, getAppropriateViewProp, } from './listFunctions';
+
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import { CommandItemNotUpdatedMessage, CommandUpdateFailedMessage, CommandEnterCommentString, 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  CommandCancelRequired, CommandEmptyCommentMessage } from '../../fpsReferences';
 
 // import FetchBanner from '../CoreFPS/FetchBannerElement';
 import FetchBanner from '@mikezimm/npmfunctions/dist/HelpPanelOnNPM/onNpm/FetchBannerElement';
@@ -96,6 +101,7 @@ import { IDrillItemInfo } from '../../fpsReferences';
 import { defaultBannerCommandStyles } from '../../fpsReferences';
 import { ensureUserInfo } from '@mikezimm/npmfunctions/dist/Services/Users/userServices';
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { IFieldPanelProps } from '../../CoreFPS/PropPaneCols';
 import { DisplayMode } from '@microsoft/sp-core-library';
 
@@ -469,6 +475,7 @@ export default class DrillDown extends React.Component<IDrilldownV2Props, IDrill
         }
 
         let restFilter: string = !this.props.performance.restFilter ? ' ' : this.props.performance.restFilter;
+        const evalFilter: string = !this.props.performance.evalFilter ? '' : this.props.performance.evalFilter;
 
         if ( !this.props.webURL || this.props.context.pageContext.site.absoluteUrl.indexOf( this.props.webURL.toLowerCase() ) > -1 ) {  //The web part is on the current page context... get user object from Context instead.
           if ( restFilter && restFilter.indexOf('[Me]') > 1 ) {
@@ -491,6 +498,7 @@ export default class DrillDown extends React.Component<IDrilldownV2Props, IDrill
             fetchCount: this.props.performance.fetchCount,
             fetchCountMobile: this.props.performance.fetchCountMobile,
             restFilter: restFilter,
+            evalFilter: evalFilter,
             hideFolders: this.props.hideFolders,
             isLibrary: isLibrary,
             getAllProps: this.props.performance.getAllProps,
@@ -748,6 +756,10 @@ public componentDidUpdate( prevProps: IDrilldownV2Props ){
         //     // userDisplayName,
         //   } = this.props;
 
+        const { 
+          bannerMessage, quickCommands
+        } = this.state;
+
         let x = 1;
         if ( x === 1 ) {
 
@@ -786,16 +798,20 @@ public componentDidUpdate( prevProps: IDrilldownV2Props ){
         });
 
         let drillListErrors = this.state.drillList.errors.length === 0 ? null : <div style={{ padding: '20px'}}>
-            <h3>These column functions have errors... Check refiners or ViewFields :)</h3>
+            <h3>{`These column functions have errors... Check refiners or ViewFields :)`}</h3>
             { this.state.drillList.errors.map( ( message: string, idx : number ) => {
                 return <li key={idx}> { message }</li>;
             }) }
         </div>;
-        
-        let createBanner = this.state.quickCommands !== null && this.state.quickCommands.successBanner > 0 ? true : false;
-        let bannerMessage = createBanner === false ? null : <div style={{ width: '100%'}} 
-            className={ [ stylesD.bannerStyles,  this.state.bannerMessage === null ? stylesD.bannerHide : stylesD.bannerShow ].join(' ') }>
-            { this.state.bannerMessage }
+
+        let createBanner = quickCommands !== null && quickCommands.successBanner > 0 ? true : false; //CommandItemNotUpdatedMessage
+        const bannerEleClasses = [ stylesD.bannerStyles, bannerMessage === null ? stylesD.bannerHide : stylesD.bannerShow ];
+        if ( bannerMessage && ( [CommandCancelRequired, CommandItemNotUpdatedMessage ].indexOf(bannerMessage) > -1 ) ) bannerEleClasses.push( stylesD.bannerWarn); 
+        if ( typeof bannerMessage === 'string' && bannerMessage.indexOf( CommandUpdateFailedMessage) > -1 ) bannerEleClasses.push( stylesD.bannerWarn); 
+
+        let bannerMessageEle = createBanner === false ? null : <div style={{ width: '100%' }}
+            className={ bannerEleClasses.join(' ') }>
+            { bannerMessage }
         </div>;
 
         /***
@@ -1092,6 +1108,13 @@ public componentDidUpdate( prevProps: IDrilldownV2Props ){
                             instructionBlock = instructionContent;
 
                         } else {
+                            const blueBarFontSize: string = this.state.searchMeta.length > 1 ? 'smaller' : null;  // https://github.com/mikezimm/drilldown7/issues/249
+                            let blueBar = this.state.searchMeta.map( m => { 
+                              return <span  key={ m }>
+                                  <span style={{ paddingLeft: 0 }}> {'>'} </span>
+                                  <span style={{ paddingLeft: 10, paddingRight: 20, fontSize: blueBarFontSize }}> { m } </span>
+                                </span>; });
+
                             instructionBlock = null;
                             reactListItems  = this.state.searchedItems.length === 0 ? <div>NO ITEMS FOUND</div> : 
                             <ReactListItems 
@@ -1101,7 +1124,9 @@ public componentDidUpdate( prevProps: IDrilldownV2Props ){
                                 parentListURL = { this.state.drillList.parentListURL }
                                 listName = { this.state.drillList.name }
                                 isLibrary = { this.state.drillList.isLibrary }
-    
+                                blueBar={ blueBar }
+                                blueBarTitleText= { `Refiners selected: ${ this.state.searchMeta.join( ' > ') }` }
+
                                 contextUserInfo = { this.state.drillList.contextUserInfo }
                                 sourceUserInfo = { this._sourceUser }
     
@@ -1114,7 +1139,7 @@ public componentDidUpdate( prevProps: IDrilldownV2Props ){
                                 includeAttach= { includeAttach }
                                 includeListLink = { includeListLink }
                                 createItemLink = { createItemLink }
-                                quickCommands={ this.state.quickCommands }
+                                quickCommands={ quickCommands }
                             
                             />;
                         }
@@ -1255,14 +1280,11 @@ public componentDidUpdate( prevProps: IDrilldownV2Props ){
                                 <div>
 
                                     <div className={ this.state.searchCount !== 0 ? styles.hideMe : styles.showErrorMessage  }>{ noInfo } </div>
-                                    { bannerMessage }
+                                    { bannerMessageEle }
 
-                                    <Stack horizontal={false} wrap={true} horizontalAlign={"stretch"} tokens={stackPageTokens}>{/* Stack for Buttons and Webs */}
-                                        {/* { this.state.viewType === 'React' ? reactListItems : drillItems } */}
+                                    {/* Removed stack due to issue:  https://github.com/mikezimm/drilldown7/issues/240 */}
+                                    { reactListItems }
 
-                                        { reactListItems }
-                                        {   }
-                                    </Stack>
                                 </div> { /* Close tag from above noInfo */}
                             </div>
                         </div>
@@ -1322,19 +1344,20 @@ public componentDidUpdate( prevProps: IDrilldownV2Props ){
 
 
         let restFilter: string = !this.props.performance.restFilter ? '' : this.props.performance.restFilter;
+        let evalFilter: string = this.props.performance.evalFilter;
 
-        if ( restFilter && restFilter.indexOf('[Me]') > 1 ) {
+        if ( restFilter && restFilter.indexOf('[Me]') > 1 ) {   
           const sourceUser: IUser = await this._presetDrillListUser( this.props.webURL, this.props.bannerProps.FPSUser.email );
-          if ( sourceUser.Id ) restFilter = restFilter.replace('[Me]',  sourceUser.Id ) ; 
+          if ( sourceUser.Id ) restFilter = restFilter.replace('[Me]',  sourceUser.Id ) ;
 
-        } else if ( this.props.quickCommands?.quickCommandsRequireUser === true ) {
+        } else if ( this.props.quickCommands?.quickCommandsRequireUser === true || evalFilter && evalFilter.indexOf('sourceUser') > -1 ) {
           const sourceUser: IUser = await this._presetDrillListUser( this.props.webURL, this.props.bannerProps.FPSUser.email );
           console.log('fetched sourceUser:', sourceUser );
         }
 
         drillList.restFilter = restFilter;
 
-        getAllItems( drillList, this._addTheseItemsToState.bind(this), this._setProgress.bind(this), null,  this._updatePerformance.bind( this ),  ); // eslint-disable-line @typescript-eslint/no-floating-promises
+        getAllItems( drillList, this._addTheseItemsToState.bind(this), this._setProgress.bind(this), null,  this._updatePerformance.bind( this ), this._sourceUser ); // eslint-disable-line @typescript-eslint/no-floating-promises
 
     }
 
@@ -1608,7 +1631,8 @@ public componentDidUpdate( prevProps: IDrilldownV2Props ){
     }
     public _searchForText = (item: any): void => {
         //This sends back the correct pivot category which matches the category on the tile.
-        let searchString = item && item.target && item.target.value ? item.target.value : '';
+        //https://github.com/mikezimm/drilldown7/issues/242
+        let searchString = item && item.target && item.target.value ? item.target.value : typeof item === 'string' ? item : '';
         this._searchForItems( searchString, this.state.searchMeta, 0, 'text' );
     }
 
@@ -1775,7 +1799,7 @@ public componentDidUpdate( prevProps: IDrilldownV2Props ){
     let errMessage = drillList.refinerRules === undefined ? 'Invalid Rule set: ' +  this.state.rules : '';
     if ( drillList.refinerRules === undefined ) { drillList.refinerRules = [[],[],[]] ; }
 
-    processAllItems( this.state.allItems, errMessage, drillList, this._addTheseItemsToState.bind(this), this._setProgress.bind(this), null, );
+    processAllItems( this.state.allItems, errMessage, drillList, this._addTheseItemsToState.bind(this), this._setProgress.bind(this), null, this._sourceUser );
 
   }
 
@@ -2138,8 +2162,8 @@ public componentDidUpdate( prevProps: IDrilldownV2Props ){
 
         consoleMe( '_reloadOnUpdate' , this.state.allItems, this.state.drillList );
 
-        // this._doGetUser();
-        this._getAllItemsCall( viewDefs, hasNewProps === true ? this.props.refiners : this.state.refiners );
+        // eslint-disable-next-line no-void
+        void this._getAllItemsCall( viewDefs, hasNewProps === true ? this.props.refiners : this.state.refiners );
 
         if ( message ) {
           const delay = hasError === true ? 10000 : this.state.quickCommands.successBanner;

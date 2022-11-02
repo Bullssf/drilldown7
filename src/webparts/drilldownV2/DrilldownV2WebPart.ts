@@ -559,27 +559,39 @@ export default class DrilldownV2WebPart extends BaseClientSideWebPart<IDrilldown
           if ( buttonRow.length > 0 ) {
             buttonRow.map( ( thisButtonObjectOriginal: IQuickButton ) => {
 
-              const thisButtonObject = JSON.parse(JSON.stringify( thisButtonObjectOriginal ))
+              const thisButtonObject = JSON.parse(JSON.stringify( thisButtonObjectOriginal ));
+
+              // eslint-disable-next-line @rushstack/security/no-unsafe-regexp
+              const strPrev: RegExp = thisButtonObject.strPrev ? new RegExp(`{strPrev}`,'gi') : undefined;
+              // eslint-disable-next-line @rushstack/security/no-unsafe-regexp
               const str1: RegExp = thisButtonObject.str1 ? new RegExp(`{str1}`,'gi') : undefined;
+              // eslint-disable-next-line @rushstack/security/no-unsafe-regexp
               const str2: RegExp = thisButtonObject.str2 ? new RegExp(`{str2}`,'gi') : undefined;
+              // eslint-disable-next-line @rushstack/security/no-unsafe-regexp
               const str3: RegExp = thisButtonObject.str3 ? new RegExp(`{str3}`,'gi') : undefined;
+              // eslint-disable-next-line @rushstack/security/no-unsafe-regexp
+              const strNext: RegExp = thisButtonObject.strNext ? new RegExp(`{strNext}`,'gi') : undefined;
 
               Object.keys( thisButtonObject ).map( (key: string) => {
 
-                if ( key !== 'str1' && key !== 'str2'  && key !== 'str3' ) {
+                if ( [ 'strPrev', 'str1', 'str2', 'str3', 'strNext', ].indexOf( key ) < 0 ) {
                   let oldValue: any = thisButtonObject[key] ;
 
                   if ( typeof oldValue === 'string' ) {
+                    if ( strPrev ) oldValue = oldValue.replace( strPrev, thisButtonObject.strPrev.toString() );
                     if ( str1 ) oldValue = oldValue.replace( str1, thisButtonObject.str1.toString() );
                     if ( str2 ) oldValue = oldValue.replace( str2, thisButtonObject.str2.toString() );
                     if ( str3 ) oldValue = oldValue.replace( str3, thisButtonObject.str3.toString() );
+                    if ( strNext ) oldValue = oldValue.replace( strNext, thisButtonObject.strNext.toString() );
                     thisButtonObjectOriginal[key] = oldValue;
   
                   } else if ( typeof oldValue === 'object' || Array.isArray( oldValue ) ) {
                     let objString = JSON.stringify( oldValue ); //Stringify to update all children
+                    if ( strPrev ) objString = objString.replace( strPrev, thisButtonObject.strPrev.toString() );
                     if ( str1 ) objString = objString.replace( str1, thisButtonObject.str1.toString() );
                     if ( str2 ) objString = objString.replace( str2, thisButtonObject.str2.toString() );
                     if ( str3 ) objString = objString.replace( str3, thisButtonObject.str3.toString() );
+                    if ( strNext ) objString = objString.replace( strNext, thisButtonObject.strNext.toString() );
                     thisButtonObjectOriginal[key] = JSON.parse( objString );
                   }
                 }
@@ -861,6 +873,7 @@ export default class DrilldownV2WebPart extends BaseClientSideWebPart<IDrilldown
           fetchCountMobile: this.properties.fetchCountMobile,
           getAllProps: this.properties.getAllProps,
           restFilter: !this.properties.restFilter ? '' : this.properties.restFilter,
+          evalFilter: !this.properties.evalFilter ? '' : this.properties.evalFilter,
       },
 
       showItems: {

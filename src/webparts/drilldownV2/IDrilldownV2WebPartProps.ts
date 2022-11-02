@@ -38,7 +38,7 @@ export const importBlockProps : string[] = [ ...importBlockPropsFPS, ...importBl
 export const changeListConfig : string[] = [ 'definitionToggle', 'listDefinition' , ];
 export const changeListInfo : string[] = [ 'parentListWeb', 'parentListTitle', 'parentListURL' , 'language' , 'hideFolders' , ];
 
-export const changePerformance : string[] = [ 'fetchCount', 'fetchCountMobile' , 'restFilter' , 'updateRefinersOnTextSearch' , 'itemsPerPage' ];
+export const changePerformance : string[] = [ 'fetchCount', 'fetchCountMobile' , 'restFilter' , 'evalFilter', 'updateRefinersOnTextSearch' , 'itemsPerPage' ];
 
 export const changeRefiners : string[] = [ 'refiner0', 'rules0def' , 'rules0' , 'refiner1' , 'rules1def', 'rules1', 'refiner2', 'rules2def', 'rules2', ];
 export const changeToggles : string[] = [ 'togOtherListview', 'togRefinerCounts', 'togCountChart' , 'togOtherChartpart', 'togStats' , ];
@@ -96,6 +96,7 @@ export const changeCommands : string[] = [ 'quickCommands', ];
     itemsPerPage: number;
     getAllProps: boolean;
     restFilter: string;
+    evalFilter: string;
     updateRefinersOnTextSearch?: boolean;
 
 

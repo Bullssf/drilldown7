@@ -40,7 +40,7 @@ import { getHelpfullError } from '../../fpsReferences';
 
 import { getDetailValueType, ITypeStrings } from '@mikezimm/npmfunctions/dist/Services/typeServices';
 
-import { ensureUserInfo } from '@mikezimm/npmfunctions/dist/Services/Users/userServices';
+// import { ensureUserInfo } from '@mikezimm/npmfunctions/dist/Services/Users/userServices';
 
 // import { mergeAriaAttributeValues } from "office-ui-fabric-react";
 
@@ -78,7 +78,7 @@ import { DoNotExpandColumns } from "../../../../services/getInterfaceV2";
 //        
 
 // This is what it was before I split off the other part
-export async function getAllItems( drillList: IDrillList, addTheseItemsToState: any, setProgress: any, markComplete: any, updatePerformance: any, ): Promise<void>{
+export async function getAllItems( drillList: IDrillList, addTheseItemsToState: any, setProgress: any, markComplete: any, updatePerformance: any, sourceUser: IUser ): Promise<void>{
 
     let errMessage = '';
     let allItems : IDrillItemInfo[] = [];
@@ -161,17 +161,18 @@ export async function getAllItems( drillList: IDrillList, addTheseItemsToState: 
 
     }
     consoleMe( 'getAllItems' , allItems, drillList );
-    allItems = processAllItems( allItems, errMessage, drillList, addTheseItemsToState, setProgress, updatePerformance );
+    allItems = processAllItems( allItems, errMessage, drillList, addTheseItemsToState, setProgress, updatePerformance, sourceUser );
 
 
 }
 
-export function processAllItems( allItems : IDrillItemInfo[], errMessage: string, drillList: IDrillList, addTheseItemsToState: any, setProgress: any, updatePerformance: any ){
+export function processAllItems( allItems : IDrillItemInfo[], errMessage: string, drillList: IDrillList, addTheseItemsToState: any, setProgress: any, updatePerformance: any, sourceUser: IUser ){
 
     updatePerformance( 'fetch2', 'update', '', allItems.length );
 
     updatePerformance( 'analyze1', 'start', 'process'  );
 
+    console.log('processAllItems: sourceUser', sourceUser ); //Added console log so no unused var eslint error
     // const DoNotExpandFuncColumnsLC = convertArrayToLC(DoNotExpandFuncColumns);
 
     let allRefiners : IRefinerLayer = null;
@@ -191,6 +192,20 @@ export function processAllItems( allItems : IDrillItemInfo[], errMessage: string
                 skipItem = true;
             }
         }
+
+        // This applies filter on returned items based on evalFilter.
+        // result of eval must equal true to include item
+        if ( drillList.evalFilter ) {
+          try {
+            skipItem = eval( drillList.evalFilter ) === true ? false : true ;
+            console.log('drillFunctions ~ 200 - evalFilter failed:', drillList.evalFilter );
+          } catch (e) {
+            console.log('drillFunctions ~ 200 - evalFilter failed:', drillList.evalFilter );
+            skipItem = true;
+
+          }
+        }
+
         if ( skipItem === true ) {
             skippedItems.push( item );
 
@@ -1287,7 +1302,7 @@ function buildMetaFromItem( theItem: IDrillItemInfo ) {
         }
     });
 
-    meta = addItemToArrayIfItDoesNotExist(meta, theItem.sort );
+    meta = addItemToArrayIfItDoesNotExist( meta, theItem.sort );
 
     return meta;
 }

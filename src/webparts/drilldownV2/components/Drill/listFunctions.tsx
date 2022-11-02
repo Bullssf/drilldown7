@@ -15,7 +15,10 @@ import { removeItemFromArrayAll, } from '@mikezimm/npmfunctions/dist/Services/Ar
 import { IDrillItemInfo } from '@mikezimm/npmfunctions/dist/WebPartInterfaces/DrillDown/IDrillItem';
 import { getInitials } from "../../../../services/parse";
 
- /***
+import { CommandItemNotUpdatedMessage, CommandUpdateFailedMessage, CommandEnterCommentString,
+  CommandCancelRequired, CommandEmptyCommentMessage } from '../../fpsReferences';
+
+/***
  *     d888b  d88888b d888888b      db    db d888888b d88888b db   d8b   db      d88888b db    db d8b   db  .o88b. d888888b d888888b  .d88b.  d8b   db .d8888. 
  *    88' Y8b 88'     `~~88~~'      88    88   `88'   88'     88   I8I   88      88'     88    88 888o  88 d8P  Y8 `~~88~~'   `88'   .8P  Y8. 888o  88 88'  YP 
  *    88      88ooooo    88         Y8    8P    88    88ooooo 88   I8I   88      88ooo   88    88 88V8o 88 8P         88       88    88    88 88V8o 88 `8bo.   
@@ -175,6 +178,8 @@ export async function updateReactListItem( webUrl: string, listName: string, Id:
 
     let errMessage = null;
 
+    let failedRequiredUpdate : any = false;
+
     let newUpdateItem = JSON.stringify(thisButtonObject.updateItem);
 
     //Replace [Today] with currect time
@@ -215,6 +220,7 @@ export async function updateReactListItem( webUrl: string, listName: string, Id:
 
               const makeNew = thisColumnLC.indexOf('append') < 0 ? true : false; // Replaces current value if it doesn't find append
               const addStamp = thisColumnLC.indexOf('stamp') > 1 ? true : false; // Replaces current value if it doesn't find append
+              const requireComment = thisColumnLC.indexOf('require') > 1 ? true : false; // Will NOT save anything unless a valid comment is entered
               const detectedRich: unknown = panelItem[k] && panelItem[k].indexOf('<div class="ExternalClass') === 0 ? true : null; // Treats as rich text if finds rich
               const detectedPlain: unknown = panelItem[k] && panelItem[k].indexOf('<div class="ExternalClass') !== 0 ? true : null; // Treats as rich text if finds rich
 
@@ -236,7 +242,10 @@ export async function updateReactListItem( webUrl: string, listName: string, Id:
                 }
               }
 
-              let userComment = prompt( `Add comment to:  ${k} - ${  timeStamp ? 'Is auto-date-stamped :)' : '' }`, 'Enter comment' );
+              let userComment = prompt( `Add comment to:  ${k} - ${  timeStamp ? 'Is auto-date-stamped :)' : '' } ${ requireComment ? ' - IS REQUIRED to Save' : '' }`, '' );
+              if ( requireComment === true && ( userComment === CommandEnterCommentString || !userComment ) ) {
+                failedRequiredUpdate = true;
+              }
 
               //https://github.com/mikezimm/drilldown7/issues/215
               if ( makeRich === true ) userComment = `<span>${userComment}</span>`;
@@ -246,10 +255,18 @@ export async function updateReactListItem( webUrl: string, listName: string, Id:
 
               console.log('userComment:',userComment );
 
-              if ( userComment && makeNew === false ) {  //Append else make new
+              //If user presses 'Ok' and it's not required, use the default message.
+              if ( userComment === '' ) userComment = CommandEmptyCommentMessage;
+
+              // https://github.com/mikezimm/drilldown7/issues/233
+              if ( userComment === CommandEnterCommentString ) {
+                //Later on if the value is the same then do not do anything.... like canceling this prompt
+                thisColumn = CommandEnterCommentString;
+
+              } else if ( userComment && makeNew === false ) {  //Append else make new
                 thisColumn = panelItem[k] ? `${timeStamp}${userComment}${lineFeed}${panelItem[k]}` : `${timeStamp}${userComment}` ;  // https://github.com/mikezimm/drilldown7/issues/215
 
-              } else { thisColumn = `${timeStamp}${userComment}` ; }
+              } else if ( userComment ) { thisColumn = `${timeStamp}${userComment}` ; }
               console.log('thisColumn:',thisColumn );
 
             } else if ( thisColumnLC === '[me]' ) {
@@ -302,24 +319,34 @@ export async function updateReactListItem( webUrl: string, listName: string, Id:
                 }
             } 
 
-            newUpdateItemObj[k] = thisColumn;
+            // https://github.com/mikezimm/drilldown7/issues/233
+            if ( thisColumn !== CommandEnterCommentString ) newUpdateItemObj[k] = thisColumn;
         } // END This key value is string
     });
 
+    if ( failedRequiredUpdate === true ) {
+      return CommandCancelRequired;
+
+    } else if ( Object.keys(newUpdateItemObj).length === 0  ) {
+      return CommandItemNotUpdatedMessage;
+    }
+
     try {
+      console.log('newUpdateItemObj',newUpdateItemObj);
         let thisListObject = await thisListWeb.lists.getByTitle(listName);
         await thisListObject.items.getById(Id).update( newUpdateItemObj ).then((response) => {
             if ( thisButtonObject.alert )  { alert( 'Success!\n' + thisButtonObject.alert ); }
             if ( thisButtonObject.console )  { console.log(thisButtonObject.console, response ); }
-            
+
         });
 
     } catch (e) {
-        errMessage = getHelpfullError(e, true, true);
+        errMessage = `${CommandUpdateFailedMessage} - ${getHelpfullError(e, true, true)}`;
+        
         if ( thisButtonObject.alert )  { 
-            alert( 'Update Failed!\n' + thisButtonObject.alert + "\n" + errMessage );
+            alert( `${CommandUpdateFailedMessage}\n${thisButtonObject.alert}\n${errMessage}` );
          }
-         console.log('Update Failed!\n' + thisButtonObject.alert + "\n" + errMessage );
+         console.log( `${CommandUpdateFailedMessage}\n${thisButtonObject.alert}\n${errMessage}` );
     }
 
     return errMessage;

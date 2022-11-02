@@ -75,6 +75,7 @@ export interface IReactListItemsProps extends IPageArrowsParentProps {
     sourceUserInfo: IUser;   //For site where the list is stored
 
     blueBar?: any;
+    blueBarTitleText?: string;
 
     showIDs?: boolean;
     showDesc?: boolean;
@@ -636,6 +637,7 @@ export default class ReactListItems extends React.Component<IReactListItemsProps
               debugMode = { this.props.debugMode }
               fontSize = { this._componentWidth && this._componentWidth > 800 ? 28 : 24 }
               resetArrows = { this.props.resetArrows }
+              pageArrowStyles = {{ marginTop: '-7px' }}
             />;
 
             //=>> address:  https://github.com/mikezimm/drilldown7/issues/169
@@ -668,9 +670,14 @@ export default class ReactListItems extends React.Component<IReactListItemsProps
             style={{ marginRight: 30, whiteSpace: 'nowrap', paddingTop: 0, cursor: 'pointer', fontSize: 'larger',background: 'transparent' }}>
                 <span style={{ background: 'transparent' }} className={ stylesInfo.listLink }><Icon iconName="AddTo"/></span></div>;
 
+            // https://github.com/mikezimm/drilldown7/issues/249
+            let maxBlueBarLeft = createItemLink ? 35 : 40;
+            if ( !listLink ) maxBlueBarLeft += 15;
+
             if ( barText !== null ) {
                 webTitle =<div  style={{ display: 'flex', justifyContent: 'space-between', }} className={ [stylesInfo.infoHeading, stylesInfo.innerShadow].join(' ') }>
-                  <span style={{ paddingLeft: 20, whiteSpace: 'nowrap' }}>( { this.props.items.length }  ) Items in: { barText }</span>
+                  {/* https://github.com/mikezimm/drilldown7/issues/249 */}
+                  <span className={ stylesRLV.blueBarLeft } style={{ maxWidth: `${maxBlueBarLeft}%`}} title={ this.props.blueBarTitleText }>( { this.props.items.length }  ) { barText }</span>
                    { pageArrows }
                    {/* //=>> address:  https://github.com/mikezimm/drilldown7/issues/169 */}
                    { changeFont }   

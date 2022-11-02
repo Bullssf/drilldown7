@@ -21,8 +21,8 @@
   export const DoNotExpandTrimWords : ITrimWords[] = [ 'FirstWord', 'FirstWordNoNum', 'FirstWord2C' , 'FirstWord3C' , 'FirstWord4C', 'FirstWordNoNum2C' , 'FirstWordNoNum3C' , 'FirstWordNoNum4C' ,'LastWord', 'LastWordNoNum' , ];
   
   //https://github.com/mikezimm/drilldown7/issues/147
-  export type ITrimTimes = 'YYYY-MM-DD' | 'YYYY-MM' | 'HH:mm' | 'HH:mm:ss' | 'HH:mm_AM' | 'HH:mm:ss_AM' |  'Q1-YY' | 'YY-Q1' | 'YYYY-Q1' ;
-  export const DoNotExpandTrimTimes : ITrimTimes[] = [ 'YYYY-MM-DD', 'YYYY-MM', 'HH:mm' , 'HH:mm:ss' , 'HH:mm_AM' , 'HH:mm:ss_AM' , 'Q1-YY', 'YY-Q1' , 'YYYY-Q1' , ];
+  export type ITrimTimes = 'YYYY-MM-DD-HH:mm' | 'YYYY-MM-DD-HH:mm_AM' | 'YYYY-MM-DD' | 'YYYY-MM' | 'HH:mm' | 'HH:mm:ss' | 'HH:mm_AM' | 'HH:mm:ss_AM' |  'Q1-YY' | 'YY-Q1' | 'YYYY-Q1' ;
+  export const DoNotExpandTrimTimes : ITrimTimes[] = [ 'YYYY-MM-DD-HH:mm', 'YYYY-MM-DD-HH:mm_AM', 'YYYY-MM-DD', 'YYYY-MM', 'HH:mm' , 'HH:mm:ss' , 'HH:mm_AM' , 'HH:mm:ss_AM' , 'Q1-YY', 'YY-Q1' , 'YYYY-Q1' , ];
   
   // export type ITrimSpecial = 'FirstLetter' | 'FirstLetterAsCap' | 'FirstNumber' | 'First象征' | 'Initials' | 'InitialsAsCaps' | 'InitialsD' | 'InitialsAsCapsD' | 'FirstInFirst' | 'FirstInLast'  | 'FirstInFirstAsCap' | 'FirstInLastAsCap' | 'FirstAcronym' | 'SecondAcronym';
   

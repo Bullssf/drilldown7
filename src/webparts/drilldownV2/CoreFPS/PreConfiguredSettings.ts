@@ -67,6 +67,7 @@ export const WPPresetEverywhere : IPreConfigSettings = {
       fetchCountMobile: 200,
       getAllProps: true,
       restFilter: "",
+      evalFilter: "",
       definitionToggle: true,
 
       hideFolders: true,
