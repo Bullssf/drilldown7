@@ -84,6 +84,9 @@ import { CommandItemNotUpdatedMessage, CommandUpdateFailedMessage, CommandEnterC
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   CommandCancelRequired, CommandEmptyCommentMessage } from '../../fpsReferences';
 
+  //MOVE TO IQuickCommands in npmFunctions
+import { CommandCaptchaTestFailed, CommandCaptchaRequiredFailed } from './listFunctions';
+
 // import FetchBanner from '../CoreFPS/FetchBannerElement';
 import FetchBanner from '@mikezimm/npmfunctions/dist/HelpPanelOnNPM/onNpm/FetchBannerElement';
 // import FetchBanner from '../../CoreFPS/FetchBannerElement';
@@ -805,12 +808,13 @@ public componentDidUpdate( prevProps: IDrilldownV2Props ){
         </div>;
 
         let createBanner = quickCommands !== null && quickCommands.successBanner > 0 ? true : false; //CommandItemNotUpdatedMessage
-        const bannerEleClasses = [ stylesD.bannerStyles, bannerMessage === null ? stylesD.bannerHide : stylesD.bannerShow ];
+        const bannerEleClasses = [ stylesD.bannerFooterStyles, bannerMessage === null ? stylesD.bannerHide : stylesD.bannerShow ];
         if ( bannerMessage && ( [CommandCancelRequired, CommandItemNotUpdatedMessage ].indexOf(bannerMessage) > -1 ) ) bannerEleClasses.push( stylesD.bannerWarn); 
         if ( typeof bannerMessage === 'string' && bannerMessage.indexOf( CommandUpdateFailedMessage) > -1 ) bannerEleClasses.push( stylesD.bannerWarn); 
+        if ( typeof bannerMessage === 'string' && bannerMessage.indexOf( CommandCaptchaTestFailed) > -1 ) bannerEleClasses.push( stylesD.bannerWarn); 
+        if ( typeof bannerMessage === 'string' && bannerMessage.indexOf( CommandCaptchaRequiredFailed) > -1 ) bannerEleClasses.push( stylesD.bannerWarn); 
 
-        let bannerMessageEle = createBanner === false ? null : <div style={{ width: '100%' }}
-            className={ bannerEleClasses.join(' ') }>
+        let bannerMessageEle = createBanner === false ? null : <div className={ bannerEleClasses.join(' ') }>
             { bannerMessage }
         </div>;
 
