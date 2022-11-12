@@ -87,7 +87,7 @@ import { consoleRef } from './components/Drill/drillFunctions';
   */
  
  import { renderCustomStyles, updateBannerThemeStyles, expandoOnInit, refreshBannerStylesOnPropChange } from './fpsReferences';
- 
+ import { getReactCSSFromString } from './fpsReferences';
  
  /***
   *    db   d8b   db d8888b.      db   db d888888b .d8888. d888888b  .d88b.  d8888b. db    db 
@@ -184,7 +184,13 @@ import { mainWebPartRenderBannerSetup, refreshPanelHTML } from '@mikezimm/npmfun
   */
  
  import { importBlockProps,  } from './IDrilldownV2WebPartProps';
- 
+ import { buildEasyPagesGroup } from './components/EasyPages/EasyPagesGroup';
+ import { getStringArrayFromString } from '@mikezimm/npmfunctions/dist/Services/Strings/stringServices';
+ // eslint-disable-next-line @typescript-eslint/no-unused-vars
+ import { EasyIconDefaultKeys, IEasyIconGroups } from './components/EasyIcons/eiTypes';
+ import { setEasyIconsObjectProps } from './components/EasyIcons/eiFunctions';
+ import { DefaultEasyPagesTabs, DefaultOverflowTab } from './components/EasyPages/epTypes';
+
  /***
   *     .o88b. .d8888. .d8888.      d8888b. d88888b  .d88b.  db    db d888888b d8888b. d88888b .d8888. 
   *    d8P  Y8 88'  YP 88'  YP      88  `8D 88'     .8P  Y8. 88    88   `88'   88  `8D 88'     88'  YP 
@@ -953,7 +959,22 @@ export default class DrilldownV2WebPart extends BaseClientSideWebPart<IDrilldown
         forcePinState: true,
         domElement: this.context.domElement,
         pageLayout: this.properties.pageLayout,
-      }
+      }, 
+      easyPagesProps: {
+        context: this.context,
+        pageLayout: this.properties.pageLayout,
+        showTricks: bannerProps.showTricks,
+        pinState: this.properties.defPinState,
+        expanded: false ,
+        tabs: getStringArrayFromString( this.properties.easyPageTabs , ';', true, null, true ) ,
+        overflowTab: this.properties.easyPageOverflowTab,
+        fetchParent: this.properties.easyPageParent,
+        altSitePagesUrl: this.properties.easyPageAltUrl,
+        altSiteNavigation: this.properties.easyPageAltNav,
+        styles: getReactCSSFromString( 'easyPageStyles', this.properties.easyPageStyles, {} ).parsed,
+        containerStyles: getReactCSSFromString( 'easyPageContainer', this.properties.easyPageContainer, {} ).parsed,
+      },
+      EasyIconsObject: setEasyIconsObjectProps( this.properties ),
         
       }
     );
@@ -1204,6 +1225,8 @@ export default class DrilldownV2WebPart extends BaseClientSideWebPart<IDrilldown
             buildStatsGroup( ),
             buildQuickCommandsGroup(),
 
+            buildEasyPagesGroup( this.properties, this.context.pageContext.site.absoluteUrl !== this.context.pageContext.web.absoluteUrl ),
+
             // FPSOptionsExpando( this.properties.enableExpandoramic, this.properties.enableExpandoramic,null, null ),
   
             FPSImportPropsGroup, // this group
@@ -1418,6 +1441,18 @@ export default class DrilldownV2WebPart extends BaseClientSideWebPart<IDrilldown
         this.onPropertyPaneConfigurationStart,
         this._exitPropPaneChanged,
       );
+
+    } else if ( propertyPath === 'easyIconKeys' && !newValue )  {
+      //https://github.com/mikezimm/Pnpjs-v2-Upgrade-sample/issues/59
+      this.properties.easyIconKeys = EasyIconDefaultKeys.join(';');
+
+    } else if ( propertyPath === 'easyPageTabs' && !newValue )  {
+      //https://github.com/mikezimm/Pnpjs-v2-Upgrade-sample/issues/59
+      this.properties.easyPageTabs = DefaultEasyPagesTabs.join(';');
+
+    } else if ( propertyPath === 'easyPageOverflowTab' && !newValue )  {
+      this.properties.easyPageOverflowTab = DefaultOverflowTab;
+
 
      } else if ( propertyPath === 'bannerStyle' || propertyPath === 'bannerCmdStyle' )  {
 

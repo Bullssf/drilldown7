@@ -23,7 +23,9 @@ import { ICMDItem } from './refiners/commandBar';
 
 import { IDrillItemInfo } from '../../fpsReferences';
 
-
+import { IEasyPagesProps } from '../EasyPages/component';
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import { IEasyIconProps, IEasyIcons } from '../EasyIcons/eiTypes';
 
 /***
  *    d888888b      d8888b. d8888b. d888888b db      db      db      d888888b .d8888. d888888b 
@@ -199,8 +201,11 @@ export interface IDrilldownV2Props extends IFPSCorePinMeReactComponentProps {
      hasTeamsContext: boolean;
      userDisplayName: string;
      themeVariant: IReadonlyTheme | undefined;
-     
+
      loadPerformance: ILoadPerformance;
+
+     easyPagesProps: IEasyPagesProps;
+     EasyIconsObject: IEasyIcons;
 
     allowOtherSites?: boolean; //default is local only.  Set to false to allow provisioning parts on other sites.
 
@@ -219,7 +224,7 @@ export interface IDrilldownV2Props extends IFPSCorePinMeReactComponentProps {
     listName : string;
     isLibrary: boolean;  //determined in picker
     language: string; //local language list data is saved in (needed to properly sort refiners)
-    
+
     allLoaded: boolean;
 
     toggles: {

@@ -90,6 +90,8 @@ import { CommandCaptchaTestFailed, CommandCaptchaRequiredFailed } from './listFu
 // import FetchBanner from '../CoreFPS/FetchBannerElement';
 import FetchBanner from '@mikezimm/npmfunctions/dist/HelpPanelOnNPM/onNpm/FetchBannerElement';
 // import FetchBanner from '../../CoreFPS/FetchBannerElement';
+import EasyPagesHook from '../EasyPages/component';
+
 
 // import { ISpecialMessage, specialUpgrade } from '@mikezimm/npmfunctions/dist/HelpPanelOnNPM/special/interface';
 
@@ -831,10 +833,15 @@ public componentDidUpdate( prevProps: IDrilldownV2Props ){
 
 
         // let farBannerElementsArray = [];
-        let farBannerElementsArray = [...this._farBannerElements,
+        const farBannerElementsArray = [...this._farBannerElements,
             <Icon key={ 'forceInstructions' } iconName='BookAnswers' onClick={ this._forceInstructions.bind(this) } style={ this._debugCmdStyles }/>,
         ];
 
+        
+        const nearBannerElementsArray: any[] = [
+          <Icon key='Link12' iconName='Link12' onClick={ this._toggleEasyLinks.bind(this) } style={ this.props.bannerProps.bannerCmdReactCSS }/>
+        ];
+        
         // const FPSUser : IFPSUser = this.props.bannerProps.FPSUser;
         // const showSpecial = FPSUser.manageWeb === true || FPSUser.managePermissions === true || FPSUser.manageLists === true ? true : false;
         // const Special : ISpecialMessage = showSpecial === true ? specialUpgrade( 'warn', '/sites/TheSharePointHub/SitePages/DrillDown-WebPart-Upgrade---v2.aspx', ) : undefined;
@@ -849,7 +856,7 @@ public componentDidUpdate( prevProps: IDrilldownV2Props ){
             parentProps={ this.props }
             parentState={ this.state }
 
-            nearBannerElementsArray={ [] }
+            nearBannerElementsArray={ nearBannerElementsArray }
             farBannerElementsArray={ farBannerElementsArray }
 
             contentPages={ this._contentPages }
@@ -860,6 +867,17 @@ public componentDidUpdate( prevProps: IDrilldownV2Props ){
             updatePinState = { null }
             pinState = { this.state.pinState }
 
+        />;
+
+        
+        const EasyPagesElement = <EasyPagesHook 
+          easyPagesProps={ { ...this.props.easyPagesProps, ...{ expanded: this.state.showEasyPages, toggleExpanded: this._toggleEasyLinks.bind(this) } } }
+          // easyPagesProps={{
+          //   context: this.props.context as any,
+          //   expanded: this.state.showEasyPages ,
+          //   tabs: [ 'Home', 'Drilldown', 'Training', 'Links', 'Contents' ],
+          // }}
+          EasyIconsObject= { this.props.EasyIconsObject }
         />;
 
 /***
@@ -1262,6 +1280,7 @@ public componentDidUpdate( prevProps: IDrilldownV2Props ){
                     thisPage = <div>
                          {/* <div style={{ width: 50, height: 50, background: this.props.themeVariant.palette.themePrimary }}></div> */}
                         { Banner }
+                        { EasyPagesElement }
                         <div className={styles.contents}>
                             <div className={stylesD.drillDown}>
                                 {  /* <div className={styles.floatRight}>{ toggleTipsButton }</div> */ }
@@ -2351,6 +2370,11 @@ public componentDidUpdate( prevProps: IDrilldownV2Props ){
         let newState = this.state.whenToShowItems === 0 ? this.props.showItems.whenToShowItems : 0;
         this.setState( { whenToShowItems: newState, instructionsHidden: 'hide' });
 
+    }
+
+    
+    private _toggleEasyLinks( ): void {
+      this.setState({ showEasyPages: !this.state.showEasyPages });
     }
 
     private _forceInstructions(){

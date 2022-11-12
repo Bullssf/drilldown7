@@ -1,0 +1,371 @@
+/* https://www.quackit.com/html/html_editors/scratchpad/?example=/css/grid/examples/photo_gallery_auto-fill_align-items_start */
+.easy-icons-grid { 
+  display: grid;
+  /* grid-template-columns will make groups set to max width */
+  /* grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); */
+  grid-gap: 20px;
+  align-items: start;
+  }
+
+  /* sample css for using background image: AND easy-icons-image as class */
+  .bg-image {
+    /* background-image: url(https://mcclickster.sharepoint.com/sites/Branding/EasyIcons/Products/Cushion.png); */
+    background-repeat: no-repeat;
+    background-size: contain;
+    height: 100px;
+    width: min-content;
+    /* width: 100px; */
+    /* width: fit-content; */
+    display: inline-block;
+
+    border: 1px solid #ccc;
+    box-shadow: 2px 2px 6px 0px  rgba(0,0,0,0.3);
+    
+    /* object-fit:contain; This can be one of the 5 values from above */
+    /* grid-area: 1 / 1 / 3 / 2; */
+  
+    filter: grayscale(50%);
+    -webkit-filter: grayscale(50%);
+    -webkit-transition: all 1s ease;
+    transition: .5s ease;
+  
+    padding: 5px;
+    position: relative;
+    z-index: 1;
+
+    
+  }
+
+  .bg-image:hover {
+    /* background-image: url(https://mcclickster.sharepoint.com/sites/Branding/EasyIcons/Products/Cushion.png); */
+    background-repeat: no-repeat;
+    background-size: contain;
+    transition: .5s ease;
+
+    filter: grayscale(0%);
+    filter: gray;
+    -webkit-filter: grayscale(0%);
+    filter: none;
+  
+    /* max-width: 125px; */
+    /* max-width: 125px; */
+  
+    /* padding: 25px; padding kills smoothness */
+  
+    -webkit-transform: scale(2);
+    -ms-transform: scale(2);
+    transform: scale(2);
+  
+    transition: .5s ease;
+    z-index: 3;
+  
+    -webkit-box-shadow: 7px 5px 33px 11px #000000; 
+    box-shadow: 7px 5px 33px 11px #000000;
+
+  }
+
+  .bg-image-card {
+    display: inline-block;
+  }
+
+  .bg-image-caption {
+    font-size: large;
+    transition: .5s ease;
+  }
+  .bg-image-caption:hover {
+      
+    -webkit-transform: scale(2);
+    -ms-transform: scale(2);
+    transform: scale(2);
+  
+    transition: .5s ease;
+    z-index: 3;
+
+  }
+
+
+  .easy-icons-group {
+
+  }
+
+  .easy-icons-group-icons {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+
+  }
+
+  .easy-icons-image-div {
+
+  }
+  /* https://www.quackit.com/html/html_editors/scratchpad/?example=/css/grid/examples/photo_gallery_auto-fill_align-items_start */
+.easy-icons-image {
+  border: 1px solid #ccc;
+  box-shadow: 2px 2px 6px 0px  rgba(0,0,0,0.3);
+  height: 100px;
+  /* max-width: 75px; */
+/*   
+  width: 100%; */
+  object-fit:contain; /* This can be one of the 5 values from above */
+  /* grid-area: 1 / 1 / 3 / 2; */
+
+  filter: grayscale(50%);
+  -webkit-filter: grayscale(50%);
+  -webkit-transition: all 1s ease;
+  transition: .5s ease;
+
+  padding: 5px;
+  position: relative;
+  z-index: 1;
+
+}
+
+.easy-icons-image:hover {
+  filter: grayscale(0%);
+  filter: gray;
+  -webkit-filter: grayscale(0%);
+  filter: none;
+
+  /* max-width: 125px; */
+  /* max-width: 125px; */
+
+  /* padding: 25px; padding kills smoothness */
+
+  -webkit-transform: scale(2);
+  -ms-transform: scale(2);
+  transform: scale(2);
+
+  background: lightgray;
+
+  transition: .5s ease;
+  z-index: 3;
+
+  -webkit-box-shadow: 7px 5px 33px 11px #000000; 
+  box-shadow: 7px 5px 33px 11px #000000;
+
+}
+
+.easy-icons-group-title {
+  font-size: x-large;
+  font-weight: 700;
+  margin-bottom: 10px;
+  margin-top: 10px;
+}
+/* .easy-link-image {
+  width: 100%;
+  object-fit:contain; 
+  grid-area: 1 / 1 / 3 / 2;
+
+  filter: grayscale(50%);
+  -webkit-filter: grayscale(50%);
+  -webkit-transition: all 1s ease;
+  transition: .5s ease;
+}
+
+.easy-link-image:hover{
+  filter: grayscale(0%);
+  filter: gray;
+  -webkit-filter: grayscale(0%);
+  filter: none;
+
+  -webkit-transform: scale(1.5);
+  -ms-transform: scale(1.5);
+  transform: scale(1.5);
+
+
+  transition: .5s ease;
+  } */
+
+  
+  .bg-image-card .bg-image {
+    height: '';
+  }
+
+
+
+
+
+
+
+  
+.fly_box {
+	padding: 0;
+}
+.fly_box .inner {
+	background: #333;
+	display: block;
+	margin: 10px;
+	overflow: hidden;
+}
+.fly_box .inner .fly_click {
+	-webkit-align-content: center;
+	-ms-flex-line-pack: center;
+	align-content: center;
+	-webkit-align-items: center;
+	-ms-flex-align: center;
+	align-items: center;
+	background-color: rgba(0,0,0,.1);
+	color: #fff;
+	display: -webkit-flex;
+	display: -ms-flexbox;
+	display: flex;
+	flex-wrap: wrap;
+	height: 300px;
+	mix-blend-mode: normal;
+	text-align: center;
+	text-decoration: none;
+	-webkit-transition: all 300ms ease;
+	transition: all 300ms ease;
+}
+.fly_box .inner .fly_click:hover {
+	background-color: rgba(0,100,255,.4); 
+	mix-blend-mode: hard-light;
+}
+.flex_this {
+	-webkit-align-content: center;
+	-ms-flex-line-pack: center;
+	align-content: center;
+	display: inherit;
+	flex-wrap: inherit;
+	height: auto;
+	margin: 0;
+	padding: 10px;
+	-webkit-transition: all 300ms ease;
+	transition: all 300ms ease;
+	width: 100%;
+
+}
+.fly_box .inner .fly_click:hover .flex_this {
+	margin-top: -5px;
+}
+
+.fly_title {
+	display: block;
+	font-weight: 700;
+	margin: 0 0 20px;
+	width: 100%;
+}
+.fly_link {
+	border: 2px solid #fff;
+	display: inline-block;
+	font-size: .8em;
+	font-weight: 700;
+	letter-spacing: .1em;
+	margin: 0 auto;
+	padding: 10px 30px;
+	text-transform: uppercase;
+}
+
+.fly-img-box .inner {
+	background-position: 50% 50%;
+	background-repeat: no-repeat;
+	background-size: cover;
+}
+
+
+.hero-image-w3css {
+  background-color: #cccccc;
+  height: 500px;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  position: relative;
+}
+
+.hero-image {
+  background-color: #cccccc;
+  height: 150px;
+  width: fit-content;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: contain;
+  position: relative;
+
+  /* This was in version that looked ok on page  */
+  background-position: 50%;
+
+}
+
+.hero-image img {
+  visibility: hidden;
+  height: 100px;
+  display: inline-block;
+  position: relative;
+  object-fit: contain;
+}
+
+.hero-text {
+  text-align: center;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: white;
+}
+
+
+.geekwrap {
+
+
+  border: 1px solid #ccc;
+  box-shadow: 2px 2px 6px 0px  rgba(0,0,0,0.3);
+  /* height: 100px; */
+  /* max-width: 75px; */
+/*   
+  width: 100%; */
+  object-fit:contain; /* This can be one of the 5 values from above */
+  /* grid-area: 1 / 1 / 3 / 2; */
+
+  filter: grayscale(50%);
+  -webkit-filter: grayscale(50%);
+  -webkit-transition: all 1s ease;
+  transition: .5s ease;
+
+  padding: 5px;
+  position: relative;
+  z-index: 1;
+
+
+
+  /* background-image: 
+url(https://media.geeksforgeeks.org/wp-content/uploads/20200602195146/0.jpeg); */
+  background-repeat: no-repeat;
+  height: 100px;
+  background-size: cover;
+}
+
+.geekwrap:hover {
+
+  filter: grayscale(0%);
+  filter: gray;
+  -webkit-filter: grayscale(0%);
+  filter: none;
+
+  /* max-width: 125px; */
+  /* max-width: 125px; */
+
+  /* padding: 25px; padding kills smoothness */
+
+  /* background: lightgray; */
+
+  transition: .5s ease;
+  z-index: 3;
+
+  -webkit-box-shadow: 7px 5px 33px 11px #000000; 
+  box-shadow: 7px 5px 33px 11px #000000;
+}
+
+
+
+.geekimg {
+  visibility: hidden;
+  max-width: 100%;
+  max-height: 100%;
+}
+
+.geekh1 {
+  position: absolute;
+  left: 35%;
+  top: 30%;
+  color: white;
+}

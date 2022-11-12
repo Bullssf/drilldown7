@@ -61,6 +61,10 @@ import { changeBannerBasics, changeBannerNav, changeBannerTheme, changeBannerUti
 import { changeListConfig, changeListInfo, changePerformance, changeRefiners, changeToggles, changeInstructions, changeGrouping,
       changeViews, changeListToggles, changeStats, changeCommands } from '../IDrilldownV2WebPartProps';
 
+
+import { changeEasyPages, } from '../components/EasyPages/epTypes';
+import { changeEasyIcons, } from '../components/EasyIcons/eiTypes';
+
 /***
  *    d88888b db    db d8888b.  .d88b.  d8888b. d888888b      d8888b. d8888b.  .d88b.  d8888b. .d8888. 
  *    88'     `8b  d8' 88  `8D .8P  Y8. 88  `8D `~~88~~'      88  `8D 88  `8D .8P  Y8. 88  `8D 88'  YP 
@@ -100,6 +104,9 @@ import { changeListConfig, changeListInfo, changePerformance, changeRefiners, ch
 
     exportStructure.Visitor = changeCustomHelp;
 
+    exportStructure.easyPages = changeEasyPages;
+    exportStructure.easyIcons = changeEasyIcons;
+
     exportStructure.BannerBasics = changeBannerBasics;
     exportStructure.BannerNav = changeBannerNav;
 
@@ -138,8 +145,11 @@ import { changeListConfig, changeListInfo, changePerformance, changeRefiners, ch
     exportStructure.changeListToggles = changeListToggles;
     exportStructure.changeStats = changeStats;
     exportStructure.changeCommands = changeCommands;
-    
+
     exportStructure.Visitor = changeCustomHelp;
+
+    exportStructure.easyPages = changeEasyPages;
+    exportStructure.easyIcons = changeEasyIcons;
 
     exportStructure.BannerBasics = changeBannerBasics;
     exportStructure.BannerNav = changeBannerNav;

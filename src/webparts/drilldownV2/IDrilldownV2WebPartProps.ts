@@ -12,12 +12,16 @@ import { ICssChartProps } from './components/CssCharts/ICssChartProps';
  import { exportIgnorePropsFPS, } from '@mikezimm/npmfunctions/dist/HelpPanelOnNPM/onNpm/BannerInterface';
  import { importBlockPropsFPS } from '@mikezimm/npmfunctions/dist/HelpPanelOnNPM/onNpm/BannerInterface';
  import { IItemEditorAudience , IEveryoneAudience } from '@mikezimm/npmfunctions/dist/Services/PropPane/Audiences';
- 
+
  import { IMinBannerUIProps, IMinPinMeProps, IMinPandoramicProps, IMinBannerThemeProps, IMinCustomHelpProps, 
    IMinPageStyleProps, IMinBannerUtilityProps, IMinFPSLegacyProps } from "@mikezimm/npmfunctions/dist/HelpPanelOnNPM/onNpm/BannerInterface";
 // import { IWebpartHistory } from '@mikezimm/npmfunctions/dist/Services/PropPane/WebPartHistory/Interface';
 
-   
+
+import { IEasyIconsWPProps } from './components/EasyIcons/eiTypes';
+import { IEasyPagesWPProps } from './components/EasyPages/epTypes';
+
+
 //Specific for this web part
 export const exportIgnorePropsThis : string[] = [ ];
 
@@ -30,8 +34,6 @@ export const exportIgnoreProps : string[] = [ ...exportIgnorePropsFPS, ...export
 export const importBlockPropsThis : string[] = [ 'showSomeProps' ];
 
 export const importBlockProps : string[] = [ ...importBlockPropsFPS, ...importBlockPropsThis ];
-
-
 
 // importChanges: [  changeListConfig, changeListInfo, changePerformance, changeRefiners, changeToggles, changeInstructions, changeGrouping,
 //       changeViews, changeListToggles, changeStats, changeCommands ]
@@ -57,7 +59,7 @@ export const changeCommands : string[] = [ 'quickCommands', ];
    * 
    */
 
-  export interface IDrilldownV2WebPartProps  extends IMinBannerUIProps, IMinPinMeProps, IMinPandoramicProps, IMinBannerThemeProps, IMinCustomHelpProps, IMinPageStyleProps, IMinBannerUtilityProps, IMinFPSLegacyProps {
+  export interface IDrilldownV2WebPartProps  extends IMinBannerUIProps, IMinPinMeProps, IMinPandoramicProps, IMinBannerThemeProps, IMinCustomHelpProps, IMinPageStyleProps, IMinBannerUtilityProps, IMinFPSLegacyProps, IEasyPagesWPProps, IEasyIconsWPProps {
 
     // [key: string]: string | number | number[] | any[] | boolean | string[] | IMyProgress | PageContext | ICssChartProps | IWebpartHistory | undefined;
     [key: string]: any;

@@ -22,16 +22,20 @@ import { ITrimB4, ITrimAfter, ITrimLink, ITrimSpecial, ITrimTimes, ITrimWords } 
 // import { IRefiners, IItemRefiners, IRefinerStats, IRefinerStatType, RefinerStatTypes, } from '../fpsReferences';
 import { IRefinerRulesInts, IRefinerRulesNums, IRefinerRulesStrs, IRefinerRulesTime, IRefinerRulesUser } from '../fpsReferences';  //../fpsReferences
 
-
 import { BannerHelp, FPSBasicHelp, FPSExpandHelp, ImportHelp, VisitorHelp, } from '../fpsReferences'; //removed since this now has SPA version SinglePageAppHelp
 
 import { ISitePreConfigProps, SitePresetsInfo } from '../fpsReferences';
+
+import { getEasyIconsHelp } from '../components/EasyIcons/eiHelp';
+import { EasyIconObjectDefault } from '../components/EasyIcons/eiTypes';
 
 // import {HandleBarReplacements } from '../fpsReferences';
 
 import { DoNotExpandLinkColumns, DoNotExpandTrimB4, DoNotExpandTrimAfter, DoNotExpandTrimWords, DoNotExpandTrimTimes, DoNotExpandTrimSpecial } from '../../../services/getInterfaceV2';
 
 import ReactJson from "react-json-view";
+
+import { repoLink } from '../fpsReferences';
 
 import ListFieldsHook from './PropPaneCols'
 
@@ -553,6 +557,7 @@ export function getWebPartHelpElement ( sitePresets : ISitePreConfigProps, field
           </PivotItem>
       }
 
+      { getEasyIconsHelp( EasyIconObjectDefault, repoLink ) }
       { VisitorHelp }
       { BannerHelp }
       { FPSBasicHelp }
