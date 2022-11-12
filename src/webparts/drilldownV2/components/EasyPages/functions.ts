@@ -160,7 +160,7 @@ export async function getPagesContent( sourceProps: ISourceProps, EasyIconObject
   if ( parentLink ) items.push( //'Title','Description','Author/Title','Editor/Title','File/ServerRelativeUrl','BannerImageUrl'
     {
       Title: '.. ^ Go to Parent Site',
-      Description: 'Quick link to site directly above this one',
+      Description: 'Quick link to parent site Home page',
       File: { ServerRelativeUrl: parentLink },
       type: 'current',
     } as any
