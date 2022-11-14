@@ -837,9 +837,15 @@ public componentDidUpdate( prevProps: IDrilldownV2Props ){
             <Icon key={ 'forceInstructions' } iconName='BookAnswers' onClick={ this._forceInstructions.bind(this) } style={ this._debugCmdStyles }/>,
         ];
 
-        const nearBannerElementsArray: any[] = this.props.bannerProps.beAUser !== true && ( this.props.easyPagesExtraProps.easyPageEnable || this.props.bannerProps.showTricks === true ) ? [
-          <Icon key='Link12' iconName='Link12' onClick={ this._toggleEasyLinks.bind(this) } style={ this.props.bannerProps.bannerCmdReactCSS }/>
-        ] : [];
+        // eslint-disable-next-line prefer-const
+        let nearBannerElementsArray: any[] = [];
+        // if ( this.props.bannerProps.beAUser !== true )  {
+          if ( this.props.easyPagesExtraProps.easyPageEnable === true )  {
+            nearBannerElementsArray.push( [
+              <Icon key='Link12' iconName='Link12' onClick={ this._toggleEasyLinks.bind(this) } style={ this.props.bannerProps.bannerCmdReactCSS }/>
+            ] );
+          }
+        // }
 
         // const FPSUser : IFPSUser = this.props.bannerProps.FPSUser;
         // const showSpecial = FPSUser.manageWeb === true || FPSUser.managePermissions === true || FPSUser.manageLists === true ? true : false;
