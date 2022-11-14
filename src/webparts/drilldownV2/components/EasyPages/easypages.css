@@ -14,6 +14,10 @@
   overflow: hidden;
 }
 
+.ep-drilldown {
+    width: calc(100% - 88px );
+}
+
 .easy-pages-spa {
   width: calc(100% - 6em );
 }

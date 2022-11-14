@@ -3,7 +3,7 @@
   "solution": {
     "name": "drilldown-15-v-2-client-side-solution",
     "id": "d32e3e47-848e-4b0b-9db5-7dc7dd93a0e8",
-    "version": "2.0.0.6",
+    "version": "2.0.0.8",
     "includeClientSideAssets": true,
     "skipFeatureDeployment": true,
     "isDomainIsolated": false,
@@ -30,7 +30,7 @@
         "title": "drilldown-15-v-2 Feature",
         "description": "The feature that activates elements of the drilldown-15-v-2 solution.",
         "id": "1ab8f0fe-536d-4aa8-8796-a1d646bb763e",
-        "version": "2.0.0.5"
+        "version": "2.0.0.8"
       }
     ]
   },

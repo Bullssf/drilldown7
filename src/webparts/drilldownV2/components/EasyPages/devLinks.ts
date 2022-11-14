@@ -47,16 +47,16 @@ export function getZGitLinks( repo : IRepoLinks ) : IEasyLink[] {
   const links: IEasyLink[] = [];
 
   links.push(  { title: `Issues`, description: `${repo.desc}/issues`, 
-                 url: `${repo.href}` , imageUrl: TheCKLogo , type: 'current', tabs: [ EasyPagesRepoTab ]  } as any );
+                 url: `${repo.href}/issues` , imageUrl: TheCKLogo , type: 'current', tabs: [ EasyPagesRepoTab ]  } as any );
 
   links.push(  { title: `Open Priority Issues`, description: `${repo.desc}/issues`, 
-                 url: `${repo.href}/issues?q=is:issue+is:open+label:Priority` , imageUrl: TheCKLogo , type: 'current', tabs: [ EasyPagesRepoTab ]  } as any );
+                 url: `${repo.href}/issues?q=is:issue+is:open+label:priority` , imageUrl: TheCKLogo , type: 'current', tabs: [ EasyPagesRepoTab ]  } as any );
 
   links.push(  { title: `Open Priority Issues - NOT Complete`, description: `${repo.desc}/issues`, 
-                 url: `${repo.href}/issues?q=is:issue+is:open+label:Priority-label:Complete` , imageUrl: TheCKLogo , type: 'current', tabs: [ EasyPagesRepoTab ]  } as any );
+                 url: `${repo.href}/issues?q=is:issue+is:open+label:priority-label:complete` , imageUrl: TheCKLogo , type: 'current', tabs: [ EasyPagesRepoTab ]  } as any );
 
   links.push(  { title: `Open Priority Issues - Completed`, description: `${repo.desc}/issues`, 
-                 url: `${repo.href}/issues?q=is:issue+is:open+label:Priority+label:Complete` , imageUrl: TheCKLogo , type: 'current', tabs: [ EasyPagesRepoTab ]  } as any );
+                 url: `${repo.href}/issues?q=is:issue+is:open+label:priority+label:complete` , imageUrl: TheCKLogo , type: 'current', tabs: [ EasyPagesRepoTab ]  } as any );
 
   links.push(  { title: `Closed Issues`, description: `${repo.desc}/issues`, 
                 url: `${repo.href}/issues?q=is:issue+is:closed` , imageUrl: TheCKLogo , type: 'current', tabs: [ EasyPagesRepoTab ]  } as any );

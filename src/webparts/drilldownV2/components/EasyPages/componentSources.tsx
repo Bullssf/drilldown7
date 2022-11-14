@@ -11,8 +11,6 @@ import { createNewSitePagesSource, ISourceProps, EasyPagesDevTab, EasyPagesRepoT
 import { IEasyIcons } from '../EasyIcons/eiTypes';
 
 import EasyPagesPageHook, { IEasyPagesSourceProps, ISourceName, InfoTab, InfoIcon } from './componentPage';
-// import { IRepoLinks } from '../../fpsReferences';
-
 
 export interface IEasyPagesExtraProps {
 
@@ -54,7 +52,7 @@ export interface IEasyPagesHookProps {
 const EasyPagesHook: React.FC<IEasyPagesHookProps> = ( props ) => {
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const { context, styles, containerStyles, } = props.easyPagesCommonProps;
+  const { context, styles, containerStyles, repo } = props.easyPagesCommonProps;
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { expanded, overflowTab, tabsC, tabsP, tabsA, fetchParent, altSitePagesUrl, atlSiteTitle, showTricks } = props.easyPagesExtraProps;
 
@@ -138,11 +136,13 @@ const EasyPagesHook: React.FC<IEasyPagesHookProps> = ( props ) => {
   if ( props.easyPagesCommonProps.pageLayout === 'SharePointFullPage' || props.easyPagesCommonProps.pageLayout === 'SingleWebPartAppPageLayout' ) classNames.push ( 'easy-pages-spa' );
   if ( ( props.easyPagesCommonProps.pinState === 'pinFull' || props.easyPagesCommonProps.pinState === 'pinMini' ) && classNames.indexOf('easy-pages-spa') < 0 ) classNames.push ( 'easy-pages-spa' );
 
+  if ( repo.href.toLowerCase().indexOf('drilldown') > -1 ) classNames.push( 'ep-drilldown' );
+
   // fetchParent?: boolean; //Include parent site pages
   // altSitePagesUrl?: string; //Include alternate site's site pages
 
   const sourceTabs: ISourceName[] = [ 'Current' ];
-  if ( fetchParent === true ) sourceTabs.push( 'Parent' );
+  if ( fetchParent === true && parentUrl ) sourceTabs.push( 'Parent' );
   if ( altSitePagesUrl ) sourceTabs.push( realAltSite );
   if ( showTricks === true )  sourceTabs.push( EasyPagesDevTab );
   if ( showTricks === true )  sourceTabs.push( EasyPagesRepoTab );

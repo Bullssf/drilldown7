@@ -112,13 +112,17 @@ export const WPPresetEverywhere : IPreConfigSettings = {
       //  lockStyles: true,
       //  Move these to npmFunctions when code is moved
 
-      easyPageEnable: true,
+      //Move these to npmFunctions when code is moved
+
+      easyPageEnable: false, //Disabled by default on Drilldown until can test in prod
       easyPagesAudience: 'Everyone',
-      easyPageTabs:  DefaultEasyPagesTabs.join(';'),
+      easyPageTabsC:  DefaultEasyPagesTabs.join(';'),
+      easyPageTabsP:  DefaultEasyPagesTabs.join(';'),
+      easyPageTabsA:  DefaultEasyPagesTabs.join(';'),
       easyPageOverflowTab:  DefaultOverflowTab,
-      easyPageParent: false, //Include parent site pages
+      easyPageParent: true, //Include parent site pages
       easyPageAltUrl: '', //Include alternate site's site pages
-      easyPageAltNav:  '', //Include navigation elements from other site
+      atlSiteTitle:  '', //Include navigation elements from other site
       easyPageSeparateExtras:  true, //Include navigation elements from other site
       easyPageStyles:  '',  //Optional styles on entire page
       easyPageContainer:  '',  //Optional styles on container element
@@ -126,6 +130,7 @@ export const WPPresetEverywhere : IPreConfigSettings = {
       easyIconEnable: true, // Used 
       easyIconKeys:  EasyIconDefaultKeys.join(';'),
       easyIconIgnore:  '',
+
 
     }
 };
