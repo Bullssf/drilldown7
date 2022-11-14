@@ -1,7 +1,7 @@
 import { sortObjectArrayByStringKeyCollator } from "@mikezimm/npmfunctions/dist/Services/Arrays/sorting";
 import { IEasyLink } from "./componentPage";
 
-import { Web, } from '@pnp/sp/presets/all';
+import { Web, } from '@pnp/sp/webs';
 
 import "@pnp/sp/webs";
 import "@pnp/sp/lists";
@@ -9,17 +9,18 @@ import "@pnp/sp/items";
 
 //Interfaces
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-import { DefaultOverflowTab, EasyPagesDevTab, ISourceProps, } from './epTypes'; //SourceInfo, 
+import { ISourceProps, } from './epTypes'; //SourceInfo, 
 
 import { getExpandColumns, getSelectColumns } from '../../fpsReferences';
 import { createBasePerformanceInit, startPerformOp, updatePerformanceEnd } from '../../fpsReferences';
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-import { IPerformanceOp, ILoadPerformance, IHistoryPerformance, ILoadPerformanceOps } from '../../fpsReferences';
+import { ILoadPerformance,  } from '../../fpsReferences';
 // import { warnMutuallyExclusive } from 'office-ui-fabric-react';
 
 import { getHelpfullErrorV2 } from '../../fpsReferences';
 import { EasyIconLocation, EasyIconObjectDefault, IEasyIcons,  } from "../EasyIcons/eiTypes";
 import { getEasyIcon } from "../EasyIcons/eiFunctions";
+
 
 /**
  * This filters first by a meta string and then by text search string
@@ -81,7 +82,7 @@ export function getUsedTabs( sourceProps: ISourceProps, items: IEasyLink[] ) : s
  * @returns 
  */
 export interface IGetPagesContent { items: IEasyLink[], performance: ILoadPerformance }
-export async function getPagesContent( sourceProps: ISourceProps, EasyIconObject: IEasyIcons = EasyIconObjectDefault, parentLink: string, ): Promise<IGetPagesContent> {
+export async function getPagesContent( sourceProps: ISourceProps, EasyIconObject: IEasyIcons = EasyIconObjectDefault, parentLink: string, showTricks: boolean ): Promise<IGetPagesContent> {
 
   const performance: ILoadPerformance = createBasePerformanceInit( 1, false );
   performance.ops.fetch1 = startPerformOp( 'fetch1 - getPages', null );
@@ -106,24 +107,6 @@ export async function getPagesContent( sourceProps: ISourceProps, EasyIconObject
       items = await web.lists.getByTitle( sourceProps.listTitle ).items
       .select(selectThese).expand(expandThese).filter(restFilter).orderBy(orderBy.prop, orderBy.asc ).getAll();
       performance.ops.fetch1 = updatePerformanceEnd( performance.ops.fetch1, true, items.length );
-
-      // 2022-11-13:  Verified this does get quick launch items
-      // {
-      //   "odata.type": "SP.NavigationNode",
-      //   "odata.id": "https://tenant.sharepoint.com/sites/SolutionTesting/DDv2/_api/Web/Navigation/GetNodeById(2002)",
-      //   "odata.editLink": "Web/Navigation/GetNodeById(2002)",
-      //   "AudienceIds": null,
-      //   "CurrentLCID": 1033,
-      //   "Id": 2002,
-      //   "IsDocLib": true,
-      //   "IsExternal": true,
-      //   "IsVisible": true,
-      //   "ListTemplateType": 0,
-      //   "Title": "Notebook",
-      //   "Url": "/sites/SolutionTesting/DDv2/_layouts/15/Doc.aspx?sourcedoc={dc2ddca8-7375-4af8-b4bd-76bfa96fde26}&action=editnew"
-      // }
-      // const quick = await web.navigation.quicklaunch();
-      // console.log( `${sourceProps.webUrl} quick launch:` , quick );
 
     } else {
       items = await web.lists.getByTitle( sourceProps.listTitle ).items
@@ -155,9 +138,6 @@ export async function getPagesContent( sourceProps: ISourceProps, EasyIconObject
 
   items = sortObjectArrayByStringKeyCollator( items, 'asc', 'title', true, 'en' );
 
-  // eslint-disable-next-line no-eval
-  if ( sourceProps.jsFilter ) items = items.filter( item => eval( sourceProps.jsFilter ) === true );
-
   console.log( sourceProps.defType, sourceProps.listTitle , items );
 
   return { items: items, performance: performance };
@@ -178,32 +158,32 @@ export const DefaultSiteLogo : string = `_layouts/15/images/sitepagethumbnail.pn
  */
 export function addSearchMeta ( items: IEasyLink[], sourceProps: ISourceProps, EasyIcons: IEasyIcons  ): IEasyLink[] {
 
-  items.map( item => {
-    item.tabs = [];
-    item.title = item.Title;
-    item.description = item.Description;
-    item.url = item.File?.ServerRelativeUrl;
-    item.imageUrl =  item.BannerImageUrl?.Url;
-    item.imageDesc = item.BannerImageUrl?.Description;
-    if ( !item.imageUrl || item.imageUrl.indexOf( DefaultSiteLogo ) > - 1 ) {
-      if ( item.title?.indexOf( 'Contents' ) > -1 ) { item.imageUrl = DefaultThumbEasyContents; }
-      else if ( item.title?.toLocaleLowerCase().indexOf( 'extreme' ) > -1 ) { item.imageUrl = DefaultThumbExtreme; }
-      else if ( item.title === 'Home' ) { item.imageUrl = DefaultThumbEarth; }
+  items.map( page => {
+    page.tabs = [];
+    page.title = page.Title;
+    page.description = page.Description;
+    page.url = page.File.ServerRelativeUrl;
+    page.imageUrl =  page.BannerImageUrl?.Url;
+    page.imageDesc = page.BannerImageUrl?.Description;
+    if ( !page.imageUrl || page.imageUrl.indexOf( DefaultSiteLogo ) > - 1 ) {
+      if ( page.title?.indexOf( 'Contents' ) > -1 ) { page.imageUrl = DefaultThumbEasyContents; }
+      else if ( page.title?.toLocaleLowerCase().indexOf( 'extreme' ) > -1 ) { page.imageUrl = DefaultThumbExtreme; }
+      else if ( page.title === 'Home' ) { page.imageUrl = DefaultThumbEarth; }
       else {
-        const EasyIconUrl = getEasyIcon( EasyIcons, item );
-        if ( EasyIconUrl ) item.imageUrl = EasyIconUrl ? EasyIconUrl : item.imageUrl; // If one is found, then use it, else use the defaul sitepagelogo
-        if ( EasyIconUrl ) item.imageDesc = EasyIconUrl ? `Using EasyIcon:) ${ EasyIconUrl.replace( EasyIconLocation, '' )}` : item.imageDesc; // If one is found, then use it, else use the defaul sitepagelogo
+        const EasyIconUrl = getEasyIcon( EasyIcons, page );
+        if ( EasyIconUrl ) page.imageUrl = EasyIconUrl ? EasyIconUrl : page.imageUrl; // If one is found, then use it, else use the defaul sitepagelogo
+        if ( EasyIconUrl ) page.imageDesc = EasyIconUrl ? `Using EasyIcon:) ${ EasyIconUrl.replace( EasyIconLocation, '' )}` : page.imageDesc; // If one is found, then use it, else use the defaul sitepagelogo
       }
 
     }
-    item.searchTextLC = `${item.Title} || ${item.Description}`.toLocaleLowerCase();
+    page.searchTextLC = `${page.Title} || ${page.Description}`.toLocaleLowerCase();
     sourceProps.meta1.map( ( tab : string ) => {
-      if ( item.searchTextLC.indexOf( tab.toLocaleLowerCase() ) > -1 ) item.tabs.push( tab );
+      if ( page.searchTextLC.indexOf( tab.toLocaleLowerCase() ) > -1 ) page.tabs.push( tab );
     } );
   });
 
-  items.map( item => {
-    if ( item.tabs.length === 0 ) item.tabs.push( sourceProps.overflowTab );
+  items.map( page => {
+    if ( page.tabs.length === 0 ) page.tabs.push( sourceProps.overflowTab );
 
   });
 

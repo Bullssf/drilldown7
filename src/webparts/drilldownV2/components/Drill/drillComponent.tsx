@@ -90,7 +90,7 @@ import { CommandCaptchaTestFailed, CommandCaptchaRequiredFailed } from './listFu
 // import FetchBanner from '../CoreFPS/FetchBannerElement';
 import FetchBanner from '@mikezimm/npmfunctions/dist/HelpPanelOnNPM/onNpm/FetchBannerElement';
 // import FetchBanner from '../../CoreFPS/FetchBannerElement';
-import EasyPagesHook from '../EasyPages/component';
+import EasyPagesHook from '../EasyPages/componentSources';
 
 
 // import { ISpecialMessage, specialUpgrade } from '@mikezimm/npmfunctions/dist/HelpPanelOnNPM/special/interface';
@@ -869,16 +869,12 @@ public componentDidUpdate( prevProps: IDrilldownV2Props ){
 
         />;
 
-        
         const EasyPagesElement = <EasyPagesHook 
-          easyPagesProps={ { ...this.props.easyPagesProps, ...{ expanded: this.state.showEasyPages, toggleExpanded: this._toggleEasyLinks.bind(this) } } }
-          // easyPagesProps={{
-          //   context: this.props.context as any,
-          //   expanded: this.state.showEasyPages ,
-          //   tabs: [ 'Home', 'Drilldown', 'Training', 'Links', 'Contents' ],
-          // }}
-          EasyIconsObject= { this.props.EasyIconsObject }
-        />;
+        easyPagesExtraProps={ { ...this.props.easyPagesExtraProps, ...{ expanded: this.state.showEasyPages, toggleExpanded: this._toggleEasyLinks.bind(this) } } }
+        easyPagesCommonProps= { this.props.easyPagesCommonProps }
+        // easyPagesCommonProps= { this.props.easyPagesCommonProps }
+        EasyIconsObject= { this.props.EasyIconsObject }
+      />;
 
 /***
  *              d888888b db   db d888888b .d8888.      d8888b.  .d8b.   d888b  d88888b 

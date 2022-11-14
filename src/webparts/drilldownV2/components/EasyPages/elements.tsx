@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { IEasyLink } from './component';
+import { IEasyLink } from './componentPage';
 
 import { EasyPagesDevTab } from './epTypes';
 
@@ -9,7 +9,7 @@ export function easyLinkElement( link: IEasyLink, target: string = '_blank' ) : 
 
   const { File, imageUrl, url, imageDesc, title, description, tabs } = link;
 
-  const linkUrl: string = File?.ServerRelativeUrl ? File.ServerRelativeUrl : '';
+  const linkUrl: string = File?.ServerRelativeUrl ? File.ServerRelativeUrl : url ? url : '';
 
   let linkIsSPO: boolean = linkUrl.indexOf( '.sharepoint.com' ) > 6 ? true : false; // If it's not SitePages, no gulp
   if ( linkUrl.indexOf( '/sites/' ) === 0 ) linkIsSPO = true;
@@ -23,10 +23,10 @@ export function easyLinkElement( link: IEasyLink, target: string = '_blank' ) : 
   const newClass = [ 'easy-link' ];
   if ( tabs.indexOf(EasyPagesDevTab) > -1 ) newClass.push( 'easy-link-2col' );
 
-  return <div className = { newClass.join( ' ' ) } onClick={ ( ev ) => { window.open( `${url}${ ev.altKey === true ? gulpParam : '' }` , newTarget ) } } >
+  return <div className = { newClass.join( ' ' ) } onClick={ ( ev ) => { window.open( `${linkUrl}${ ev.altKey === true ? gulpParam : '' }` , newTarget ) } } >
     <img className={ 'easy-link-image' } src={ imageUrl } style={{ height: imageIsDefault === true ? '20px' : '50px' }} title={ imageDesc }/>
 
-    <div className='easy-link-title' style={{ fontSize: title ? '' : 'smaller', fontWeight: title ? null : 400 }}>
+    <div className='easy-link-title' style={{ fontSize: title ? '' : 'smaller', fontWeight: title ? null : 400 }} title={  linkUrl }>
         { title ? title : `Page does NOT have a title :(` }</div>
 
     <div className='easy-link-desc'>{description }</div>

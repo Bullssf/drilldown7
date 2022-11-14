@@ -1,24 +1,34 @@
 
 import { IEveryoneAudience } from "@mikezimm/npmfunctions/dist/Services/PropPane/Audiences";
+import { ISourceName } from "./componentPage";
+
 /**
  * Minimum interface into Main Web Part Properties needed to use this feature
  */
 //To be added to npmFunctions
 export interface IEasyPagesWPProps {
-  easyPageEnable: boolean;
   easyPagesAudience: IEveryoneAudience;
-  easyPageTabs: string;
   easyPageOverflowTab?: string;
+
+  easyPageEnable: boolean;
+  easyPageTabsC: string;
+
   easyPageParent?: boolean; //Include parent site pages
+  easyPageTabsP: string;
+
   easyPageAltUrl?: string; //Include alternate site's site pages
-  easyPageAltNav?: string; //Include navigation elements from other site
-  easyPageSeparateExtras?: boolean; //Put Parent/Alt links in separate tab ( default )
+  atlSiteTitle?: string;  // Button Text for Alternate Site
+  easyPageTabsA: string;
+
+  // easyPageAltNav?: string; //Include navigation elements from other site
+  // easyPageSeparateExtras?: boolean; //Put Parent/Alt links in separate tab ( default )
+
   easyPageStyles?: string;  //Optional styles on entire page
   easyPageContainer?: string;  //Optional styles on container element
 }
 
-export const changeEasyPages: string[] = ['easyPageEnable', 'easyPagesAudience', 'easyPageTabs', 'easyPageOverflowTab', 
-  'easyPageParent', 'easyPageAltUrl', 'easyPageAltNav', 'easyPageSeparateExtras', 'easyPageStyles', 'easyPageContainer'];
+export const changeEasyPages: string[] = ['easyPageEnable', 'easyPagesAudience', 'easyPageTabsC', 'easyPageOverflowTab', 
+  'easyPageParent', 'easyPageTabsP', 'easyPageAltUrl', 'easyPageTabsA', 'atlSiteTitle', 'easyPageStyles', 'easyPageContainer'];
 
 export const DefaultEasyPagesTabs: string[] = [ 'Home', 'Help', 'Training', 'Links', 'Drilldown', 'Contents', 'Admin' ];
 
@@ -43,6 +53,7 @@ export interface ISourceProps {
     searchProps: string[];
     selectThese?: string[];
     restFilter?: string;
+    jsFilter?: string; //Format of eval
     searchSource: string;
     searchSourceDesc: string;
     itemFetchCol?: string[]; //higher cost columns to fetch on opening panel
@@ -77,6 +88,7 @@ export const SitePagesSource : ISourceProps = {
   isModern: true,
   // restFilter: "Id ne 'X' and ContentTypeId ne '0x012000F6C75276DBE501468CA3CC575AD8E159' and Title ne 'Home'",
   restFilter: "Id ne 'X' and ContentTypeId ne '0x012000F6C75276DBE501468CA3CC575AD8E159'",
+  jsFilter: ``, // Sample:  item.Title ==='Home'
   defSearchButtons: [],  // [ 'Last30Days', 'Last90Days' ],
   orderBy: { //Including even though it does not seem to do anything
     prop: 'Title',
@@ -90,16 +102,18 @@ export const SitePagesSource : ISourceProps = {
 }
 
 export const EasyPagesDevTab = 'zDev';
+export const EasyPagesRepoTab = 'zGit';
 export const DefaultOverflowTab = 'Others';
 
-export function createNewSitePagesSource( webUrl: string, tabs: string[], overflowTab: string, showTricks: boolean ): ISourceProps {
+export function createNewSitePagesSource( source: ISourceName, webUrl: string, tabs: string[], overflowTab: string, showTricks: boolean ): ISourceProps {
 
-  const NewSource: ISourceProps = SitePagesSource;
+  const NewSource: ISourceProps = JSON.parse(JSON.stringify(SitePagesSource)) ;
   NewSource.webUrl = webUrl;
   NewSource.meta1 = tabs;
   if ( showTricks === true && NewSource.meta1.indexOf( EasyPagesDevTab ) < 0 ) NewSource.meta1.push( EasyPagesDevTab )
   NewSource.overflowTab = overflowTab ? overflowTab : DefaultOverflowTab;
 
+  console.log( `epTypes createNewSitePagesSource ${source}`, JSON.parse(JSON.stringify(NewSource)) );
   return NewSource;
 
 }

@@ -23,7 +23,9 @@ import { ICMDItem } from './refiners/commandBar';
 
 import { IDrillItemInfo } from '../../fpsReferences';
 
-import { IEasyPagesProps } from '../EasyPages/component';
+import { IEasyPagesSourceProps,  } from '../EasyPages/componentPage';
+import { IEasyPagesExtraProps } from '../EasyPages/componentSources';
+
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { IEasyIconProps, IEasyIcons } from '../EasyIcons/eiTypes';
 
@@ -204,7 +206,8 @@ export interface IDrilldownV2Props extends IFPSCorePinMeReactComponentProps {
 
      loadPerformance: ILoadPerformance;
 
-     easyPagesProps: IEasyPagesProps;
+     easyPagesCommonProps: IEasyPagesSourceProps;  // General props which apply to all Sources/Pages
+     easyPagesExtraProps: IEasyPagesExtraProps;  // General props which are used on the SourcesPage but not component page
      EasyIconsObject: IEasyIcons;
 
     allowOtherSites?: boolean; //default is local only.  Set to false to allow provisioning parts on other sites.
