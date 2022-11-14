@@ -837,11 +837,10 @@ public componentDidUpdate( prevProps: IDrilldownV2Props ){
             <Icon key={ 'forceInstructions' } iconName='BookAnswers' onClick={ this._forceInstructions.bind(this) } style={ this._debugCmdStyles }/>,
         ];
 
-        
-        const nearBannerElementsArray: any[] = [
+        const nearBannerElementsArray: any[] = this.props.bannerProps.beAUser !== true && ( this.props.easyPagesExtraProps.easyPageEnable || this.props.bannerProps.showTricks === true ) ? [
           <Icon key='Link12' iconName='Link12' onClick={ this._toggleEasyLinks.bind(this) } style={ this.props.bannerProps.bannerCmdReactCSS }/>
-        ];
-        
+        ] : [];
+
         // const FPSUser : IFPSUser = this.props.bannerProps.FPSUser;
         // const showSpecial = FPSUser.manageWeb === true || FPSUser.managePermissions === true || FPSUser.manageLists === true ? true : false;
         // const Special : ISpecialMessage = showSpecial === true ? specialUpgrade( 'warn', '/sites/TheSharePointHub/SitePages/DrillDown-WebPart-Upgrade---v2.aspx', ) : undefined;
@@ -870,11 +869,11 @@ public componentDidUpdate( prevProps: IDrilldownV2Props ){
         />;
 
         const EasyPagesElement = <EasyPagesHook 
-        easyPagesExtraProps={ { ...this.props.easyPagesExtraProps, ...{ expanded: this.state.showEasyPages, toggleExpanded: this._toggleEasyLinks.bind(this) } } }
-        easyPagesCommonProps= { this.props.easyPagesCommonProps }
-        // easyPagesCommonProps= { this.props.easyPagesCommonProps }
-        EasyIconsObject= { this.props.EasyIconsObject }
-      />;
+          easyPagesExtraProps={ { ...this.props.easyPagesExtraProps, ...{ expanded: this.state.showEasyPages, toggleExpanded: this._toggleEasyLinks.bind(this) } } }
+          easyPagesCommonProps= { this.props.easyPagesCommonProps }
+          // easyPagesCommonProps= { this.props.easyPagesCommonProps }
+          EasyIconsObject= { this.props.EasyIconsObject }
+        />;
 
 /***
  *              d888888b db   db d888888b .d8888.      d8888b.  .d8b.   d888b  d88888b 

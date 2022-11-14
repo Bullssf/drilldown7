@@ -975,8 +975,8 @@ export default class DrilldownV2WebPart extends BaseClientSideWebPart<IDrilldown
 
       easyPagesExtraProps: {
         expanded: false ,
-        fetchParent: this.properties.easyPageParent,
-        altSitePagesUrl: this.properties.easyPageAltUrl,
+        fetchParent: this.properties.easyPageEnable === true ? this.properties.easyPageParent : false,
+        altSitePagesUrl: this.properties.easyPageEnable === true ? this.properties.easyPageAltUrl : '',
         atlSiteTitle: this.properties.atlSiteTitle,
         showTricks: bannerProps.showTricks,
         easyPageEnable: this.properties.easyPageEnable,
