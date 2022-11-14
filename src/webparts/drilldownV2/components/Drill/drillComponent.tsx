@@ -84,9 +84,14 @@ import { CommandItemNotUpdatedMessage, CommandUpdateFailedMessage, CommandEnterC
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   CommandCancelRequired, CommandEmptyCommentMessage } from '../../fpsReferences';
 
+  //MOVE TO IQuickCommands in npmFunctions
+import { CommandCaptchaTestFailed, CommandCaptchaRequiredFailed } from './listFunctions';
+
 // import FetchBanner from '../CoreFPS/FetchBannerElement';
 import FetchBanner from '@mikezimm/npmfunctions/dist/HelpPanelOnNPM/onNpm/FetchBannerElement';
 // import FetchBanner from '../../CoreFPS/FetchBannerElement';
+import EasyPagesHook from '../EasyPages/componentSources';
+
 
 // import { ISpecialMessage, specialUpgrade } from '@mikezimm/npmfunctions/dist/HelpPanelOnNPM/special/interface';
 
@@ -805,12 +810,13 @@ public componentDidUpdate( prevProps: IDrilldownV2Props ){
         </div>;
 
         let createBanner = quickCommands !== null && quickCommands.successBanner > 0 ? true : false; //CommandItemNotUpdatedMessage
-        const bannerEleClasses = [ stylesD.bannerStyles, bannerMessage === null ? stylesD.bannerHide : stylesD.bannerShow ];
+        const bannerEleClasses = [ stylesD.bannerFooterStyles, bannerMessage === null ? stylesD.bannerHide : stylesD.bannerShow ];
         if ( bannerMessage && ( [CommandCancelRequired, CommandItemNotUpdatedMessage ].indexOf(bannerMessage) > -1 ) ) bannerEleClasses.push( stylesD.bannerWarn); 
         if ( typeof bannerMessage === 'string' && bannerMessage.indexOf( CommandUpdateFailedMessage) > -1 ) bannerEleClasses.push( stylesD.bannerWarn); 
+        if ( typeof bannerMessage === 'string' && bannerMessage.indexOf( CommandCaptchaTestFailed) > -1 ) bannerEleClasses.push( stylesD.bannerWarn); 
+        if ( typeof bannerMessage === 'string' && bannerMessage.indexOf( CommandCaptchaRequiredFailed) > -1 ) bannerEleClasses.push( stylesD.bannerWarn); 
 
-        let bannerMessageEle = createBanner === false ? null : <div style={{ width: '100%' }}
-            className={ bannerEleClasses.join(' ') }>
+        let bannerMessageEle = createBanner === false ? null : <div className={ bannerEleClasses.join(' ') }>
             { bannerMessage }
         </div>;
 
@@ -827,9 +833,19 @@ public componentDidUpdate( prevProps: IDrilldownV2Props ){
 
 
         // let farBannerElementsArray = [];
-        let farBannerElementsArray = [...this._farBannerElements,
+        const farBannerElementsArray = [...this._farBannerElements,
             <Icon key={ 'forceInstructions' } iconName='BookAnswers' onClick={ this._forceInstructions.bind(this) } style={ this._debugCmdStyles }/>,
         ];
+
+        // eslint-disable-next-line prefer-const
+        let nearBannerElementsArray: any[] = [];
+        // if ( this.props.bannerProps.beAUser !== true )  {
+          if ( this.props.easyPagesExtraProps.easyPageEnable === true )  {
+            nearBannerElementsArray.push( [
+              <Icon key='Link12' iconName='Link12' onClick={ this._toggleEasyLinks.bind(this) } style={ this.props.bannerProps.bannerCmdReactCSS }/>
+            ] );
+          }
+        // }
 
         // const FPSUser : IFPSUser = this.props.bannerProps.FPSUser;
         // const showSpecial = FPSUser.manageWeb === true || FPSUser.managePermissions === true || FPSUser.manageLists === true ? true : false;
@@ -845,7 +861,7 @@ public componentDidUpdate( prevProps: IDrilldownV2Props ){
             parentProps={ this.props }
             parentState={ this.state }
 
-            nearBannerElementsArray={ [] }
+            nearBannerElementsArray={ nearBannerElementsArray }
             farBannerElementsArray={ farBannerElementsArray }
 
             contentPages={ this._contentPages }
@@ -856,6 +872,13 @@ public componentDidUpdate( prevProps: IDrilldownV2Props ){
             updatePinState = { null }
             pinState = { this.state.pinState }
 
+        />;
+
+        const EasyPagesElement = <EasyPagesHook 
+          easyPagesExtraProps={ { ...this.props.easyPagesExtraProps, ...{ expanded: this.state.showEasyPages, toggleExpanded: this._toggleEasyLinks.bind(this) } } }
+          easyPagesCommonProps= { this.props.easyPagesCommonProps }
+          // easyPagesCommonProps= { this.props.easyPagesCommonProps }
+          EasyIconsObject= { this.props.EasyIconsObject }
         />;
 
 /***
@@ -1258,6 +1281,7 @@ public componentDidUpdate( prevProps: IDrilldownV2Props ){
                     thisPage = <div>
                          {/* <div style={{ width: 50, height: 50, background: this.props.themeVariant.palette.themePrimary }}></div> */}
                         { Banner }
+                        { EasyPagesElement }
                         <div className={styles.contents}>
                             <div className={stylesD.drillDown}>
                                 {  /* <div className={styles.floatRight}>{ toggleTipsButton }</div> */ }
@@ -2347,6 +2371,11 @@ public componentDidUpdate( prevProps: IDrilldownV2Props ){
         let newState = this.state.whenToShowItems === 0 ? this.props.showItems.whenToShowItems : 0;
         this.setState( { whenToShowItems: newState, instructionsHidden: 'hide' });
 
+    }
+
+    
+    private _toggleEasyLinks( ): void {
+      this.setState({ showEasyPages: !this.state.showEasyPages });
     }
 
     private _forceInstructions(){

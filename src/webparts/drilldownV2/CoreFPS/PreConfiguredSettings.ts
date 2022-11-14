@@ -1,6 +1,8 @@
 // import { IPropertyFieldGroupOrPerson } from "@pnp/spfx-property-controls/lib/PropertyFieldPeoplePicker";
 // import { IDrilldownV2WebPartProps } from "../IDrilldownV2WebPartProps";
 
+import { EasyIconDefaultKeys } from '../components/EasyIcons/eiTypes';
+import { DefaultEasyPagesTabs, DefaultOverflowTab } from '../components/EasyPages/epTypes';
 import { PresetFPSBanner, IPreConfigSettings, IAllPreConfigSettings,  } from '../fpsReferences';
 // import { encrptMeOriginalTest } from '@mikezimm/npmfunctions/dist/HelpPanelOnNPM/onNpm/logTest';
 // import { ContALVFMContent, ContALVFMWebP } from '@mikezimm/npmfunctions/dist/HelpPanelOnNPM/onNpm/constants';
@@ -103,12 +105,33 @@ export const WPPresetEverywhere : IPreConfigSettings = {
       // showGoToHome: true,
       // showGoToParent: true,
 
-        // Banner Theme props that are not preset in manifest.json
+      //  Banner Theme props that are not preset in manifest.json
       //  bannerStyleChoice: 'corpDark1',
       //  bannerStyle: '{\"color\":\"white\",\"backgroundColor\":\"#005495\",\"fontSize\":\"larger\",\"fontWeight\":600,\"fontStyle\":\"normal\",\"padding\":\"0px 10px\",\"height\":\"48px\",\"cursor\":\"pointer\"}',
       //  bannerCmdStyle: '{\"color\":\"white\",\"backgroundColor\":\"#005495\",\"fontSize\":16,\"fontWeight\":\"normal\",\"fontStyle\":\"normal\",\"padding\":\"7px 4px\",\"marginRight\":\"0px\",\"borderRadius\":\"5px\",\"cursor\":\"pointer\"}',
       //  lockStyles: true,
-        
+      //  Move these to npmFunctions when code is moved
+
+      //Move these to npmFunctions when code is moved
+
+      easyPageEnable: false, //Disabled by default on Drilldown until can test in prod
+      easyPagesAudience: 'Everyone',
+      easyPageTabsC:  DefaultEasyPagesTabs.join(';'),
+      easyPageTabsP:  DefaultEasyPagesTabs.join(';'),
+      easyPageTabsA:  DefaultEasyPagesTabs.join(';'),
+      easyPageOverflowTab:  DefaultOverflowTab,
+      easyPageParent: true, //Include parent site pages
+      easyPageAltUrl: '', //Include alternate site's site pages
+      atlSiteTitle:  '', //Include navigation elements from other site
+      easyPageSeparateExtras:  true, //Include navigation elements from other site
+      easyPageStyles:  '',  //Optional styles on entire page
+      easyPageContainer:  '',  //Optional styles on container element
+
+      easyIconEnable: true, // Used 
+      easyIconKeys:  EasyIconDefaultKeys.join(';'),
+      easyIconIgnore:  '',
+
+
     }
 };
 

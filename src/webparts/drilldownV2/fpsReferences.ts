@@ -85,6 +85,7 @@ export { IListViewDDDrillDown } from '@mikezimm/npmfunctions/dist/Views/IDrillVi
  export { sortStringArray, sortObjectArrayByStringKey, sortNumberArray, sortObjectArrayByNumberKey, sortKeysByOtherKey } from '@mikezimm/npmfunctions/dist/Services/Arrays/sorting';
  export { ISeriesSort, } from '@mikezimm/npmfunctions/dist/CSSCharts/ICSSCharts';
  export { getExpandColumns, getKeysLike, getSelectColumns } from '@mikezimm/npmfunctions/dist/Lists/getV1/getFunctions';
+ export { getHighlightedText , } from '@mikezimm/npmfunctions/dist/Elements/HighlightedText';
  
  export { doesObjectExistInArray, } from '@mikezimm/npmfunctions/dist/Services/Arrays/checks';
  export { compareArrays, ICompareResult, } from '@mikezimm/npmfunctions/dist/Services/Arrays/checks';
@@ -174,6 +175,7 @@ export const trickyEmails = links.trickyEmails;
 export { expandoOnInit } from '@mikezimm/npmfunctions/dist/Services/DOM/Expando/WebPartOnInit';
 export { renderCustomStyles } from '@mikezimm/npmfunctions/dist/WebPartFunctions/MainWebPartStyleFunctions';
 export { updateBannerThemeStyles } from '@mikezimm/npmfunctions/dist/WebPartFunctions/BannerThemeFunctions';
+export { getReactCSSFromString } from '@mikezimm/npmfunctions/dist/Services/PropPane/StringToReactCSS';
 
 
 /***

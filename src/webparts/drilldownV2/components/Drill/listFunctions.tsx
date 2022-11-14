@@ -18,6 +18,15 @@ import { getInitials } from "../../../../services/parse";
 import { CommandItemNotUpdatedMessage, CommandUpdateFailedMessage, CommandEnterCommentString,
   CommandCancelRequired, CommandEmptyCommentMessage } from '../../fpsReferences';
 
+
+//MOVE TO IQuickCommands in npmFunctions
+export const CommandCaptchaTestFailed : string = 'Failed Captcha test.  Not saving';
+export const CommandCaptchaRequiredFailed : string = 'Failed Captcha test - item missing comparison.  Not saving';
+
+// EVENTUALLY MOVE THIS TO npmFunctions
+export const CaptchaRegex = /{{|captcha[\^]?|}}|=|\?/g;
+
+
 /***
  *     d888b  d88888b d888888b      db    db d888888b d88888b db   d8b   db      d88888b db    db d8b   db  .o88b. d888888b d888888b  .d88b.  d8b   db .d8888. 
  *    88' Y8b 88'     `~~88~~'      88    88   `88'   88'     88   I8I   88      88'     88    88 888o  88 d8P  Y8 `~~88~~'   `88'   .8P  Y8. 888o  88 88'  YP 
@@ -179,12 +188,14 @@ export async function updateReactListItem( webUrl: string, listName: string, Id:
     let errMessage = null;
 
     let failedRequiredUpdate : any = false;
+    let failedCaptchaTest : any = false;
+    let failedCaptchaRequired : any = false;
+    let failureMessage: string[] = [];
 
     let newUpdateItem = JSON.stringify(thisButtonObject.updateItem);
 
     //Replace [Today] with currect time
     newUpdateItem = newUpdateItem.replace(/\B\[Today\]\B/gi, currentTime);
-
 
     //Regex looks for anything matching [Today-+xxx] and replaces with date string
     var newUpdateItem2 = newUpdateItem.replace(/\[Today(.*?)\]/gi, (match =>  {
@@ -196,14 +207,11 @@ export async function updateReactListItem( webUrl: string, listName: string, Id:
         return newDateString;
     }) );
 
-
-
     // Fix https://github.com/mikezimm/drilldown7/issues/225
     // Replace [MyName] with userId.Title
     newUpdateItem2 = sourceUserInfo && sourceUserInfo.Title ? newUpdateItem2.replace(/\[MyName\]/gi, sourceUserInfo.Title ) : newUpdateItem2;
 
     let newUpdateItemObj = JSON.parse(newUpdateItem2);
-
 
     //Replace [Me]
     Object.keys(newUpdateItemObj).map( k => {
@@ -218,55 +226,100 @@ export async function updateReactListItem( webUrl: string, listName: string, Id:
 
             if ( isSpecial === true ) {
 
-              const makeNew = thisColumnLC.indexOf('append') < 0 ? true : false; // Replaces current value if it doesn't find append
-              const addStamp = thisColumnLC.indexOf('stamp') > 1 ? true : false; // Replaces current value if it doesn't find append
-              const requireComment = thisColumnLC.indexOf('require') > 1 ? true : false; // Will NOT save anything unless a valid comment is entered
-              const detectedRich: unknown = panelItem[k] && panelItem[k].indexOf('<div class="ExternalClass') === 0 ? true : null; // Treats as rich text if finds rich
-              const detectedPlain: unknown = panelItem[k] && panelItem[k].indexOf('<div class="ExternalClass') !== 0 ? true : null; // Treats as rich text if finds rich
+              const isCaptcha = thisColumnLC.indexOf('captcha') > 0 ? true : false; // Replaces current value if it doesn't find append
 
-              // If existing data says it's rich or plain, goes with that.  Else goes by command
-              const makeRich = detectedRich === true ? true : detectedPlain === true ? false : thisColumnLC.indexOf('rich') > 1 ? true : false; 
+              if ( isCaptcha === true ) {
+                //Get paramters from thisColumn, trim extra spaces, filter to only show elements with str length > 0
+                const CaptchaSplit = thisColumn.split( CaptchaRegex ).map( ( s: string ) => { return s.trim() }).filter( ( s ) => { return s.length > 0  }  );
+                if ( CaptchaSplit.length === 2 || CaptchaSplit.length === 3 ) {
+                  const CaptchaCase = thisColumnLC.indexOf( 'captcha^' ) > 0 ? true : false;
 
-              const lineFeed = makeRich === true || detectedRich === true ? '<br>' : `\n`;
+                  const RequiredField : any = CaptchaSplit[0] === '*' ? true : false;  //Checks if there is an * after the captcha.  If so, that field MUST have a value to test against
+                  const InternalName: string = CaptchaSplit[ RequiredField === true ? 1 : 0].replace( `/`,'' );
+                  const TextPrompt: string = CaptchaSplit[ RequiredField === true ? 2 : 1] ? CaptchaSplit[ RequiredField === true ? 2 : 1] : `Please confirm you are human`;
 
-              let timeStamp : string = '';
+                  if ( panelItem[ InternalName ] ) { // column was deteched proceed with test
 
-              if ( addStamp === true ) {   //Add User Intials and Date Stamp
-                const userInitals = sourceUserInfo?.Title ? getInitials( sourceUserInfo.Title, true, false ) : '';
+                    if ( typeof panelItem[ InternalName ] === 'string' ) {
+                      let userComment = prompt( `CAPTCHA ${  InternalName } - ${ TextPrompt } ${ CaptchaCase === true ? 'Case Sensitive!' : '' } - IS REQUIRED to Save' : '' }`, '' );
+                      if ( !userComment ) { failedCaptchaTest = true; failureMessage.push( ` You did not enter required Captcha in order to save.\n`) ; }
+                      else if ( CaptchaCase === true && userComment !== panelItem[ InternalName ] ) { failedCaptchaTest = true; failureMessage.push( `${userComment} did not match ${panelItem[ InternalName ]} ( proper cased )\n`) ; }
+                      else if ( userComment.toLowerCase() !== panelItem[ InternalName ].toLowerCase() ) { failedCaptchaTest = true; failureMessage.push( `${userComment} did not match ${panelItem[ InternalName ]}\n`) ; }
+                      if ( failedCaptchaTest === false ) thisColumn = userComment;
 
-                if ( makeRich === true ) {
-                  timeStamp = `<span style="font-weight:bold">${userInitals} - ${currentTime}</span>${lineFeed}`;
+                    } else {
+                      console.log( 'CAPTCHA code ~ 240 - Item not string, not testing', panelItem[ InternalName ] );
+
+                    }
+
+                  } else if ( RequiredField === true ) { // Item does not have this value to compare to.... handle exception?
+                    failedCaptchaRequired = true;
+                    failureMessage.push( `This item did not have required Captcha requirements... ${InternalName}\n`) ;
+                  }
 
                 } else {
-                  timeStamp = `${userInitals} - ${currentTime}${lineFeed}`;
+
+                  //This does not have correct syntax.
+                  failedCaptchaTest = true;
+                  failureMessage.push( `This button's Captcha requirements were not set up correctly.\n`) ;
                 }
-              }
 
-              let userComment = prompt( `Add comment to:  ${k} - ${  timeStamp ? 'Is auto-date-stamped :)' : '' } ${ requireComment ? ' - IS REQUIRED to Save' : '' }`, '' );
-              if ( requireComment === true && ( userComment === CommandEnterCommentString || !userComment ) ) {
-                failedRequiredUpdate = true;
-              }
 
-              //https://github.com/mikezimm/drilldown7/issues/215
-              if ( makeRich === true ) userComment = `<span>${userComment}</span>`;
-              if ( makeNew === false ) userComment = `${userComment}${lineFeed}${lineFeed}`;
+              } else {
 
-              console.log('timeStamp: ', timeStamp );
+                const makeNew = thisColumnLC.indexOf('append') < 0 ? true : false; // Replaces current value if it doesn't find append
+                const addStamp = thisColumnLC.indexOf('stamp') > 1 ? true : false; // Replaces current value if it doesn't find append
+                const requireComment = thisColumnLC.indexOf('require') > 1 ? true : false; // Will NOT save anything unless a valid comment is entered
+                const detectedRich: unknown = panelItem[k] && panelItem[k].indexOf('<div class="ExternalClass') === 0 ? true : null; // Treats as rich text if finds rich
+                const detectedPlain: unknown = panelItem[k] && panelItem[k].indexOf('<div class="ExternalClass') !== 0 ? true : null; // Treats as rich text if finds rich
+  
+                // If existing data says it's rich or plain, goes with that.  Else goes by command
+                const makeRich = detectedRich === true ? true : detectedPlain === true ? false : thisColumnLC.indexOf('rich') > 1 ? true : false; 
+  
+                const lineFeed = makeRich === true || detectedRich === true ? '<br>' : `\n`;
+  
+                let timeStamp : string = '';
+  
+                if ( addStamp === true ) {   //Add User Intials and Date Stamp
+                  const userInitals = sourceUserInfo?.Title ? getInitials( sourceUserInfo.Title, true, false ) : '';
+  
+                  if ( makeRich === true ) {
+                    timeStamp = `<span style="font-weight:bold">${userInitals} - ${currentTime}</span>${lineFeed}`;
+  
+                  } else {
+                    timeStamp = `${userInitals} - ${currentTime}${lineFeed}`;
+                  }
+                }
+  
+                let userComment = prompt( `Add comment to:  ${k} - ${  timeStamp ? 'Is auto-date-stamped :)' : '' } ${ requireComment ? ' - IS REQUIRED to Save' : '' }`, '' );
+                if ( requireComment === true && ( userComment === CommandEnterCommentString || !userComment ) ) {
+                  failedRequiredUpdate = true;
+                  failureMessage.push( `You need to add a comment to save.\n`) ;
+                }
+  
+                //https://github.com/mikezimm/drilldown7/issues/215
+                if ( makeRich === true ) userComment = `<span>${userComment}</span>`;
+                if ( makeNew === false ) userComment = `${userComment}${lineFeed}${lineFeed}`;
+  
+                console.log('timeStamp: ', timeStamp );
+  
+                console.log('userComment:',userComment );
+  
+                //If user presses 'Ok' and it's not required, use the default message.
+                if ( userComment === '' ) userComment = CommandEmptyCommentMessage;
+  
+                // https://github.com/mikezimm/drilldown7/issues/233
+                if ( userComment === CommandEnterCommentString ) {
+                  //Later on if the value is the same then do not do anything.... like canceling this prompt
+                  thisColumn = CommandEnterCommentString;
+  
+                } else if ( userComment && makeNew === false ) {  //Append else make new
+                  thisColumn = panelItem[k] ? `${timeStamp}${userComment}${lineFeed}${panelItem[k]}` : `${timeStamp}${userComment}` ;  // https://github.com/mikezimm/drilldown7/issues/215
+  
+                } else if ( userComment ) { thisColumn = `${timeStamp}${userComment}` ; }
 
-              console.log('userComment:',userComment );
+              }  // else : ( isCaptcha === true ) {
 
-              //If user presses 'Ok' and it's not required, use the default message.
-              if ( userComment === '' ) userComment = CommandEmptyCommentMessage;
-
-              // https://github.com/mikezimm/drilldown7/issues/233
-              if ( userComment === CommandEnterCommentString ) {
-                //Later on if the value is the same then do not do anything.... like canceling this prompt
-                thisColumn = CommandEnterCommentString;
-
-              } else if ( userComment && makeNew === false ) {  //Append else make new
-                thisColumn = panelItem[k] ? `${timeStamp}${userComment}${lineFeed}${panelItem[k]}` : `${timeStamp}${userComment}` ;  // https://github.com/mikezimm/drilldown7/issues/215
-
-              } else if ( userComment ) { thisColumn = `${timeStamp}${userComment}` ; }
               console.log('thisColumn:',thisColumn );
 
             } else if ( thisColumnLC === '[me]' ) {
@@ -325,10 +378,16 @@ export async function updateReactListItem( webUrl: string, listName: string, Id:
     });
 
     if ( failedRequiredUpdate === true ) {
-      return CommandCancelRequired;
+      return `${CommandCancelRequired } - ${failureMessage.join('')}`;
+
+    } else if ( failedCaptchaTest === true ) {
+      return `${CommandCaptchaTestFailed } - ${failureMessage.join('')}`;
+
+    } else if ( failedCaptchaRequired === true ) {
+      return `${CommandCaptchaRequiredFailed } - ${failureMessage.join('')}`;
 
     } else if ( Object.keys(newUpdateItemObj).length === 0  ) {
-      return CommandItemNotUpdatedMessage;
+      return `${CommandItemNotUpdatedMessage } - ${failureMessage.join('')}`;
     }
 
     try {
