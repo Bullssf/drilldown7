@@ -659,6 +659,8 @@ export default class ReactListItems extends React.Component<IReactListItemsProps
                 } else if ( field.linkFormula ) {
                   // Testing to see if Url value is valid... has a value, is a string, and either starts with http or /sites/
 
+
+                  // Start on https://github.com/mikezimm/drilldown7/issues/70
                   field.render = ( item, index ) => { 
                     let columnValue = item[field.linkFormula];
                     // Testing to see if Url value is valid... has a value, is a string, and either starts with http or /sites/
