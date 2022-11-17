@@ -241,7 +241,8 @@ import { IRefinerLayer, RefineRuleValues, IRefinerStat } from './fpsReferences';
  */
 import { IDynamicDataCallables, IDynamicDataPropertyDefinition} from '@microsoft/sp-dynamic-data';  // eslint-disable-line @typescript-eslint/no-unused-vars
 
-import { IGrouping, IViewField } from "@pnp/spfx-controls-react/lib/ListView";
+import { IGrouping, } from "@pnp/spfx-controls-react/lib/ListView";
+import { IViewFieldDD } from './components/Drill/reactListView';
 import { buildQuickCommandsGroup } from './PropPaneGroups/Page2/QuickCommands';
 
 
@@ -634,7 +635,7 @@ export default class DrilldownV2WebPart extends BaseClientSideWebPart<IDrilldown
    */
   public getViewFieldsObject(message: string, str: string, grp: string ) {
 
-    let result : IViewField[] = undefined;
+    let result : IViewFieldDD[] = undefined;
     
     if ( str === null || str === undefined ) { return result; }
     try {
@@ -757,9 +758,9 @@ export default class DrilldownV2WebPart extends BaseClientSideWebPart<IDrilldown
     const viewFields2Any : any[] = this.properties.syncViews === true ? viewFields1Any : this.getViewFieldsObject('Med Size view', this.properties.viewJSON2, this.properties.groupByFields );
     const viewFields3Any : any[] = this.properties.syncViews === true ? viewFields1Any : this.getViewFieldsObject('Small Size view', this.properties.viewJSON3, this.properties.groupByFields );
 
-    let viewFields1 : IViewField[] = viewFields1Any;
-    let viewFields2 : IViewField[] = viewFields2Any;
-    let viewFields3 : IViewField[] = viewFields3Any;
+    let viewFields1 : IViewFieldDD[] = viewFields1Any;
+    let viewFields2 : IViewFieldDD[] = viewFields2Any;
+    let viewFields3 : IViewFieldDD[] = viewFields3Any;
 
     if ( !viewFields1 ) { errMessage += 'viewFields1 has an error; '; viewFields1 = [] ; }
     if ( !viewFields2 ) { errMessage += 'viewFields2 has an error; '; viewFields2 = [] ; }

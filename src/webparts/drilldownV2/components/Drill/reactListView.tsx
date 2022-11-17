@@ -58,11 +58,22 @@ import { IMinPageArrowsState, IPageArrowsParentProps } from '@mikezimm/npmfuncti
 import { defaultBannerCommandStyles } from '../../fpsReferences'
 require('./reactListView.css');
 
+
+// EVENTUALLY MOVE THIS TO npmFunctions
+export const HandleBarsRegex = /{{([^}]+)}}/gi;
+//Try variation of this as well
+// export const HandleBarsRegexV2 =/[^{{\}]+(?=}})/gi
+
+export interface IViewFieldDD extends IViewField {
+  linkFormula?: string;
+}
+
 export interface IReactListItemsProps extends IPageArrowsParentProps {
     title?: string;
     descending?: boolean;
     maxChars?: number;
     items: IDrillItemInfo[];
+    richColumns: string[];
 
     resetArrows?: string;  //unique Id used to reset arrows to starting position
 
@@ -81,7 +92,7 @@ export interface IReactListItemsProps extends IPageArrowsParentProps {
     showDesc?: boolean;
 
     parentListFieldTitles?: string;
-    viewFields?: IViewField[];
+    viewFields?: IViewFieldDD[];
 
     groupByFields?:  IGrouping[];
     includeDetails: boolean;
@@ -98,7 +109,7 @@ export interface IReactListItemsProps extends IPageArrowsParentProps {
 export interface IReactListItemsState extends IMinPageArrowsState {
   maxChars?: number;
   parentListFieldTitles: any;
-  viewFields: IViewField[];
+  viewFields: IViewFieldDD[];
   groupByFields?:  IGrouping[];
   
   showPanel: boolean;
@@ -344,7 +355,7 @@ export default class ReactListItems extends React.Component<IReactListItemsProps
             maxWidth: 30
         };
          */
-        let viewFields : IViewField[] = [];
+        let viewFields : IViewFieldDD[] = [];
         
         if ( fieldsToShow.length === 0 ) { //Do all in order of fieldInfo
             if ( parentListFieldTitles.length > 0 ) { //Do all in order of fieldInfo
@@ -366,7 +377,7 @@ export default class ReactListItems extends React.Component<IReactListItemsProps
 
     }
 
-    private handleExpandedFieldInfoToIViewFields( viewFields?: IViewField[] ) {
+    private handleExpandedFieldInfoToIViewFields( viewFields?: IViewFieldDD[] ) {
         //Before this line was added, I think it was mutating props causing double render
         viewFields = JSON.parse(JSON.stringify( viewFields ));
         viewFields.map( vf => {
@@ -413,7 +424,7 @@ export default class ReactListItems extends React.Component<IReactListItemsProps
         let parentListFieldTitles = this.props.parentListFieldTitles !== undefined && this.props.parentListFieldTitles !== null ? JSON.parse(this.props.parentListFieldTitles) : '';
  //       console.log( 'parentListFieldTitles', parentListFieldTitles );
 
-        let viewFields : IViewField[] = [];
+        let viewFields : IViewFieldDD[] = [];
         if ( this.props.viewFields.length > 0 ) { 
             viewFields = this.handleExpandedFieldInfoToIViewFields( this.props.viewFields );
         } else { 
@@ -602,8 +613,8 @@ export default class ReactListItems extends React.Component<IReactListItemsProps
                 </Panel>;
             }
 
-            let viewFieldsBase: IViewField[] = this.state.viewFields;
-            let attachField: IViewField[] = [];
+            let viewFieldsBase: IViewFieldDD[] = this.state.viewFields;
+            let attachField: IViewFieldDD[] = [];
             if ( this.props.includeAttach ) {
                 //Add attachments column:
                 let callBack = this.props.includeDetails ? null : this._onShowPanel.bind(this);
@@ -639,6 +650,30 @@ export default class ReactListItems extends React.Component<IReactListItemsProps
               resetArrows = { this.props.resetArrows }
               pageArrowStyles = {{ marginTop: '-7px' }}
             />;
+
+            viewFields.map ( field => {
+                //This is for:  https://github.com/mikezimm/drilldown7/issues/224
+                if ( this.props.richColumns.indexOf( field.name ) > -1 ) {
+                  field.render =  ( item, index ) => { return <div dangerouslySetInnerHTML={{__html: item[ field.name ]}} /> }
+                  // field.render =  ( item, index ) => { this._renderRich( item, field.name ) }
+                } else if ( field.linkFormula ) {
+                  // Testing to see if Url value is valid... has a value, is a string, and either starts with http or /sites/
+
+                  field.render = ( item, index ) => { 
+                    let columnValue = item[field.linkFormula];
+                    // Testing to see if Url value is valid... has a value, is a string, and either starts with http or /sites/
+                    const isValid = columnValue && typeof columnValue === "string" &&
+                        ( columnValue.indexOf("/sites/") === 0 || columnValue.indexOf("http") === 0 ) ? true : false;
+
+                    const goToLink = isValid === true ?  columnValue : columnValue;
+                    if ( isValid === true ) console.log(`viewFields linkFormula regex~ 667`, columnValue.split( HandleBarsRegex ) );
+
+                      // Return element as a link if the Url passes simple validation.  Else just return the displayed value as normal span
+                    return isValid === true ? <a href={ goToLink }>{item[field.name]}</a> :
+                      <span>{item[field.name]}</span>;
+                }
+              }
+            });
 
             //=>> address:  https://github.com/mikezimm/drilldown7/issues/169
             const changeFont = <div title="Change font size" onClick={ this._changeFontSize.bind(this) } style={{ fontSize: 'larger' , fontWeight: 'bolder', width: '25px', textAlign: 'center', cursor: 'pointer' }}><Icon iconName= 'FontSize'/></div>;
@@ -764,7 +799,7 @@ export default class ReactListItems extends React.Component<IReactListItemsProps
 
     private _updateStateOnPropsChange( pushViewFieldsToState : boolean ): void {
 
-        let viewFields : IViewField[] = [];
+        let viewFields : IViewFieldDD[] = [];
         let parentListFieldTitles = this.props.parentListFieldTitles !== undefined && this.props.parentListFieldTitles !== null ? JSON.parse(this.props.parentListFieldTitles) : '';
 
         if ( this.props.viewFields.length > 0 ) { 

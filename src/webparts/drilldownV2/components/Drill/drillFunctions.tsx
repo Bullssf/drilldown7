@@ -275,6 +275,8 @@ export function processAllItems( allItems : IDrillItemInfo[], errMessage: string
               }
             });
 
+            // console.log(`Showing rich text columns: ~ 278`, drillList.richColumns );
+
             if ( item.Id === 8 ) {
                 console.log('Check item 8' );
             }

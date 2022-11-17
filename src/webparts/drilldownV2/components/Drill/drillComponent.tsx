@@ -751,6 +751,11 @@ public componentDidUpdate( prevProps: IDrilldownV2Props ){
  *                                                          
  */
 
+    private _renderRich = ( item , fieldName, ) => {
+      console.log('renderExecuted: ', fieldName, item );
+      return ( item: any, index: number ) => { return <div dangerouslySetInnerHTML={{__html: item[ fieldName ]}} /> };
+    }
+
     public render(): React.ReactElement<IDrilldownV2Props> {
 
         // const {
@@ -783,8 +788,10 @@ public componentDidUpdate( prevProps: IDrilldownV2Props ){
         // this.state.drillList.multiSelectColumns.map( msColumn => {
         //     viewDefsString = viewDefsString.replace( msColumn , msColumn.replace(/\//g,'') + 'MultiString' );
         // });
-        
+
         let viewDefs: ICustViewDef[] = JSON.parse(viewDefsString);
+
+        console.log(`Showing rich text columns: ~ 789`, this.state.drillList.richColumns );
 
         viewDefs.map( view => {
             view.viewFields.map ( field => {
@@ -797,10 +804,72 @@ public componentDidUpdate( prevProps: IDrilldownV2Props ){
 
                 //This is for:  https://github.com/mikezimm/drilldown7/issues/224
                 if ( this.state.drillList.richColumns.indexOf( field.name ) > -1 ) {
-                  field.render = ( item: string) => { return <div dangerouslySetInnerHTML={{ __html: item[ field.name ] }} /> }
+                  // field.render =  ( item, index ) => { return <div dangerouslySetInnerHTML={{__html: item[ field.name ]}} /> }
+                  field.render =  ( item, index ) => { this._renderRich( item, field.name ) }
                 }
             });
         });
+
+        // viewDefs[0].viewFields = [
+        //   {
+        //     "name": "Id",
+        //     "displayName": "Id",
+        //     "minWidth": 30,
+        //     "maxWidth": 35,
+        //     "linkPropertyName": "goToPropsLink"
+        //   },
+        //     {
+        //     "name": "Modified/YYYY-MM-DD",
+        //     "displayName": "Modified",
+        //     "minWidth": 50,
+        //     "maxWidth": 70
+        //   },
+        //     {
+        //     "name": "IT_Reviewer/Title/FirstWord",
+        //     "displayName": "Reviewer",
+        //     "minWidth": 50,
+        //     "maxWidth": 70
+        //   },
+        //   {
+        //     "name": "MigDest",
+        //     "displayName": "MigDest",
+        //     "minWidth": 50,
+        //     "maxWidth": 100
+        //   },
+        //     {
+        //     "name": "Owner",
+        //     "displayName": "Owner",
+        //     "minWidth": 50,
+        //     "maxWidth": 120
+        //   },
+        //   {
+        //     "name": "Title",
+        //     "displayName": "Title",
+        //     "minWidth": 100,
+        //     "maxWidth": 200
+        //   },
+        //   {
+        //     "name": "FriendlyURL/ShowCollUrl",
+        //     "displayName": "Current site",
+        //     "minWidth": 100,
+        //     "maxWidth": 200,
+        //     "linkPropertyName": "FriendlyURL/GetLinkUrl"
+        //   },
+        //   {
+        //     "name": "SPO_URL/ShowPageUrl",
+        //     "displayName": "SPO site",
+        //     "minWidth": 100,
+        //     "maxWidth": 200,
+        //     "linkPropertyName": "SPO_URL/GetLinkUrl"
+        //   },
+        //   {
+        //     "name": "Site_x0020_Documentation",
+        //     "displayName": "Site Documentation",
+        //     "minWidth": 10,
+        //     "maxWidth": 20,
+        //     "render": ( item: any, index: number ) => { return <div dangerouslySetInnerHTML={{__html: item.Site_x0020_Documentation }} /> }
+        //   }
+        // ]
 
         let drillListErrors = this.state.drillList.errors.length === 0 ? null : <div style={{ padding: '20px'}}>
             <h3>{`These column functions have errors... Check refiners or ViewFields :)`}</h3>
@@ -1143,6 +1212,7 @@ public componentDidUpdate( prevProps: IDrilldownV2Props ){
                             <ReactListItems 
                                 parentListFieldTitles={ viewDefs.length > 0 ? null : this.props.parentListFieldTitles }
     
+                                richColumns = { this.state.drillList.richColumns }
                                 webURL = { this.state.drillList.webURL }
                                 parentListURL = { this.state.drillList.parentListURL }
                                 listName = { this.state.drillList.name }
