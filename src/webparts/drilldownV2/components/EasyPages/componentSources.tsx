@@ -133,10 +133,23 @@ const EasyPagesHook: React.FC<IEasyPagesHookProps> = ( props ) => {
   //https://github.com/mikezimm/Pnpjs-v2-Upgrade-sample/issues/56
   const classNames: string[] = [ 'easy-pages' ];
   if ( expandedState === true ) classNames.push ( 'expand' );
-  if ( props.easyPagesCommonProps.pageLayout === 'SharePointFullPage' || props.easyPagesCommonProps.pageLayout === 'SingleWebPartAppPageLayout' ) classNames.push ( 'easy-pages-spa' );
-  if ( ( props.easyPagesCommonProps.pinState === 'pinFull' || props.easyPagesCommonProps.pinState === 'pinMini' ) && classNames.indexOf('easy-pages-spa') < 0 ) classNames.push ( 'easy-pages-spa' );
 
-  if ( repo.href.toLowerCase().indexOf('drilldown') > -1 ) classNames.push( 'ep-drilldown' );
+  // Rebuilt logic for:  https://github.com/mikezimm/drilldown7/issues/263 , https://github.com/mikezimm/Pnpjs-v2-Upgrade-sample/issues/72
+  if ( props.easyPagesCommonProps.pageLayout === 'SharePointFullPage' || props.easyPagesCommonProps.pageLayout === 'SingleWebPartAppPageLayout' ) {
+
+    if ( repo.href.toLowerCase().indexOf('drilldown') > -1 ) {
+      classNames.push( 'ep-drilldown-spa' ) ;
+
+    } else { classNames.push ( 'easy-pages-spa' ); }
+
+  } else {
+    if ( repo.href.toLowerCase().indexOf('drilldown') > -1 ) classNames.push( 'ep-drilldown' );
+    if ( ( props.easyPagesCommonProps.pinState === 'pinFull' || props.easyPagesCommonProps.pinState === 'pinMini' ) && classNames.indexOf('easy-pages-spa') < 0 ) classNames.push ( 'easy-pages-spa' );
+
+  }
+
+
+
 
   // fetchParent?: boolean; //Include parent site pages
   // altSitePagesUrl?: string; //Include alternate site's site pages

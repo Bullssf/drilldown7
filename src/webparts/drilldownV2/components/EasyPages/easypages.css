@@ -26,6 +26,11 @@
   width: calc(100% - 6em );
 }
 
+/* https://github.com/mikezimm/drilldown7/issues/263 */
+.ep-drilldown-spa {
+  width: calc(100% - 4em );
+}
+
 .easy-pages-close {
   overflow: hidden;
   position: absolute;
