@@ -61,6 +61,12 @@ const SampleViewJSON : any = [
     "maxWidth": 50,
     "linkPropertyName": "goToItemPreview"
   },
+  {
+    "name": "TextColumn",
+    "displayName": "Link formula",
+    "maxWidth": 50,
+    "linkFormula": "https://www.google.com/search?q={{Editor/Title}}"
+  },
 ];
 
 // const SampleCommands: any = {
@@ -344,6 +350,21 @@ export function getWebPartHelpElement ( sitePresets : ISitePreConfigProps, field
                   <li><b>linkPropertyName:</b> is the column or property with the Url if you want to have a link</li>
                   <li>Typical values you can use in <b>linkPropertyName</b> are:  FileRef, goToItemPreview, goToItemLink, goToPropsLink</li>
                 </ul>
+              </ul>
+              <div className={ 'fps-pph-topic' }>Advanced View capability</div>
+              <ul>
+                <li><b>linkFormula</b> property of a view can calculate the url for a clickable link based on column values.
+                  <ul>
+                    <li><b>{`"https://www.google.com/search?q={{Editor/Title}}"`}</b> - Example syntax</li>
+                    <li><b>{`{{ Editor/Title }}`}</b> - Place Column Name to Subsititue between curley braces</li>
+                    <li>If the column you select does not have a value, it will NOT create a link, only show the value from the items view column name.</li>
+                    <li>In the example to left, if the item.Editor/Title was empty or not valid, the column will show item.TextColumn as a text value.</li>
+                    <li>Only put single column name between curley braces</li>
+                    <li>Can do up to two substitutions in a linkFormula</li>
+                    <li>Value between the double curley braces must be valid Internal Name</li>
+                    <li>String Functions syntax on that help tab are also valid</li>
+                  </ul>
+                </li>
               </ul>
             </div>
           </div>

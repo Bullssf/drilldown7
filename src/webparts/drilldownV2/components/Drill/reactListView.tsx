@@ -618,7 +618,7 @@ export default class ReactListItems extends React.Component<IReactListItemsProps
             if ( this.props.includeAttach ) {
                 //Add attachments column:
                 let callBack = this.props.includeDetails ? null : this._onShowPanel.bind(this);
-                
+
                 attachField.push({
                     name: 'Attachments',
                     displayName: 'Attach',
@@ -652,30 +652,51 @@ export default class ReactListItems extends React.Component<IReactListItemsProps
             />;
 
             viewFields.map ( field => {
-                //This is for:  https://github.com/mikezimm/drilldown7/issues/224
-                if ( this.props.richColumns.indexOf( field.name ) > -1 ) {
-                  field.render =  ( item, index ) => { return <div dangerouslySetInnerHTML={{__html: item[ field.name ]}} /> }
-                  // field.render =  ( item, index ) => { this._renderRich( item, field.name ) }
-                } else if ( field.linkFormula ) {
-                  // Testing to see if Url value is valid... has a value, is a string, and either starts with http or /sites/
+              //This is for:  https://github.com/mikezimm/drilldown7/issues/224
+              if ( this.props.richColumns.indexOf( field.name ) > -1 ) {
+                field.render =  ( item, index ) => { return <div dangerouslySetInnerHTML={{__html: item[ field.name ]}} /> }
+                // field.render =  ( item, index ) => { this._renderRich( item, field.name ) }
 
+              } else if ( field.linkFormula ) {
+                // Testing to see if Url value is valid... has a value, is a string, and either starts with http or /sites/
+
+                // Testing to see if Url value is valid... has a value, is a string, and either starts with http or /sites/
+                const isValid = typeof field.linkFormula === "string" &&
+                  ( field.linkFormula.indexOf("/sites/") === 0 || field.linkFormula.indexOf("http") === 0 ) ? true : false;
+
+                if ( isValid !== true ) {
+                  return;
+
+                } else {
 
                   // Start on https://github.com/mikezimm/drilldown7/issues/70
                   field.render = ( item, index ) => { 
-                    let columnValue = item[field.linkFormula];
-                    // Testing to see if Url value is valid... has a value, is a string, and either starts with http or /sites/
-                    const isValid = columnValue && typeof columnValue === "string" &&
-                        ( columnValue.indexOf("/sites/") === 0 || columnValue.indexOf("http") === 0 ) ? true : false;
+                    let linkString = field.linkFormula;
 
-                    const goToLink = isValid === true ?  columnValue : columnValue;
-                    if ( isValid === true ) console.log(`viewFields linkFormula regex~ 667`, columnValue.split( HandleBarsRegex ) );
+                      // Get array of strings by splitting the string by any {{ or }}
+                      const linkSplits = linkString.split( HandleBarsRegex );
+
+                      // Replace first handlebars instance
+                      if ( linkSplits.length > 2 ) {
+                        const part1 = linkSplits[1]?.trim().replace('/',''); //Get column name, removing / from lookup values
+                        linkSplits[1] = item[ part1 ] ? item[ part1?.trim() ] : `${part1}` ;
+                      }
+
+                      // Replace second handlebars instance
+                      if ( linkSplits.length > 4 ) { 
+                        const part3 = linkSplits[3]?.trim().replace('/',''); //Get column name, removing / from lookup values
+                        linkSplits[3] = item[ part3 ] ? item[ part3?.trim() ] : `${part3}` ;
+                      }
+
+                      const goToLink = linkSplits.join('');
 
                       // Return element as a link if the Url passes simple validation.  Else just return the displayed value as normal span
-                    return isValid === true ? <a href={ goToLink }>{item[field.name]}</a> :
-                      <span>{item[field.name]}</span>;
-                }
-              }
-            });
+                      return <a href={ goToLink }>{item[field.name]}</a>;
+
+                  } //  close:  field.render = ( item, index ) => { 
+                } //    close   if ( isValid === true ) {
+              } //      close: } else if ( field.linkFormula ) {
+            }); //      close:  viewFields.map ( field => {
 
             //=>> address:  https://github.com/mikezimm/drilldown7/issues/169
             const changeFont = <div title="Change font size" onClick={ this._changeFontSize.bind(this) } style={{ fontSize: 'larger' , fontWeight: 'bolder', width: '25px', textAlign: 'center', cursor: 'pointer' }}><Icon iconName= 'FontSize'/></div>;
