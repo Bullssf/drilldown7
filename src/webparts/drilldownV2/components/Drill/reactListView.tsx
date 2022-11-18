@@ -67,6 +67,7 @@ export const HandleBarsRegex = /{{([^}]+)}}/gi;
 export interface IViewFieldDD extends IViewField {
   linkSubstitute?: string;
   textSubstitute?: string;
+  showEmptyAsEmpty?: boolean;
 }
 
 export interface IReactListItemsProps extends IPageArrowsParentProps {
@@ -675,11 +676,11 @@ export default class ReactListItems extends React.Component<IReactListItemsProps
 
                   // Start on https://github.com/mikezimm/drilldown7/issues/70, https://github.com/mikezimm/drilldown7/issues/268
                   field.render = ( item, index ) => { 
-                    const linkSubstitute = isValidSubLink === true ? this.replaceHandleBarsValues( item, field.linkSubstitute ) : '';
-                    const textSubstitute = isValidText === true ? this.replaceHandleBarsValues( item, field.textSubstitute ) : item[field.name];
+                    const linkSubstitute = isValidSubLink === true ? this.replaceHandleBarsValues( item, field.linkSubstitute, true ) : '';
+                    const textSubstitute = isValidText === true ? this.replaceHandleBarsValues( item, field.textSubstitute, field.showEmptyAsEmpty === true ? true : false ) : item[field.name];
 
                     // Return element as a link if the Url passes simple validation.  Else just return the displayed value as normal span
-                    if ( isValidSubLink === true ) {
+                    if ( isValidSubLink === true && linkSubstitute ) {
                       return <a href={ linkSubstitute }>{ textSubstitute }</a>;
 
                     } else {
@@ -784,28 +785,31 @@ export default class ReactListItems extends React.Component<IReactListItemsProps
  *                                                                                                          
  *                                                                                                          
  */
-    private replaceHandleBarsValues( item: any, handleBarString: string ) {
+    private replaceHandleBarsValues( item: any, handleBarString: string, emptyIfSubEmpty: boolean ) {
 
       if ( typeof handleBarString !== 'string' ) {
         return handleBarString;
 
       } else {
+        let returnEmpty: boolean = false;
         // Get array of strings by splitting the string by any {{ or }}
         const linkSplits = handleBarString.split( HandleBarsRegex );
 
         // Replace first handlebars instance
         if ( linkSplits.length > 2 ) {
           const part1 = linkSplits[1]?.trim().replace('/',''); //Get column name, removing / from lookup values
-          linkSplits[1] = item[ part1 ] ? item[ part1?.trim() ] : `${part1}` ;
+          linkSplits[1] = item[ part1 ] ? item[ part1 ] : emptyIfSubEmpty === true ? '' : `${part1}` ;
+          if ( !linkSplits[1] && emptyIfSubEmpty === true ) returnEmpty = true;
         }
 
         // Replace second handlebars instance
         if ( linkSplits.length > 4 ) { 
           const part3 = linkSplits[3]?.trim().replace('/',''); //Get column name, removing / from lookup values
-          linkSplits[3] = item[ part3 ] ? item[ part3?.trim() ] : `${part3}` ;
+          linkSplits[3] = item[ part3 ] ? item[ part3 ] : emptyIfSubEmpty === true ? '' : `${part3}` ;
+          if ( !linkSplits[3] && emptyIfSubEmpty === true ) returnEmpty = true;
         }
 
-        return linkSplits.join('');
+        return returnEmpty === true ? '' : linkSplits.join('');
       }
 
 

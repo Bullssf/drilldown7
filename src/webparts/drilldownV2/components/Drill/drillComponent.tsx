@@ -1969,6 +1969,11 @@ public componentDidUpdate( prevProps: IDrilldownV2Props ){
     let prevMetaString = JSON.stringify( this.state.searchMeta );
     let thisMetaString = JSON.stringify( newMeta );
     let metaChanged = prevMetaString === thisMetaString ? false : true;
+
+    let prevTextString = JSON.stringify( this.state.searchText );
+    let thisTextString = JSON.stringify( text );
+    let textChanged = prevTextString === thisTextString ? false : true;
+
     let refinerObj = this.state.refinerObj;
 
     /**
@@ -2036,21 +2041,21 @@ public componentDidUpdate( prevProps: IDrilldownV2Props ){
             parentListURL : this.state.drillList.parentListURL,
             listName : this.state.drillList.name,
             togOtherListview: this.props.toggles.togOtherListview,
-    
+
             viewDefs: this.props.viewDefs,
             viewFields: null, // This is derived from viewDefs
             groupByFields: null, // This is derived from viewDefs
-    
+
             contextUserInfo: this.state.drillList.contextUserInfo,  //For site you are on ( aka current page context )
             sourceUserInfo: this._sourceUser, //this.state.sourceUserInfo,   //For site where the list is stored
 
             quickCommands: this.state.quickCommands,
-    
+
             items : newFilteredItems,
             breadCrumb: newMeta,
-    
+
         };
-    
+
         if ( this.props.handleListPost ) { this.props.handleListPost( listViewDD ); }
         searchCount = newFilteredItems.length;
     } else {
@@ -2088,7 +2093,8 @@ public componentDidUpdate( prevProps: IDrilldownV2Props ){
       searchCount: searchCount,
       searchText: text.toLowerCase(),
       searchMeta: newMeta,
-      resetArrows: metaChanged === true ? makeid(4) : this.state.resetArrows,
+      //https://github.com/mikezimm/drilldown7/issues/269
+      resetArrows: metaChanged === true || textChanged === true ? makeid(4) : this.state.resetArrows,
       pivotCats: pivotCats,
       cmdCats: cmdCats,
       refinerObj: refinerObj,

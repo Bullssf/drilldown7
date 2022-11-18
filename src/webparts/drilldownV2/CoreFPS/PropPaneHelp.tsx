@@ -67,6 +67,7 @@ const SampleViewJSON : any = [
     "maxWidth": 50,
     "linkSubstitute": "https://www.google.com/search?q={{Editor/Title}}",
     "textSubstitute": "{{Editor/Title}} was the last to modify this item",
+    "showEmptyAsEmpty": true,
   },
 ];
 
@@ -367,6 +368,9 @@ export function getWebPartHelpElement ( sitePresets : ISitePreConfigProps, field
                         <li>Can do up to two substitutions in a linkSubstitute</li>
                         <li>Value between the double curley braces must be valid Internal Name</li>
                         <li><b>String Functions</b> syntax on that help tab are also valid</li>
+                        <li>use {`"showEmptyAsEmpty" = true`} if you do not want any textSubstitute value if a field in the substitution is empty.  
+                            In this example, if Editor/Title was empty, then no text will show.  
+                            You can use this to NOT show a link or text if it would not be valid due to incomplete substitution.</li>
                       </ol>
                     </li>
                   </ul>
