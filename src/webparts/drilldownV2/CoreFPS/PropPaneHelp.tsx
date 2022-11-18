@@ -65,7 +65,8 @@ const SampleViewJSON : any = [
     "name": "TextColumn",
     "displayName": "Link formula",
     "maxWidth": 50,
-    "linkFormula": "https://www.google.com/search?q={{Editor/Title}}"
+    "linkSubstitute": "https://www.google.com/search?q={{Editor/Title}}",
+    "textSubstitute": "{{Editor/Title}} was the last to modify this item",
   },
 ];
 
@@ -353,19 +354,31 @@ export function getWebPartHelpElement ( sitePresets : ISitePreConfigProps, field
               </ul>
               <div className={ 'fps-pph-topic' }>Advanced View capability</div>
               <ul>
-                <li><b>linkFormula</b> property of a view can calculate the url for a clickable link based on column values.
+                <li><b>linkSubstitute</b> property of a view can calculate the url for a clickable link based on column values.
                   <ul>
                     <li><b>{`"https://www.google.com/search?q={{Editor/Title}}"`}</b> - Example syntax</li>
                     <li><b>{`{{ Editor/Title }}`}</b> - Place Column Name to Subsititue between double curley braces</li>
-                    <li>Rules of linkFormula syntax
+                    <li>Rules of linkSubstitute syntax
                       <ol>
                         <li>Link formula <b>must start with either {`"http" or "/sites/"`}</b> or it will NOT be considered a link.</li>
                         <li>If the column you select <b>does not have a value</b>, it will NOT create a link, only show the value from the items view column name.</li>
                         <li>In the example to left, if the <b>item.Editor/Title</b> was empty or not valid, the column will show <b>item.TextColumn</b> as a text value.</li>
                         <li>Only put single column name between curley braces</li>
-                        <li>Can do up to two substitutions in a linkFormula</li>
+                        <li>Can do up to two substitutions in a linkSubstitute</li>
                         <li>Value between the double curley braces must be valid Internal Name</li>
                         <li><b>String Functions</b> syntax on that help tab are also valid</li>
+                      </ol>
+                    </li>
+                  </ul>
+                </li>
+                <li><b>textSubstitute</b> property of a view can calculate a text value based on column values.
+                  <ul>
+                    <li><b>{`"{{Editor/Title}} was the last to modify this item"`}</b> - Example syntax</li>
+                    <li><b>{`{{ Editor/Title }}`}</b> - Place Column Name to Subsititue between double curley braces</li>
+                    <li>Rules of textSubstitute syntax
+                      <ol>
+                        <li>Same rules as linkSubstitute except string does NOT have to be considered a link</li>
+                        <li>If the column you select <b>does not have a value</b>, it will substitute the column name instead.</li>
                       </ol>
                     </li>
                   </ul>

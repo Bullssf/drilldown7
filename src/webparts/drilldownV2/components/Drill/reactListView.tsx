@@ -65,7 +65,8 @@ export const HandleBarsRegex = /{{([^}]+)}}/gi;
 // export const HandleBarsRegexV2 =/[^{{\}]+(?=}})/gi
 
 export interface IViewFieldDD extends IViewField {
-  linkFormula?: string;
+  linkSubstitute?: string;
+  textSubstitute?: string;
 }
 
 export interface IReactListItemsProps extends IPageArrowsParentProps {
@@ -657,45 +658,38 @@ export default class ReactListItems extends React.Component<IReactListItemsProps
                 field.render =  ( item, index ) => { return <div dangerouslySetInnerHTML={{__html: item[ field.name ]}} /> }
                 // field.render =  ( item, index ) => { this._renderRich( item, field.name ) }
 
-              } else if ( field.linkFormula ) {
+              } else if ( field.linkSubstitute || field.textSubstitute ) {
                 // Testing to see if Url value is valid... has a value, is a string, and either starts with http or /sites/
 
                 // Testing to see if Url value is valid... has a value, is a string, and either starts with http or /sites/
-                const isValid = typeof field.linkFormula === "string" &&
-                  ( field.linkFormula.indexOf("/sites/") === 0 || field.linkFormula.indexOf("http") === 0 ) ? true : false;
+                const isValidSubLink = typeof field.linkSubstitute === "string" &&
+                  ( field.linkSubstitute.indexOf("/sites/") === 0 || field.linkSubstitute.indexOf("http") === 0 ) ? true : false;
 
-                if ( isValid !== true ) {
+                // Testing to see if Url value is valid... has a value, is a string, and either starts with http or /sites/
+                const isValidText = typeof field.textSubstitute === "string" ? true : false;
+
+                if ( isValidSubLink !== true && isValidText !== true ) {
                   return;
 
                 } else {
 
-                  // Start on https://github.com/mikezimm/drilldown7/issues/70
+                  // Start on https://github.com/mikezimm/drilldown7/issues/70, https://github.com/mikezimm/drilldown7/issues/268
                   field.render = ( item, index ) => { 
-                    let linkString = field.linkFormula;
+                    const linkSubstitute = isValidSubLink === true ? this.replaceHandleBarsValues( item, field.linkSubstitute ) : '';
+                    const textSubstitute = isValidText === true ? this.replaceHandleBarsValues( item, field.textSubstitute ) : item[field.name];
 
-                      // Get array of strings by splitting the string by any {{ or }}
-                      const linkSplits = linkString.split( HandleBarsRegex );
+                    // Return element as a link if the Url passes simple validation.  Else just return the displayed value as normal span
+                    if ( isValidSubLink === true ) {
+                      return <a href={ linkSubstitute }>{ textSubstitute }</a>;
 
-                      // Replace first handlebars instance
-                      if ( linkSplits.length > 2 ) {
-                        const part1 = linkSplits[1]?.trim().replace('/',''); //Get column name, removing / from lookup values
-                        linkSplits[1] = item[ part1 ] ? item[ part1?.trim() ] : `${part1}` ;
-                      }
+                    } else {
+                      return <span >{ textSubstitute }</span>;
+                    }
 
-                      // Replace second handlebars instance
-                      if ( linkSplits.length > 4 ) { 
-                        const part3 = linkSplits[3]?.trim().replace('/',''); //Get column name, removing / from lookup values
-                        linkSplits[3] = item[ part3 ] ? item[ part3?.trim() ] : `${part3}` ;
-                      }
-
-                      const goToLink = linkSplits.join('');
-
-                      // Return element as a link if the Url passes simple validation.  Else just return the displayed value as normal span
-                      return <a href={ goToLink }>{item[field.name]}</a>;
 
                   } //  close:  field.render = ( item, index ) => { 
                 } //    close   if ( isValid === true ) {
-              } //      close: } else if ( field.linkFormula ) {
+              } //      close: } else if ( field.linkSubstitute ) {
             }); //      close:  viewFields.map ( field => {
 
             //=>> address:  https://github.com/mikezimm/drilldown7/issues/169
@@ -790,7 +784,32 @@ export default class ReactListItems extends React.Component<IReactListItemsProps
  *                                                                                                          
  *                                                                                                          
  */
+    private replaceHandleBarsValues( item: any, handleBarString: string ) {
 
+      if ( typeof handleBarString !== 'string' ) {
+        return handleBarString;
+
+      } else {
+        // Get array of strings by splitting the string by any {{ or }}
+        const linkSplits = handleBarString.split( HandleBarsRegex );
+
+        // Replace first handlebars instance
+        if ( linkSplits.length > 2 ) {
+          const part1 = linkSplits[1]?.trim().replace('/',''); //Get column name, removing / from lookup values
+          linkSplits[1] = item[ part1 ] ? item[ part1?.trim() ] : `${part1}` ;
+        }
+
+        // Replace second handlebars instance
+        if ( linkSplits.length > 4 ) { 
+          const part3 = linkSplits[3]?.trim().replace('/',''); //Get column name, removing / from lookup values
+          linkSplits[3] = item[ part3 ] ? item[ part3?.trim() ] : `${part3}` ;
+        }
+
+        return linkSplits.join('');
+      }
+
+
+    }
     private _onGoToList = () : void => {
 
         if ( !this.props.parentListURL || this.props.parentListURL === null || this.props.parentListURL === undefined || this.props.parentListURL.length === 0 ) {
