@@ -120,6 +120,7 @@ export interface IReactListItemsState extends IMinPageArrowsState {
   clickedAttach: boolean;  //if you clicked the attached icon (vs selected row), it only will show the attachments in the panel for cleaner implimentation
 
   fontSize: any;  //=>> address:  https://github.com/mikezimm/drilldown7/issues/169
+  richHeight: number;  //=>> address:  https://github.com/mikezimm/drilldown7/issues/270
   panelId: number;
   lastPanelId: number;
   panelItem: IDrillItemInfo;
@@ -419,6 +420,7 @@ export default class ReactListItems extends React.Component<IReactListItemsProps
  */ 
 
      private _ListViewFontSizes: any[] = [ `${stylesRLV.defaultFontSize}`, `${stylesRLV.largerFontSize}`, `${stylesRLV.largeFontSize}` ];
+     private _RichTextRowHeight: any[] = [ `${stylesRLV.rth1}`, `${stylesRLV.rth2}`, `${stylesRLV.rth3}` ];
 
     constructor(props: IReactListItemsProps) {
         super(props);
@@ -442,6 +444,7 @@ export default class ReactListItems extends React.Component<IReactListItemsProps
 
         this.state = {
           fontSize: this._ListViewFontSizes[0] ,  //=>> address:  https://github.com/mikezimm/drilldown7/issues/169
+          richHeight: 0 ,  //=>> address:  https://github.com/mikezimm/drilldown7/issues/169
           maxChars: this.props.maxChars ? this.props.maxChars : 50,
           parentListFieldTitles:parentListFieldTitles,
           viewFields: viewFields,
@@ -528,6 +531,8 @@ export default class ReactListItems extends React.Component<IReactListItemsProps
         //console.log( 'ReactListItems props & state: ', this.props, this.state );
 
         let thisLog = null;
+
+        let showRichHeightButton: any = false;
 
         //2022-02-01:  Updated this from drilldown7
         if ( this.props.items !== null && this.props.items.length > 0 ) { 
@@ -656,7 +661,10 @@ export default class ReactListItems extends React.Component<IReactListItemsProps
             viewFields.map ( field => {
               //This is for:  https://github.com/mikezimm/drilldown7/issues/224
               if ( this.props.richColumns.indexOf( field.name ) > -1 ) {
-                field.render =  ( item, index ) => { return <div dangerouslySetInnerHTML={{__html: item[ field.name ]}} /> }
+                showRichHeightButton = true;
+                const fieldStyles = [ stylesRLV.listViewRt ];
+                fieldStyles.push( this._RichTextRowHeight[ this.state.richHeight ] );
+                field.render =  ( item, index ) => { return <div className={ fieldStyles.join(' ') } dangerouslySetInnerHTML={{__html: item[ field.name ]}} /> }
                 // field.render =  ( item, index ) => { this._renderRich( item, field.name ) }
 
               } else if ( field.linkSubstitute || field.textSubstitute ) {
@@ -692,6 +700,9 @@ export default class ReactListItems extends React.Component<IReactListItemsProps
                 } //    close   if ( isValid === true ) {
               } //      close: } else if ( field.linkSubstitute ) {
             }); //      close:  viewFields.map ( field => {
+
+            //=>> address:  https://github.com/mikezimm/drilldown7/issues/270
+            const changeRichHeight = showRichHeightButton !== true ? null : <div title="Change row height" onClick={ this._changeRowHeight.bind(this) } style={{ fontSize: 'larger' , fontWeight: 'bolder', width: '25px', textAlign: 'center', cursor: 'pointer' }}><Icon iconName= 'FontSize'/></div>;
 
             //=>> address:  https://github.com/mikezimm/drilldown7/issues/169
             const changeFont = <div title="Change font size" onClick={ this._changeFontSize.bind(this) } style={{ fontSize: 'larger' , fontWeight: 'bolder', width: '25px', textAlign: 'center', cursor: 'pointer' }}><Icon iconName= 'FontSize'/></div>;
@@ -733,10 +744,13 @@ export default class ReactListItems extends React.Component<IReactListItemsProps
                   <span className={ stylesRLV.blueBarLeft } style={{ maxWidth: `${maxBlueBarLeft}%`}} title={ this.props.blueBarTitleText }>( { this.props.items.length }  ) { barText }</span>
                    { pageArrows }
                    {/* //=>> address:  https://github.com/mikezimm/drilldown7/issues/169 */}
-                   { changeFont }   
                    <span style={{ whiteSpace: 'nowrap', display: 'flex', marginRight: '25px' }}>
-                    { createItemLink }
-                    { listLink }
+                      { changeFont }
+                      { changeRichHeight }
+                   </span>
+                   <span style={{ whiteSpace: 'nowrap', display: 'flex', marginRight: '25px' }}>
+                      { createItemLink }
+                      { listLink }
                     </span>
                   </div>;
 
@@ -927,6 +941,15 @@ export default class ReactListItems extends React.Component<IReactListItemsProps
       const nextIdx = oldIdx === this._ListViewFontSizes.length -1 ? 0 : oldIdx + 1;
 
       this.setState({ fontSize: this._ListViewFontSizes[ nextIdx ] });
+    }
+
+    //=>> address:  https://github.com/mikezimm/drilldown7/issues/169
+    private _changeRowHeight() {
+
+      const oldIdx = this.state.richHeight;
+      const nextIdx = oldIdx === this._RichTextRowHeight.length -1 ? 0 : oldIdx + 1;
+
+      this.setState({ richHeight: nextIdx });
     }
 
     private async startThisQuickUpdate ( thisID: string ): Promise<void>{

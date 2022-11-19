@@ -50,3 +50,35 @@
   max-width: 35%;
   text-overflow: ellipsis;
 }
+
+//=>> address:  https://github.com/mikezimm/drilldown7/issues/270
+// https://csspoo.com/fade-out-overflow-text
+.listViewRt {
+  overflow: hidden;
+  position: relative;
+}
+
+//=>> address:  https://github.com/mikezimm/drilldown7/issues/270
+// https://csspoo.com/fade-out-overflow-text
+.listViewRt:after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  height: 3rem;
+  width: 100%;
+  background: linear-gradient(0deg, rgba(255,255,255,1) 0%, rgba(255,255,255,0) 100%);
+  pointer-events: none;
+}
+
+.listViewRt.rth1 { max-height: 2.6em; }
+.listViewRt:after { height: 15%; }
+
+.listViewRt.rth2 { max-height: 10em; }
+.listViewRt:after { height: 15; }
+
+.listViewRt.rth3 { max-height: 30em; }
+.listViewRt:after { height: 15; }
+
+.listViewRt.rth4 { max-height: null }
+.listViewRt:after { height: null }
