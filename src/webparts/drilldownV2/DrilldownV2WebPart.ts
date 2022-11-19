@@ -1556,7 +1556,7 @@ export default class DrilldownV2WebPart extends BaseClientSideWebPart<IDrilldown
 
     const stringArray: string[] | null = getStringArrayFromString( input, delim, removeEmpty, sort, trim );
   
-    const numberArray : number[] = !stringArray || stringArray?.length === 0 ? [] : stringArray?.map(str => {
+    const numberArray : number[] = !stringArray || stringArray.length === 0 ? [] : stringArray.map(str => {
       return Number(str) ;
     });
   
