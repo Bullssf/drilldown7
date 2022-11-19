@@ -38,6 +38,12 @@ export function buildViewGroupFields ( title: string, view: 1 | 2 | 3, showSyncV
     
       groupFields.push( JSON_Edit_Link );
     
+      groupFields.push(
+        PropertyPaneTextField('richHeight', {
+          label: 'RichText max-hights',
+          description: 'Semi-colon separated row Heights in em',
+        }));
+
       if ( showSyncViews === true ) {
         groupFields.push(
           PropertyPaneToggle('syncViews', {

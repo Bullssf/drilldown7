@@ -918,6 +918,8 @@ export default class DrilldownV2WebPart extends BaseClientSideWebPart<IDrilldown
       style: 'commandBar',
       viewDefs: viewDefs,
 
+      richHeight: this.getNumberArrayFromString( this.properties.richHeight, ';', true, 'asc', true, 2 ),
+
       // 3 - General how accurate do you want this to be
 
       // 4 - Info Options
@@ -1547,5 +1549,18 @@ export default class DrilldownV2WebPart extends BaseClientSideWebPart<IDrilldown
 
     }
     this.render();
+  }
+
+  //Moved to stringServices.ts in npmFunctions
+  private getNumberArrayFromString( input : any, delim: string, removeEmpty: boolean, sort: 'asc' | 'dec' | null, trim: boolean = false, def: any = null ) : number[] | null {
+
+    const stringArray: string[] | null = getStringArrayFromString( input, delim, removeEmpty, sort, trim );
+  
+    const numberArray : number[] = !stringArray || stringArray?.length === 0 ? [] : stringArray?.map(str => {
+      return Number(str) ;
+    });
+  
+    return numberArray;
+  
   }
 }

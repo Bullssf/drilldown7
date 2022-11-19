@@ -632,6 +632,7 @@ export default class DrillDown extends React.Component<IDrilldownV2Props, IDrill
 
             meta: [],
             resetArrows: makeid(4),
+            richHeight: this.props.richHeight[0],
 
             webURL: this.props.webURL,
 
@@ -1213,6 +1214,8 @@ public componentDidUpdate( prevProps: IDrilldownV2Props ){
                                 parentListFieldTitles={ viewDefs.length > 0 ? null : this.props.parentListFieldTitles }
     
                                 richColumns = { this.state.drillList.richColumns }
+                                richHeight = { this.state.richHeight }
+                                updateRichHeightProps = { this._updateRichHeightState.bind(this) }
                                 webURL = { this.state.drillList.webURL }
                                 parentListURL = { this.state.drillList.parentListURL }
                                 listName = { this.state.drillList.name }
@@ -1626,6 +1629,16 @@ public componentDidUpdate( prevProps: IDrilldownV2Props ){
         return pivCat;
 
     }
+
+    private _updateRichHeightState(): void {
+
+      const oldValue = this.state.richHeight;
+      const oldIdx = this.props.richHeight.indexOf( oldValue );
+      const nextIdx = oldIdx === this.props.richHeight.length -1 ? 0 : oldIdx + 1;
+
+      this.setState({ fontSize: this.props.richHeight[ nextIdx ] });
+    }
+
 
 /***
  *         .d8888. d88888b  .d8b.  d8888b.  .o88b. db   db 

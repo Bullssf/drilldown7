@@ -258,6 +258,8 @@ export interface IDrilldownV2Props extends IFPSCorePinMeReactComponentProps {
 
     viewType?: IViewType;
     viewDefs?: ICustViewDef[];
+    richHeight: number[];  //=>> maxHeight: 55em ; address:  https://github.com/mikezimm/drilldown7/issues/270
+
     parentListFieldTitles: string;
 
     // 2 - Source and destination list information
@@ -444,6 +446,7 @@ export interface IDrillDownState extends IFPSCorePinMeReactComponentState {
 
     meta: string[];
     resetArrows?: string;  //unique Id used to reset arrows to starting position
+    richHeight: number;  //=>> maxHeight: 55em ; address:  https://github.com/mikezimm/drilldown7/issues/270
 
     errMessage: string | JSX.Element;
 

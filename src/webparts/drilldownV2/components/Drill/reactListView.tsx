@@ -76,6 +76,8 @@ export interface IReactListItemsProps extends IPageArrowsParentProps {
     maxChars?: number;
     items: IDrillItemInfo[];
     richColumns: string[];
+    richHeight: number;  //=>> maxHeight: 55em ; address:  https://github.com/mikezimm/drilldown7/issues/270
+    updateRichHeightProps: any;
 
     resetArrows?: string;  //unique Id used to reset arrows to starting position
 
@@ -444,7 +446,7 @@ export default class ReactListItems extends React.Component<IReactListItemsProps
 
         this.state = {
           fontSize: this._ListViewFontSizes[0] ,  //=>> address:  https://github.com/mikezimm/drilldown7/issues/169
-          richHeight: 0 ,  //=>> address:  https://github.com/mikezimm/drilldown7/issues/169
+          richHeight: this.props.richHeight ,  //=>> address:  https://github.com/mikezimm/drilldown7/issues/270
           maxChars: this.props.maxChars ? this.props.maxChars : 50,
           parentListFieldTitles:parentListFieldTitles,
           viewFields: viewFields,
@@ -482,7 +484,7 @@ export default class ReactListItems extends React.Component<IReactListItemsProps
  *                                                                                         
  */
 
-    public componentDidUpdate(prevProps: IReactListItemsProps): void {
+    public componentDidUpdate(prevProps: IReactListItemsProps, prevState: IReactListItemsState): void {
         /* eslint-disable @typescript-eslint/no-unused-vars */
         let redraw = false;
         let updateViewFields = false;
@@ -509,7 +511,9 @@ export default class ReactListItems extends React.Component<IReactListItemsProps
 
         if ( prevProps.items.length !== this.props.items.length ) { redraw = true; }
         if ( prevProps.parentListURL !== this.props.parentListURL ) { redraw = true; }
+        if ( prevProps.richHeight !== this.props.richHeight ) { redraw = true; }
 
+        console.log('reactListView did update states richHeight', prevState.richHeight, this.state.richHeight );
         /* eslint-enable @typescript-eslint/no-unused-vars */
 
         this._updateStateOnPropsChange( updateViewFields );
@@ -663,8 +667,8 @@ export default class ReactListItems extends React.Component<IReactListItemsProps
               if ( this.props.richColumns.indexOf( field.name ) > -1 ) {
                 showRichHeightButton = true;
                 const fieldStyles = [ stylesRLV.listViewRt ];
-                fieldStyles.push( this._RichTextRowHeight[ this.state.richHeight ] );
-                field.render =  ( item, index ) => { return <div className={ fieldStyles.join(' ') } dangerouslySetInnerHTML={{__html: item[ field.name ]}} /> }
+                // fieldStyles.push( this._RichTextRowHeight[ this.state.richHeight ] );
+                field.render =  ( item, index ) => { return <div style={{ maxHeight: `${this.props.richHeight}em`}} className={ fieldStyles.join(' ') } dangerouslySetInnerHTML={{__html: item[ field.name ]}} /> }
                 // field.render =  ( item, index ) => { this._renderRich( item, field.name ) }
 
               } else if ( field.linkSubstitute || field.textSubstitute ) {
@@ -702,7 +706,10 @@ export default class ReactListItems extends React.Component<IReactListItemsProps
             }); //      close:  viewFields.map ( field => {
 
             //=>> address:  https://github.com/mikezimm/drilldown7/issues/270
-            const changeRichHeight = showRichHeightButton !== true ? null : <div title="Change row height" onClick={ this._changeRowHeight.bind(this) } style={{ fontSize: 'larger' , fontWeight: 'bolder', width: '25px', textAlign: 'center', cursor: 'pointer' }}><Icon iconName= 'FontSize'/></div>;
+            const changeRichHeight = showRichHeightButton !== true ? null : 
+                <div title={ `Change row height from ${this.props.richHeight}`} onClick={ this.props.updateRichHeightProps } 
+                  style={{ fontSize: 'larger' , fontWeight: 'bolder', width: '25px', textAlign: 'center', cursor: 'pointer' }}>
+                  <Icon iconName= 'CollapseMenu'/></div>;
 
             //=>> address:  https://github.com/mikezimm/drilldown7/issues/169
             const changeFont = <div title="Change font size" onClick={ this._changeFontSize.bind(this) } style={{ fontSize: 'larger' , fontWeight: 'bolder', width: '25px', textAlign: 'center', cursor: 'pointer' }}><Icon iconName= 'FontSize'/></div>;
@@ -744,7 +751,7 @@ export default class ReactListItems extends React.Component<IReactListItemsProps
                   <span className={ stylesRLV.blueBarLeft } style={{ maxWidth: `${maxBlueBarLeft}%`}} title={ this.props.blueBarTitleText }>( { this.props.items.length }  ) { barText }</span>
                    { pageArrows }
                    {/* //=>> address:  https://github.com/mikezimm/drilldown7/issues/169 */}
-                   <span style={{ whiteSpace: 'nowrap', display: 'flex', marginRight: '25px' }}>
+                   <span style={{ gridRow: 'nowrap', display: 'inline-flex', gridGap: '.75em', marginRight: '25px' }}>
                       { changeFont }
                       { changeRichHeight }
                    </span>
@@ -946,10 +953,22 @@ export default class ReactListItems extends React.Component<IReactListItemsProps
     //=>> address:  https://github.com/mikezimm/drilldown7/issues/169
     private _changeRowHeight() {
 
-      const oldIdx = this.state.richHeight;
-      const nextIdx = oldIdx === this._RichTextRowHeight.length -1 ? 0 : oldIdx + 1;
+      // const oldIdx = this.state.richHeight;
+      // const nextIdx = oldIdx === this._RichTextRowHeight.length -1 ? 0 : oldIdx + 1;
+      this.props.updateRichHeightProps();
 
-      this.setState({ richHeight: nextIdx });
+      // this.setState({ 
+      //   richHeight: nextIdx,
+      //   firstVisible: this.state.firstVisible +1,
+      //   lastVisible: this.state.lastVisible +1,
+
+      // });
+      // this.setState({ 
+      //   richHeight: nextIdx,
+      //   firstVisible: this.state.firstVisible,
+      //   lastVisible: this.state.lastVisible,
+
+      // });
     }
 
     private async startThisQuickUpdate ( thisID: string ): Promise<void>{

@@ -72,13 +72,13 @@
 }
 
 .listViewRt.rth1 { max-height: 2.6em; }
-.listViewRt:after { height: 15%; }
+.listViewRt:after { height: 30%; max-height: 3em;  }
 
 .listViewRt.rth2 { max-height: 10em; }
-.listViewRt:after { height: 15; }
+.listViewRt:after { height: 15%; }
 
 .listViewRt.rth3 { max-height: 30em; }
-.listViewRt:after { height: 15; }
+.listViewRt:after { height: 15%; }
 
 .listViewRt.rth4 { max-height: null }
 .listViewRt:after { height: null }
