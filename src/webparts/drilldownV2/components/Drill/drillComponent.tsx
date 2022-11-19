@@ -1636,7 +1636,7 @@ public componentDidUpdate( prevProps: IDrilldownV2Props ){
       const oldIdx = this.props.richHeight.indexOf( oldValue );
       const nextIdx = oldIdx === this.props.richHeight.length -1 ? 0 : oldIdx + 1;
 
-      this.setState({ fontSize: this.props.richHeight[ nextIdx ] });
+      this.setState({ richHeight: this.props.richHeight[ nextIdx ] });
     }
 
 
