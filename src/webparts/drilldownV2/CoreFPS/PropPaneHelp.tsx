@@ -4,7 +4,7 @@ import { escape } from '@microsoft/sp-lodash-subset';
 require('@mikezimm/npmfunctions/dist/PropPaneHelp/PropPanelHelp.css');
 
 import { Pivot, PivotItem, PivotLinkFormat, PivotLinkSize,} from 'office-ui-fabric-react/lib/Pivot';
-// import { Icon, IIconProps } from 'office-ui-fabric-react/lib/Icon';
+import { Icon, } from 'office-ui-fabric-react/lib/Icon';
 // import { defaultBannerCommandStyles, } from "@mikezimm/npmfunctions/dist/HelpPanelOnNPM/onNpm/defaults";
 
 // import { IQuickCommands } from '@mikezimm/npmfunctions/dist/QuickCommands/IQuickCommands';
@@ -332,6 +332,18 @@ export function getWebPartHelpElement ( sitePresets : ISitePreConfigProps, field
           <div>Views are how  you define your list view in the web part.</div>
           <div>The easiest way to get started, is to unlock our Pre-Configured List definitions in page 1 of properties.  Then select one of the pre-configured lists. Or contact your local SharePoint team if you have a good candidate for a company wide template.</div>
           <div>TIP:  Enable sync views option in Wide View to copy those settings to all widths</div>
+
+          <div className={ 'fps-pph-topic' }>RichText max-hights</div>
+          <div>This setting lets you adjust the height of multi-line-text fields.</div>
+          <div>Enter semi-colon separated numbers for the heights in css em values.</div>
+          <div>If your view has a multi-line-text field, you will see a hamburger icon <Icon iconName='CollapseMenu'/></div>
+          <div>Click this icon to cycle through your max-heights set in the property pane setting.</div>
+
+          <div className={ 'fps-pph-topic' }>Auto-Expand Rich text Height</div>
+          <div>This setting over-rides your max-heights when there are only a few items.</div>
+          <div>Enter semi-colon separated numbers for maximum rows;max-height per row.</div>
+          <div>The default will set max-height any time your list shows 5 or less items.  Cool huh?</div>
+
           <div style={{ display: 'flex' }}>
             <div>
               <div className={ 'fps-pph-topic' }>Sample view</div>
