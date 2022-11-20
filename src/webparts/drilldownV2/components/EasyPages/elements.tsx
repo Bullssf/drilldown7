@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { IEasyLink } from './componentPage';
+import { Icon } from 'office-ui-fabric-react/lib/Icon';
 
 import { EasyPagesDevTab } from './epTypes';
 
@@ -23,11 +24,18 @@ export function easyLinkElement( link: IEasyLink, target: string = '_blank' ) : 
   const newClass = [ 'easy-link' ];
   if ( tabs.indexOf(EasyPagesDevTab) > -1 ) newClass.push( 'easy-link-2col' );
 
+  const isCurrentPage = linkUrl?.toLocaleLowerCase().indexOf( window.location.pathname.toLocaleLowerCase() ) > -1 ? true : false;
+  const titleStyle: React.CSSProperties = { fontSize: title ? '' : 'smaller', fontWeight: title ? null : 400 };
+  const titleClass: string[] = [ 'easy-link-title' ];
+
+  // https://github.com/mikezimm/drilldown7/issues/264
+  if ( isCurrentPage === true ) titleClass.push( 'easy-link-current-title' );
+
+  const currentPageIcon = isCurrentPage !== true ? null : <span title='You are currently on this page' style={{ }}><Icon iconName='SingleBookmarkSolid' /></span>;
   return <div className = { newClass.join( ' ' ) } onClick={ ( ev ) => { window.open( `${linkUrl}${ ev.altKey === true ? gulpParam : '' }` , newTarget ) } } >
     <img className={ 'easy-link-image' } src={ imageUrl } style={{ height: imageIsDefault === true ? '20px' : '50px' }} title={ imageDesc }/>
-
-    <div className='easy-link-title' style={{ fontSize: title ? '' : 'smaller', fontWeight: title ? null : 400 }} title={  linkUrl }>
-        { title ? title : `Page does NOT have a title :(` }</div>
+    <div className={ titleClass.join(' ') } style={ titleStyle } title={  linkUrl }>
+        { currentPageIcon } { title ? title : `Page does NOT have a title :(` }</div>
 
     <div className='easy-link-desc'>{description }</div>
   </div>;

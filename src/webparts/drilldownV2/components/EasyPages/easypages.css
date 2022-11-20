@@ -1,5 +1,4 @@
 
-
 .easy-pages {
   position: absolute;
   height: 0px;
@@ -139,6 +138,19 @@
   font-weight: 700;
   font-size: larger;
   grid-area: 1 / 2 / 2 / 3;
+}
+
+/* Adjustment if this item is the current page */
+.easy-link-current-title {
+  font-size: x-large;
+  height: 2em;
+}
+
+.easy-link-current-title i {
+  font-size: x-large;
+  font-weight: 600;
+  color: #0078d4;
+  margin-right: 20px;
 }
 
 .easy-link-desc {

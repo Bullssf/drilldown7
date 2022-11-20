@@ -426,6 +426,7 @@ export interface IDrillDownState extends IFPSCorePinMeReactComponentState {
 
     searchText: string;
     searchMeta: string[];
+    searchAge: number;
 
     whenToShowItems: IWhenToShowItems;
     instructionsHidden: 'force' | 'hide' | 'dynamic';

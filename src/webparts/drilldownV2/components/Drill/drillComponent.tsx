@@ -10,6 +10,7 @@ import { saveViewAnalytics } from '../../CoreFPS/Analytics';
 
 import { Stack, IStackTokens, Icon, } from 'office-ui-fabric-react';
 import { SearchBox } from 'office-ui-fabric-react/lib/SearchBox';
+import { Slider } from 'office-ui-fabric-react/lib/Slider';
 import { Pivot, PivotItem, } from 'office-ui-fabric-react/lib/Pivot';
 
 // import { sp } from "@pnp/sp";
@@ -129,7 +130,32 @@ export interface IClickInfo  {
   validText : string;
 }
 
+export interface ISearchAge {
+  maxAge: number; // number of days to show from today
+  label: string; // value label to show on slider
+}
+
+const SearchAges: ISearchAge[] = [
+  {  maxAge: 1,  label: 'The past day', },
+  {  maxAge: 7,  label: 'The past week', },
+  {  maxAge: 31,  label: 'The past month', },
+  {  maxAge: 365,  label: 'The past year', },
+  {  maxAge: 365*100,  label: 'All ages', },
+]
+
+
 export default class DrillDown extends React.Component<IDrilldownV2Props, IDrillDownState> {
+
+
+  private _getSliderAgeObject( index: number ) {
+    return SearchAges[ index * -1 ];
+
+  }
+
+  private _getSliderAgeLabel( index: number ) {
+    return SearchAges[ index * -1 ].label ;
+
+  }
 
 
     private _performance: ILoadPerformance = null;
@@ -638,6 +664,7 @@ export default class DrillDown extends React.Component<IDrilldownV2Props, IDrill
 
             searchMeta: [pivCats.all.title],
             searchText: '',
+            searchAge: -5,
 
             errMessage: errMessage,
 
@@ -1046,6 +1073,17 @@ public componentDidUpdate( prevProps: IDrilldownV2Props ){
                     { 'Searching ' + this.state.searchCount + ' items' }
                     { /* 'Searching ' + (this.state.searchType !== 'all' ? this.state.filteredTiles.length : ' all' ) + ' items' */ }
                     </div>
+                    <Slider 
+                      label={ `Modified age (days)`}
+                      min={ -4 }
+                      max= { 0 }
+                      step={ 1 }
+                      defaultValue={ this.state.searchAge }
+                      valueFormat= { (value: number) => SearchAges[ value * -1 ].label }
+                      onChanged={ (event: any, value: number, ) => this.setState({ searchAge: value }) }
+                      styles= {{ container: { width: '300px' } }}
+                      originFromZero={ true }
+                    />
                 </div>;
 
                 const stackPageTokens: IStackTokens = { childrenGap: 10 };
@@ -1425,6 +1463,10 @@ public componentDidUpdate( prevProps: IDrilldownV2Props ){
         }
 
     }   //End Public Render
+
+    private _updateSearchAge( event: any, value: number, ) {
+      this.setState({ searchAge: value });
+    }
 
     private async _getAllItemsCall( viewDefs: ICustViewDef[], refiners: string[] ): Promise<void> {
 
