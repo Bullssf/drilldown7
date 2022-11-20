@@ -664,7 +664,7 @@ export default class DrillDown extends React.Component<IDrilldownV2Props, IDrill
 
             searchMeta: [pivCats.all.title],
             searchText: '',
-            searchAge: -5,
+            searchAge: ( SearchAges.length -1 ) * -1 ,
 
             errMessage: errMessage,
 
@@ -1073,15 +1073,17 @@ public componentDidUpdate( prevProps: IDrilldownV2Props ){
                     { 'Searching ' + this.state.searchCount + ' items' }
                     { /* 'Searching ' + (this.state.searchType !== 'all' ? this.state.filteredTiles.length : ' all' ) + ' items' */ }
                     </div>
+                    {/* https://github.com/mikezimm/drilldown7/issues/255 */}
                     <Slider 
-                      label={ `Modified age (days)`}
+                      label={ `Modified age (days ago)` }
                       min={ -4 }
                       max= { 0 }
                       step={ 1 }
                       defaultValue={ this.state.searchAge }
                       valueFormat= { (value: number) => SearchAges[ value * -1 ].label }
-                      onChanged={ (event: any, value: number, ) => this.setState({ searchAge: value }) }
-                      styles= {{ container: { width: '300px' } }}
+                      // onChanged={ (event: any, value: number, ) => this.setState({ searchAge: value }) }
+                      onChanged={ (event: any, value: number, ) => this._searchForItems( this.state.searchText, this.state.searchMeta, this.state.searchMeta.length, 'age', value ) }
+                      styles= {{ container: { width: '300px' }, valueLabel: { width: '100px' } }}
                       originFromZero={ true }
                     />
                 </div>;
@@ -1782,14 +1784,14 @@ public componentDidUpdate( prevProps: IDrilldownV2Props ){
         //This sends back the correct pivot category which matches the category on the tile.
         //https://github.com/mikezimm/drilldown7/issues/242
         let searchString = item && item.target && item.target.value ? item.target.value : typeof item === 'string' ? item : '';
-        this._searchForItems( searchString, this.state.searchMeta, 0, 'text' );
+        this._searchForItems( searchString, this.state.searchMeta, 0, 'text', this.state.searchAge );
     }
 
     //This function works great for Pivots, not neccessarily anything with icons.
     public _onSearchForMetaPivot0 = (item: any): void => {
         //This sends back the correct pivot category which matches the category on the tile.
         let validText = item.props.itemKey;
-        this._searchForItems( this.state.searchText, [validText], 0, 'meta' );
+        this._searchForItems( this.state.searchText, [validText], 0, 'meta', this.state.searchAge );
     }
 
 
@@ -1817,7 +1819,7 @@ public componentDidUpdate( prevProps: IDrilldownV2Props ){
         if ( clickInfo.isAltClick === '!Value' ) {
             this._changeRefinerOrder('refiner0', clickInfo.validText ) ;
         } else {
-            this._searchForItems( this.state.searchText, [clickInfo.validText], 0, 'meta' );
+            this._searchForItems( this.state.searchText, [clickInfo.validText], 0, 'meta', this.state.searchAge );
         }
     }
 
@@ -1852,7 +1854,7 @@ public componentDidUpdate( prevProps: IDrilldownV2Props ){
             newMeta.push( validText ) ; 
         } else { alert('Had unexpected error in _onSearchForMeta1, lastMeta.length = ' + lastMeta.length); }
 
-        this._searchForItems( this.state.searchText, newMeta, 1, 'meta' );
+        this._searchForItems( this.state.searchText, newMeta, 1, 'meta', this.state.searchAge );
       }
 
     public _onSearchForMetaPivot2= (item: any): void => {
@@ -1886,7 +1888,7 @@ public componentDidUpdate( prevProps: IDrilldownV2Props ){
         newMeta.push( validText ) ; 
     } else { alert('Had unexpected error in _onSearchForMeta2, lastMeta.length = ' + lastMeta.length); }
 
-    this._searchForItems( this.state.searchText, newMeta, 2, 'meta' );
+    this._searchForItems( this.state.searchText, newMeta, 2, 'meta', this.state.searchAge );
   }
 
     private _changeRefinerOrder1() { 
@@ -2009,13 +2011,14 @@ public componentDidUpdate( prevProps: IDrilldownV2Props ){
 
   }
 
-  public _searchForItems = (text: string, newMeta: string[] , layer: number, searchType: 'meta' | 'text' ): void => {
+  public _searchForItems = (text: string, newMeta: string[] , layer: number, searchType: 'meta' | 'text' | 'age', ageIndex: number = this.state.searchAge ): void => {
 
     consoleMe( 'searchForItems1: ' + text , this.state.allItems, this.state.drillList );
     let searchItems : IDrillItemInfo[] = this.state.allItems;
     let searchCount = searchItems.length;
+    const maxAge = SearchAges[ ageIndex * -1 ].maxAge;
 
-    let newFilteredItems : IDrillItemInfo[] = this._getNewFilteredItems( text, newMeta, searchItems, layer );
+    let newFilteredItems : IDrillItemInfo[] = this._getNewFilteredItems( text, newMeta, searchItems, layer, maxAge );
 
     let pivotCats : any = [];
     let cmdCats : any = [];
@@ -2079,7 +2082,7 @@ public componentDidUpdate( prevProps: IDrilldownV2Props ){
         cmdCats = this.state.cmdCats;
     }
 
-    if ( searchType === 'text' && this.props.updateRefinersOnTextSearch === true ) {
+    if ((  searchType === 'text' ||  searchType === 'age' ) && this.props.updateRefinersOnTextSearch === true ) {
         refinerObj = buildRefinersObject(newFilteredItems, this.state.drillList );
         pivotCats = [];
         cmdCats = [];
@@ -2154,6 +2157,7 @@ public componentDidUpdate( prevProps: IDrilldownV2Props ){
       cmdCats: cmdCats,
       refinerObj: refinerObj,
       instructionsHidden: 'dynamic',
+      searchAge: ageIndex,
     });
 
 
@@ -2162,7 +2166,7 @@ public componentDidUpdate( prevProps: IDrilldownV2Props ){
   } //End searchForItems
 
 
-  private _getNewFilteredItems(text: string, meta: string[] , searchItems : IDrillItemInfo[], layer: number ) {
+  private _getNewFilteredItems(text: string, meta: string[] , searchItems : IDrillItemInfo[], layer: number, maxAge: number ) {
 
     let newFilteredItems : IDrillItemInfo[] = [];
 
@@ -2176,7 +2180,11 @@ public componentDidUpdate( prevProps: IDrilldownV2Props ){
       // Changed from this
       // if ( meta !== undefined && meta !== null && meta.length > 0 ) {
       // To this based on Jared's reply in thread:  "What am I missing? false and true have no overlap"
-      if ( meta?.length && meta.length > 0 ) {
+
+      if ( thisSearchItem.timeModified.daysAgo > maxAge ) {
+        // do not show item
+
+      } else if ( meta?.length && meta.length > 0 ) {
           // for ( let m in meta ) { // eslint-disable-line guard-for-in
           meta.map( ( m: string, idx: number ) => { 
 
