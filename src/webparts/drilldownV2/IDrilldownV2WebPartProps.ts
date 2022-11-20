@@ -46,7 +46,7 @@ export const changeRefiners : string[] = [ 'refiner0', 'rules0def' , 'rules0' , 
 export const changeToggles : string[] = [ 'togOtherListview', 'togRefinerCounts', 'togCountChart' , 'togOtherChartpart', 'togStats' , ];
 export const changeInstructions : string[] = [ 'whenToShowItems', 'minItemsForHide' , 'instructionIntro' , 'refinerInstruction1' , 'refinerInstruction2', 'refinerInstruction3', ];
 export const changeGrouping : string[] = [ 'groupByFields',  ];
-export const changeViews : string[] = [ 'syncViews', 'viewWidth1', 'viewJSON1' , 'viewWidth2' , 'viewJSON2' , 'viewWidth3', 'viewJSON3',];
+export const changeViews : string[] = [ 'syncViews', 'richHeight', 'autoRichHeight', 'viewWidth1', 'viewJSON1' , 'viewWidth2' , 'viewJSON2' , 'viewWidth3', 'viewJSON3',];
 
 export const changeListToggles : string[] = [ 'includeDetails', 'detailsAudience', 'includeAttach', 'includeListLink', 'listLinkAudience', 'createItemLink', 'createItemAudience' ];
 
