@@ -86,6 +86,7 @@ export { IListViewDDDrillDown } from '@mikezimm/npmfunctions/dist/Views/IDrillVi
  export { ISeriesSort, } from '@mikezimm/npmfunctions/dist/CSSCharts/ICSSCharts';
  export { getExpandColumns, getKeysLike, getSelectColumns } from '@mikezimm/npmfunctions/dist/Lists/getV1/getFunctions';
  export { getHighlightedText , } from '@mikezimm/npmfunctions/dist/Elements/HighlightedText';
+ export { getNumberArrayFromString , } from '@mikezimm/npmfunctions/dist/Services/Strings/stringServices';
  
  export { doesObjectExistInArray, } from '@mikezimm/npmfunctions/dist/Services/Arrays/checks';
  export { compareArrays, ICompareResult, } from '@mikezimm/npmfunctions/dist/Services/Arrays/checks';

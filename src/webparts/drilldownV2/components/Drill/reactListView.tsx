@@ -26,6 +26,8 @@ import { findParentElementPropLikeThis } from '@mikezimm/npmfunctions/dist/Eleme
 
 import { getHelpfullError } from '../../fpsReferences';
 
+import { getNumberArrayFromString } from '../../fpsReferences';
+
 import { buildConfirmDialogBig, IMyBigDialogProps } from '@mikezimm/npmfunctions/dist/Elements/dialogBox'; 
 
 // import stylesL from '../ListView/listView.module.scss';
@@ -76,7 +78,7 @@ export interface IReactListItemsProps extends IPageArrowsParentProps {
     maxChars?: number;
     items: IDrillItemInfo[];
     richColumns: string[];
-    richHeight: number;  //=>> maxHeight: 55em ; address:  https://github.com/mikezimm/drilldown7/issues/270
+    richHeight: string;  //=>> maxHeight: 55em ; address:  https://github.com/mikezimm/drilldown7/issues/270
     updateRichHeightProps: any;
 
     resetArrows?: string;  //unique Id used to reset arrows to starting position
@@ -115,14 +117,14 @@ export interface IReactListItemsState extends IMinPageArrowsState {
   parentListFieldTitles: any;
   viewFields: IViewFieldDD[];
   groupByFields?:  IGrouping[];
-  
+
   showPanel: boolean;
   panelWidth: PanelType;
   showAttach: boolean;
   clickedAttach: boolean;  //if you clicked the attached icon (vs selected row), it only will show the attachments in the panel for cleaner implimentation
 
   fontSize: any;  //=>> address:  https://github.com/mikezimm/drilldown7/issues/169
-  richHeight: number;  //=>> address:  https://github.com/mikezimm/drilldown7/issues/270
+
   panelId: number;
   lastPanelId: number;
   panelItem: IDrillItemInfo;
@@ -149,6 +151,18 @@ const NoCommandsInfo = <div>
         <p>You can find out more about quick commands here: { gitRepoDrillDown.wiki }</p>
     </div>;
 
+
+  //=>> address:  https://github.com/mikezimm/drilldown7/issues/271
+  export function getMaxRichHeight( autoRichHeight: string, richHeight: number, items: any[], ) : string  {
+    const autoHeight: number[] = getNumberArrayFromString( autoRichHeight, ';', true, false, 'asis' );
+    let maxQty = autoHeight.length >= 2 && autoHeight[0] > 0 ? autoHeight[0] : 3;
+    let newRichHeight: string = `${richHeight}em`; //Just added 0 so it does not mutate
+    if ( items.length <= maxQty ) {
+      let maxHeight = autoHeight.length >= 2 && autoHeight[1] > 0 ? autoHeight[1] : 2.2;
+      if ( maxHeight > richHeight ) newRichHeight = `${maxHeight}em`;
+    }
+    return newRichHeight;
+  }
 
 // const stackFormRowTokens: IStackTokens = { childrenGap: 10 };
 
@@ -422,7 +436,6 @@ export default class ReactListItems extends React.Component<IReactListItemsProps
  */ 
 
      private _ListViewFontSizes: any[] = [ `${stylesRLV.defaultFontSize}`, `${stylesRLV.largerFontSize}`, `${stylesRLV.largeFontSize}` ];
-     private _RichTextRowHeight: any[] = [ `${stylesRLV.rth1}`, `${stylesRLV.rth2}`, `${stylesRLV.rth3}` ];
 
     constructor(props: IReactListItemsProps) {
         super(props);
@@ -446,7 +459,6 @@ export default class ReactListItems extends React.Component<IReactListItemsProps
 
         this.state = {
           fontSize: this._ListViewFontSizes[0] ,  //=>> address:  https://github.com/mikezimm/drilldown7/issues/169
-          richHeight: this.props.richHeight ,  //=>> address:  https://github.com/mikezimm/drilldown7/issues/270
           maxChars: this.props.maxChars ? this.props.maxChars : 50,
           parentListFieldTitles:parentListFieldTitles,
           viewFields: viewFields,
@@ -509,11 +521,18 @@ export default class ReactListItems extends React.Component<IReactListItemsProps
             });
         }
 
-        if ( prevProps.items.length !== this.props.items.length ) { redraw = true; }
+        if ( prevProps.richHeight !== this.props.richHeight ) { 
+          updateViewFields = true;
+          redraw = true;
+        }
+
+        // if ( prevProps.items.length !== this.props.items.length ) { 
+        //   this._setMaxRichHeight( this.props.autoRichHeight, this.props.richHeight, this.props.items ); 
+        //   redraw = true; }
         if ( prevProps.parentListURL !== this.props.parentListURL ) { redraw = true; }
         if ( prevProps.richHeight !== this.props.richHeight ) { redraw = true; }
 
-        console.log('reactListView did update states richHeight', prevState.richHeight, this.state.richHeight );
+
         /* eslint-enable @typescript-eslint/no-unused-vars */
 
         this._updateStateOnPropsChange( updateViewFields );
@@ -668,7 +687,7 @@ export default class ReactListItems extends React.Component<IReactListItemsProps
                 showRichHeightButton = true;
                 const fieldStyles = [ stylesRLV.listViewRt ];
                 // fieldStyles.push( this._RichTextRowHeight[ this.state.richHeight ] );
-                field.render =  ( item, index ) => { return <div style={{ maxHeight: `${this.props.richHeight}em`}} className={ fieldStyles.join(' ') } dangerouslySetInnerHTML={{__html: item[ field.name ]}} /> }
+                field.render =  ( item, index ) => { return <div style={{ maxHeight: this.props.richHeight }} className={ fieldStyles.join(' ') } dangerouslySetInnerHTML={{__html: item[ field.name ]}} /> }
                 // field.render =  ( item, index ) => { this._renderRich( item, field.name ) }
 
               } else if ( field.linkSubstitute || field.textSubstitute ) {
@@ -948,27 +967,6 @@ export default class ReactListItems extends React.Component<IReactListItemsProps
       const nextIdx = oldIdx === this._ListViewFontSizes.length -1 ? 0 : oldIdx + 1;
 
       this.setState({ fontSize: this._ListViewFontSizes[ nextIdx ] });
-    }
-
-    //=>> address:  https://github.com/mikezimm/drilldown7/issues/169
-    private _changeRowHeight() {
-
-      // const oldIdx = this.state.richHeight;
-      // const nextIdx = oldIdx === this._RichTextRowHeight.length -1 ? 0 : oldIdx + 1;
-      this.props.updateRichHeightProps();
-
-      // this.setState({ 
-      //   richHeight: nextIdx,
-      //   firstVisible: this.state.firstVisible +1,
-      //   lastVisible: this.state.lastVisible +1,
-
-      // });
-      // this.setState({ 
-      //   richHeight: nextIdx,
-      //   firstVisible: this.state.firstVisible,
-      //   lastVisible: this.state.lastVisible,
-
-      // });
     }
 
     private async startThisQuickUpdate ( thisID: string ): Promise<void>{

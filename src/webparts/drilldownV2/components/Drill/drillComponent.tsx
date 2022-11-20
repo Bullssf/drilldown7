@@ -59,7 +59,7 @@ import { getHelpfullError } from '@mikezimm/npmfunctions/dist/Services/Logging/E
 
 // import MyDrillItems from './drillListView';
 
-import ReactListItems from './reactListView';
+import ReactListItems, { getMaxRichHeight } from './reactListView';
 
 //parentListFieldTitles
 
@@ -1214,7 +1214,7 @@ public componentDidUpdate( prevProps: IDrilldownV2Props ){
                                 parentListFieldTitles={ viewDefs.length > 0 ? null : this.props.parentListFieldTitles }
     
                                 richColumns = { this.state.drillList.richColumns }
-                                richHeight = { this.state.richHeight }
+                                richHeight = { getMaxRichHeight( this.props.autoRichHeight, this.state.richHeight, this.state.searchedItems ) }
                                 updateRichHeightProps = { this._updateRichHeightState.bind(this) }
                                 webURL = { this.state.drillList.webURL }
                                 parentListURL = { this.state.drillList.parentListURL }

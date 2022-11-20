@@ -44,6 +44,12 @@ export function buildViewGroupFields ( title: string, view: 1 | 2 | 3, showSyncV
           description: 'Semi-colon separated row Heights in em',
         }));
 
+      groupFields.push(
+        PropertyPaneTextField('autoRichHeight', {
+          label: 'Auto-Expand Rich text Height',
+          description: 'maxQty;maxHeight (in em)',
+        }));
+
       if ( showSyncViews === true ) {
         groupFields.push(
           PropertyPaneToggle('syncViews', {

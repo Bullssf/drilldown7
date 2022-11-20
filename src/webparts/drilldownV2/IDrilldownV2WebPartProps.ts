@@ -139,7 +139,7 @@ export const changeCommands : string[] = [ 'quickCommands', ];
     // Page 2 Group 4,5,6 - View Definitions   
 
     richHeight: string;  //=>> maxHeight: 55em ; address:  https://github.com/mikezimm/drilldown7/issues/270
-
+    autoRichHeight: string; // ==>> minQty;max-height (em)   https://github.com/mikezimm/drilldown7/issues/270
     syncViews: boolean;
 
     viewWidth1: number;

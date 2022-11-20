@@ -259,7 +259,7 @@ export interface IDrilldownV2Props extends IFPSCorePinMeReactComponentProps {
     viewType?: IViewType;
     viewDefs?: ICustViewDef[];
     richHeight: number[];  //=>> maxHeight: 55em ; address:  https://github.com/mikezimm/drilldown7/issues/270
-
+    autoRichHeight: string;  //=>> maxQty;maxHeight ; address:  https://github.com/mikezimm/drilldown7/issues/271
     parentListFieldTitles: string;
 
     // 2 - Source and destination list information

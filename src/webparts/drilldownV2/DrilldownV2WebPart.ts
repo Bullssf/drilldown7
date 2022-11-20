@@ -171,6 +171,7 @@ import { mainWebPartRenderBannerSetup, refreshPanelHTML } from '@mikezimm/npmfun
   */
  
  import { updateFpsImportProps, FPSImportPropsGroup, validateDocumentationUrl } from './fpsReferences';
+
  
  /***
   *     .d8b.  d8b   db  .d8b.  db      db    db d888888b d888888b  .o88b. .d8888. 
@@ -245,7 +246,7 @@ import { IGrouping, } from "@pnp/spfx-controls-react/lib/ListView";
 import { IViewFieldDD } from './components/Drill/reactListView';
 import { buildQuickCommandsGroup } from './PropPaneGroups/Page2/QuickCommands';
 
-
+import { getNumberArrayFromString } from './fpsReferences';
 
 
 
@@ -918,7 +919,8 @@ export default class DrilldownV2WebPart extends BaseClientSideWebPart<IDrilldown
       style: 'commandBar',
       viewDefs: viewDefs,
 
-      richHeight: this.getNumberArrayFromString( this.properties.richHeight, ';', true, 'asc', true, 2 ),
+      richHeight: getNumberArrayFromString( this.properties.richHeight, ';', true, true, 'asis', 2 ),
+      autoRichHeight: this.properties.autoRichHeight,
 
       // 3 - General how accurate do you want this to be
 
@@ -1551,16 +1553,4 @@ export default class DrilldownV2WebPart extends BaseClientSideWebPart<IDrilldown
     this.render();
   }
 
-  //Moved to stringServices.ts in npmFunctions
-  private getNumberArrayFromString( input : any, delim: string, removeEmpty: boolean, sort: 'asc' | 'dec' | null, trim: boolean = false, def: any = null ) : number[] | null {
-
-    const stringArray: string[] | null = getStringArrayFromString( input, delim, removeEmpty, sort, trim );
-  
-    const numberArray : number[] = !stringArray || stringArray.length === 0 ? [] : stringArray.map(str => {
-      return Number(str) ;
-    });
-  
-    return numberArray;
-  
-  }
 }
