@@ -6,7 +6,7 @@ import { repoLink, } from '../../fpsReferences';
 
 import { createAboutRow } from '../../fpsReferences';
 
-export const panelVersionNumber = '2022-11-15 -  2.0.0.9'; //Added to show in panel
+export const panelVersionNumber = '2022-11-20 -  2.0.0.9'; //Added to show in panel
 
 export function aboutTable( showrepoLink: boolean ) {
 
@@ -20,7 +20,8 @@ export function aboutTable( showrepoLink: boolean ) {
     // table.rows.push( createAboutRow('',''  ,'#205 - Bugs', showrepoLink === true ? repoLink : null ) );
     // table.rows.push( createAboutRow('',''  ,'#205 - Featres', showrepoLink === true ? repoLink : null ) );
 
-    table.rows.push( createAboutRow('2022-11-15','2.0.0.9'  ,'#70, #114, #224, #263, #266, #267, #268, #269, #270, #271', showrepoLink === true ? repoLink : null ) );
+    table.rows.push( createAboutRow('2022-11-20','2.0.0.9'  ,'#70, #114, #227, #263, #266, #267, #268, #269', showrepoLink === true ? repoLink : null ) );
+    table.rows.push( createAboutRow('',''  ,'#70, #114, #199, #200, #224, #270, #271 - multi-line-text and views', showrepoLink === true ? repoLink : null ) );
 
     table.rows.push( createAboutRow('2022-11-15','2.0.0.8'  ,'EasyPages, EasyIcons', showrepoLink === true ? repoLink : null ) );
 
