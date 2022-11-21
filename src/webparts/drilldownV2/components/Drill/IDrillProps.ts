@@ -25,6 +25,7 @@ import { IDrillItemInfo } from '../../fpsReferences';
 
 import { IEasyPagesSourceProps,  } from '../EasyPages/componentPage';
 import { IEasyPagesExtraProps } from '../EasyPages/componentSources';
+import { IAgeSliderWPProps,  } from '../AgeSlider/asTypes';
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { IEasyIconProps, IEasyIcons } from '../EasyIcons/eiTypes';
@@ -209,6 +210,7 @@ export interface IDrilldownV2Props extends IFPSCorePinMeReactComponentProps {
      easyPagesCommonProps: IEasyPagesSourceProps;  // General props which apply to all Sources/Pages
      easyPagesExtraProps: IEasyPagesExtraProps;  // General props which are used on the SourcesPage but not component page
      EasyIconsObject: IEasyIcons;
+     ageSliderWPProps: IAgeSliderWPProps;
 
     allowOtherSites?: boolean; //default is local only.  Set to false to allow provisioning parts on other sites.
 

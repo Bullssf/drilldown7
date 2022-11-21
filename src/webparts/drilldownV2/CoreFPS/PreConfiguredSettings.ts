@@ -3,6 +3,7 @@
 
 import { EasyIconDefaultKeys } from '../components/EasyIcons/eiTypes';
 import { DefaultEasyPagesTabs, DefaultOverflowTab } from '../components/EasyPages/epTypes';
+import { FPSAgeSliderPresetEverywhere } from '../components/AgeSlider/asTypes';
 import { PresetFPSBanner, IPreConfigSettings, IAllPreConfigSettings,  } from '../fpsReferences';
 // import { encrptMeOriginalTest } from '@mikezimm/npmfunctions/dist/HelpPanelOnNPM/onNpm/logTest';
 // import { ContALVFMContent, ContALVFMWebP } from '@mikezimm/npmfunctions/dist/HelpPanelOnNPM/onNpm/constants';
@@ -23,14 +24,14 @@ export const WPForceEverywhere : IPreConfigSettings = {
         // pageLinksrestFilter: 'ID eq {{PageId}}',
         // pageLinkslinkProp: 'File/ServerRelativeUrl', // aka FileLeaf to open file name, if empty, will just show the value
         // pageLinksdisplayProp: 'FileLeafRef',
-        
+
     }
 };
 
 export const WPPresetEverywhere : IPreConfigSettings = {
     source: 'WPPresetEverywhere',
     location: '*',
-    props: {
+    props: { ...{
 
       isLibrary: false,
       newMap: [], //Added to address https://github.com/mikezimm/drilldown7/issues/184
@@ -47,7 +48,7 @@ export const WPPresetEverywhere : IPreConfigSettings = {
       viewWidth2: 800,
       viewWidth3: 500,
       listDefinition: "",
-      
+
       includeDetails: true,
       detailsAudience: 'Everyone',
 
@@ -132,8 +133,11 @@ export const WPPresetEverywhere : IPreConfigSettings = {
       easyIconKeys:  EasyIconDefaultKeys.join(';'),
       easyIconIgnore:  '',
 
-
-    }
+      // isVisibleAS:  false,
+      // columnNameAS: 'Modified',
+      // columnTitleAS: 'Modified',
+      // defaultAgeAS: 4,  //Should be index of AgeSliderOption
+    }, ...{ FPSAgeSliderPresetEverywhere } }
 };
 
 export const PresetSomeRandomSite : IPreConfigSettings = {

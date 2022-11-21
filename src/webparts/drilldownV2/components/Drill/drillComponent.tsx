@@ -27,6 +27,9 @@ import { weekday3,  } from '../../fpsReferences';
 import { monthStr3 } from '../../fpsReferences';
 import { makeid } from '../../fpsReferences';
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import { AgeSliderOptions, IAgeSliderProps } from '../AgeSlider/asTypes';
+
 import styles from '../Contents/contents.module.scss';
 
 import { createIconButton ,} from "../createButtons/IconButton";
@@ -93,6 +96,7 @@ import FetchBanner from '@mikezimm/npmfunctions/dist/HelpPanelOnNPM/onNpm/FetchB
 // import FetchBanner from '../../CoreFPS/FetchBannerElement';
 import EasyPagesHook from '../EasyPages/componentSources';
 
+import AgeSliderHook from '../AgeSlider/asHook';
 
 // import { ISpecialMessage, specialUpgrade } from '@mikezimm/npmfunctions/dist/HelpPanelOnNPM/special/interface';
 
@@ -130,30 +134,18 @@ export interface IClickInfo  {
   validText : string;
 }
 
-export interface ISearchAge {
-  maxAge: number; // number of days to show from today
-  label: string; // value label to show on slider
-}
-
-const SearchAges: ISearchAge[] = [
-  {  maxAge: 1,  label: 'The past day', },
-  {  maxAge: 7,  label: 'The past week', },
-  {  maxAge: 31,  label: 'The past month', },
-  {  maxAge: 365,  label: 'The past year', },
-  {  maxAge: 365*100,  label: 'All ages', },
-]
 
 
 export default class DrillDown extends React.Component<IDrilldownV2Props, IDrillDownState> {
 
 
   private _getSliderAgeObject( index: number ) {
-    return SearchAges[ index * -1 ];
+    return AgeSliderOptions[ index * -1 ];
 
   }
 
   private _getSliderAgeLabel( index: number ) {
-    return SearchAges[ index * -1 ].label ;
+    return AgeSliderOptions[ index * -1 ].text ;
 
   }
 
@@ -664,7 +656,7 @@ export default class DrillDown extends React.Component<IDrilldownV2Props, IDrill
 
             searchMeta: [pivCats.all.title],
             searchText: '',
-            searchAge: ( SearchAges.length -1 ) * -1 ,
+            searchAge: ( AgeSliderOptions.length -1 ) * -1 ,
 
             errMessage: errMessage,
 
@@ -1057,17 +1049,42 @@ public componentDidUpdate( prevProps: IDrilldownV2Props ){
                     *                                                                                   
                     */
 
+                /**
+                 * 
+                 *  NOTES FOR 11/22/2022
+                 *  Test page:  /SharePointOnlineMigration/SitePages/ttpKarina.aspx?debug=true&noredir=true&debugManifestsFile=https://localhost:4321/temp/manifests.js
+                 * It's showing both Sliders, BUT 
+                 * columnTitleAS === 2 on WP per props.
+                 * BUT it shows as the first one in the default on the component
+                 * 
+                 * 
+                 * ADD THIS TO THE <AgeSlider props
+                 * defaultAgeAS ={ this.state.searchAge }
+                 * 
+                 * HOWEVER, in HOK defaultAgeAS is Positive which should be negative.
+                 * VERIFY the value is correct in the PropPaneGroup.
+                 * It seems to not be sending the Key Value but the Index?
+                 * 
+                 * 
+                 * 
+                 * 
+                 * 
+                 * 
+                 * 
+                 * 
+                 * 
+                 */
                 /*https://developer.microsoft.com/en-us/fabric#/controls/web/searchbox*/
                 let searchBox =  
                 <div className={[styles.searchContainer, styles.padLeft20, styles.padTop20, styles.padBot10 ].join(' ')} >
                     <SearchBox
-                    className={styles.searchBox}
-                    styles={{ root: { maxWidth: this.props.allowRailsOff === true ? 200 : 300 } }}
-                    placeholder="Search"
-                    onSearch={ this._searchForText.bind(this) }
-                    onFocus={ null } // () => console.log('this.state',  this.state)
-                    onBlur={ () => console.log('onBlur called') }
-                    onChange={ this._searchForText.bind(this) }
+                      className={styles.searchBox}
+                      styles={{ root: { maxWidth: this.props.allowRailsOff === true ? 200 : 300 } }}
+                      placeholder="Search"
+                      onSearch={ this._searchForText.bind(this) }
+                      onFocus={ null } // () => console.log('this.state',  this.state)
+                      onBlur={ () => console.log('onBlur called') }
+                      onChange={ this._searchForText.bind(this) }
                     />
                     <div className={styles.searchStatus}>
                     { 'Searching ' + this.state.searchCount + ' items' }
@@ -1080,12 +1097,17 @@ public componentDidUpdate( prevProps: IDrilldownV2Props ){
                       max= { 0 }
                       step={ 1 }
                       defaultValue={ this.state.searchAge }
-                      valueFormat= { (value: number) => SearchAges[ value * -1 ].label }
+                      valueFormat= { (value: number) => AgeSliderOptions[ value * -1 ].text }
                       // onChanged={ (event: any, value: number, ) => this.setState({ searchAge: value }) }
-                      onChanged={ (event: any, value: number, ) => this._searchForItems( this.state.searchText, this.state.searchMeta, this.state.searchMeta.length, 'age', value ) }
+                      // onChanged={ (event: any, value: number, ) => this._searchForItems( this.state.searchText, this.state.searchMeta, this.state.searchMeta.length, 'age', value ) }
+                      onChange={ (value: number, ) => this._searchForItems( this.state.searchText, this.state.searchMeta, this.state.searchMeta.length, 'age', value ) }
                       styles= {{ container: { width: '300px' }, valueLabel: { width: '100px' } }}
                       originFromZero={ true }
                     />
+                    <AgeSliderHook 
+                      props = { { ...this.props.ageSliderWPProps, ... {
+                          onChange: (value: number, ) => this._searchForItems( this.state.searchText, this.state.searchMeta, this.state.searchMeta.length, 'age', value ) ,
+                        } } } />
                 </div>;
 
                 const stackPageTokens: IStackTokens = { childrenGap: 10 };
@@ -2016,7 +2038,7 @@ public componentDidUpdate( prevProps: IDrilldownV2Props ){
     consoleMe( 'searchForItems1: ' + text , this.state.allItems, this.state.drillList );
     let searchItems : IDrillItemInfo[] = this.state.allItems;
     let searchCount = searchItems.length;
-    const maxAge = SearchAges[ ageIndex * -1 ].maxAge;
+    const maxAge = AgeSliderOptions[ ageIndex * -1 ].maxAge;
 
     let newFilteredItems : IDrillItemInfo[] = this._getNewFilteredItems( text, newMeta, searchItems, layer, maxAge );
 

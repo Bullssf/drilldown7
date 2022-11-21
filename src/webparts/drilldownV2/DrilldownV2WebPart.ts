@@ -247,6 +247,7 @@ import { IViewFieldDD } from './components/Drill/reactListView';
 import { buildQuickCommandsGroup } from './PropPaneGroups/Page2/QuickCommands';
 
 import { getNumberArrayFromString } from './fpsReferences';
+import { buildAgeSliderGroup } from './components/AgeSlider/AgePropPaneGroup';
 
 
 
@@ -994,8 +995,14 @@ export default class DrilldownV2WebPart extends BaseClientSideWebPart<IDrilldown
       },
 
       EasyIconsObject: setEasyIconsObjectProps( this.properties ),
-        
+      ageSliderWPProps: {
+        isVisibleAS: this.properties.isVisibleAS,
+        columnNameAS: this.properties.columnNameAS,
+        columnTitleAS: this.properties.columnTitleAS,
+        defaultAgeAS: this.properties.defaultAgeAS, //Should be index of AgeSliderOption
       }
+      }
+
     );
 
     ReactDom.render(element, this.domElement);
@@ -1235,6 +1242,7 @@ export default class DrilldownV2WebPart extends BaseClientSideWebPart<IDrilldown
           groups: [
             buildCustomizeGroup(  ),
             buildRefinerInstructionsGroup( this.properties ),
+            buildAgeSliderGroup( this.properties ),
             buildListGroupingGroup( ),
             buildViewGroupFields( 'Wide', 1, true, false ),
             buildViewGroupFields( 'Medium', 2, false, this.properties.syncViews ),
