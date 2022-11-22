@@ -2210,7 +2210,7 @@ public componentDidUpdate( prevProps: IDrilldownV2Props ){
       // To this based on Jared's reply in thread:  "What am I missing? false and true have no overlap"
 
       let skipItemDueToAge: any = false;
-      if ( maxAge === AgeSliderOptionsOOTB.length - 1 ) { 
+      if ( maxAge === AgeSliderOptions[ AgeSliderOptionsOOTB.length - 1 ].maxAge ) { 
         // Do nothing This is because 'All Items' are selected
       } else {
         if ( columnNameAS ) {
