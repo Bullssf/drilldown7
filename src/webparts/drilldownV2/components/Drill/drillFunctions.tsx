@@ -215,7 +215,7 @@ export function processAllItems( allItems : IDrillItemInfo[], errMessage: string
                 // item.timeModified = makeTheTimeObject(item.Modified);
                 // Standardized for AgeSlider
                 drillList.ageColumns.map( column => {
-                  item[ `time${column}` ] = makeTheTimeObject(item[ column ]);
+                  if ( item[ `time${column}` ] ) item[ `time${column}` ] = makeTheTimeObject(item[ column ]);
                 });
     
                 item.bestCreate = getBestTimeDelta(item.Created, thisIsNow);
