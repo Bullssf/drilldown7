@@ -20,45 +20,45 @@ import {
 
 } from '@microsoft/sp-property-pane';
 
-import { IAgeSliderWPProps, AgeSliderOptions } from './asTypes';
+import { IAgeSliderWPProps, AgeSliderOptions } from './ageTypes';
 
 export function buildAgeSliderGroup( wpProps: IAgeSliderWPProps ) {
 
   // export interface IAgeSliderWPProps {
-  //   isVisibleAS: boolean;
-  //   columnNameAS: string;
-  //   columnTitleAS: string;
-  //   defaultAgeAS: number; //Should be index of AgeSliderOption
+  //   AgeIsVisible: boolean;
+  //   AgeColumnName: string;
+  //   AgeColumnTitle: string;
+  //   AgeDefault: number; //Should be index of AgeSliderOption
   // }
 
   var groupFields: IPropertyPaneField<any>[] = [];
 
-  groupFields.push(PropertyPaneToggle('isVisibleAS', {
+  groupFields.push(PropertyPaneToggle('AgeIsVisible', {
     label: 'Enanble Age Slider filter',
     offText: 'Off',
     onText: 'On',
   }));
 
   groupFields.push(
-    PropertyPaneDropdown('defaultAgeAS', <IPropertyPaneDropdownProps>{
+    PropertyPaneDropdown('AgeDefault', <IPropertyPaneDropdownProps>{
       label: 'Default Age Filter',
       options: AgeSliderOptions,
-      selectedKey: wpProps.defaultAgeAS,
+      selectedKey: wpProps.AgeDefault,
     }));
 
   groupFields.push(
-    PropertyPaneTextField('columnNameAS', {
+    PropertyPaneTextField('AgeColumnName', {
         label: 'Date Column Internal Name',
         // description: 'Please click filters (above) to see items :)',
-        disabled: wpProps.isVisibleAS === false ? true : false,
+        disabled: wpProps.AgeIsVisible === false ? true : false,
         // multiline: true,
     }));
 
   groupFields.push(
-    PropertyPaneTextField('columnTitleAS', {
+    PropertyPaneTextField('AgeColumnTitle', {
         label: 'Date Column Title - If different',
         // description: 'Please click filters (above) to see items :)',
-        disabled: wpProps.isVisibleAS === false ? true : false,
+        disabled: wpProps.AgeIsVisible === false ? true : false,
         // multiline: true,
     }));
 

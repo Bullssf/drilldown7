@@ -1,11 +1,11 @@
 
-export const changesAgeSlider: string[] = [ 'isVisibleAS', 'columnNameAS', 'columnTitleAS', 'defaultAgeAS', ];
+export const changesAgeSlider: string[] = [ 'AgeIsVisible', 'AgeColumnName', 'AgeColumnTitle', 'AgeDefault', ];
 
 export interface IAgeSliderWPProps {
-  isVisibleAS: boolean;
-  columnNameAS: string;
-  columnTitleAS: string;
-  defaultAgeAS: number; //Should be index of AgeSliderOption
+  AgeIsVisible: boolean;
+  AgeColumnName: string;
+  AgeColumnTitle: string;
+  AgeDefault: number; //Should be index of AgeSliderOption
 }
 
 export interface IAgeSliderProps extends IAgeSliderWPProps {
@@ -37,13 +37,13 @@ export const AgeSliderOptionsOOTB: IAgeSliderItem[] = [
   {  key: 1, maxAge: 7,  text: 'in last 7 days', },
   {  key: 2, maxAge: 31,  text: 'in last 30 days', },
   {  key: 3, maxAge: 92,  text: 'in last 3 months', },
-  {  key: 4, maxAge: 365,  text: 'in last 12 months', },
+  {  key: 4, maxAge: 365,  text: 'in last year', },
   {  key: 5, maxAge: 365*100,  text: 'All ages', },
 ];
 
 export const FPSAgeSliderPresetEverywhere: IAgeSliderWPProps = {
-  isVisibleAS: true,
-  columnNameAS: 'Modified',
-  columnTitleAS: 'Modified',
-  defaultAgeAS: ( AgeSliderOptions.length -1 ), //Should be index of AgeSliderOption
+  AgeIsVisible: true,
+  AgeColumnName: 'Modified',
+  AgeColumnTitle: 'Modified',
+  AgeDefault: ( AgeSliderOptions.length -1 ), //Should be index of AgeSliderOption
 }

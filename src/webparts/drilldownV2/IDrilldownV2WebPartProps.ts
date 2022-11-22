@@ -20,7 +20,7 @@ import { ICssChartProps } from './components/CssCharts/ICssChartProps';
 
 import { IEasyIconsWPProps } from './components/EasyIcons/eiTypes';
 import { IEasyPagesWPProps } from './components/EasyPages/epTypes';
-import { IAgeSliderWPProps } from './components/AgeSlider/asTypes';
+import { IAgeSliderWPProps } from './components/AgeSlider/ageTypes';
 
 
 //Specific for this web part

@@ -996,10 +996,10 @@ export default class DrilldownV2WebPart extends BaseClientSideWebPart<IDrilldown
 
       EasyIconsObject: setEasyIconsObjectProps( this.properties ),
       ageSliderWPProps: {
-        isVisibleAS: this.properties.isVisibleAS,
-        columnNameAS: this.properties.columnNameAS,
-        columnTitleAS: this.properties.columnTitleAS,
-        defaultAgeAS: this.properties.defaultAgeAS, //Should be index of AgeSliderOption
+        AgeIsVisible: this.properties.AgeIsVisible,
+        AgeColumnName: this.properties.AgeColumnName,
+        AgeColumnTitle: this.properties.AgeColumnTitle,
+        AgeDefault: this.properties.AgeDefault, //Should be index of AgeSliderOption
       }
       }
 

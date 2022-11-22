@@ -3,7 +3,7 @@
 
 import { EasyIconDefaultKeys } from '../components/EasyIcons/eiTypes';
 import { DefaultEasyPagesTabs, DefaultOverflowTab } from '../components/EasyPages/epTypes';
-import { FPSAgeSliderPresetEverywhere } from '../components/AgeSlider/asTypes';
+import { FPSAgeSliderPresetEverywhere } from '../components/AgeSlider/ageTypes';
 import { PresetFPSBanner, IPreConfigSettings, IAllPreConfigSettings,  } from '../fpsReferences';
 // import { encrptMeOriginalTest } from '@mikezimm/npmfunctions/dist/HelpPanelOnNPM/onNpm/logTest';
 // import { ContALVFMContent, ContALVFMWebP } from '@mikezimm/npmfunctions/dist/HelpPanelOnNPM/onNpm/constants';
@@ -133,10 +133,10 @@ export const WPPresetEverywhere : IPreConfigSettings = {
       easyIconKeys:  EasyIconDefaultKeys.join(';'),
       easyIconIgnore:  '',
 
-      // isVisibleAS:  false,
-      // columnNameAS: 'Modified',
-      // columnTitleAS: 'Modified',
-      // defaultAgeAS: 4,  //Should be index of AgeSliderOption
+      // AgeIsVisible:  false,
+      // AgeColumnName: 'Modified',
+      // AgeColumnTitle: 'Modified',
+      // AgeDefault: 4,  //Should be index of AgeSliderOption
     }, ...{ ...FPSAgeSliderPresetEverywhere } }
 };
 

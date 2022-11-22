@@ -64,7 +64,7 @@ import { changeListConfig, changeListInfo, changePerformance, changeRefiners, ch
 
 import { changeEasyPages, } from '../components/EasyPages/epTypes';
 import { changeEasyIcons, } from '../components/EasyIcons/eiTypes';
-import { changesAgeSlider } from '../components/AgeSlider/asTypes';
+import { changesAgeSlider } from '../components/AgeSlider/ageTypes';
 /***
  *    d88888b db    db d8888b.  .d88b.  d8888b. d888888b      d8888b. d8888b.  .d88b.  d8888b. .d8888. 
  *    88'     `8b  d8' 88  `8D .8P  Y8. 88  `8D `~~88~~'      88  `8D 88  `8D .8P  Y8. 88  `8D 88'  YP 

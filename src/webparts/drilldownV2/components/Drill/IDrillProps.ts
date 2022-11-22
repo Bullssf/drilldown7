@@ -25,7 +25,7 @@ import { IDrillItemInfo } from '../../fpsReferences';
 
 import { IEasyPagesSourceProps,  } from '../EasyPages/componentPage';
 import { IEasyPagesExtraProps } from '../EasyPages/componentSources';
-import { IAgeSliderWPProps,  } from '../AgeSlider/asTypes';
+import { IAgeSliderWPProps,  } from '../AgeSlider/ageTypes';
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { IEasyIconProps, IEasyIcons } from '../EasyIcons/eiTypes';
