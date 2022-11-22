@@ -28,7 +28,7 @@ import { monthStr3 } from '../../fpsReferences';
 import { makeid } from '../../fpsReferences';
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-import { AgeSliderOptions, IAgeSliderProps } from '../AgeSlider/asTypes';
+import { AgeSliderOptions, AgeSliderOptionsOOTB, IAgeSliderProps } from '../AgeSlider/asTypes';
 
 import styles from '../Contents/contents.module.scss';
 
@@ -1560,7 +1560,7 @@ public componentDidUpdate( prevProps: IDrilldownV2Props ){
 
         const maxAge = AgeSliderOptions[ Math.abs ( this.state.searchAge ) ].maxAge;  //ageIndex is negative... needs inverse to get array element
 
-        let newFilteredItems : IDrillItemInfo[] = this._getNewFilteredItems( '', [], allItems, 0, maxAge );
+        let newFilteredItems : IDrillItemInfo[] = this._getNewFilteredItems( '', [], allItems, 0, this.props.ageSliderWPProps.columnNameAS, maxAge );
         const searchCount = newFilteredItems.length;
 
         consoleRef( 'addTheseItems1REF', refinerObj );
@@ -2046,7 +2046,7 @@ public componentDidUpdate( prevProps: IDrilldownV2Props ){
     let searchCount = searchItems.length;
     const maxAge = AgeSliderOptions[ Math.abs( ageIndex ) ].maxAge;  //ageIndex is negative... needs inverse to get array element
 
-    let newFilteredItems : IDrillItemInfo[] = this._getNewFilteredItems( text, newMeta, searchItems, layer, maxAge );
+    let newFilteredItems : IDrillItemInfo[] = this._getNewFilteredItems( text, newMeta, searchItems, layer, this.props.ageSliderWPProps.columnNameAS, maxAge );
 
     let pivotCats : any = [];
     let cmdCats : any = [];
@@ -2194,7 +2194,7 @@ public componentDidUpdate( prevProps: IDrilldownV2Props ){
   } //End searchForItems
 
 
-  private _getNewFilteredItems(text: string, meta: string[] , searchItems : IDrillItemInfo[], layer: number, maxAge: number ) {
+  private _getNewFilteredItems(text: string, meta: string[] , searchItems : IDrillItemInfo[], layer: number, columnNameAS: string, maxAge: number ) {
 
     let newFilteredItems : IDrillItemInfo[] = [];
 
@@ -2209,7 +2209,22 @@ public componentDidUpdate( prevProps: IDrilldownV2Props ){
       // if ( meta !== undefined && meta !== null && meta.length > 0 ) {
       // To this based on Jared's reply in thread:  "What am I missing? false and true have no overlap"
 
-      if ( thisSearchItem.timeModified.daysAgo > maxAge ) {
+      let skipItemDueToAge: any = false;
+      if ( maxAge === AgeSliderOptionsOOTB.length - 1 ) { 
+        // Do nothing This is because 'All Items' are selected
+      } else {
+        if ( columnNameAS ) {
+          if ( !thisSearchItem[ `time${columnNameAS}` ] ) { 
+            skipItemDueToAge = true; // There is no Time in the column, skip item
+  
+          } else if ( thisSearchItem[ `time${columnNameAS}` ].daysAgo > maxAge ) {
+            skipItemDueToAge = true; // There is a Time and it does excede maxAage
+  
+          }
+        }
+      }
+
+      if ( skipItemDueToAge === true ) {
         // do not show item
 
       } else if ( meta?.length && meta.length > 0 ) {
