@@ -138,18 +138,6 @@ export interface IClickInfo  {
 
 export default class DrillDown extends React.Component<IDrilldownV2Props, IDrillDownState> {
 
-
-  private _getSliderAgeObject( index: number ) {
-    return AgeSliderOptions[ index * -1 ];
-
-  }
-
-  private _getSliderAgeLabel( index: number ) {
-    return AgeSliderOptions[ index * -1 ].text ;
-
-  }
-
-
     private _performance: ILoadPerformance = null;
 
     private _webPartHelpElement = getWebPartHelpElement( this.props.sitePresets, null );
@@ -380,6 +368,10 @@ export default class DrillDown extends React.Component<IDrilldownV2Props, IDrill
   
         let allColumns = ['Title','Id','Created','Modified','Author/Title','Author/ID','Author/Name','Editor/Title','Editor/ID','Editor/Name'];
 
+        // Added this for AgeSlider
+        list.ageColumns.map( column => {
+          if ( allColumns.indexOf( column ) === -1 ) allColumns.push( column )
+        });
         //Add all refiner columns to array.
         list.refiners.map( r => { allColumns.push(r); }); 
 
@@ -426,6 +418,7 @@ export default class DrillDown extends React.Component<IDrilldownV2Props, IDrill
         list.staticColumnsStr = allColumns.join(',');
         list.expandColumnsStr = expColumns.join(',');
         list.linkColumnsStr = linkColumns.join(',');
+        list.ageColumnsStr = list.ageColumns.join(',');
 
         return list;
 
@@ -484,7 +477,8 @@ export default class DrillDown extends React.Component<IDrilldownV2Props, IDrill
 
 
     private _createDrillList(webURL: string, name: string, isLibrary: boolean, refiners: string[], rules: string, stats: string, 
-        OrigViewDefs: ICustViewDef[], togOtherChartpart: boolean, title: string = null, stateSourceUserInfo: boolean, language: string, location: string, itteration: number ) {
+        OrigViewDefs: ICustViewDef[], togOtherChartpart: boolean, title: string = null, stateSourceUserInfo: boolean, language: string, location: string, itteration: number,
+        AgeColumn: string ) {
 
         let viewDefs = JSON.parse(JSON.stringify(OrigViewDefs)) ;
         let refinerRules = this._createEmptyRefinerRules( rules );
@@ -547,6 +541,7 @@ export default class DrillDown extends React.Component<IDrilldownV2Props, IDrill
             expandColumns: [],
             richColumns: [],  //This is for:  https://github.com/mikezimm/drilldown7/issues/224
             imageColumns: [],
+            ageColumns: [ 'Created', 'Modified', ],
 
             multiSelectColumns: [],
             linkColumns: [],
@@ -558,10 +553,14 @@ export default class DrillDown extends React.Component<IDrilldownV2Props, IDrill
             linkColumnsStr: '',
             richColumnsStr: '',   //This is for:  https://github.com/mikezimm/drilldown7/issues/224
             imageColumnsStr: '',
+            ageColumnsStr: '',
 
             removeFromSelect: ['currentTime','currentUser'],
             errors:  [],
         };
+
+        if ( AgeColumn ) list.ageColumns.push( AgeColumn );
+
 
         consoleMe( 'createDL' + location , this.state ? this.state.allItems : null , list );
         list = this._updateDrillListColumns( list ) ;
@@ -589,7 +588,8 @@ export default class DrillDown extends React.Component<IDrilldownV2Props, IDrill
          * This is copied later in code when you have to call the data in case something changed.
          */
 
-        let drillList = this._createDrillList(this.props.webURL, this.props.listName, this.props.isLibrary, this.props.refiners, this.props.rules, this.props.stats, this.props.viewDefs, this.props.toggles.togOtherChartpart, '', false, this.props.language, 'constructor', 0);
+        let drillList = this._createDrillList(this.props.webURL, this.props.listName, this.props.isLibrary, this.props.refiners, this.props.rules, this.props.stats, 
+          this.props.viewDefs, this.props.toggles.togOtherChartpart, '', false, this.props.language, 'constructor', 0, this.props.ageSliderWPProps.columnNameAS );
         let errMessage = drillList.refinerRules === undefined ? 'Invalid Rule set: ' +  this.props.rules : '';
         if ( drillList.refinerRules === undefined ) { drillList.refinerRules = [[],[],[]] ; } 
 
@@ -656,7 +656,7 @@ export default class DrillDown extends React.Component<IDrilldownV2Props, IDrill
 
             searchMeta: [pivCats.all.title],
             searchText: '',
-            searchAge: ( AgeSliderOptions.length -1 ) * -1 ,
+            searchAge: - this.props.ageSliderWPProps.defaultAgeAS ,  //ageIndex is negative... needs inverse to get array element
 
             errMessage: errMessage,
 
@@ -732,8 +732,6 @@ public componentDidUpdate( prevProps: IDrilldownV2Props ){
     if ( this.props.displayMode === DisplayMode.Edit ) {
       this._webPartHelpElement = getWebPartHelpElement( this.props.sitePresets, ); //{ webURL: this.props.webURL, listTitle: this.props.listName }
     }
-
-
 
     if ( prevProps.performance.fetchCount !== this.props.performance.fetchCount ) {
         rebuildPart = true ;
@@ -1097,7 +1095,7 @@ public componentDidUpdate( prevProps: IDrilldownV2Props ){
                       max= { 0 }
                       step={ 1 }
                       defaultValue={ this.state.searchAge }
-                      valueFormat= { (value: number) => AgeSliderOptions[ value * -1 ].text }
+                      valueFormat= { (value: number) => AgeSliderOptions[ value * -1 ].text }  //ageIndex is negative... needs inverse to get array element
                       // onChanged={ (event: any, value: number, ) => this.setState({ searchAge: value }) }
                       // onChanged={ (event: any, value: number, ) => this._searchForItems( this.state.searchText, this.state.searchMeta, this.state.searchMeta.length, 'age', value ) }
                       onChange={ (value: number, ) => this._searchForItems( this.state.searchText, this.state.searchMeta, this.state.searchMeta.length, 'age', value ) }
@@ -1106,7 +1104,7 @@ public componentDidUpdate( prevProps: IDrilldownV2Props ){
                     />
                     <AgeSliderHook 
                       props = { { ...this.props.ageSliderWPProps, ... {
-                          onChange: (value: number, ) => this._searchForItems( this.state.searchText, this.state.searchMeta, this.state.searchMeta.length, 'age', value ) ,
+                          onChange: (value: number, ) => this._searchForItems( this.state.searchText, this.state.searchMeta, this.state.searchMeta.length, 'age', - value ) ,  // value * - to make positive
                         } } } />
                 </div>;
 
@@ -1501,10 +1499,10 @@ public componentDidUpdate( prevProps: IDrilldownV2Props ){
          * This is copied from constructor when you have to call the data in case something changed.
          */
 
-        let drillList = this._createDrillList(this.props.webURL, this.props.listName, this.props.isLibrary, refiners, this.state.rules, this.props.stats, viewDefs, this.props.toggles.togOtherChartpart, '', false, this.props.language, 'getAllItemsCall', this.state.drillList.itteration );
+        let drillList = this._createDrillList(this.props.webURL, this.props.listName, this.props.isLibrary, refiners, this.state.rules, this.props.stats, 
+          viewDefs, this.props.toggles.togOtherChartpart, '', false, this.props.language, 'getAllItemsCall', this.state.drillList.itteration, this.props.ageSliderWPProps.columnNameAS  );
         // let errMessage = drillList.refinerRules === undefined ? 'Invalid Rule set: ' +  this.state.rules : '';
         if ( drillList.refinerRules === undefined ) { drillList.refinerRules = [[],[],[]] ; } 
-
 
         let restFilter: string = !this.props.performance.restFilter ? '' : this.props.performance.restFilter;
         let evalFilter: string = this.props.performance.evalFilter;
@@ -1560,9 +1558,16 @@ public componentDidUpdate( prevProps: IDrilldownV2Props ){
 
         this._performance.ops.analyze2 = startPerformOp( 'analyze2 addItems', this.props.displayMode );
 
+        const maxAge = AgeSliderOptions[ this.state.searchAge * -1 ].maxAge;  //ageIndex is negative... needs inverse to get array element
+
+        let newFilteredItems : IDrillItemInfo[] = this._getNewFilteredItems( '', [], allItems, 0, maxAge );
+        const searchCount = newFilteredItems.length;
+
         consoleRef( 'addTheseItems1REF', refinerObj );
         consoleMe( 'addTheseItems1' , allItems, drillList );
+        consoleMe( 'ageFilterTheseItems1' , newFilteredItems, drillList );
         //let newFilteredItems : IDrillItemInfo[] = this.getNewFilteredItems( '', this.state.searchMeta, allItems, 0 );
+
         let pivotCats : any = [];
         let cmdCats : any = [];
         pivotCats.push ( refinerObj.childrenKeys.map( r => { return this._createThisPivotCat(r,'',0); }));
@@ -1658,8 +1663,8 @@ public componentDidUpdate( prevProps: IDrilldownV2Props ){
 
         this.setState({
             allItems: allItems,
-            searchedItems: allItems, //newFilteredItems,  //Replaced with allItems to update when props change.
-            searchCount: allItems.length,
+            searchedItems: newFilteredItems,
+            searchCount: searchCount,
             errMessage: errMessage,
             searchText: '',
             searchMeta: [pivCats.all.title],
@@ -1965,7 +1970,8 @@ public componentDidUpdate( prevProps: IDrilldownV2Props ){
      */ 
     let viewDefs: ICustViewDef[] = JSON.parse(JSON.stringify(this.props.viewDefs));
 
-    let drillList = this._createDrillList(this.props.webURL, this.props.listName, this.props.isLibrary, refiners, JSON.stringify(refinerRulesNew), this.props.stats, viewDefs, this.props.toggles.togOtherChartpart, '', true, this.props.language, 'changeRefinerOrder', this.state.drillList.itteration  );
+    let drillList = this._createDrillList(this.props.webURL, this.props.listName, this.props.isLibrary, refiners, JSON.stringify(refinerRulesNew), this.props.stats, 
+    viewDefs, this.props.toggles.togOtherChartpart, '', true, this.props.language, 'changeRefinerOrder', this.state.drillList.itteration, this.props.ageSliderWPProps.columnNameAS );
 
     drillList.refinerInstructions = stateRefinerInstructions;
     
@@ -2038,7 +2044,7 @@ public componentDidUpdate( prevProps: IDrilldownV2Props ){
     consoleMe( 'searchForItems1: ' + text , this.state.allItems, this.state.drillList );
     let searchItems : IDrillItemInfo[] = this.state.allItems;
     let searchCount = searchItems.length;
-    const maxAge = AgeSliderOptions[ ageIndex * -1 ].maxAge;
+    const maxAge = AgeSliderOptions[ ageIndex * -1 ].maxAge;  //ageIndex is negative... needs inverse to get array element
 
     let newFilteredItems : IDrillItemInfo[] = this._getNewFilteredItems( text, newMeta, searchItems, layer, maxAge );
 

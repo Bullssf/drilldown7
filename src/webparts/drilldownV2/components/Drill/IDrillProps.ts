@@ -75,17 +75,19 @@ import { IEasyIconProps, IEasyIcons } from '../EasyIcons/eiTypes';
     selectColumns: string[];
     expandColumns: string[];
     richColumns: string[];  //This is for:  https://github.com/mikezimm/drilldown7/issues/224
-    imageColumns: string[]
+    imageColumns: string[];
+    ageColumns: string[];
     staticColumnsStr: string;
     selectColumnsStr: string;
     expandColumnsStr: string;
     linkColumnsStr: string;
     richColumnsStr: string;  //This is for:  https://github.com/mikezimm/drilldown7/issues/224
-    imageColumnsStr: string
+    imageColumnsStr: string;
+    ageColumnsStr: string;
     multiSelectColumns: string[];
     linkColumns: string[];
     funcColumns: string[];
-    funcColumnsActual: string[];    
+    funcColumnsActual: string[];
     removeFromSelect: string[];
 
     errors: any[];

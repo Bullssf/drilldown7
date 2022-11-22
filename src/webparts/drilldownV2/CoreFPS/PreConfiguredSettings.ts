@@ -137,7 +137,7 @@ export const WPPresetEverywhere : IPreConfigSettings = {
       // columnNameAS: 'Modified',
       // columnTitleAS: 'Modified',
       // defaultAgeAS: 4,  //Should be index of AgeSliderOption
-    }, ...{ FPSAgeSliderPresetEverywhere } }
+    }, ...{ ...FPSAgeSliderPresetEverywhere } }
 };
 
 export const PresetSomeRandomSite : IPreConfigSettings = {

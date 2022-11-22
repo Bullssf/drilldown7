@@ -1,13 +1,6 @@
 
 export const changesAgeSlider: string[] = [ 'isVisibleAS', 'columnNameAS', 'columnTitleAS', 'defaultAgeAS', ];
 
-export const FPSAgeSliderPresetEverywhere: IAgeSliderWPProps = {
-  isVisibleAS: true,
-  columnNameAS: 'Modified',
-  columnTitleAS: 'Modified',
-  defaultAgeAS: 4, //Should be index of AgeSliderOption
-}
-
 export interface IAgeSliderWPProps {
   isVisibleAS: boolean;
   columnNameAS: string;
@@ -33,6 +26,24 @@ export const AgeSliderOptions: IAgeSliderItem[] = [
   {  key: 0, maxAge: 1,  text: 'The past day', },
   {  key: 1, maxAge: 7,  text: 'The past week', },
   {  key: 2, maxAge: 31,  text: 'The past month', },
-  {  key: 3, maxAge: 365,  text: 'The past year', },
-  {  key: 4, maxAge: 365*100,  text: 'All ages', },
+  {  key: 3, maxAge: 92,  text: 'The past 3 months', },
+  {  key: 4, maxAge: 365,  text: 'The past year', },
+  {  key: 5, maxAge: 365*100,  text: 'All ages', },
 ];
+
+// This is the array the hook uses for text IF the column is Modified or Created to better match SharePoint OOTB
+export const AgeSliderOptionsOOTB: IAgeSliderItem[] = [
+  {  key: 0, maxAge: 1,  text: 'in the last day', },
+  {  key: 1, maxAge: 7,  text: 'in last 7 days', },
+  {  key: 2, maxAge: 31,  text: 'in last 30 days', },
+  {  key: 3, maxAge: 92,  text: 'in last 3 months', },
+  {  key: 4, maxAge: 365,  text: 'in last 12 months', },
+  {  key: 5, maxAge: 365*100,  text: 'All ages', },
+];
+
+export const FPSAgeSliderPresetEverywhere: IAgeSliderWPProps = {
+  isVisibleAS: true,
+  columnNameAS: 'Modified',
+  columnTitleAS: 'Modified',
+  defaultAgeAS: ( AgeSliderOptions.length -1 ) * -1, //Should be index of AgeSliderOption
+}
