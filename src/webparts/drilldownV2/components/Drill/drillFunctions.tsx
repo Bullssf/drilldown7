@@ -211,9 +211,6 @@ export function processAllItems( allItems : IDrillItemInfo[], errMessage: string
 
         } else {
             if ( item.timeCreated === undefined ) {
-                // item.timeCreated = makeTheTimeObject(item.Created);
-                // item.timeModified = makeTheTimeObject(item.Modified);
-                // Standardized for AgeSlider
                 drillList.ageColumns.map( column => {
                   if ( item[ `${column}` ] ) item[ `time${column}` ] = makeTheTimeObject(item[ column ]);
                 });

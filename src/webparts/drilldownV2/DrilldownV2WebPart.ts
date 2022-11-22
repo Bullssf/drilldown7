@@ -247,7 +247,7 @@ import { IViewFieldDD } from './components/Drill/reactListView';
 import { buildQuickCommandsGroup } from './PropPaneGroups/Page2/QuickCommands';
 
 import { getNumberArrayFromString } from './fpsReferences';
-import { buildAgeSliderGroup } from './components/AgeSlider/AgePropPaneGroup';
+import { buildAgeSliderGroup } from './components/AgeSlider/agePropPaneGroup';
 
 
 
