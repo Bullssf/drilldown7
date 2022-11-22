@@ -10,7 +10,7 @@ import { saveViewAnalytics } from '../../CoreFPS/Analytics';
 
 import { Stack, IStackTokens, Icon, } from 'office-ui-fabric-react';
 import { SearchBox } from 'office-ui-fabric-react/lib/SearchBox';
-import { Slider } from 'office-ui-fabric-react/lib/Slider';
+// import { Slider } from 'office-ui-fabric-react/lib/Slider';
 import { Pivot, PivotItem, } from 'office-ui-fabric-react/lib/Pivot';
 
 // import { sp } from "@pnp/sp";
@@ -656,7 +656,7 @@ export default class DrillDown extends React.Component<IDrilldownV2Props, IDrill
 
             searchMeta: [pivCats.all.title],
             searchText: '',
-            searchAge: - this.props.ageSliderWPProps.defaultAgeAS ,  //ageIndex is negative... needs inverse to get array element
+            searchAge: this.props.ageSliderWPProps.defaultAgeAS ,  //ageIndex is negative... needs inverse to get array element
 
             errMessage: errMessage,
 
@@ -1089,22 +1089,22 @@ public componentDidUpdate( prevProps: IDrilldownV2Props ){
                     { /* 'Searching ' + (this.state.searchType !== 'all' ? this.state.filteredTiles.length : ' all' ) + ' items' */ }
                     </div>
                     {/* https://github.com/mikezimm/drilldown7/issues/255 */}
-                    <Slider 
+                    {/* <Slider 
                       label={ `Modified age (days ago)` }
                       min={ -4 }
                       max= { 0 }
                       step={ 1 }
                       defaultValue={ this.state.searchAge }
-                      valueFormat= { (value: number) => AgeSliderOptions[ value * -1 ].text }  //ageIndex is negative... needs inverse to get array element
+                      valueFormat= { (value: number) => AgeSliderOptions[ value ].text }  //ageIndex is negative... needs inverse to get array element
                       // onChanged={ (event: any, value: number, ) => this.setState({ searchAge: value }) }
                       // onChanged={ (event: any, value: number, ) => this._searchForItems( this.state.searchText, this.state.searchMeta, this.state.searchMeta.length, 'age', value ) }
                       onChange={ (value: number, ) => this._searchForItems( this.state.searchText, this.state.searchMeta, this.state.searchMeta.length, 'age', value ) }
                       styles= {{ container: { width: '300px' }, valueLabel: { width: '100px' } }}
                       originFromZero={ true }
-                    />
+                    /> */}
                     <AgeSliderHook 
                       props = { { ...this.props.ageSliderWPProps, ... {
-                          onChange: (value: number, ) => this._searchForItems( this.state.searchText, this.state.searchMeta, this.state.searchMeta.length, 'age', - value ) ,  // value * - to make positive
+                          onChange: (value: number, ) => this._searchForItems( this.state.searchText, this.state.searchMeta, this.state.searchMeta.length, 'age', value ) ,  // value * - to make positive
                         } } } />
                 </div>;
 
@@ -1558,7 +1558,7 @@ public componentDidUpdate( prevProps: IDrilldownV2Props ){
 
         this._performance.ops.analyze2 = startPerformOp( 'analyze2 addItems', this.props.displayMode );
 
-        const maxAge = AgeSliderOptions[ this.state.searchAge * -1 ].maxAge;  //ageIndex is negative... needs inverse to get array element
+        const maxAge = AgeSliderOptions[ Math.abs ( this.state.searchAge ) ].maxAge;  //ageIndex is negative... needs inverse to get array element
 
         let newFilteredItems : IDrillItemInfo[] = this._getNewFilteredItems( '', [], allItems, 0, maxAge );
         const searchCount = newFilteredItems.length;
@@ -2044,7 +2044,7 @@ public componentDidUpdate( prevProps: IDrilldownV2Props ){
     consoleMe( 'searchForItems1: ' + text , this.state.allItems, this.state.drillList );
     let searchItems : IDrillItemInfo[] = this.state.allItems;
     let searchCount = searchItems.length;
-    const maxAge = AgeSliderOptions[ ageIndex * -1 ].maxAge;  //ageIndex is negative... needs inverse to get array element
+    const maxAge = AgeSliderOptions[ Math.abs( ageIndex ) ].maxAge;  //ageIndex is negative... needs inverse to get array element
 
     let newFilteredItems : IDrillItemInfo[] = this._getNewFilteredItems( text, newMeta, searchItems, layer, maxAge );
 

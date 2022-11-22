@@ -18,7 +18,7 @@ const AgeSliderHook: React.FC<IAgeSliderHookProps> = ( props ) => {
   const isOOTBMeta: boolean = columnTitleAS === 'Modified' || columnTitleAS === 'Created' ? true : false;
 
   // min needs to be negative sign so that slider looks correct... slide left to show more
-  const min = ( AgeSliderOptions.length -1 ) * -1;
+  const min = ( AgeSliderOptions.length -1 )  * -1;
   // const IconStyles: React.CSSProperties = { cursor: 'pointer', fontSize: 'x-large', marginLeft: '20px' };
   const AgeSlider: JSX.Element = isVisibleAS === false ? null : <Slider 
     disabled={ disabled === true ? true : false }
@@ -27,11 +27,11 @@ const AgeSliderHook: React.FC<IAgeSliderHookProps> = ( props ) => {
     max= { 0 }
     step={ 1 }
     // NOTE:  defaultValue Must be negative due to props index is positive
-    defaultValue={ - defaultAgeAS }
-    valueFormat= { (value: number) => isOOTBMeta === true ? AgeSliderOptionsOOTB[ value * -1 ].text : AgeSliderOptions[ value * -1 ].text }
+    defaultValue={ defaultAgeAS * -1 }
+    valueFormat= { (value: number) => isOOTBMeta === true ? AgeSliderOptionsOOTB[ Math.abs ( value )  ].text : AgeSliderOptions[ Math.abs ( value ) ].text }
     // onChanged={ (event: any, value: number, ) => this.setState({ searchAge: value }) }
     // onChanged={ (event: any, value: number, ) => this._searchForItems( this.state.searchText, this.state.searchMeta, this.state.searchMeta.length, 'age', value ) }
-    onChange={ (value: number, ) => onChange( value ) }
+    onChange={ (value: number, ) => onChange( value * -1 ) }
     styles= {{ container: { width: '300px' }, valueLabel: { width: '100px' } }}
     originFromZero={ true }
   />;

@@ -45,5 +45,5 @@ export const FPSAgeSliderPresetEverywhere: IAgeSliderWPProps = {
   isVisibleAS: true,
   columnNameAS: 'Modified',
   columnTitleAS: 'Modified',
-  defaultAgeAS: ( AgeSliderOptions.length -1 ) * -1, //Should be index of AgeSliderOption
+  defaultAgeAS: ( AgeSliderOptions.length -1 ), //Should be index of AgeSliderOption
 }
