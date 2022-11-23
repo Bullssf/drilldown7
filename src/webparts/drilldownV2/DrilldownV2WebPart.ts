@@ -247,7 +247,8 @@ import { IViewFieldDD } from './components/Drill/reactListView';
 import { buildQuickCommandsGroup } from './PropPaneGroups/Page2/QuickCommands';
 
 import { getNumberArrayFromString } from './fpsReferences';
-import { buildAgeSliderGroup } from './components/AgeSlider/agePropPaneGroup';
+// import { buildAgeSliderGroup } from './components/FPSAgeSlider/FPSAgePropPaneGroup';
+import { buildAgeSliderGroup } from '@mikezimm/fps-react/lib/FPSAgeSlider';
 
 
 
@@ -996,10 +997,10 @@ export default class DrilldownV2WebPart extends BaseClientSideWebPart<IDrilldown
 
       EasyIconsObject: setEasyIconsObjectProps( this.properties ),
       ageSliderWPProps: {
-        AgeIsVisible: this.properties.AgeIsVisible,
-        AgeColumnName: this.properties.AgeColumnName,
-        AgeColumnTitle: this.properties.AgeColumnTitle,
-        AgeDefault: this.properties.AgeDefault, //Should be index of AgeSliderOption
+        FPSAgeIsVisible: this.properties.FPSAgeIsVisible,
+        FPSAgeColumnName: this.properties.FPSAgeColumnName,
+        FPSAgeColumnTitle: this.properties.FPSAgeColumnTitle,
+        FPSAgeDefault: this.properties.FPSAgeDefault, //Should be index of AgeSliderOption
       }
       }
 

@@ -2,7 +2,7 @@
 ## Usage
 
 ## WebPartProperties:
-import { IAgeSliderWPProps } from './components/AgeSlider/ageTypes';
+import { IFPSAgeSliderWPProps } from './components/AgeSlider/ageTypes';
 
 ## Main Webpart
 import { buildAgeSliderGroup } from './components/AgeSlider/AgePropPaneGroup';
@@ -12,10 +12,10 @@ import { buildAgeSliderGroup } from './components/AgeSlider/AgePropPaneGroup';
 
 ### In create element
       ageSliderWPProps: {
-        AgeIsVisible: this.properties.AgeIsVisible,
-        AgeColumnName: this.properties.AgeColumnName,
-        AgeColumnTitle: this.properties.AgeColumnTitle,
-        AgeDefault: this.properties.AgeDefault, //Should be index of AgeSliderOption
+        FPSAgeIsVisible: this.properties.FPSAgeIsVisible,
+        FPSAgeColumnName: this.properties.FPSAgeColumnName,
+        FPSAgeColumnTitle: this.properties.FPSAgeColumnTitle,
+        FPSAgeDefault: this.properties.FPSAgeDefault, //Should be index of AgeSliderOption
       }
 
 ## List Interface
@@ -26,7 +26,7 @@ import { buildAgeSliderGroup } from './components/AgeSlider/AgePropPaneGroup';
 
   ageColumns: [ 'Created', 'Modified', ],
 
-  if ( AgeColumnName ) list.ageColumns.push( AgeColumnName );
+  if ( FPSAgeColumnName ) list.ageColumns.push( FPSAgeColumnName );
 
   // Added this for AgeSlider
   list.ageColumns.map( column => {
@@ -45,14 +45,14 @@ import { buildAgeSliderGroup } from './components/AgeSlider/AgePropPaneGroup';
 ## Where used Component
 ```typescript
 
-  import AgeSliderHook from '../AgeSlider/ageHook';
+  import FPSAgeSliderHook from '../AgeSlider/ageHook';
 
   function render() => {
 
-    const SliderProps: IAgeSliderProps = { ...{this.props.ageSliderProps}, ...{ onChange: ( value: number ) => this._updateAgeSlider( value) }}
+    const SliderProps: IFPSAgeSliderProps = { ...{this.props.ageSliderProps}, ...{ onChange: ( value: number ) => this._updateAgeSlider( value) }}
     return ( 
-      <AgeSliderHook
-        props: SliderProps, // IAgeSliderProps
+      <FPSAgeSliderHook
+        props: SliderProps, // IFPSAgeSliderProps
       />
     );
   }

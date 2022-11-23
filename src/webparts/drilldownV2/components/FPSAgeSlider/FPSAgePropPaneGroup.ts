@@ -20,45 +20,45 @@ import {
 
 } from '@microsoft/sp-property-pane';
 
-import { IAgeSliderWPProps, AgeSliderOptions } from './ageTypes';
+import { IFPSAgeSliderWPProps, FPSAgeSliderOptions } from './FPSAgeTypes';
 
-export function buildAgeSliderGroup( wpProps: IAgeSliderWPProps ) {
+export function buildAgeSliderGroup( wpProps: IFPSAgeSliderWPProps ) {
 
-  // export interface IAgeSliderWPProps {
-  //   AgeIsVisible: boolean;
-  //   AgeColumnName: string;
-  //   AgeColumnTitle: string;
-  //   AgeDefault: number; //Should be index of AgeSliderOption
+  // export interface IFPSAgeSliderWPProps {
+  //   FPSAgeIsVisible: boolean;
+  //   FPSAgeColumnName: string;
+  //   FPSAgeColumnTitle: string;
+  //   FPSAgeDefault: number; //Should be index of AgeSliderOption
   // }
 
   var groupFields: IPropertyPaneField<any>[] = [];
 
-  groupFields.push(PropertyPaneToggle('AgeIsVisible', {
+  groupFields.push(PropertyPaneToggle('FPSAgeIsVisible', {
     label: 'Enanble Age Slider filter',
     offText: 'Off',
     onText: 'On',
   }));
 
   groupFields.push(
-    PropertyPaneDropdown('AgeDefault', <IPropertyPaneDropdownProps>{
+    PropertyPaneDropdown('FPSAgeDefault', <IPropertyPaneDropdownProps>{
       label: 'Default Age Filter',
-      options: AgeSliderOptions,
-      selectedKey: wpProps.AgeDefault,
+      options: FPSAgeSliderOptions,
+      selectedKey: wpProps.FPSAgeDefault,
     }));
 
   groupFields.push(
-    PropertyPaneTextField('AgeColumnName', {
+    PropertyPaneTextField('FPSAgeColumnName', {
         label: 'Date Column Internal Name',
         // description: 'Please click filters (above) to see items :)',
-        disabled: wpProps.AgeIsVisible === false ? true : false,
+        disabled: wpProps.FPSAgeIsVisible === false ? true : false,
         // multiline: true,
     }));
 
   groupFields.push(
-    PropertyPaneTextField('AgeColumnTitle', {
+    PropertyPaneTextField('FPSAgeColumnTitle', {
         label: 'Date Column Title - If different',
         // description: 'Please click filters (above) to see items :)',
-        disabled: wpProps.AgeIsVisible === false ? true : false,
+        disabled: wpProps.FPSAgeIsVisible === false ? true : false,
         // multiline: true,
     }));
 

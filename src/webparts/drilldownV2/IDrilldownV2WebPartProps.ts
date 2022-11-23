@@ -20,7 +20,8 @@ import { ICssChartProps } from './components/CssCharts/ICssChartProps';
 
 import { IEasyIconsWPProps } from './components/EasyIcons/eiTypes';
 import { IEasyPagesWPProps } from './components/EasyPages/epTypes';
-import { IAgeSliderWPProps } from './components/AgeSlider/ageTypes';
+import { IFPSAgeSliderWPProps } from '@mikezimm/fps-react/lib/FPSAgeSlider';
+// import { IFPSAgeSliderWPProps } from './components/FPSAgeSlider/FPSAgeTypes';
 
 
 //Specific for this web part
@@ -62,7 +63,7 @@ export const changeCommands : string[] = [ 'quickCommands', ];
 
   export interface IDrilldownV2WebPartProps  extends IMinBannerUIProps, IMinPinMeProps, IMinPandoramicProps, IMinBannerThemeProps, 
     IMinCustomHelpProps, IMinPageStyleProps, IMinBannerUtilityProps, IMinFPSLegacyProps, 
-    IEasyPagesWPProps, IEasyIconsWPProps, IAgeSliderWPProps {
+    IEasyPagesWPProps, IEasyIconsWPProps, IFPSAgeSliderWPProps {
 
     // [key: string]: string | number | number[] | any[] | boolean | string[] | IMyProgress | PageContext | ICssChartProps | IWebpartHistory | undefined;
     [key: string]: any;

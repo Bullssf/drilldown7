@@ -28,7 +28,8 @@ import { monthStr3 } from '../../fpsReferences';
 import { makeid } from '../../fpsReferences';
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-import { AgeSliderOptions, AgeSliderOptionsOOTB, IAgeSliderProps } from '../AgeSlider/ageTypes';
+import { FPSAgeSliderOptions, FPSAgeSliderOptionsOOTB, IFPSAgeSliderProps } from '@mikezimm/fps-react/lib/FPSAgeSlider';
+// import { FPSAgeSliderOptions, FPSAgeSliderOptionsOOTB, IFPSAgeSliderProps } from '../FPSAgeSlider/FPSAgeTypes';
 
 import styles from '../Contents/contents.module.scss';
 
@@ -96,7 +97,7 @@ import FetchBanner from '@mikezimm/npmfunctions/dist/HelpPanelOnNPM/onNpm/FetchB
 // import FetchBanner from '../../CoreFPS/FetchBannerElement';
 import EasyPagesHook from '../EasyPages/componentSources';
 
-import AgeSliderHook from '../AgeSlider/ageHook';
+import FPSAgeSliderHook from '@mikezimm/fps-react/lib/FPSAgeSlider';
 
 // import { ISpecialMessage, specialUpgrade } from '@mikezimm/npmfunctions/dist/HelpPanelOnNPM/special/interface';
 
@@ -478,7 +479,7 @@ export default class DrillDown extends React.Component<IDrilldownV2Props, IDrill
 
     private _createDrillList(webURL: string, name: string, isLibrary: boolean, refiners: string[], rules: string, stats: string, 
         OrigViewDefs: ICustViewDef[], togOtherChartpart: boolean, title: string = null, stateSourceUserInfo: boolean, language: string, location: string, itteration: number,
-        AgeColumnName: string ) {
+        FPSAgeColumnName: string ) {
 
         let viewDefs = JSON.parse(JSON.stringify(OrigViewDefs)) ;
         let refinerRules = this._createEmptyRefinerRules( rules );
@@ -559,7 +560,7 @@ export default class DrillDown extends React.Component<IDrilldownV2Props, IDrill
             errors:  [],
         };
 
-        if ( AgeColumnName ) list.ageColumns.push( AgeColumnName );
+        if ( FPSAgeColumnName ) list.ageColumns.push( FPSAgeColumnName );
 
 
         consoleMe( 'createDL' + location , this.state ? this.state.allItems : null , list );
@@ -589,7 +590,7 @@ export default class DrillDown extends React.Component<IDrilldownV2Props, IDrill
          */
 
         let drillList = this._createDrillList(this.props.webURL, this.props.listName, this.props.isLibrary, this.props.refiners, this.props.rules, this.props.stats, 
-          this.props.viewDefs, this.props.toggles.togOtherChartpart, '', false, this.props.language, 'constructor', 0, this.props.ageSliderWPProps.AgeColumnName );
+          this.props.viewDefs, this.props.toggles.togOtherChartpart, '', false, this.props.language, 'constructor', 0, this.props.ageSliderWPProps.FPSAgeColumnName );
         let errMessage = drillList.refinerRules === undefined ? 'Invalid Rule set: ' +  this.props.rules : '';
         if ( drillList.refinerRules === undefined ) { drillList.refinerRules = [[],[],[]] ; } 
 
@@ -656,7 +657,7 @@ export default class DrillDown extends React.Component<IDrilldownV2Props, IDrill
 
             searchMeta: [pivCats.all.title],
             searchText: '',
-            searchAge: this.props.ageSliderWPProps.AgeDefault ,  //ageIndex is negative... needs inverse to get array element
+            searchAge: this.props.ageSliderWPProps.FPSAgeDefault ,  //ageIndex is negative... needs inverse to get array element
 
             errMessage: errMessage,
 
@@ -1052,14 +1053,14 @@ public componentDidUpdate( prevProps: IDrilldownV2Props ){
                  *  NOTES FOR 11/22/2022
                  *  Test page:  /SharePointOnlineMigration/SitePages/ttpKarina.aspx?debug=true&noredir=true&debugManifestsFile=https://localhost:4321/temp/manifests.js
                  * It's showing both Sliders, BUT 
-                 * AgeColumnTitle === 2 on WP per props.
+                 * FPSAgeColumnTitle === 2 on WP per props.
                  * BUT it shows as the first one in the default on the component
                  * 
                  * 
                  * ADD THIS TO THE <AgeSlider props
-                 * AgeDefault ={ this.state.searchAge }
+                 * FPSAgeDefault ={ this.state.searchAge }
                  * 
-                 * HOWEVER, in HOK AgeDefault is Positive which should be negative.
+                 * HOWEVER, in HOK FPSAgeDefault is Positive which should be negative.
                  * VERIFY the value is correct in the PropPaneGroup.
                  * It seems to not be sending the Key Value but the Index?
                  * 
@@ -1095,14 +1096,14 @@ public componentDidUpdate( prevProps: IDrilldownV2Props ){
                       max= { 0 }
                       step={ 1 }
                       defaultValue={ this.state.searchAge }
-                      valueFormat= { (value: number) => AgeSliderOptions[ value ].text }  //ageIndex is negative... needs inverse to get array element
+                      valueFormat= { (value: number) => FPSAgeSliderOptions[ value ].text }  //ageIndex is negative... needs inverse to get array element
                       // onChanged={ (event: any, value: number, ) => this.setState({ searchAge: value }) }
                       // onChanged={ (event: any, value: number, ) => this._searchForItems( this.state.searchText, this.state.searchMeta, this.state.searchMeta.length, 'age', value ) }
                       onChange={ (value: number, ) => this._searchForItems( this.state.searchText, this.state.searchMeta, this.state.searchMeta.length, 'age', value ) }
                       styles= {{ container: { width: '300px' }, valueLabel: { width: '100px' } }}
                       originFromZero={ true }
                     /> */}
-                    <AgeSliderHook 
+                    <FPSAgeSliderHook 
                       props = { { ...this.props.ageSliderWPProps, ... {
                           onChange: (value: number, ) => this._searchForItems( this.state.searchText, this.state.searchMeta, this.state.searchMeta.length, 'age', value ) ,  // value * - to make positive
                         } } } />
@@ -1500,7 +1501,7 @@ public componentDidUpdate( prevProps: IDrilldownV2Props ){
          */
 
         let drillList = this._createDrillList(this.props.webURL, this.props.listName, this.props.isLibrary, refiners, this.state.rules, this.props.stats, 
-          viewDefs, this.props.toggles.togOtherChartpart, '', false, this.props.language, 'getAllItemsCall', this.state.drillList.itteration, this.props.ageSliderWPProps.AgeColumnName  );
+          viewDefs, this.props.toggles.togOtherChartpart, '', false, this.props.language, 'getAllItemsCall', this.state.drillList.itteration, this.props.ageSliderWPProps.FPSAgeColumnName  );
         // let errMessage = drillList.refinerRules === undefined ? 'Invalid Rule set: ' +  this.state.rules : '';
         if ( drillList.refinerRules === undefined ) { drillList.refinerRules = [[],[],[]] ; } 
 
@@ -1558,9 +1559,9 @@ public componentDidUpdate( prevProps: IDrilldownV2Props ){
 
         this._performance.ops.analyze2 = startPerformOp( 'analyze2 addItems', this.props.displayMode );
 
-        const maxAge = AgeSliderOptions[ Math.abs ( this.state.searchAge ) ].maxAge;  //ageIndex is negative... needs inverse to get array element
+        const maxAge = FPSAgeSliderOptions[ Math.abs ( this.state.searchAge ) ].maxAge;  //ageIndex is negative... needs inverse to get array element
 
-        let newFilteredItems : IDrillItemInfo[] = this._getNewFilteredItems( '', [], allItems, 0, this.props.ageSliderWPProps.AgeColumnName, maxAge );
+        let newFilteredItems : IDrillItemInfo[] = this._getNewFilteredItems( '', [], allItems, 0, this.props.ageSliderWPProps.FPSAgeColumnName, maxAge );
         const searchCount = newFilteredItems.length;
 
         consoleRef( 'addTheseItems1REF', refinerObj );
@@ -1971,7 +1972,7 @@ public componentDidUpdate( prevProps: IDrilldownV2Props ){
     let viewDefs: ICustViewDef[] = JSON.parse(JSON.stringify(this.props.viewDefs));
 
     let drillList = this._createDrillList(this.props.webURL, this.props.listName, this.props.isLibrary, refiners, JSON.stringify(refinerRulesNew), this.props.stats, 
-    viewDefs, this.props.toggles.togOtherChartpart, '', true, this.props.language, 'changeRefinerOrder', this.state.drillList.itteration, this.props.ageSliderWPProps.AgeColumnName );
+    viewDefs, this.props.toggles.togOtherChartpart, '', true, this.props.language, 'changeRefinerOrder', this.state.drillList.itteration, this.props.ageSliderWPProps.FPSAgeColumnName );
 
     drillList.refinerInstructions = stateRefinerInstructions;
     
@@ -2044,9 +2045,9 @@ public componentDidUpdate( prevProps: IDrilldownV2Props ){
     consoleMe( 'searchForItems1: ' + text , this.state.allItems, this.state.drillList );
     let searchItems : IDrillItemInfo[] = this.state.allItems;
     let searchCount = searchItems.length;
-    const maxAge = AgeSliderOptions[ Math.abs( ageIndex ) ].maxAge;  //ageIndex is negative... needs inverse to get array element
+    const maxAge = FPSAgeSliderOptions[ Math.abs( ageIndex ) ].maxAge;  //ageIndex is negative... needs inverse to get array element
 
-    let newFilteredItems : IDrillItemInfo[] = this._getNewFilteredItems( text, newMeta, searchItems, layer, this.props.ageSliderWPProps.AgeColumnName, maxAge );
+    let newFilteredItems : IDrillItemInfo[] = this._getNewFilteredItems( text, newMeta, searchItems, layer, this.props.ageSliderWPProps.FPSAgeColumnName, maxAge );
 
     let pivotCats : any = [];
     let cmdCats : any = [];
@@ -2194,7 +2195,7 @@ public componentDidUpdate( prevProps: IDrilldownV2Props ){
   } //End searchForItems
 
 
-  private _getNewFilteredItems(text: string, meta: string[] , searchItems : IDrillItemInfo[], layer: number, AgeColumnName: string, maxAge: number ) {
+  private _getNewFilteredItems(text: string, meta: string[] , searchItems : IDrillItemInfo[], layer: number, FPSAgeColumnName: string, maxAge: number ) {
 
     let newFilteredItems : IDrillItemInfo[] = [];
 
@@ -2210,14 +2211,14 @@ public componentDidUpdate( prevProps: IDrilldownV2Props ){
       // To this based on Jared's reply in thread:  "What am I missing? false and true have no overlap"
 
       let skipItemDueToAge: any = false;
-      if ( maxAge === AgeSliderOptions[ AgeSliderOptionsOOTB.length - 1 ].maxAge ) { 
+      if ( maxAge === FPSAgeSliderOptions[ FPSAgeSliderOptionsOOTB.length - 1 ].maxAge ) { 
         // Do nothing This is because 'All Items' are selected
       } else {
-        if ( AgeColumnName ) {
-          if ( !thisSearchItem[ `time${AgeColumnName}` ] ) { 
+        if ( FPSAgeColumnName ) {
+          if ( !thisSearchItem[ `time${FPSAgeColumnName}` ] ) { 
             skipItemDueToAge = true; // There is no Time in the column, skip item
   
-          } else if ( thisSearchItem[ `time${AgeColumnName}` ].daysAgo > maxAge ) {
+          } else if ( thisSearchItem[ `time${FPSAgeColumnName}` ].daysAgo > maxAge ) {
             skipItemDueToAge = true; // There is a Time and it does excede maxAage
   
           }

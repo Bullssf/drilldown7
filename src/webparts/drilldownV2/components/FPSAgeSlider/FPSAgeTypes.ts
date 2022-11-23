@@ -1,14 +1,14 @@
 
-export const changesAgeSlider: string[] = [ 'AgeIsVisible', 'AgeColumnName', 'AgeColumnTitle', 'AgeDefault', ];
+export const changesAgeSlider: string[] = [ 'FPSAgeIsVisible', 'FPSAgeColumnName', 'FPSAgeColumnTitle', 'FPSAgeDefault', ];
 
-export interface IAgeSliderWPProps {
-  AgeIsVisible: boolean;
-  AgeColumnName: string;
-  AgeColumnTitle: string;
-  AgeDefault: number; //Should be index of AgeSliderOption
+export interface IFPSAgeSliderWPProps {
+  FPSAgeIsVisible: boolean;
+  FPSAgeColumnName: string;
+  FPSAgeColumnTitle: string;
+  FPSAgeDefault: number; //Should be index of AgeSliderOption
 }
 
-export interface IAgeSliderProps extends IAgeSliderWPProps {
+export interface IFPSAgeSliderProps extends IFPSAgeSliderWPProps {
   onChange: any; // returns the current value (value: number, ) => this._searchForItems( this.state.searchText, this.state.searchMeta, this.state.searchMeta.length, 'age', value )
   disabled?: boolean;
 }
@@ -16,13 +16,13 @@ export interface IAgeSliderProps extends IAgeSliderWPProps {
 //NOTE:  THIS NEEDS TO MATCH IPropertyPaneDropdownOption
 // import { IPropertyPaneDropdownOption, } from '@microsoft/sp-property-pane';
 
-export interface IAgeSliderItem {
+export interface IFPSAgeSliderItem {
   key: string | number; // Used for prop pane group
   maxAge: number; // number of days to show from today
   text: string; // text: matching prop for PropPane Group.  value label to show on slider
 }
 
-export const AgeSliderOptions: IAgeSliderItem[] = [
+export const FPSAgeSliderOptions: IFPSAgeSliderItem[] = [
   {  key: 0, maxAge: 1,  text: 'The past day', },
   {  key: 1, maxAge: 7,  text: 'The past week', },
   {  key: 2, maxAge: 31,  text: 'The past month', },
@@ -32,7 +32,7 @@ export const AgeSliderOptions: IAgeSliderItem[] = [
 ];
 
 // This is the array the hook uses for text IF the column is Modified or Created to better match SharePoint OOTB
-export const AgeSliderOptionsOOTB: IAgeSliderItem[] = [
+export const FPSAgeSliderOptionsOOTB: IFPSAgeSliderItem[] = [
   {  key: 0, maxAge: 1,  text: 'in the last day', },
   {  key: 1, maxAge: 7,  text: 'in last 7 days', },
   {  key: 2, maxAge: 31,  text: 'in last 30 days', },
@@ -41,9 +41,9 @@ export const AgeSliderOptionsOOTB: IAgeSliderItem[] = [
   {  key: 5, maxAge: 365*100,  text: 'All ages', },
 ];
 
-export const FPSAgeSliderPresetEverywhere: IAgeSliderWPProps = {
-  AgeIsVisible: true,
-  AgeColumnName: 'Modified',
-  AgeColumnTitle: 'Modified',
-  AgeDefault: ( AgeSliderOptions.length -1 ), //Should be index of AgeSliderOption
+export const FPSAgeSliderPresetEverywhere: IFPSAgeSliderWPProps = {
+  FPSAgeIsVisible: true,
+  FPSAgeColumnName: 'Modified',
+  FPSAgeColumnTitle: 'Modified',
+  FPSAgeDefault: ( FPSAgeSliderOptions.length -1 ), //Should be index of AgeSliderOption
 }
