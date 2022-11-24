@@ -219,7 +219,7 @@ export function addSearchMeta ( items: IEasyLink[], sourceProps: ISourceProps, E
 
     // https://github.com/mikezimm/drilldown7/issues/280
     EasyPagesSysPages.map( sysPage => {
-      if ( item.searchTextLC.indexOf( sysPage.toLocaleLowerCase() ) > -1 ) item.tabs.push( EasyPagesSysTab );
+      if ( item.url?.toLocaleLowerCase().indexOf( `/${sysPage.toLocaleLowerCase()}.aspx`  ) > -1 ) { item.tabs.push( EasyPagesSysTab ); }
     });
 
     //Only add to user tabs if it's NOT a known System page
