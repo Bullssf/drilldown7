@@ -100,7 +100,7 @@ export const EasyIconValidKeys: IEasyIconGroups[] = [ 'Products' , 'Processes' ,
 export const ProductWords : string [] = [ 'Armature', 'Curtain', 'Cushion', 'DAB', 'FAB', 'IC', 'KAB', 'Magnesium', 'Metal', 'PAB', 'Plastic', 'PTSAB', 'Thread', 'Webbing', 'Seatbelt', 'Airbag', 'Wheel', 'AB', 'SW', 'SB', 'IN', 'TE', 'Textile', 'Products' ];
 export const FunctionWords: string [] = [ 'Engineering', 'Purchasing', 'Finance', 'Manufacturing', 'Logistics', 'Legal', 'Human Resources' , 'Sales', 'Quality', 'Communications', 'Operations', 'Sustainability', 'IT', 'Information Technology' ];
 
-export const Software: string [] = [ 'JDE', 'Microsoft', 'Service Now', 'SharePoint', 'Windows', 'SAP', 'OneStream' ];
+export const Software: string [] = [ 'JDE', 'Microsoft', 'Service Now', 'SharePoint', 'Windows', 'SAP', 'OneStream', 'Crow Canyon', 'iOS', 'Google', 'Bing' ];
 
 
 export const WaysOfWorking: string[] = [ 'APS', 'Q5', '1P1p', 'VEVA', ];
@@ -174,7 +174,7 @@ export const EasyIconObjectDefault : IEasyIcons = {
     Nouns: {
       Folder: 'Nouns',
       Rules: '',
-      Icons: [  'Bank', 'Calculator', 'Cargo', 'Code', 'Credit', 'Fire', 'Health', 'Intelligence', 'Key', 'Link', 'Lock', 'Network', 'Program', 'Tool', '', '', '', ],
+      Icons: [  'Bank', 'Calculator', 'Cargo', 'Code', 'Credit', 'Fire', 'Health', 'Intelligence', 'Key', 'Link', 'Lock', 'Network', 'Program', 'Tool', 'Map', '', '', ],
       Suggestions: [ '', '', '', '', '', ],
       Status: 'Active',
       Priority: 4,
@@ -184,7 +184,7 @@ export const EasyIconObjectDefault : IEasyIcons = {
     Transport: {
       Folder: 'Transport',
       Rules: '',
-      Icons: [  'Car', 'Truck', 'Cycle', 'MotorCycle', '', '', '', '', '', ],
+      Icons: [  'Car', 'Truck', 'Cycle', 'MotorCycle', 'Airplane', 'Airport', '', '', '', ],
       Suggestions: [ '', '', '', '', '', '', '', '', ],
       Status: 'Active',
       Priority: 4,

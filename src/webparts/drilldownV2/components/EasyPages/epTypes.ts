@@ -105,6 +105,24 @@ export const SitePagesSource : ISourceProps = {
   metaX:[],
 }
 
+//https://github.com/mikezimm/drilldown7/issues/280
+export const EasyPagesCCSPages: string[] = [
+  'CCSBrandingSettings',
+  'CCSDisplayForm',
+  'CCSEditForm',
+  'CCSNewForm',
+  'CCSMSTeamsUtils',
+  'Workflow-Errors-Dashboard',
+  'Workflow-Logs-Dashboard',
+];
+
+export const EasyPagesSysPages: string[] = [
+  ...EasyPagesCCSPages,
+  ...[ ],
+];
+
+//https://github.com/mikezimm/drilldown7/issues/280
+export const EasyPagesSysTab = 'System';
 export const EasyPagesDevTab = 'zDev';
 export const EasyPagesRepoTab = 'zGit';
 export const DefaultOverflowTab = 'Others';
@@ -114,7 +132,8 @@ export function createNewSitePagesSource( source: ISourceName, webUrl: string, t
   const NewSource: ISourceProps = JSON.parse(JSON.stringify(SitePagesSource)) ;
   NewSource.webUrl = webUrl;
   NewSource.meta1 = tabs;
-  if ( showTricks === true && NewSource.meta1.indexOf( EasyPagesDevTab ) < 0 ) NewSource.meta1.push( EasyPagesDevTab )
+  NewSource.meta1.push( EasyPagesSysTab );
+  if ( showTricks === true && NewSource.meta1.indexOf( EasyPagesDevTab ) < 0 ) NewSource.meta1.push( EasyPagesDevTab );
   NewSource.EasyPageOverflowTab = EasyPageOverflowTab ? EasyPageOverflowTab : DefaultOverflowTab;
 
   console.log( `epTypes createNewSitePagesSource ${source}`, JSON.parse(JSON.stringify(NewSource)) );

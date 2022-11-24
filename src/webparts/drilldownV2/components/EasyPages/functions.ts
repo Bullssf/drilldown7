@@ -9,7 +9,7 @@ import "@pnp/sp/items";
 
 //Interfaces
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-import { DefaultOverflowTab, EasyPagesDevTab, ISourceProps, } from './epTypes'; //SourceInfo, 
+import { DefaultOverflowTab, EasyPagesDevTab, ISourceProps, EasyPagesSysPages, EasyPagesCCSPages, EasyPagesSysTab } from './epTypes'; //SourceInfo, 
 
 import { getExpandColumns, getSelectColumns } from '../../fpsReferences';
 import { createBasePerformanceInit, startPerformOp, updatePerformanceEnd } from '../../fpsReferences';
@@ -60,16 +60,28 @@ export function compoundArrayFilter( items: IEasyLink[], MetaFilter: string, Sea
 export function getUsedTabs( sourceProps: ISourceProps, items: IEasyLink[] ) : string[] {
   const foundTabs: string[] = [];
   let showOverFlow: any = false;
+  let systemTab: any = false;  //  https://github.com/mikezimm/drilldown7/issues/280
 
   items.map( item => {
-    item.tabs.map( tab => { 
-      if ( foundTabs.indexOf( tab ) < 0 ) foundTabs.push( tab );
-      if ( tab === sourceProps.EasyPageOverflowTab ) showOverFlow = true;
-    } )
-  })
+    item.tabs.map( tab => {
+
+      if ( tab === EasyPagesSysTab ) {
+        systemTab = true;  //  https://github.com/mikezimm/drilldown7/issues/280
+
+      } else if ( foundTabs.indexOf( tab ) < 0 ) {
+        foundTabs.push( tab );
+
+      } else if ( tab === sourceProps.EasyPageOverflowTab ) {
+        showOverFlow = true;
+      }
+
+    } );
+  });
+
   const sortedTabs: string[] = [];
   sourceProps.meta1.map( tab => { if ( foundTabs.indexOf( tab ) > -1 ) sortedTabs.push( tab ) ;} );
   if ( showOverFlow === true ) sortedTabs.push( sourceProps.EasyPageOverflowTab );
+  if ( systemTab === true ) sortedTabs.push( EasyPagesSysTab );  //  https://github.com/mikezimm/drilldown7/issues/280
 
   return sortedTabs;
 
@@ -82,7 +94,12 @@ export function getUsedTabs( sourceProps: ISourceProps, items: IEasyLink[] ) : s
  */
 export interface IGetPagesContent { items: IEasyLink[], performance: ILoadPerformance, errMessage: string }
 
-export async function fetchPages( sourceProps: ISourceProps, alertMe: boolean | undefined, consoleLog: boolean | undefined,) {
+export interface IItemsError {
+  items: any[];
+  errMessage: string;
+}
+
+export async function fetchPages( sourceProps: ISourceProps, alertMe: boolean | undefined, consoleLog: boolean | undefined,) : Promise<IItemsError> {
 
   let items : any[]= [];
   const expColumns = getExpandColumns( sourceProps.columns );
@@ -126,7 +143,7 @@ export async function getPagesContent( sourceProps: ISourceProps, EasyIconObject
 
   const fetchResults = await fetchPages( sourceProps, false, true );
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars, prefer-const
   let { items, errMessage, } = fetchResults;
 
   if ( errMessage.indexOf(`"List 'Site Pages' does not exist`) > 1 ) alert( `I'm sorry, this site does NOT have a library Titled 'Site Pages :(`);
@@ -158,6 +175,7 @@ export async function getPagesContent( sourceProps: ISourceProps, EasyIconObject
 
 }
 
+const DefaultThumbCCS : string = `https://www.crowcanyon.com/wp-content/uploads/2020/12/NITRO_Studio_Transparent2.png`;
 const DefaultThumbEasyContents : string = `https://cdn.hubblecontent.osi.office.net/m365content/publish/8833527d-1d55-40be-8d14-0e45b17ce81b/thumbnails/large.jpg`;
 const DefaultThumbExtreme : string = `https://cdn.hubblecontent.osi.office.net/m365content/publish/3232a7cd-821f-48bd-bf98-9d84185566a5/thumbnails/large.jpg`;
 const DefaultThumbEarth : string = `https://cdn.hubblecontent.osi.office.net/m365content/publish/a505371c-2fca-4d30-ba21-8e4d36e41e65/thumbnails/large.jpg`;
@@ -179,8 +197,15 @@ export function addSearchMeta ( items: IEasyLink[], sourceProps: ISourceProps, E
     item.url = item.File?.ServerRelativeUrl;
     item.imageUrl =  item.BannerImageUrl?.Url;
     item.imageDesc = item.BannerImageUrl?.Description;
+
+    // https://github.com/mikezimm/drilldown7/issues/280
+    EasyPagesCCSPages.map( ccs => {
+      if ( item.url?.toLocaleLowerCase().indexOf( `/${ccs.toLocaleLowerCase()}.aspx`  ) > -1 ) { item.imageUrl = DefaultThumbCCS; }
+    });
+
     if ( !item.imageUrl || item.imageUrl.indexOf( DefaultSiteLogo ) > - 1 ) {
       if ( item.title?.indexOf( 'Contents' ) > -1 ) { item.imageUrl = DefaultThumbEasyContents; }
+
       else if ( item.title?.toLocaleLowerCase().indexOf( 'extreme' ) > -1 ) { item.imageUrl = DefaultThumbExtreme; }
       else if ( item.title === 'Home' ) { item.imageUrl = DefaultThumbEarth; }
       else {
@@ -191,9 +216,19 @@ export function addSearchMeta ( items: IEasyLink[], sourceProps: ISourceProps, E
 
     }
     item.searchTextLC = `${item.Title} || ${item.Description}`.toLocaleLowerCase();
-    sourceProps.meta1.map( ( tab : string ) => {
-      if ( item.searchTextLC.indexOf( tab.toLocaleLowerCase() ) > -1 ) item.tabs.push( tab );
-    } );
+
+    // https://github.com/mikezimm/drilldown7/issues/280
+    EasyPagesSysPages.map( sysPage => {
+      if ( item.searchTextLC.indexOf( sysPage.toLocaleLowerCase() ) > -1 ) item.tabs.push( EasyPagesSysTab );
+    });
+
+    //Only add to user tabs if it's NOT a known System page
+    if ( item.tabs.indexOf( EasyPagesSysTab ) < 0 ) {
+      sourceProps.meta1.map( ( tab : string ) => {
+        if ( item.searchTextLC.indexOf( tab.toLocaleLowerCase() ) > -1 ) item.tabs.push( tab );
+      } );
+    }
+
   });
 
   items.map( item => {

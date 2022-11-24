@@ -119,9 +119,9 @@ export const WPPresetEverywhere : IPreConfigSettings = {
 
       EasyPagesEnable: false, //Disabled by default on Drilldown until can test in prod
       EasyPagesAudience: 'Everyone',
-      EasyPageTabsC:  DefaultEasyPagesTabs.join(';'),
-      EasyPageTabsP:  DefaultEasyPagesTabs.join(';'),
-      EasyPageTabsA:  DefaultEasyPagesTabs.join(';'),
+      EasyPageTabsC:  DefaultEasyPagesTabs.join(' ; '), // Added spaces for readability
+      EasyPageTabsP:  DefaultEasyPagesTabs.join(' ; '), // Added spaces for readability
+      EasyPageTabsA:  DefaultEasyPagesTabs.join(' ; '), // Added spaces for readability
       EasyPageOverflowTab:  DefaultOverflowTab,
       EasyPageParent: true, //Include parent site pages
       EasyPageUrlA: '', //Include alternate site's site pages
@@ -131,7 +131,7 @@ export const WPPresetEverywhere : IPreConfigSettings = {
       EasyPageContainerStyles:  '',  //Optional styles on container element
 
       easyIconEnable: true, // Used 
-      easyIconKeys:  EasyIconDefaultKeys.join(';'),
+      easyIconKeys:  EasyIconDefaultKeys.join(' ; '), // Added spaces for readability
       easyIconIgnore:  '',
 
       // FPSAgeIsVisible:  false,
