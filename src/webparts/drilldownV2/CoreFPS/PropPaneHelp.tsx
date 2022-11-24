@@ -612,7 +612,7 @@ export function getWebPartHelpElement ( sitePresets : ISitePreConfigProps, field
           </PivotItem>
       }
 
-      { getEasyIconsHelp( EasyIconObjectDefault, repoLink ) }
+      { getEasyIconsHelp( EasyIconObjectDefault, ) }
       { VisitorHelp }
       { BannerHelp }
       { FPSBasicHelp }

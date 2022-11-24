@@ -81,14 +81,10 @@ export function getUsedTabs( sourceProps: ISourceProps, items: IEasyLink[] ) : s
  * @returns 
  */
 export interface IGetPagesContent { items: IEasyLink[], performance: ILoadPerformance }
-export async function getPagesContent( sourceProps: ISourceProps, EasyIconObject: IEasyIcons = EasyIconObjectDefault, parentLink: string, ): Promise<IGetPagesContent> {
 
-  const performance: ILoadPerformance = createBasePerformanceInit( 1, false );
-  performance.ops.fetch1 = startPerformOp( 'fetch1 - getPages', null );
+export async function fetchPages( sourceProps: ISourceProps, ) {
 
-  // debugger;
-  const web = Web(`${sourceProps.webUrl.indexOf('https:') < 0 ? window.location.origin : ''}${sourceProps.webUrl}`);
-
+  let items : any[]= [];
   const expColumns = getExpandColumns( sourceProps.columns );
   const selColumns = getSelectColumns( sourceProps.columns );
 
@@ -98,43 +94,42 @@ export async function getPagesContent( sourceProps: ISourceProps, EasyIconObject
   const selectThese = [ baseSelectColumns, ...selColumns].join(",");
   const restFilter = sourceProps.restFilter ? sourceProps.restFilter : '';
   const orderBy = sourceProps.orderBy ? sourceProps.orderBy : null;
-  let items : IEasyLink[]= [];
 
+  const web = Web(`${sourceProps.webUrl.indexOf('https:') < 0 ? window.location.origin : ''}${sourceProps.webUrl}`);
+
+  let errMessage: string = '';
   try {
     if ( orderBy ) {
       //This does NOT DO ANYTHING at this moment.  Not sure why.
       items = await web.lists.getByTitle( sourceProps.listTitle ).items
       .select(selectThese).expand(expandThese).filter(restFilter).orderBy(orderBy.prop, orderBy.asc ).getAll();
-      performance.ops.fetch1 = updatePerformanceEnd( performance.ops.fetch1, true, items.length );
-
-      // 2022-11-13:  Verified this does get quick launch items
-      // {
-      //   "odata.type": "SP.NavigationNode",
-      //   "odata.id": "https://tenant.sharepoint.com/sites/SolutionTesting/DDv2/_api/Web/Navigation/GetNodeById(2002)",
-      //   "odata.editLink": "Web/Navigation/GetNodeById(2002)",
-      //   "AudienceIds": null,
-      //   "CurrentLCID": 1033,
-      //   "Id": 2002,
-      //   "IsDocLib": true,
-      //   "IsExternal": true,
-      //   "IsVisible": true,
-      //   "ListTemplateType": 0,
-      //   "Title": "Notebook",
-      //   "Url": "/sites/SolutionTesting/DDv2/_layouts/15/Doc.aspx?sourcedoc={dc2ddca8-7375-4af8-b4bd-76bfa96fde26}&action=editnew"
-      // }
-      // const quick = await web.navigation.quicklaunch();
-      // console.log( `${sourceProps.webUrl} quick launch:` , quick );
 
     } else {
       items = await web.lists.getByTitle( sourceProps.listTitle ).items
       .select(selectThese).expand(expandThese).filter(restFilter).getAll();
     }
 
-
   } catch (e) {
-    getHelpfullErrorV2( e, true, true, 'getPagesContent ~ 73');
+    errMessage = getHelpfullErrorV2( e, true, true, 'getPagesContent ~ 73');
     console.log('sourceProps', sourceProps );
   }
+
+  return { items: items, errMessage: errMessage };
+
+}
+
+export async function getPagesContent( sourceProps: ISourceProps, EasyIconObject: IEasyIcons = EasyIconObjectDefault, parentLink: string, ): Promise<IGetPagesContent> {
+
+  //"List 'Site Pages' does not exist at site with URL
+  const performance: ILoadPerformance = createBasePerformanceInit( 1, false );
+  performance.ops.fetch1 = startPerformOp( 'fetch1 - getPages', null );
+
+  const fetchResults = await fetchPages( sourceProps );
+
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  let { items, errMessage, } = fetchResults;
+
+  performance.ops.fetch1 = updatePerformanceEnd( performance.ops.fetch1, true, items.length );
 
   if ( parentLink ) items.push( //'Title','Description','Author/Title','Editor/Title','File/ServerRelativeUrl','BannerImageUrl'
     {
@@ -145,9 +140,6 @@ export async function getPagesContent( sourceProps: ISourceProps, EasyIconObject
     } as any
   );
 
-  // if ( showTricks === true ) { items = [ ...items, ...EasyDevPages ]; }
-
-  // debugger;
   performance.ops.analyze1 = startPerformOp( 'analyze1 - addSearchMeta', null );
   items = addSearchMeta( items, sourceProps, EasyIconObject );
 
@@ -160,7 +152,7 @@ export async function getPagesContent( sourceProps: ISourceProps, EasyIconObject
 
   console.log( sourceProps.defType, sourceProps.listTitle , items );
 
-  return { items: items, performance: performance };
+  return { items: items as IEasyLink[], performance: performance };
 
 }
 
@@ -207,8 +199,6 @@ export function addSearchMeta ( items: IEasyLink[], sourceProps: ISourceProps, E
 
   });
 
-
   return items;
-
 
 }
