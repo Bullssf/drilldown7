@@ -64,12 +64,12 @@ export function getUsedTabs( sourceProps: ISourceProps, items: IEasyLink[] ) : s
   items.map( item => {
     item.tabs.map( tab => { 
       if ( foundTabs.indexOf( tab ) < 0 ) foundTabs.push( tab );
-      if ( tab === sourceProps.overflowTab ) showOverFlow = true;
+      if ( tab === sourceProps.EasyPageOverflowTab ) showOverFlow = true;
     } )
   })
   const sortedTabs: string[] = [];
   sourceProps.meta1.map( tab => { if ( foundTabs.indexOf( tab ) > -1 ) sortedTabs.push( tab ) ;} );
-  if ( showOverFlow === true ) sortedTabs.push( sourceProps.overflowTab );
+  if ( showOverFlow === true ) sortedTabs.push( sourceProps.EasyPageOverflowTab );
 
   return sortedTabs;
 
@@ -80,9 +80,9 @@ export function getUsedTabs( sourceProps: ISourceProps, items: IEasyLink[] ) : s
  * @param sourceProps 
  * @returns 
  */
-export interface IGetPagesContent { items: IEasyLink[], performance: ILoadPerformance }
+export interface IGetPagesContent { items: IEasyLink[], performance: ILoadPerformance, errMessage: string }
 
-export async function fetchPages( sourceProps: ISourceProps, ) {
+export async function fetchPages( sourceProps: ISourceProps, alertMe: boolean | undefined, consoleLog: boolean | undefined,) {
 
   let items : any[]= [];
   const expColumns = getExpandColumns( sourceProps.columns );
@@ -110,7 +110,7 @@ export async function fetchPages( sourceProps: ISourceProps, ) {
     }
 
   } catch (e) {
-    errMessage = getHelpfullErrorV2( e, true, true, 'getPagesContent ~ 73');
+    errMessage = getHelpfullErrorV2( e, alertMe, consoleLog, 'getPagesContent ~ 73');
     console.log('sourceProps', sourceProps );
   }
 
@@ -124,10 +124,12 @@ export async function getPagesContent( sourceProps: ISourceProps, EasyIconObject
   const performance: ILoadPerformance = createBasePerformanceInit( 1, false );
   performance.ops.fetch1 = startPerformOp( 'fetch1 - getPages', null );
 
-  const fetchResults = await fetchPages( sourceProps );
+  const fetchResults = await fetchPages( sourceProps, false, true );
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   let { items, errMessage, } = fetchResults;
+
+  if ( errMessage.indexOf(`"List 'Site Pages' does not exist`) > 1 ) alert( `I'm sorry, this site does NOT have a library Titled 'Site Pages :(`);
 
   performance.ops.fetch1 = updatePerformanceEnd( performance.ops.fetch1, true, items.length );
 
@@ -148,11 +150,11 @@ export async function getPagesContent( sourceProps: ISourceProps, EasyIconObject
   items = sortObjectArrayByStringKeyCollator( items, 'asc', 'title', true, 'en' );
 
   // eslint-disable-next-line no-eval
-  if ( sourceProps.jsFilter ) items = items.filter( item => eval( sourceProps.jsFilter ) === true );
+  if ( sourceProps.evalFilter ) items = items.filter( item => eval( sourceProps.evalFilter ) === true );
 
   console.log( sourceProps.defType, sourceProps.listTitle , items );
 
-  return { items: items as IEasyLink[], performance: performance };
+  return { items: items as IEasyLink[], performance: performance, errMessage: errMessage };
 
 }
 
@@ -195,7 +197,7 @@ export function addSearchMeta ( items: IEasyLink[], sourceProps: ISourceProps, E
   });
 
   items.map( item => {
-    if ( item.tabs.length === 0 ) item.tabs.push( sourceProps.overflowTab );
+    if ( item.tabs.length === 0 ) item.tabs.push( sourceProps.EasyPageOverflowTab );
 
   });
 

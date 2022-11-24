@@ -25,7 +25,7 @@
       //https://github.com/mikezimm/Pnpjs-v2-Upgrade-sample/issues/59
       this.properties.easyPageTabs = DefaultEasyPagesTabs.join(';');
 
-    } else if ( propertyPath === 'easyPageOverflowTab' && !newValue )  {
-      this.properties.easyPageOverflowTab = DefaultOverflowTab;
+    } else if ( propertyPath === 'EasyPageOverflowTab' && !newValue )  {
+      this.properties.EasyPageOverflowTab = DefaultOverflowTab;
 
 7. Add to PropPaneHelp

@@ -928,7 +928,7 @@ public componentDidUpdate( prevProps: IDrilldownV2Props ){
         // eslint-disable-next-line prefer-const
         let nearBannerElementsArray: any[] = [];
         // if ( this.props.bannerProps.beAUser !== true )  {
-          if ( this.props.easyPagesExtraProps.easyPageEnable === true )  {
+          if ( this.props.easyPagesExtraProps.EasyPagesEnable === true )  {
             nearBannerElementsArray.push( [
               <Icon key='Link12' iconName='Link12' onClick={ this._toggleEasyLinks.bind(this) } style={ this.props.bannerProps.bannerCmdReactCSS }/>
             ] );
@@ -963,7 +963,7 @@ public componentDidUpdate( prevProps: IDrilldownV2Props ){
         />;
 
         const EasyPagesElement = <EasyPagesHook 
-          easyPagesExtraProps={ { ...this.props.easyPagesExtraProps, ...{ expanded: this.state.showEasyPages, toggleExpanded: this._toggleEasyLinks.bind(this) } } }
+          easyPagesExtraProps={ { ...this.props.easyPagesExtraProps, ...{ easyPagesExpanded: this.state.showEasyPages, easyPagesToggleExpanded: this._toggleEasyLinks.bind(this) } } }
           easyPagesCommonProps= { this.props.easyPagesCommonProps }
           // easyPagesCommonProps= { this.props.easyPagesCommonProps }
           EasyIconsObject= { this.props.EasyIconsObject }

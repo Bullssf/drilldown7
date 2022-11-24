@@ -976,23 +976,28 @@ export default class DrilldownV2WebPart extends BaseClientSideWebPart<IDrilldown
         pinState: this.properties.defPinState,
 
         // altSiteNavigation: this.properties.easyPageAltNav,
-        styles: getReactCSSFromString( 'easyPageStyles', this.properties.easyPageStyles, {} ).parsed,
-        containerStyles: getReactCSSFromString( 'easyPageContainer', this.properties.easyPageContainer, {} ).parsed,
+        styles: getReactCSSFromString( 'EasyPageStyles', this.properties.EasyPageStyles, {} ).parsed,
+        containerStyles: getReactCSSFromString( 'EasyPageContainerStyles', this.properties.EasyPageContainerStyles, {} ).parsed,
       },
 
       easyPagesExtraProps: {
-        expanded: false ,
+        easyPagesExpanded: false ,
         showTricks: bannerProps.showTricks,
-        easyPageEnable: this.properties.easyPageEnable,
-        fetchParent: this.properties.easyPageEnable === true ? this.properties.easyPageParent : false,
-        altSitePagesUrl: this.properties.easyPageEnable === true ? this.properties.easyPageAltUrl : '',
-        atlSiteTitle: this.properties.atlSiteTitle,
+        EasyPagesEnable: this.properties.EasyPagesEnable,
+        EasyPageParentFetch: this.properties.EasyPagesEnable === true ? this.properties.EasyPageParent : false,
+        EasyPageUrlA: this.properties.EasyPagesEnable === true ? this.properties.EasyPageUrlA : '',
+        EasyPagesSiteTitleA: this.properties.EasyPagesSiteTitleA,
 
-        overflowTab: this.properties.easyPageOverflowTab,
+        EasyPageUrlB: this.properties.EasyPagesEnable === true ? this.properties.EasyPageUrlB : '',
+        EasyPagesSiteTitleB: this.properties.EasyPagesSiteTitleB,
 
-        tabsC: getStringArrayFromString( this.properties.easyPageTabsC , ';', true, null, true ) ,
-        tabsP: getStringArrayFromString( this.properties.easyPageTabsP , ';', true, null, true ) ,
-        tabsA: getStringArrayFromString( this.properties.easyPageTabsA , ';', true, null, true ) ,
+        EasyPageOverflowTab: this.properties.EasyPageOverflowTab,
+
+        tabsC: getStringArrayFromString( this.properties.EasyPageTabsC , ';', true, null, true ) ,
+        tabsP: getStringArrayFromString( this.properties.EasyPageTabsP , ';', true, null, true ) ,
+        tabsA: getStringArrayFromString( this.properties.EasyPageTabsA , ';', true, null, true ) ,
+        tabsB: getStringArrayFromString( this.properties.EasyPageTabsB , ';', true, null, true ) ,
+
       },
 
       EasyIconsObject: setEasyIconsObjectProps( this.properties ),
@@ -1474,12 +1479,24 @@ export default class DrilldownV2WebPart extends BaseClientSideWebPart<IDrilldown
       //https://github.com/mikezimm/Pnpjs-v2-Upgrade-sample/issues/59
       this.properties.easyIconKeys = EasyIconDefaultKeys.join(';');
 
-    } else if ( propertyPath === 'easyPageTabs' && !newValue )  {
+    } else if ( propertyPath === 'EasyPageTabsC' && !newValue )  {
       //https://github.com/mikezimm/Pnpjs-v2-Upgrade-sample/issues/59
-      this.properties.easyPageTabs = DefaultEasyPagesTabs.join(';');
+      this.properties.EasyPageTabsC = DefaultEasyPagesTabs.join(';');
 
-    } else if ( propertyPath === 'easyPageOverflowTab' && !newValue )  {
-      this.properties.easyPageOverflowTab = DefaultOverflowTab;
+    } else if ( propertyPath === 'EasyPageTabsP' && !newValue )  {
+      //https://github.com/mikezimm/Pnpjs-v2-Upgrade-sample/issues/59
+      this.properties.EasyPageTabsP = DefaultEasyPagesTabs.join(';');
+
+    } else if ( propertyPath === 'EasyPageTabsA' && !newValue )  {
+      //https://github.com/mikezimm/Pnpjs-v2-Upgrade-sample/issues/59
+      this.properties.EasyPageTabsA = DefaultEasyPagesTabs.join(';');
+
+    } else if ( propertyPath === 'EasyPageTabsB' && !newValue )  {
+      //https://github.com/mikezimm/Pnpjs-v2-Upgrade-sample/issues/59
+      this.properties.EasyPageTabsB = DefaultEasyPagesTabs.join(';');
+
+} else if ( propertyPath === 'EasyPageOverflowTab' && !newValue )  {
+      this.properties.EasyPageOverflowTab = DefaultOverflowTab;
 
 
      } else if ( propertyPath === 'bannerStyle' || propertyPath === 'bannerCmdStyle' )  {

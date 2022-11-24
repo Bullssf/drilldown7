@@ -66,29 +66,29 @@ export function getZGitLinks( repo : IRepoLinks ) : IEasyLink[] {
    * +- is required in that case.
    */
   
-  links.push(  { title: `Issues`, description: `${repo.desc}/issues`, 
+  links.push(  { title: `Issues`, description: `${repo.desc}/issues`,
                  url: `${repo.href}/issues` , imageUrl: TheCKLogo , type: 'current', tabs: [ EasyPagesRepoTab ]  } as any );
 
-  links.push(  { title: `Open Priority Issues`, description: `${repo.desc}/issues`, 
+  links.push(  { title: `Open Priority Issues`, description: `${repo.desc}/issues`,
                  url: `${repo.href}/issues?q=is:issue++is:open++label:priority` , imageUrl: TheCKLogo , type: 'current', tabs: [ EasyPagesRepoTab ]  } as any );
 
-  links.push(  { title: `Open Priority Issues - NOT Complete`, description: `${repo.desc}/issues`, 
+  links.push(  { title: `Open Priority Issues - NOT Complete`, description: `${repo.desc}/issues`,
                  url: `${repo.href}/issues?q=is:issue++is:open++label:priority+-label:complete` , imageUrl: TheCKLogo , type: 'current', tabs: [ EasyPagesRepoTab ]  } as any );
 
-  links.push(  { title: `Open Priority Issues - Completed`, description: `${repo.desc}/issues`, 
+  links.push(  { title: `Open Priority Issues - Completed`, description: `${repo.desc}/issues`,
                  url: `${repo.href}/issues?q=is:issue+is:open++label:priority++label:complete` , imageUrl: TheCKLogo , type: 'current', tabs: [ EasyPagesRepoTab ]  } as any );
 
-  links.push(  { title: `Closed Issues`, description: `${repo.desc}/issues`, 
+  links.push(  { title: `Closed Issues`, description: `${repo.desc}/issues`,
                 url: `${repo.href}/issues?q=is:issue++is:closed` , imageUrl: TheCKLogo , type: 'current', tabs: [ EasyPagesRepoTab ]  } as any );
 
-  links.push(  { title: `Open Issues - Completed`, description: `${repo.desc}/issues`, 
+  links.push(  { title: `Open Issues - Completed`, description: `${repo.desc}/issues`,
                 url: `${repo.href}/issues?q=is:issue+is:open++label:complete` , imageUrl: TheCKLogo , type: 'current', tabs: [ EasyPagesRepoTab ]  } as any );
 
   links.push( EasyDevFPSReact );
   links.push( EasyDevFPSJS );
   links.push( EasyDevFPSBanner );
   links.push( EasyDevFPSPnp2 );
-  
+
   return links;
 
 }

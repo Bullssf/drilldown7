@@ -63,7 +63,7 @@ export function buildPerformanceGroup( wpProps: IDrilldownV2WebPartProps ) {
       label: 'Javascript eval filter',
       description: 'See Github Wiki for examples',
       multiline: true,
-      value: wpProps.jsFilter,
+      value: wpProps.evalFilter,
   }));
 
   groupFields.push(

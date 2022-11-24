@@ -117,18 +117,18 @@ export const WPPresetEverywhere : IPreConfigSettings = {
 
       //Move these to npmFunctions when code is moved
 
-      easyPageEnable: false, //Disabled by default on Drilldown until can test in prod
-      easyPagesAudience: 'Everyone',
-      easyPageTabsC:  DefaultEasyPagesTabs.join(';'),
-      easyPageTabsP:  DefaultEasyPagesTabs.join(';'),
-      easyPageTabsA:  DefaultEasyPagesTabs.join(';'),
-      easyPageOverflowTab:  DefaultOverflowTab,
-      easyPageParent: true, //Include parent site pages
-      easyPageAltUrl: '', //Include alternate site's site pages
-      atlSiteTitle:  '', //Include navigation elements from other site
+      EasyPagesEnable: false, //Disabled by default on Drilldown until can test in prod
+      EasyPagesAudience: 'Everyone',
+      EasyPageTabsC:  DefaultEasyPagesTabs.join(';'),
+      EasyPageTabsP:  DefaultEasyPagesTabs.join(';'),
+      EasyPageTabsA:  DefaultEasyPagesTabs.join(';'),
+      EasyPageOverflowTab:  DefaultOverflowTab,
+      EasyPageParent: true, //Include parent site pages
+      EasyPageUrlA: '', //Include alternate site's site pages
+      EasyPagesSiteTitleA:  '', //Include navigation elements from other site
       easyPageSeparateExtras:  true, //Include navigation elements from other site
-      easyPageStyles:  '',  //Optional styles on entire page
-      easyPageContainer:  '',  //Optional styles on container element
+      EasyPageStyles:  '',  //Optional styles on entire page
+      EasyPageContainerStyles:  '',  //Optional styles on container element
 
       easyIconEnable: true, // Used 
       easyIconKeys:  EasyIconDefaultKeys.join(';'),
