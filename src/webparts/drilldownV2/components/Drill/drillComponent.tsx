@@ -786,9 +786,12 @@ public componentDidUpdate( prevProps: IDrilldownV2Props ){
         //   } = this.props;
 
         const { 
-          bannerMessage, quickCommands
+          bannerMessage, quickCommands, searchText, searchAge
         } = this.state;
 
+        const { FPSAgeColumnTitle,  } = this.props.ageSliderWPProps
+        const isOOTBMeta: boolean = FPSAgeColumnTitle === 'Modified' || FPSAgeColumnTitle === 'Created' ? true : false;
+        const FPSAgeSliderText: string = isOOTBMeta? FPSAgeSliderOptionsOOTB[ searchAge ].text : FPSAgeSliderOptions[ searchAge ].text;
         let x = 1;
         if ( x === 1 ) {
 
@@ -1181,10 +1184,32 @@ public componentDidUpdate( prevProps: IDrilldownV2Props ){
 
                 }
 
-                let noInfo = [];
-                noInfo.push( <h3>{'Found ' + this.state.searchCount + ' items with this search criteria:'}</h3> )  ;
-                if ( !this.state.searchText ) { noInfo.push( <p>{'Search Text: ' + this.state.searchText}</p> )  ; }
-                if ( !this.state.searchMeta[0] ) { noInfo.push( <p>{'Refiner: ' + this.state.searchMeta[0]}</p> ) ; }
+                const noItemsElement: JSX.Element = <div>
+                    <h2>Hmmm... I could not find any items with</h2>
+                    <h3>Search text: </h3>
+                    <div style={{ fontWeight: 'bold', color: 'darkred', marginLeft: '30px' }}>{ searchText ? searchText : 'Does not look like you typed anything in the search box...' }</div>
+                    <h3>With any of these refiners</h3>
+                    {this.state.searchMeta.length === 0 ? 
+                      <div>
+                        No refiners were selected.
+                      </div>
+                      :
+                      <div style={{ fontWeight: 'bold', color: 'blue' }}>{ this.state.searchMeta.map( (str: string, idx: number ) => {
+                        return <li key={idx} style={{ marginLeft: '30px' }} >{ `${this.props.refiners[ idx ]} - ${str}` }</li>
+                      })}</div>
+                    }
+                      {this.state.searchAge === 5 ? 
+                      <h3>
+                        All ${ FPSAgeColumnTitle } dates included.
+                      </h3>
+                      :<div>
+                        <h3>Filtering dates:</h3>
+                        <div style={{ marginLeft: '30px', fontWeight: 'bold' }}>{ FPSAgeColumnTitle} { FPSAgeSliderText}</div>
+                      </div>
+                    }
+                  </div>;
+
+                let noInfo = [ noItemsElement ];
 
                 if ( this.state.allItems.length === 0 ) {
                     thisPage = <div style={{ paddingBottom: 30 }}className={styles.contents}>
@@ -1270,7 +1295,7 @@ public componentDidUpdate( prevProps: IDrilldownV2Props ){
                                 </span>; });
 
                             instructionBlock = null;
-                            reactListItems  = this.state.searchedItems.length === 0 ? <div>NO ITEMS FOUND</div> : 
+                            reactListItems  = this.state.searchCount === 0 ? null : 
                             <ReactListItems 
                                 parentListFieldTitles={ viewDefs.length > 0 ? null : this.props.parentListFieldTitles }
     
@@ -1331,28 +1356,28 @@ public componentDidUpdate( prevProps: IDrilldownV2Props ){
                     consoleRef( 'rederObjects1', this.state.refinerObj );
                     if ( this.state.maxRefinersToShow > 1 && this.state.searchMeta[0] !== 'All' ) { 
                         textMaxRefinersToShow = 1;
-                        childIndex0 = this.state.refinerObj.childrenKeys.indexOf(this.state.searchMeta[0]);
-                        if ( buildStats ) {  statRefinerObject = this.state.refinerObj.childrenObjs[childIndex0]; }
+                        childIndex0 = this.state.refinerObj?.childrenKeys?.indexOf(this.state.searchMeta[0]);
+                        if ( buildStats ) {  statRefinerObject = this.state.refinerObj?.childrenObjs[childIndex0]; }
                         consoleRef( 'rederObjects2', this.state.refinerObj );
                     }
                     if ( textMaxRefinersToShow >= 1 && this.state.maxRefinersToShow > 2 && this.state.searchMeta.length > 1 && this.state.searchMeta[1] !== 'All' ) { 
                         textMaxRefinersToShow = 2;
-                        childIndex1 = this.state.refinerObj.childrenObjs[childIndex0].childrenKeys.indexOf(this.state.searchMeta[1]);
-                        if ( buildStats ) {  statRefinerObject = this.state.refinerObj.childrenObjs[childIndex0].childrenObjs[childIndex1]; }
+                        childIndex1 = this.state.refinerObj?.childrenObjs[childIndex0]?.childrenKeys?.indexOf(this.state.searchMeta[1]);
+                        if ( buildStats ) {  statRefinerObject = this.state.refinerObj?.childrenObjs[childIndex0]?.childrenObjs[childIndex1]; }
                         consoleRef( 'rederObjects3', this.state.refinerObj );
                     }
 
                     if ( this.state.showCountChart === true || statsVisible === true ) {
                         if ( buildCount ) { countCharts.push( this._buildCountCharts( this.state.refiners[0], 'refiner0' , this.state.refinerObj, RefinerChartTypes ) ); }
                         if ( textMaxRefinersToShow >= 1 ) {
-                            if ( buildCount ) {  countCharts.push( this._buildCountCharts( this.state.refiners[1], 'refiner1' , this.state.refinerObj.childrenObjs[childIndex0], RefinerChartTypes ) ); }
+                            if ( buildCount ) {  countCharts.push( this._buildCountCharts( this.state.refiners[1], 'refiner1' , this.state.refinerObj?.childrenObjs[childIndex0], RefinerChartTypes ) ); }
                             if ( textMaxRefinersToShow >= 2 ) {
-                                if ( buildCount ) {  countCharts.push( this._buildCountCharts( this.state.refiners[2], 'refiner2' , this.state.refinerObj.childrenObjs[childIndex0].childrenObjs[childIndex1],  RefinerChartTypes ) ); }
+                                if ( buildCount ) {  countCharts.push( this._buildCountCharts( this.state.refiners[2], 'refiner2' , this.state.refinerObj?.childrenObjs[childIndex0]?.childrenObjs[childIndex1],  RefinerChartTypes ) ); }
                             }
                         }
 
                         if ( countCharts.length === 0 ) { countCharts = null ; }
-                        if ( buildStats && statsVisible === true && statRefinerObject && statRefinerObject.childrenKeys.length > 0  ) {
+                        if ( buildStats && statsVisible === true && statRefinerObject && statRefinerObject?.childrenKeys.length > 0  ) {
                             let statChartArray = buildStatChartsArray( this.state.drillList.refinerStats, 'summaries', statRefinerObject );
                             statCharts = this._buildStatCharts( statChartArray );
 
