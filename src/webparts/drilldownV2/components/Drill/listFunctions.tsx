@@ -1,5 +1,7 @@
 
-import { IViewField, IGrouping } from "@pnp/spfx-controls-react/lib/ListView";
+import { IGrouping } from "@pnp/spfx-controls-react/lib/ListView";
+
+import { IViewFieldDD } from './reactListView';
 
 import { Web,  } from "@pnp/sp/presets/all";
 
@@ -87,12 +89,12 @@ export function getAppropriateViewFields ( OrigViewDefs: ICustViewDef[], current
     //2022-01-18:  Skipped the parse/stringify for performance after determining it was not causing the crash.
     let viewDefs: ICustViewDef[] = OrigViewDefs; //JSON.parse(JSON.stringify(OrigViewDefs));
 
-    let result : IViewField[] = [];
+    let result : IViewFieldDD[] = [];
 
     if ( viewDefs ) {
 
         let viewFields: any[] = getBestFitView( viewDefs, currentWidth ).viewFields ;
-        result = viewFields as IViewField[];
+        result = viewFields as IViewFieldDD[];
     
         let avgWidth = result.length > 0 ? currentWidth/result.length : 100;
         let completeResult = result.map( f => {

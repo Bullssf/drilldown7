@@ -37,7 +37,7 @@ export function buildViewGroupFields ( title: string, view: 1 | 2 | 3, showSyncV
             }));
     
       groupFields.push( JSON_Edit_Link );
-    
+
       if ( showSyncViews === true ) {
         groupFields.push(
           PropertyPaneToggle('syncViews', {
@@ -47,7 +47,6 @@ export function buildViewGroupFields ( title: string, view: 1 | 2 | 3, showSyncV
           }));
       }
 
-
       groupFields.push(
         PropertyPaneTextField(`viewJSON${view}`, {
             label: 'View settings',
@@ -56,6 +55,18 @@ export function buildViewGroupFields ( title: string, view: 1 | 2 | 3, showSyncV
             disabled: disabled,
             }));
     
+      groupFields.push(
+        PropertyPaneTextField('richHeight', {
+          label: 'RichText max-hights',
+          description: 'Semi-colon separated row Heights in em',
+        }));
+
+      groupFields.push(
+        PropertyPaneTextField('autoRichHeight', {
+          label: 'Auto-Expand Rich text Height',
+          description: 'maxQty;maxHeight (in em)',
+        }));
+
         const ExportThisGroup: IPropertyPaneGroup = {
           groupName: `${title} size screens`,
           isCollapsed: true,

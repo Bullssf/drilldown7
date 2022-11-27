@@ -211,8 +211,9 @@ export function processAllItems( allItems : IDrillItemInfo[], errMessage: string
 
         } else {
             if ( item.timeCreated === undefined ) {
-                item.timeCreated = makeTheTimeObject(item.Created);
-                item.timeModified = makeTheTimeObject(item.Modified);
+                drillList.ageColumns.map( column => {
+                  if ( item[ `${column}` ] ) item[ `time${column}` ] = makeTheTimeObject(item[ column ]);
+                });
     
                 item.bestCreate = getBestTimeDelta(item.Created, thisIsNow);
                 item.bestMod = getBestTimeDelta(item.Modified, thisIsNow);
@@ -274,6 +275,8 @@ export function processAllItems( allItems : IDrillItemInfo[], errMessage: string
                   drillList.richColumns.push( staticColumn );
               }
             });
+
+            // console.log(`Showing rich text columns: ~ 278`, drillList.richColumns );
 
             if ( item.Id === 8 ) {
                 console.log('Check item 8' );

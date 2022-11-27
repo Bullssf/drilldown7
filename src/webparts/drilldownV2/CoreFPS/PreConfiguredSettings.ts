@@ -3,6 +3,8 @@
 
 import { EasyIconDefaultKeys } from '../components/EasyIcons/eiTypes';
 import { DefaultEasyPagesTabs, DefaultOverflowTab } from '../components/EasyPages/epTypes';
+// import { FPSAgeSliderPresetEverywhere } from '../components/FPSAgeSlider/FPSAgeTypes';
+import { FPSAgeSliderPresetEverywhere } from '@mikezimm/fps-react/lib/FPSAgeSlider';
 import { PresetFPSBanner, IPreConfigSettings, IAllPreConfigSettings,  } from '../fpsReferences';
 // import { encrptMeOriginalTest } from '@mikezimm/npmfunctions/dist/HelpPanelOnNPM/onNpm/logTest';
 // import { ContALVFMContent, ContALVFMWebP } from '@mikezimm/npmfunctions/dist/HelpPanelOnNPM/onNpm/constants';
@@ -23,14 +25,14 @@ export const WPForceEverywhere : IPreConfigSettings = {
         // pageLinksrestFilter: 'ID eq {{PageId}}',
         // pageLinkslinkProp: 'File/ServerRelativeUrl', // aka FileLeaf to open file name, if empty, will just show the value
         // pageLinksdisplayProp: 'FileLeafRef',
-        
+
     }
 };
 
 export const WPPresetEverywhere : IPreConfigSettings = {
     source: 'WPPresetEverywhere',
     location: '*',
-    props: {
+    props: { ...{
 
       isLibrary: false,
       newMap: [], //Added to address https://github.com/mikezimm/drilldown7/issues/184
@@ -47,7 +49,7 @@ export const WPPresetEverywhere : IPreConfigSettings = {
       viewWidth2: 800,
       viewWidth3: 500,
       listDefinition: "",
-      
+
       includeDetails: true,
       detailsAudience: 'Everyone',
 
@@ -75,7 +77,8 @@ export const WPPresetEverywhere : IPreConfigSettings = {
       hideFolders: true,
 
       syncViews: false,
-      
+      richHeight: '2.2;10;30',
+      autoRichHeight: '5;30',
       viewJSON1: "[{ \"name\": \"Id\", \"displayName\": \"Id\", \"minWidth\": 50 },{ \"name\": \"Title\", \"displayName\": \"Title\", \"minWidth\": 200 },{ \"name\": \"Created\", \"displayName\": \"Created\", \"minWidth\": 200 },{ \"name\": \"Modified\", \"displayName\": \"Modified\", \"minWidth\": 200 }]",
       viewJSON2: "[{ \"name\": \"Id\", \"displayName\": \"Id\", \"minWidth\": 50 },{ \"name\": \"Title\", \"displayName\": \"Title\", \"minWidth\": 200 },{ \"name\": \"Modified\", \"displayName\": \"Modified\", \"minWidth\": 200 }]",
       viewJSON3: "[{ \"name\": \"Id\", \"displayName\": \"Id\", \"minWidth\": 50 },{ \"name\": \"Title\", \"displayName\": \"Title\", \"minWidth\": 200 }]",
@@ -114,25 +117,31 @@ export const WPPresetEverywhere : IPreConfigSettings = {
 
       //Move these to npmFunctions when code is moved
 
-      easyPageEnable: false, //Disabled by default on Drilldown until can test in prod
-      easyPagesAudience: 'Everyone',
-      easyPageTabsC:  DefaultEasyPagesTabs.join(';'),
-      easyPageTabsP:  DefaultEasyPagesTabs.join(';'),
-      easyPageTabsA:  DefaultEasyPagesTabs.join(';'),
-      easyPageOverflowTab:  DefaultOverflowTab,
-      easyPageParent: true, //Include parent site pages
-      easyPageAltUrl: '', //Include alternate site's site pages
-      atlSiteTitle:  '', //Include navigation elements from other site
+      EasyPagesEnable: false, //Disabled by default on Drilldown until can test in prod
+      EasyPagesAudience: 'Everyone',
+      EasyPageTabsC:  DefaultEasyPagesTabs.join(' ; '), // Added spaces for readability
+      EasyPageTabsP:  DefaultEasyPagesTabs.join(' ; '), // Added spaces for readability
+      EasyPageTabsA:  DefaultEasyPagesTabs.join(' ; '), // Added spaces for readability
+      EasyPageTabsB:  DefaultEasyPagesTabs.join(' ; '), // Added spaces for readability
+      EasyPageOverflowTab:  DefaultOverflowTab,
+      EasyPageParent: true, //Include parent site pages
+      EasyPageUrlA: '', //Include alternate site's site pages
+      EasyPagesSiteTitleA:  '', //Include navigation elements from other site
+      EasyPageUrlB: '', //Include alternate site's site pages
+      EasyPagesSiteTitleB:  '', //Include navigation elements from other site
       easyPageSeparateExtras:  true, //Include navigation elements from other site
-      easyPageStyles:  '',  //Optional styles on entire page
-      easyPageContainer:  '',  //Optional styles on container element
+      EasyPageStyles:  '',  //Optional styles on entire page
+      EasyPageContainerStyles:  '',  //Optional styles on container element
 
       easyIconEnable: true, // Used 
-      easyIconKeys:  EasyIconDefaultKeys.join(';'),
+      easyIconKeys:  EasyIconDefaultKeys.join(' ; '), // Added spaces for readability
       easyIconIgnore:  '',
 
-
-    }
+      // FPSAgeIsVisible:  false,
+      // FPSAgeColumnName: 'Modified',
+      // FPSAgeColumnTitle: 'Modified',
+      // FPSAgeDefault: 4,  //Should be index of AgeSliderOption
+    }, ...{ ...FPSAgeSliderPresetEverywhere } }
 };
 
 export const PresetSomeRandomSite : IPreConfigSettings = {

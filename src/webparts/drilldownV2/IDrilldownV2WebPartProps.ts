@@ -20,6 +20,8 @@ import { ICssChartProps } from './components/CssCharts/ICssChartProps';
 
 import { IEasyIconsWPProps } from './components/EasyIcons/eiTypes';
 import { IEasyPagesWPProps } from './components/EasyPages/epTypes';
+import { IFPSAgeSliderWPProps } from '@mikezimm/fps-react/lib/FPSAgeSlider';
+// import { IFPSAgeSliderWPProps } from './components/FPSAgeSlider/FPSAgeTypes';
 
 
 //Specific for this web part
@@ -46,7 +48,7 @@ export const changeRefiners : string[] = [ 'refiner0', 'rules0def' , 'rules0' , 
 export const changeToggles : string[] = [ 'togOtherListview', 'togRefinerCounts', 'togCountChart' , 'togOtherChartpart', 'togStats' , ];
 export const changeInstructions : string[] = [ 'whenToShowItems', 'minItemsForHide' , 'instructionIntro' , 'refinerInstruction1' , 'refinerInstruction2', 'refinerInstruction3', ];
 export const changeGrouping : string[] = [ 'groupByFields',  ];
-export const changeViews : string[] = [ 'syncViews', 'viewWidth1', 'viewJSON1' , 'viewWidth2' , 'viewJSON2' , 'viewWidth3', 'viewJSON3',];
+export const changeViews : string[] = [ 'syncViews', 'richHeight', 'autoRichHeight', 'viewWidth1', 'viewJSON1' , 'viewWidth2' , 'viewJSON2' , 'viewWidth3', 'viewJSON3',];
 
 export const changeListToggles : string[] = [ 'includeDetails', 'detailsAudience', 'includeAttach', 'includeListLink', 'listLinkAudience', 'createItemLink', 'createItemAudience' ];
 
@@ -59,7 +61,9 @@ export const changeCommands : string[] = [ 'quickCommands', ];
    * 
    */
 
-  export interface IDrilldownV2WebPartProps  extends IMinBannerUIProps, IMinPinMeProps, IMinPandoramicProps, IMinBannerThemeProps, IMinCustomHelpProps, IMinPageStyleProps, IMinBannerUtilityProps, IMinFPSLegacyProps, IEasyPagesWPProps, IEasyIconsWPProps {
+  export interface IDrilldownV2WebPartProps  extends IMinBannerUIProps, IMinPinMeProps, IMinPandoramicProps, IMinBannerThemeProps, 
+    IMinCustomHelpProps, IMinPageStyleProps, IMinBannerUtilityProps, IMinFPSLegacyProps, 
+    IEasyPagesWPProps, IEasyIconsWPProps, IFPSAgeSliderWPProps {
 
     // [key: string]: string | number | number[] | any[] | boolean | string[] | IMyProgress | PageContext | ICssChartProps | IWebpartHistory | undefined;
     [key: string]: any;
@@ -138,6 +142,8 @@ export const changeCommands : string[] = [ 'quickCommands', ];
 
     // Page 2 Group 4,5,6 - View Definitions   
 
+    richHeight: string;  //=>> maxHeight: 55em ; address:  https://github.com/mikezimm/drilldown7/issues/270
+    autoRichHeight: string; // ==>> minQty;max-height (em)   https://github.com/mikezimm/drilldown7/issues/270
     syncViews: boolean;
 
     viewWidth1: number;

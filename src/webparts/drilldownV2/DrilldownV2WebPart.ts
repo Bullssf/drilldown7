@@ -171,6 +171,7 @@ import { mainWebPartRenderBannerSetup, refreshPanelHTML } from '@mikezimm/npmfun
   */
  
  import { updateFpsImportProps, FPSImportPropsGroup, validateDocumentationUrl } from './fpsReferences';
+
  
  /***
   *     .d8b.  d8b   db  .d8b.  db      db    db d888888b d888888b  .o88b. .d8888. 
@@ -241,10 +242,13 @@ import { IRefinerLayer, RefineRuleValues, IRefinerStat } from './fpsReferences';
  */
 import { IDynamicDataCallables, IDynamicDataPropertyDefinition} from '@microsoft/sp-dynamic-data';  // eslint-disable-line @typescript-eslint/no-unused-vars
 
-import { IGrouping, IViewField } from "@pnp/spfx-controls-react/lib/ListView";
+import { IGrouping, } from "@pnp/spfx-controls-react/lib/ListView";
+import { IViewFieldDD } from './components/Drill/reactListView';
 import { buildQuickCommandsGroup } from './PropPaneGroups/Page2/QuickCommands';
 
-
+import { getNumberArrayFromString } from './fpsReferences';
+// import { buildAgeSliderGroup } from './components/FPSAgeSlider/FPSAgePropPaneGroup';
+import { buildAgeSliderGroup } from '@mikezimm/fps-react/lib/FPSAgeSlider';
 
 
 
@@ -634,7 +638,7 @@ export default class DrilldownV2WebPart extends BaseClientSideWebPart<IDrilldown
    */
   public getViewFieldsObject(message: string, str: string, grp: string ) {
 
-    let result : IViewField[] = undefined;
+    let result : IViewFieldDD[] = undefined;
     
     if ( str === null || str === undefined ) { return result; }
     try {
@@ -757,9 +761,9 @@ export default class DrilldownV2WebPart extends BaseClientSideWebPart<IDrilldown
     const viewFields2Any : any[] = this.properties.syncViews === true ? viewFields1Any : this.getViewFieldsObject('Med Size view', this.properties.viewJSON2, this.properties.groupByFields );
     const viewFields3Any : any[] = this.properties.syncViews === true ? viewFields1Any : this.getViewFieldsObject('Small Size view', this.properties.viewJSON3, this.properties.groupByFields );
 
-    let viewFields1 : IViewField[] = viewFields1Any;
-    let viewFields2 : IViewField[] = viewFields2Any;
-    let viewFields3 : IViewField[] = viewFields3Any;
+    let viewFields1 : IViewFieldDD[] = viewFields1Any;
+    let viewFields2 : IViewFieldDD[] = viewFields2Any;
+    let viewFields3 : IViewFieldDD[] = viewFields3Any;
 
     if ( !viewFields1 ) { errMessage += 'viewFields1 has an error; '; viewFields1 = [] ; }
     if ( !viewFields2 ) { errMessage += 'viewFields2 has an error; '; viewFields2 = [] ; }
@@ -917,6 +921,9 @@ export default class DrilldownV2WebPart extends BaseClientSideWebPart<IDrilldown
       style: 'commandBar',
       viewDefs: viewDefs,
 
+      richHeight: getNumberArrayFromString( this.properties.richHeight, ';', true, true, 'asis', 2 ),
+      autoRichHeight: this.properties.autoRichHeight,
+
       // 3 - General how accurate do you want this to be
 
       // 4 - Info Options
@@ -969,28 +976,39 @@ export default class DrilldownV2WebPart extends BaseClientSideWebPart<IDrilldown
         pinState: this.properties.defPinState,
 
         // altSiteNavigation: this.properties.easyPageAltNav,
-        styles: getReactCSSFromString( 'easyPageStyles', this.properties.easyPageStyles, {} ).parsed,
-        containerStyles: getReactCSSFromString( 'easyPageContainer', this.properties.easyPageContainer, {} ).parsed,
+        styles: getReactCSSFromString( 'EasyPageStyles', this.properties.EasyPageStyles, {} ).parsed,
+        containerStyles: getReactCSSFromString( 'EasyPageContainerStyles', this.properties.EasyPageContainerStyles, {} ).parsed,
       },
 
       easyPagesExtraProps: {
-        expanded: false ,
+        easyPagesExpanded: false ,
         showTricks: bannerProps.showTricks,
-        easyPageEnable: this.properties.easyPageEnable,
-        fetchParent: this.properties.easyPageEnable === true ? this.properties.easyPageParent : false,
-        altSitePagesUrl: this.properties.easyPageEnable === true ? this.properties.easyPageAltUrl : '',
-        atlSiteTitle: this.properties.atlSiteTitle,
+        EasyPagesEnable: this.properties.EasyPagesEnable,
+        EasyPageParentFetch: this.properties.EasyPagesEnable === true ? this.properties.EasyPageParent : false,
+        EasyPageUrlA: this.properties.EasyPagesEnable === true ? this.properties.EasyPageUrlA : '',
+        EasyPagesSiteTitleA: this.properties.EasyPagesSiteTitleA,
 
-        overflowTab: this.properties.easyPageOverflowTab,
+        EasyPageUrlB: this.properties.EasyPagesEnable === true ? this.properties.EasyPageUrlB : '',
+        EasyPagesSiteTitleB: this.properties.EasyPagesSiteTitleB,
 
-        tabsC: getStringArrayFromString( this.properties.easyPageTabsC , ';', true, null, true ) ,
-        tabsP: getStringArrayFromString( this.properties.easyPageTabsP , ';', true, null, true ) ,
-        tabsA: getStringArrayFromString( this.properties.easyPageTabsA , ';', true, null, true ) ,
+        EasyPageOverflowTab: this.properties.EasyPageOverflowTab,
+
+        tabsC: getStringArrayFromString( this.properties.EasyPageTabsC , ';', true, null, true ) ,
+        tabsP: getStringArrayFromString( this.properties.EasyPageTabsP , ';', true, null, true ) ,
+        tabsA: getStringArrayFromString( this.properties.EasyPageTabsA , ';', true, null, true ) ,
+        tabsB: getStringArrayFromString( this.properties.EasyPageTabsB , ';', true, null, true ) ,
+
       },
 
       EasyIconsObject: setEasyIconsObjectProps( this.properties ),
-        
+      ageSliderWPProps: {
+        FPSAgeIsVisible: this.properties.FPSAgeIsVisible,
+        FPSAgeColumnName: this.properties.FPSAgeColumnName,
+        FPSAgeColumnTitle: this.properties.FPSAgeColumnTitle,
+        FPSAgeDefault: this.properties.FPSAgeDefault, //Should be index of AgeSliderOption
       }
+      }
+
     );
 
     ReactDom.render(element, this.domElement);
@@ -1230,6 +1248,7 @@ export default class DrilldownV2WebPart extends BaseClientSideWebPart<IDrilldown
           groups: [
             buildCustomizeGroup(  ),
             buildRefinerInstructionsGroup( this.properties ),
+            buildAgeSliderGroup( this.properties ),
             buildListGroupingGroup( ),
             buildViewGroupFields( 'Wide', 1, true, false ),
             buildViewGroupFields( 'Medium', 2, false, this.properties.syncViews ),
@@ -1458,14 +1477,26 @@ export default class DrilldownV2WebPart extends BaseClientSideWebPart<IDrilldown
 
     } else if ( propertyPath === 'easyIconKeys' && !newValue )  {
       //https://github.com/mikezimm/Pnpjs-v2-Upgrade-sample/issues/59
-      this.properties.easyIconKeys = EasyIconDefaultKeys.join(';');
+      this.properties.easyIconKeys = EasyIconDefaultKeys.join(' ; ');
 
-    } else if ( propertyPath === 'easyPageTabs' && !newValue )  {
+    } else if ( propertyPath === 'EasyPageTabsC' && !newValue )  {
       //https://github.com/mikezimm/Pnpjs-v2-Upgrade-sample/issues/59
-      this.properties.easyPageTabs = DefaultEasyPagesTabs.join(';');
+      this.properties.EasyPageTabsC = DefaultEasyPagesTabs.join(' ; ');
 
-    } else if ( propertyPath === 'easyPageOverflowTab' && !newValue )  {
-      this.properties.easyPageOverflowTab = DefaultOverflowTab;
+    } else if ( propertyPath === 'EasyPageTabsP' && !newValue )  {
+      //https://github.com/mikezimm/Pnpjs-v2-Upgrade-sample/issues/59
+      this.properties.EasyPageTabsP = DefaultEasyPagesTabs.join(' ; ');
+
+    } else if ( propertyPath === 'EasyPageTabsA' && !newValue )  {
+      //https://github.com/mikezimm/Pnpjs-v2-Upgrade-sample/issues/59
+      this.properties.EasyPageTabsA = DefaultEasyPagesTabs.join(' ; ');
+
+    } else if ( propertyPath === 'EasyPageTabsB' && !newValue )  {
+      //https://github.com/mikezimm/Pnpjs-v2-Upgrade-sample/issues/59
+      this.properties.EasyPageTabsB = DefaultEasyPagesTabs.join(' ; ');
+
+} else if ( propertyPath === 'EasyPageOverflowTab' && !newValue )  {
+      this.properties.EasyPageOverflowTab = DefaultOverflowTab;
 
 
      } else if ( propertyPath === 'bannerStyle' || propertyPath === 'bannerCmdStyle' )  {
@@ -1547,4 +1578,5 @@ export default class DrilldownV2WebPart extends BaseClientSideWebPart<IDrilldown
     }
     this.render();
   }
+
 }

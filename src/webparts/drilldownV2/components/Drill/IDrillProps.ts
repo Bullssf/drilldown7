@@ -25,6 +25,8 @@ import { IDrillItemInfo } from '../../fpsReferences';
 
 import { IEasyPagesSourceProps,  } from '../EasyPages/componentPage';
 import { IEasyPagesExtraProps } from '../EasyPages/componentSources';
+// import { IFPSAgeSliderWPProps,  } from '../FPSAgeSlider/FPSAgeTypes';
+import { IFPSAgeSliderWPProps,  } from '@mikezimm/fps-react/lib/FPSAgeSlider';
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { IEasyIconProps, IEasyIcons } from '../EasyIcons/eiTypes';
@@ -74,17 +76,19 @@ import { IEasyIconProps, IEasyIcons } from '../EasyIcons/eiTypes';
     selectColumns: string[];
     expandColumns: string[];
     richColumns: string[];  //This is for:  https://github.com/mikezimm/drilldown7/issues/224
-    imageColumns: string[]
+    imageColumns: string[];
+    ageColumns: string[];
     staticColumnsStr: string;
     selectColumnsStr: string;
     expandColumnsStr: string;
     linkColumnsStr: string;
     richColumnsStr: string;  //This is for:  https://github.com/mikezimm/drilldown7/issues/224
-    imageColumnsStr: string
+    imageColumnsStr: string;
+    ageColumnsStr: string;
     multiSelectColumns: string[];
     linkColumns: string[];
     funcColumns: string[];
-    funcColumnsActual: string[];    
+    funcColumnsActual: string[];
     removeFromSelect: string[];
 
     errors: any[];
@@ -209,6 +213,7 @@ export interface IDrilldownV2Props extends IFPSCorePinMeReactComponentProps {
      easyPagesCommonProps: IEasyPagesSourceProps;  // General props which apply to all Sources/Pages
      easyPagesExtraProps: IEasyPagesExtraProps;  // General props which are used on the SourcesPage but not component page
      EasyIconsObject: IEasyIcons;
+     ageSliderWPProps: IFPSAgeSliderWPProps;
 
     allowOtherSites?: boolean; //default is local only.  Set to false to allow provisioning parts on other sites.
 
@@ -258,6 +263,8 @@ export interface IDrilldownV2Props extends IFPSCorePinMeReactComponentProps {
 
     viewType?: IViewType;
     viewDefs?: ICustViewDef[];
+    richHeight: number[];  //=>> maxHeight: 55em ; address:  https://github.com/mikezimm/drilldown7/issues/270
+    autoRichHeight: string;  //=>> maxQty;maxHeight ; address:  https://github.com/mikezimm/drilldown7/issues/271
     parentListFieldTitles: string;
 
     // 2 - Source and destination list information
@@ -424,6 +431,7 @@ export interface IDrillDownState extends IFPSCorePinMeReactComponentState {
 
     searchText: string;
     searchMeta: string[];
+    searchAge: number;
 
     whenToShowItems: IWhenToShowItems;
     instructionsHidden: 'force' | 'hide' | 'dynamic';
@@ -444,6 +452,7 @@ export interface IDrillDownState extends IFPSCorePinMeReactComponentState {
 
     meta: string[];
     resetArrows?: string;  //unique Id used to reset arrows to starting position
+    richHeight: number;  //=>> maxHeight: 55em ; address:  https://github.com/mikezimm/drilldown7/issues/270
 
     errMessage: string | JSX.Element;
 

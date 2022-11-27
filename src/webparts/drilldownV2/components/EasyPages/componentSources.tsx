@@ -15,20 +15,24 @@ import EasyPagesPageHook, { IEasyPagesSourceProps, ISourceName, InfoTab, InfoIco
 export interface IEasyPagesExtraProps {
 
   showTricks: boolean;  // For special dev links in EasyPages
-  easyPageEnable: boolean;
+  EasyPagesEnable: boolean;
 
-  toggleExpanded?: any;
-  expanded: boolean;
+  easyPagesToggleExpanded?: any;
+  easyPagesExpanded: boolean;
 
-  overflowTab?: string;
+  EasyPageOverflowTab?: string;
 
   tabsC: string[];  // Tabs for Current site
   tabsP: string[];  // Tabs for Parent site
   tabsA: string[];  // Tabs for Alt site
+  tabsB: string[];  // Tabs for Alt site
 
-  fetchParent?: boolean; //Include parent site pages
-  altSitePagesUrl?: string; //Include alternate site's site pages
-  atlSiteTitle?: string;  // Button Text for Alternate Site
+  EasyPageParentFetch?: boolean; //Include parent site pages
+  EasyPageUrlA?: string; //Include alternate site's site pages
+  EasyPagesSiteTitleA?: string;  // Button Text for Alternate Site
+
+  EasyPageUrlB?: string; //Include alternate site's site pages
+  EasyPagesSiteTitleB?: string;  // Button Text for Alternate Site
 
 }
 
@@ -54,21 +58,24 @@ const EasyPagesHook: React.FC<IEasyPagesHookProps> = ( props ) => {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { context, styles, containerStyles, repo } = props.easyPagesCommonProps;
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const { expanded, overflowTab, tabsC, tabsP, tabsA, fetchParent, altSitePagesUrl, atlSiteTitle, showTricks } = props.easyPagesExtraProps;
+  const { easyPagesExpanded, EasyPageOverflowTab, tabsC, tabsP, tabsA, tabsB, EasyPageParentFetch, EasyPageUrlA, EasyPagesSiteTitleA, EasyPageUrlB, EasyPagesSiteTitleB, showTricks } = props.easyPagesExtraProps;
 
-  const realAltSite : ISourceName = atlSiteTitle ? atlSiteTitle as ISourceName : altSitePagesUrl as ISourceName;
+  const realSiteA : ISourceName = EasyPagesSiteTitleA ? EasyPagesSiteTitleA as ISourceName : EasyPageUrlA as ISourceName;
+  const realSiteB : ISourceName = EasyPagesSiteTitleB ? EasyPagesSiteTitleB as ISourceName : EasyPageUrlB as ISourceName;
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [ parentUrl , setParentUrl ] =  useState<string>( context.pageContext.web.absoluteUrl !== context.pageContext.site.absoluteUrl ? context.pageContext.site.absoluteUrl : '' );  // Needed here because it's also used in current site
 
   const [ source, setSource ] = useState<ISourceName>( 'Current' );
-  const [ expandedState, setExpandedState ] = useState<boolean>(expanded);
+  const [ expandedState, setExpandedState ] = useState<boolean>(easyPagesExpanded);
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [ sourceC, setSourceC ] = useState<ISourceProps>( () => createNewSitePagesSource( 'Current', context.pageContext.web.absoluteUrl, tabsC, overflowTab, showTricks ));
+  const [ sourceC, setSourceC ] = useState<ISourceProps>( () => createNewSitePagesSource( 'Current', context.pageContext.web.absoluteUrl, tabsC, EasyPageOverflowTab, showTricks ));
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [ sourceP, setSourceP ] = useState<ISourceProps>( () => createNewSitePagesSource( 'Parent',  parentUrl, tabsP, overflowTab, showTricks ));
+  const [ sourceP, setSourceP ] = useState<ISourceProps>( () => createNewSitePagesSource( 'Parent',  parentUrl, tabsP, EasyPageOverflowTab, showTricks ));
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [ sourceA, setSourceA ] = useState<ISourceProps>( () => createNewSitePagesSource( realAltSite, altSitePagesUrl, tabsA, overflowTab, showTricks ));
+  const [ sourceA, setSourceA ] = useState<ISourceProps>( () => createNewSitePagesSource( realSiteA, EasyPageUrlA, tabsA, EasyPageOverflowTab, showTricks ));
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const [ sourceB, setSourceB ] = useState<ISourceProps>( () => createNewSitePagesSource( realSiteB, EasyPageUrlB, tabsB, EasyPageOverflowTab, showTricks ));
 
   /***
  *     .d88b.  d8b   db       .o88b. db      d888888b  .o88b. db   dD .d8888. 
@@ -82,8 +89,8 @@ const EasyPagesHook: React.FC<IEasyPagesHookProps> = ( props ) => {
  */
 
   useEffect(() => {
-    setExpandedState( expanded )
-  }, [ expanded ] );
+    setExpandedState( easyPagesExpanded )
+  }, [ easyPagesExpanded ] );
 
   const setSourceCurrent = ( ): void => {
     setSource( 'Current' );
@@ -93,8 +100,12 @@ const EasyPagesHook: React.FC<IEasyPagesHookProps> = ( props ) => {
     setSource( 'Parent' );
   }
 
-  const setSourceAlternate = ( ): void => {
-    setSource( realAltSite );
+  const setSourceAlternateA = ( ): void => {
+    setSource( realSiteA );
+  }
+
+  const setSourceAlternateB = ( ): void => {
+    setSource( realSiteB );
   }
 
   const setSourceDev = ( ): void => {
@@ -113,7 +124,8 @@ const EasyPagesHook: React.FC<IEasyPagesHookProps> = ( props ) => {
     const itemKey: ISourceName = !item.props.headerText ? InfoTab as ISourceName : item.props.headerText as ISourceName;
     if ( itemKey === 'Current' ) setSourceCurrent( );
     if ( itemKey === 'Parent' ) setSourceParent( );
-    if ( itemKey === realAltSite ) setSourceAlternate( );
+    if ( itemKey === realSiteA ) setSourceAlternateA( );
+    if ( itemKey === realSiteB ) setSourceAlternateB( );
     if ( itemKey === EasyPagesDevTab ) setSourceDev( );
     if ( itemKey === EasyPagesRepoTab ) setSourceGit( );
 
@@ -133,17 +145,29 @@ const EasyPagesHook: React.FC<IEasyPagesHookProps> = ( props ) => {
   //https://github.com/mikezimm/Pnpjs-v2-Upgrade-sample/issues/56
   const classNames: string[] = [ 'easy-pages' ];
   if ( expandedState === true ) classNames.push ( 'expand' );
-  if ( props.easyPagesCommonProps.pageLayout === 'SharePointFullPage' || props.easyPagesCommonProps.pageLayout === 'SingleWebPartAppPageLayout' ) classNames.push ( 'easy-pages-spa' );
-  if ( ( props.easyPagesCommonProps.pinState === 'pinFull' || props.easyPagesCommonProps.pinState === 'pinMini' ) && classNames.indexOf('easy-pages-spa') < 0 ) classNames.push ( 'easy-pages-spa' );
 
-  if ( repo.href.toLowerCase().indexOf('drilldown') > -1 ) classNames.push( 'ep-drilldown' );
+  // Rebuilt logic for:  https://github.com/mikezimm/drilldown7/issues/263 , https://github.com/mikezimm/Pnpjs-v2-Upgrade-sample/issues/72
+  if ( props.easyPagesCommonProps.pageLayout === 'SharePointFullPage' || props.easyPagesCommonProps.pageLayout === 'SingleWebPartAppPageLayout' ) {
 
-  // fetchParent?: boolean; //Include parent site pages
-  // altSitePagesUrl?: string; //Include alternate site's site pages
+    if ( repo.href.toLowerCase().indexOf('drilldown') > -1 ) {
+      classNames.push( 'ep-drilldown-spa' ) ;
+
+    } else { classNames.push ( 'easy-pages-spa' ); }
+
+  } else {
+    if ( repo.href.toLowerCase().indexOf('drilldown') > -1 ) classNames.push( 'ep-drilldown' );
+    if ( ( props.easyPagesCommonProps.pinState === 'pinFull' || props.easyPagesCommonProps.pinState === 'pinMini' ) && classNames.indexOf('easy-pages-spa') < 0 ) classNames.push ( 'easy-pages-spa' );
+
+  }
+
+
+  // EasyPageParentFetch?: boolean; //Include parent site pages
+  // EasyPageUrlA?: string; //Include alternate site's site pages
 
   const sourceTabs: ISourceName[] = [ 'Current' ];
-  if ( fetchParent === true && parentUrl ) sourceTabs.push( 'Parent' );
-  if ( altSitePagesUrl ) sourceTabs.push( realAltSite );
+  if ( EasyPageParentFetch === true && parentUrl ) sourceTabs.push( 'Parent' );
+  if ( EasyPageUrlA ) sourceTabs.push( realSiteA );
+  if ( EasyPageUrlB ) sourceTabs.push( realSiteB );
   if ( showTricks === true )  sourceTabs.push( EasyPagesDevTab );
   if ( showTricks === true )  sourceTabs.push( EasyPagesRepoTab );
 
@@ -161,7 +185,7 @@ const EasyPagesHook: React.FC<IEasyPagesHookProps> = ( props ) => {
 
     </Pivot>
     <Icon iconName={ 'ChromeClose' } title={ 'Close Easy Pages panel'} 
-        onClick= { () => props.easyPagesExtraProps.toggleExpanded() } className={ 'easy-pages-close' } />
+        onClick= { () => props.easyPagesExtraProps.easyPagesToggleExpanded() } className={ 'easy-pages-close' } />
 
     <EasyPagesPageHook
       easyPagesPageProps = {{
@@ -189,10 +213,22 @@ const EasyPagesHook: React.FC<IEasyPagesHookProps> = ( props ) => {
 
     <EasyPagesPageHook
       easyPagesPageProps = {{
-        expandedState: expandedState === true && source === realAltSite ? true : false,
+        expandedState: expandedState === true && source === realSiteA ? true : false,
         tabs: tabsA,
         source: sourceA,
-        sourceName: realAltSite,
+        sourceName: realSiteA,
+        parentUrl: '',
+      }}
+      easyPagesCommonProps={ props.easyPagesCommonProps }  // General props which apply to all Sources/Pages
+      EasyIconsObject = { props.EasyIconsObject }
+    />
+
+    <EasyPagesPageHook
+      easyPagesPageProps = {{
+        expandedState: expandedState === true && source === realSiteB ? true : false,
+        tabs: tabsB,
+        source: sourceB,
+        sourceName: realSiteB,
         parentUrl: '',
       }}
       easyPagesCommonProps={ props.easyPagesCommonProps }  // General props which apply to all Sources/Pages

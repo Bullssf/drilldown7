@@ -26,6 +26,8 @@ import { findParentElementPropLikeThis } from '@mikezimm/npmfunctions/dist/Eleme
 
 import { getHelpfullError } from '../../fpsReferences';
 
+import { getNumberArrayFromString } from '../../fpsReferences';
+
 import { buildConfirmDialogBig, IMyBigDialogProps } from '@mikezimm/npmfunctions/dist/Elements/dialogBox'; 
 
 // import stylesL from '../ListView/listView.module.scss';
@@ -58,11 +60,26 @@ import { IMinPageArrowsState, IPageArrowsParentProps } from '@mikezimm/npmfuncti
 import { defaultBannerCommandStyles } from '../../fpsReferences'
 require('./reactListView.css');
 
+
+// EVENTUALLY MOVE THIS TO npmFunctions
+export const HandleBarsRegex = /{{([^}]+)}}/gi;
+//Try variation of this as well
+// export const HandleBarsRegexV2 =/[^{{\}]+(?=}})/gi
+
+export interface IViewFieldDD extends IViewField {
+  linkSubstitute?: string;
+  textSubstitute?: string;
+  showEmptyAsEmpty?: boolean;
+}
+
 export interface IReactListItemsProps extends IPageArrowsParentProps {
     title?: string;
     descending?: boolean;
     maxChars?: number;
     items: IDrillItemInfo[];
+    richColumns: string[];
+    richHeight: string;  //=>> maxHeight: 55em ; address:  https://github.com/mikezimm/drilldown7/issues/270
+    updateRichHeightProps: any;
 
     resetArrows?: string;  //unique Id used to reset arrows to starting position
 
@@ -81,7 +98,7 @@ export interface IReactListItemsProps extends IPageArrowsParentProps {
     showDesc?: boolean;
 
     parentListFieldTitles?: string;
-    viewFields?: IViewField[];
+    viewFields?: IViewFieldDD[];
 
     groupByFields?:  IGrouping[];
     includeDetails: boolean;
@@ -98,15 +115,16 @@ export interface IReactListItemsProps extends IPageArrowsParentProps {
 export interface IReactListItemsState extends IMinPageArrowsState {
   maxChars?: number;
   parentListFieldTitles: any;
-  viewFields: IViewField[];
+  viewFields: IViewFieldDD[];
   groupByFields?:  IGrouping[];
-  
+
   showPanel: boolean;
   panelWidth: PanelType;
   showAttach: boolean;
   clickedAttach: boolean;  //if you clicked the attached icon (vs selected row), it only will show the attachments in the panel for cleaner implimentation
 
   fontSize: any;  //=>> address:  https://github.com/mikezimm/drilldown7/issues/169
+
   panelId: number;
   lastPanelId: number;
   panelItem: IDrillItemInfo;
@@ -133,6 +151,18 @@ const NoCommandsInfo = <div>
         <p>You can find out more about quick commands here: { gitRepoDrillDown.wiki }</p>
     </div>;
 
+
+  //=>> address:  https://github.com/mikezimm/drilldown7/issues/271
+  export function getMaxRichHeight( autoRichHeight: string, richHeight: number, items: any[], ) : string  {
+    const autoHeight: number[] = getNumberArrayFromString( autoRichHeight, ';', true, false, 'asis' );
+    let maxQty = autoHeight.length >= 2 && autoHeight[0] > 0 ? autoHeight[0] : 3;
+    let newRichHeight: string = `${richHeight}em`; //Just added 0 so it does not mutate
+    if ( items.length <= maxQty ) {
+      let maxHeight = autoHeight.length >= 2 && autoHeight[1] > 0 ? autoHeight[1] : 2.2;
+      if ( maxHeight > richHeight ) newRichHeight = `${maxHeight}em`;
+    }
+    return newRichHeight;
+  }
 
 // const stackFormRowTokens: IStackTokens = { childrenGap: 10 };
 
@@ -344,7 +374,7 @@ export default class ReactListItems extends React.Component<IReactListItemsProps
             maxWidth: 30
         };
          */
-        let viewFields : IViewField[] = [];
+        let viewFields : IViewFieldDD[] = [];
         
         if ( fieldsToShow.length === 0 ) { //Do all in order of fieldInfo
             if ( parentListFieldTitles.length > 0 ) { //Do all in order of fieldInfo
@@ -366,7 +396,7 @@ export default class ReactListItems extends React.Component<IReactListItemsProps
 
     }
 
-    private handleExpandedFieldInfoToIViewFields( viewFields?: IViewField[] ) {
+    private handleExpandedFieldInfoToIViewFields( viewFields?: IViewFieldDD[] ) {
         //Before this line was added, I think it was mutating props causing double render
         viewFields = JSON.parse(JSON.stringify( viewFields ));
         viewFields.map( vf => {
@@ -413,7 +443,7 @@ export default class ReactListItems extends React.Component<IReactListItemsProps
         let parentListFieldTitles = this.props.parentListFieldTitles !== undefined && this.props.parentListFieldTitles !== null ? JSON.parse(this.props.parentListFieldTitles) : '';
  //       console.log( 'parentListFieldTitles', parentListFieldTitles );
 
-        let viewFields : IViewField[] = [];
+        let viewFields : IViewFieldDD[] = [];
         if ( this.props.viewFields.length > 0 ) { 
             viewFields = this.handleExpandedFieldInfoToIViewFields( this.props.viewFields );
         } else { 
@@ -466,7 +496,7 @@ export default class ReactListItems extends React.Component<IReactListItemsProps
  *                                                                                         
  */
 
-    public componentDidUpdate(prevProps: IReactListItemsProps): void {
+    public componentDidUpdate(prevProps: IReactListItemsProps, prevState: IReactListItemsState): void {
         /* eslint-disable @typescript-eslint/no-unused-vars */
         let redraw = false;
         let updateViewFields = false;
@@ -491,8 +521,17 @@ export default class ReactListItems extends React.Component<IReactListItemsProps
             });
         }
 
-        if ( prevProps.items.length !== this.props.items.length ) { redraw = true; }
+        if ( prevProps.richHeight !== this.props.richHeight ) { 
+          updateViewFields = true;
+          redraw = true;
+        }
+
+        // if ( prevProps.items.length !== this.props.items.length ) { 
+        //   this._setMaxRichHeight( this.props.autoRichHeight, this.props.richHeight, this.props.items ); 
+        //   redraw = true; }
         if ( prevProps.parentListURL !== this.props.parentListURL ) { redraw = true; }
+        if ( prevProps.richHeight !== this.props.richHeight ) { redraw = true; }
+
 
         /* eslint-enable @typescript-eslint/no-unused-vars */
 
@@ -515,6 +554,8 @@ export default class ReactListItems extends React.Component<IReactListItemsProps
         //console.log( 'ReactListItems props & state: ', this.props, this.state );
 
         let thisLog = null;
+
+        let showRichHeightButton: any = false;
 
         //2022-02-01:  Updated this from drilldown7
         if ( this.props.items !== null && this.props.items.length > 0 ) { 
@@ -602,12 +643,12 @@ export default class ReactListItems extends React.Component<IReactListItemsProps
                 </Panel>;
             }
 
-            let viewFieldsBase: IViewField[] = this.state.viewFields;
-            let attachField: IViewField[] = [];
+            let viewFieldsBase: IViewFieldDD[] = this.state.viewFields;
+            let attachField: IViewFieldDD[] = [];
             if ( this.props.includeAttach ) {
                 //Add attachments column:
                 let callBack = this.props.includeDetails ? null : this._onShowPanel.bind(this);
-                
+
                 attachField.push({
                     name: 'Attachments',
                     displayName: 'Attach',
@@ -639,6 +680,55 @@ export default class ReactListItems extends React.Component<IReactListItemsProps
               resetArrows = { this.props.resetArrows }
               pageArrowStyles = {{ marginTop: '-7px' }}
             />;
+
+            viewFields.map ( field => {
+              //This is for:  https://github.com/mikezimm/drilldown7/issues/224
+              if ( this.props.richColumns.indexOf( field.name ) > -1 ) {
+                showRichHeightButton = true;
+                const fieldStyles = [ stylesRLV.listViewRt ];
+                // fieldStyles.push( this._RichTextRowHeight[ this.state.richHeight ] );
+                field.render =  ( item, index ) => { return <div style={{ maxHeight: this.props.richHeight }} className={ fieldStyles.join(' ') } dangerouslySetInnerHTML={{__html: item[ field.name ]}} /> }
+                // field.render =  ( item, index ) => { this._renderRich( item, field.name ) }
+
+              } else if ( field.linkSubstitute || field.textSubstitute ) {
+                // Testing to see if Url value is valid... has a value, is a string, and either starts with http or /sites/
+
+                // Testing to see if Url value is valid... has a value, is a string, and either starts with http or /sites/
+                const isValidSubLink = typeof field.linkSubstitute === "string" &&
+                  ( field.linkSubstitute.indexOf("/sites/") === 0 || field.linkSubstitute.indexOf("http") === 0 ) ? true : false;
+
+                // Testing to see if Url value is valid... has a value, is a string, and either starts with http or /sites/
+                const isValidText = typeof field.textSubstitute === "string" ? true : false;
+
+                if ( isValidSubLink !== true && isValidText !== true ) {
+                  return;
+
+                } else {
+
+                  // Start on https://github.com/mikezimm/drilldown7/issues/70, https://github.com/mikezimm/drilldown7/issues/268
+                  field.render = ( item, index ) => { 
+                    const linkSubstitute = isValidSubLink === true ? this.replaceHandleBarsValues( item, field.linkSubstitute, true ) : '';
+                    const textSubstitute = isValidText === true ? this.replaceHandleBarsValues( item, field.textSubstitute, field.showEmptyAsEmpty === true ? true : false ) : item[field.name];
+
+                    // Return element as a link if the Url passes simple validation.  Else just return the displayed value as normal span
+                    if ( isValidSubLink === true && linkSubstitute ) {
+                      return <a href={ linkSubstitute }>{ textSubstitute }</a>;
+
+                    } else {
+                      return <span >{ textSubstitute }</span>;
+                    }
+
+
+                  } //  close:  field.render = ( item, index ) => { 
+                } //    close   if ( isValid === true ) {
+              } //      close: } else if ( field.linkSubstitute ) {
+            }); //      close:  viewFields.map ( field => {
+
+            //=>> address:  https://github.com/mikezimm/drilldown7/issues/270
+            const changeRichHeight = showRichHeightButton !== true ? null : 
+                <div title={ `Change row height from ${this.props.richHeight}`} onClick={ this.props.updateRichHeightProps } 
+                  style={{ fontSize: 'larger' , fontWeight: 'bolder', width: '25px', textAlign: 'center', cursor: 'pointer' }}>
+                  <Icon iconName= 'CollapseMenu'/></div>;
 
             //=>> address:  https://github.com/mikezimm/drilldown7/issues/169
             const changeFont = <div title="Change font size" onClick={ this._changeFontSize.bind(this) } style={{ fontSize: 'larger' , fontWeight: 'bolder', width: '25px', textAlign: 'center', cursor: 'pointer' }}><Icon iconName= 'FontSize'/></div>;
@@ -680,10 +770,13 @@ export default class ReactListItems extends React.Component<IReactListItemsProps
                   <span className={ stylesRLV.blueBarLeft } style={{ maxWidth: `${maxBlueBarLeft}%`}} title={ this.props.blueBarTitleText }>( { this.props.items.length }  ) { barText }</span>
                    { pageArrows }
                    {/* //=>> address:  https://github.com/mikezimm/drilldown7/issues/169 */}
-                   { changeFont }   
+                   <span style={{ gridRow: 'nowrap', display: 'inline-flex', gridGap: '.75em', marginRight: '25px' }}>
+                      { changeFont }
+                      { changeRichHeight }
+                   </span>
                    <span style={{ whiteSpace: 'nowrap', display: 'flex', marginRight: '25px' }}>
-                    { createItemLink }
-                    { listLink }
+                      { createItemLink }
+                      { listLink }
                     </span>
                   </div>;
 
@@ -732,7 +825,35 @@ export default class ReactListItems extends React.Component<IReactListItemsProps
  *                                                                                                          
  *                                                                                                          
  */
+    private replaceHandleBarsValues( item: any, handleBarString: string, emptyIfSubEmpty: boolean ) {
 
+      if ( typeof handleBarString !== 'string' ) {
+        return handleBarString;
+
+      } else {
+        let returnEmpty: boolean = false;
+        // Get array of strings by splitting the string by any {{ or }}
+        const linkSplits = handleBarString.split( HandleBarsRegex );
+
+        // Replace first handlebars instance
+        if ( linkSplits.length > 2 ) {
+          const part1 = linkSplits[1]?.trim().replace('/',''); //Get column name, removing / from lookup values
+          linkSplits[1] = item[ part1 ] ? item[ part1 ] : emptyIfSubEmpty === true ? '' : `${part1}` ;
+          if ( !linkSplits[1] && emptyIfSubEmpty === true ) returnEmpty = true;
+        }
+
+        // Replace second handlebars instance
+        if ( linkSplits.length > 4 ) { 
+          const part3 = linkSplits[3]?.trim().replace('/',''); //Get column name, removing / from lookup values
+          linkSplits[3] = item[ part3 ] ? item[ part3 ] : emptyIfSubEmpty === true ? '' : `${part3}` ;
+          if ( !linkSplits[3] && emptyIfSubEmpty === true ) returnEmpty = true;
+        }
+
+        return returnEmpty === true ? '' : linkSplits.join('');
+      }
+
+
+    }
     private _onGoToList = () : void => {
 
         if ( !this.props.parentListURL || this.props.parentListURL === null || this.props.parentListURL === undefined || this.props.parentListURL.length === 0 ) {
@@ -764,7 +885,7 @@ export default class ReactListItems extends React.Component<IReactListItemsProps
 
     private _updateStateOnPropsChange( pushViewFieldsToState : boolean ): void {
 
-        let viewFields : IViewField[] = [];
+        let viewFields : IViewFieldDD[] = [];
         let parentListFieldTitles = this.props.parentListFieldTitles !== undefined && this.props.parentListFieldTitles !== null ? JSON.parse(this.props.parentListFieldTitles) : '';
 
         if ( this.props.viewFields.length > 0 ) { 

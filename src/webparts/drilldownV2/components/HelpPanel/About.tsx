@@ -6,7 +6,7 @@ import { repoLink, } from '../../fpsReferences';
 
 import { createAboutRow } from '../../fpsReferences';
 
-export const panelVersionNumber = '2022-11-15 -  2.0.0.8'; //Added to show in panel
+export const panelVersionNumber = '2022-11-20 -  2.0.0.9'; //Added to show in panel
 
 export function aboutTable( showrepoLink: boolean ) {
 
@@ -19,6 +19,10 @@ export function aboutTable( showrepoLink: boolean ) {
     // table.rows.push( createAboutRow('',''  ,'#205 - General', showrepoLink === true ? repoLink : null ) );
     // table.rows.push( createAboutRow('',''  ,'#205 - Bugs', showrepoLink === true ? repoLink : null ) );
     // table.rows.push( createAboutRow('',''  ,'#205 - Featres', showrepoLink === true ? repoLink : null ) );
+
+    table.rows.push( createAboutRow('2022-11-20','2.0.0.9'  ,'#263, #264, #266, #267, #277, #279, #280 - Banner', showrepoLink === true ? repoLink : null ) );
+    table.rows.push( createAboutRow('',''  ,'#70, #114, #199, #200, #224, #270, #271 - multi-line-text and views', showrepoLink === true ? repoLink : null ) );
+    table.rows.push( createAboutRow('',''  ,'#227, #255, #268, #269, #272, #274, #276, #281 - various', showrepoLink === true ? repoLink : null ) );
 
     table.rows.push( createAboutRow('2022-11-15','2.0.0.8'  ,'EasyPages, EasyIcons', showrepoLink === true ? repoLink : null ) );
 

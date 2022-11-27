@@ -8,7 +8,7 @@
 
 export function futureContent( ): any {
 
-    return null;
+    return undefined;
 
     // let html1 = <div>
     //     <h2>Were thinking of making this an extension so it doesn't need to be added to a page!</h2>

@@ -65,12 +65,12 @@ export function getUsedTabs( sourceProps: ISourceProps, items: IEasyLink[] ) : s
   items.map( item => {
     item.tabs.map( tab => { 
       if ( foundTabs.indexOf( tab ) < 0 ) foundTabs.push( tab );
-      if ( tab === sourceProps.overflowTab ) showOverFlow = true;
+      if ( tab === sourceProps.EasyPageOverflowTab ) showOverFlow = true;
     } )
   })
   const sortedTabs: string[] = [];
   sourceProps.meta1.map( tab => { if ( foundTabs.indexOf( tab ) > -1 ) sortedTabs.push( tab ) ;} );
-  if ( showOverFlow === true ) sortedTabs.push( sourceProps.overflowTab );
+  if ( showOverFlow === true ) sortedTabs.push( sourceProps.EasyPageOverflowTab );
 
   return sortedTabs;
 
@@ -183,7 +183,7 @@ export function addSearchMeta ( items: IEasyLink[], sourceProps: ISourceProps, E
   });
 
   items.map( page => {
-    if ( page.tabs.length === 0 ) page.tabs.push( sourceProps.overflowTab );
+    if ( page.tabs.length === 0 ) page.tabs.push( sourceProps.EasyPageOverflowTab );
 
   });
 

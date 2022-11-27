@@ -9,7 +9,7 @@ import "@pnp/sp/items";
 
 //Interfaces
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-import { DefaultOverflowTab, EasyPagesDevTab, ISourceProps, } from './epTypes'; //SourceInfo, 
+import { DefaultOverflowTab, EasyPagesDevTab, ISourceProps, EasyPagesSysPages, EasyPagesCCSPages, EasyPagesSysTab } from './epTypes'; //SourceInfo, 
 
 import { getExpandColumns, getSelectColumns } from '../../fpsReferences';
 import { createBasePerformanceInit, startPerformOp, updatePerformanceEnd } from '../../fpsReferences';
@@ -60,16 +60,28 @@ export function compoundArrayFilter( items: IEasyLink[], MetaFilter: string, Sea
 export function getUsedTabs( sourceProps: ISourceProps, items: IEasyLink[] ) : string[] {
   const foundTabs: string[] = [];
   let showOverFlow: any = false;
+  let systemTab: any = false;  //  https://github.com/mikezimm/drilldown7/issues/280
 
   items.map( item => {
-    item.tabs.map( tab => { 
-      if ( foundTabs.indexOf( tab ) < 0 ) foundTabs.push( tab );
-      if ( tab === sourceProps.overflowTab ) showOverFlow = true;
-    } )
-  })
+    item.tabs.map( tab => {
+
+      if ( tab === EasyPagesSysTab ) {
+        systemTab = true;  //  https://github.com/mikezimm/drilldown7/issues/280
+
+      } else if ( foundTabs.indexOf( tab ) < 0 ) {
+        foundTabs.push( tab );
+
+      } else if ( tab === sourceProps.EasyPageOverflowTab ) {
+        showOverFlow = true;
+      }
+
+    } );
+  });
+
   const sortedTabs: string[] = [];
   sourceProps.meta1.map( tab => { if ( foundTabs.indexOf( tab ) > -1 ) sortedTabs.push( tab ) ;} );
-  if ( showOverFlow === true ) sortedTabs.push( sourceProps.overflowTab );
+  if ( showOverFlow === true ) sortedTabs.push( sourceProps.EasyPageOverflowTab );
+  if ( systemTab === true ) sortedTabs.push( EasyPagesSysTab );  //  https://github.com/mikezimm/drilldown7/issues/280
 
   return sortedTabs;
 
@@ -80,15 +92,16 @@ export function getUsedTabs( sourceProps: ISourceProps, items: IEasyLink[] ) : s
  * @param sourceProps 
  * @returns 
  */
-export interface IGetPagesContent { items: IEasyLink[], performance: ILoadPerformance }
-export async function getPagesContent( sourceProps: ISourceProps, EasyIconObject: IEasyIcons = EasyIconObjectDefault, parentLink: string, ): Promise<IGetPagesContent> {
+export interface IGetPagesContent { items: IEasyLink[], performance: ILoadPerformance, errMessage: string }
 
-  const performance: ILoadPerformance = createBasePerformanceInit( 1, false );
-  performance.ops.fetch1 = startPerformOp( 'fetch1 - getPages', null );
+export interface IItemsError {
+  items: any[];
+  errMessage: string;
+}
 
-  // debugger;
-  const web = Web(`${sourceProps.webUrl.indexOf('https:') < 0 ? window.location.origin : ''}${sourceProps.webUrl}`);
+export async function fetchPages( sourceProps: ISourceProps, alertMe: boolean | undefined, consoleLog: boolean | undefined,) : Promise<IItemsError> {
 
+  let items : any[]= [];
   const expColumns = getExpandColumns( sourceProps.columns );
   const selColumns = getSelectColumns( sourceProps.columns );
 
@@ -98,43 +111,44 @@ export async function getPagesContent( sourceProps: ISourceProps, EasyIconObject
   const selectThese = [ baseSelectColumns, ...selColumns].join(",");
   const restFilter = sourceProps.restFilter ? sourceProps.restFilter : '';
   const orderBy = sourceProps.orderBy ? sourceProps.orderBy : null;
-  let items : IEasyLink[]= [];
 
+  const web = Web(`${sourceProps.webUrl.indexOf('https:') < 0 ? window.location.origin : ''}${sourceProps.webUrl}`);
+
+  let errMessage: string = '';
   try {
     if ( orderBy ) {
       //This does NOT DO ANYTHING at this moment.  Not sure why.
       items = await web.lists.getByTitle( sourceProps.listTitle ).items
       .select(selectThese).expand(expandThese).filter(restFilter).orderBy(orderBy.prop, orderBy.asc ).getAll();
-      performance.ops.fetch1 = updatePerformanceEnd( performance.ops.fetch1, true, items.length );
-
-      // 2022-11-13:  Verified this does get quick launch items
-      // {
-      //   "odata.type": "SP.NavigationNode",
-      //   "odata.id": "https://tenant.sharepoint.com/sites/SolutionTesting/DDv2/_api/Web/Navigation/GetNodeById(2002)",
-      //   "odata.editLink": "Web/Navigation/GetNodeById(2002)",
-      //   "AudienceIds": null,
-      //   "CurrentLCID": 1033,
-      //   "Id": 2002,
-      //   "IsDocLib": true,
-      //   "IsExternal": true,
-      //   "IsVisible": true,
-      //   "ListTemplateType": 0,
-      //   "Title": "Notebook",
-      //   "Url": "/sites/SolutionTesting/DDv2/_layouts/15/Doc.aspx?sourcedoc={dc2ddca8-7375-4af8-b4bd-76bfa96fde26}&action=editnew"
-      // }
-      // const quick = await web.navigation.quicklaunch();
-      // console.log( `${sourceProps.webUrl} quick launch:` , quick );
 
     } else {
       items = await web.lists.getByTitle( sourceProps.listTitle ).items
       .select(selectThese).expand(expandThese).filter(restFilter).getAll();
     }
 
-
   } catch (e) {
-    getHelpfullErrorV2( e, true, true, 'getPagesContent ~ 73');
+    errMessage = getHelpfullErrorV2( e, alertMe, consoleLog, 'getPagesContent ~ 73');
     console.log('sourceProps', sourceProps );
   }
+
+  return { items: items, errMessage: errMessage };
+
+}
+
+export async function getPagesContent( sourceProps: ISourceProps, EasyIconObject: IEasyIcons = EasyIconObjectDefault, parentLink: string, ): Promise<IGetPagesContent> {
+
+  //"List 'Site Pages' does not exist at site with URL
+  const performance: ILoadPerformance = createBasePerformanceInit( 1, false );
+  performance.ops.fetch1 = startPerformOp( 'fetch1 - getPages', null );
+
+  const fetchResults = await fetchPages( sourceProps, false, true );
+
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars, prefer-const
+  let { items, errMessage, } = fetchResults;
+
+  if ( errMessage.indexOf(`"List 'Site Pages' does not exist`) > 1 ) alert( `I'm sorry, this site does NOT have a library Titled 'Site Pages :(`);
+
+  performance.ops.fetch1 = updatePerformanceEnd( performance.ops.fetch1, true, items.length );
 
   if ( parentLink ) items.push( //'Title','Description','Author/Title','Editor/Title','File/ServerRelativeUrl','BannerImageUrl'
     {
@@ -145,9 +159,6 @@ export async function getPagesContent( sourceProps: ISourceProps, EasyIconObject
     } as any
   );
 
-  // if ( showTricks === true ) { items = [ ...items, ...EasyDevPages ]; }
-
-  // debugger;
   performance.ops.analyze1 = startPerformOp( 'analyze1 - addSearchMeta', null );
   items = addSearchMeta( items, sourceProps, EasyIconObject );
 
@@ -156,14 +167,15 @@ export async function getPagesContent( sourceProps: ISourceProps, EasyIconObject
   items = sortObjectArrayByStringKeyCollator( items, 'asc', 'title', true, 'en' );
 
   // eslint-disable-next-line no-eval
-  if ( sourceProps.jsFilter ) items = items.filter( item => eval( sourceProps.jsFilter ) === true );
+  if ( sourceProps.evalFilter ) items = items.filter( item => eval( sourceProps.evalFilter ) === true );
 
   console.log( sourceProps.defType, sourceProps.listTitle , items );
 
-  return { items: items, performance: performance };
+  return { items: items as IEasyLink[], performance: performance, errMessage: errMessage };
 
 }
 
+const DefaultThumbCCS : string = `https://www.crowcanyon.com/wp-content/uploads/2020/12/NITRO_Studio_Transparent2.png`;
 const DefaultThumbEasyContents : string = `https://cdn.hubblecontent.osi.office.net/m365content/publish/8833527d-1d55-40be-8d14-0e45b17ce81b/thumbnails/large.jpg`;
 const DefaultThumbExtreme : string = `https://cdn.hubblecontent.osi.office.net/m365content/publish/3232a7cd-821f-48bd-bf98-9d84185566a5/thumbnails/large.jpg`;
 const DefaultThumbEarth : string = `https://cdn.hubblecontent.osi.office.net/m365content/publish/a505371c-2fca-4d30-ba21-8e4d36e41e65/thumbnails/large.jpg`;
@@ -185,8 +197,15 @@ export function addSearchMeta ( items: IEasyLink[], sourceProps: ISourceProps, E
     item.url = item.File?.ServerRelativeUrl;
     item.imageUrl =  item.BannerImageUrl?.Url;
     item.imageDesc = item.BannerImageUrl?.Description;
+
+    // https://github.com/mikezimm/drilldown7/issues/280
+    EasyPagesCCSPages.map( ccs => {
+      if ( item.url?.toLocaleLowerCase().indexOf( `/${ccs.toLocaleLowerCase()}.aspx`  ) > -1 ) { item.imageUrl = DefaultThumbCCS; }
+    });
+
     if ( !item.imageUrl || item.imageUrl.indexOf( DefaultSiteLogo ) > - 1 ) {
       if ( item.title?.indexOf( 'Contents' ) > -1 ) { item.imageUrl = DefaultThumbEasyContents; }
+
       else if ( item.title?.toLocaleLowerCase().indexOf( 'extreme' ) > -1 ) { item.imageUrl = DefaultThumbExtreme; }
       else if ( item.title === 'Home' ) { item.imageUrl = DefaultThumbEarth; }
       else {
@@ -197,18 +216,26 @@ export function addSearchMeta ( items: IEasyLink[], sourceProps: ISourceProps, E
 
     }
     item.searchTextLC = `${item.Title} || ${item.Description}`.toLocaleLowerCase();
-    sourceProps.meta1.map( ( tab : string ) => {
-      if ( item.searchTextLC.indexOf( tab.toLocaleLowerCase() ) > -1 ) item.tabs.push( tab );
-    } );
+
+    // https://github.com/mikezimm/drilldown7/issues/280
+    EasyPagesSysPages.map( sysPage => {
+      if ( item.url?.toLocaleLowerCase().indexOf( `/${sysPage.toLocaleLowerCase()}.aspx`  ) > -1 ) { item.tabs.push( EasyPagesSysTab ); }
+    });
+
+    //Only add to user tabs if it's NOT a known System page
+    if ( item.tabs.indexOf( EasyPagesSysTab ) < 0 ) {
+      sourceProps.meta1.map( ( tab : string ) => {
+        if ( item.searchTextLC.indexOf( tab.toLocaleLowerCase() ) > -1 ) item.tabs.push( tab );
+      } );
+    }
+
   });
 
   items.map( item => {
-    if ( item.tabs.length === 0 ) item.tabs.push( sourceProps.overflowTab );
+    if ( item.tabs.length === 0 ) item.tabs.push( sourceProps.EasyPageOverflowTab );
 
   });
 
-
   return items;
-
 
 }

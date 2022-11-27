@@ -10,6 +10,7 @@ import { saveViewAnalytics } from '../../CoreFPS/Analytics';
 
 import { Stack, IStackTokens, Icon, } from 'office-ui-fabric-react';
 import { SearchBox } from 'office-ui-fabric-react/lib/SearchBox';
+// import { Slider } from 'office-ui-fabric-react/lib/Slider';
 import { Pivot, PivotItem, } from 'office-ui-fabric-react/lib/Pivot';
 
 // import { sp } from "@pnp/sp";
@@ -25,6 +26,10 @@ import "@pnp/sp/webs";
 import { weekday3,  } from '../../fpsReferences';
 import { monthStr3 } from '../../fpsReferences';
 import { makeid } from '../../fpsReferences';
+
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import { FPSAgeSliderOptions, FPSAgeSliderOptionsOOTB, IFPSAgeSliderProps } from '@mikezimm/fps-react/lib/FPSAgeSlider';
+// import { FPSAgeSliderOptions, FPSAgeSliderOptionsOOTB, IFPSAgeSliderProps } from '../FPSAgeSlider/FPSAgeTypes';
 
 import styles from '../Contents/contents.module.scss';
 
@@ -59,7 +64,7 @@ import { getHelpfullError } from '@mikezimm/npmfunctions/dist/Services/Logging/E
 
 // import MyDrillItems from './drillListView';
 
-import ReactListItems from './reactListView';
+import ReactListItems, { getMaxRichHeight } from './reactListView';
 
 //parentListFieldTitles
 
@@ -92,6 +97,7 @@ import FetchBanner from '@mikezimm/npmfunctions/dist/HelpPanelOnNPM/onNpm/FetchB
 // import FetchBanner from '../../CoreFPS/FetchBannerElement';
 import EasyPagesHook from '../EasyPages/componentSources';
 
+import FPSAgeSliderHook from '@mikezimm/fps-react/lib/FPSAgeSlider';
 
 // import { ISpecialMessage, specialUpgrade } from '@mikezimm/npmfunctions/dist/HelpPanelOnNPM/special/interface';
 
@@ -129,8 +135,9 @@ export interface IClickInfo  {
   validText : string;
 }
 
-export default class DrillDown extends React.Component<IDrilldownV2Props, IDrillDownState> {
 
+
+export default class DrillDown extends React.Component<IDrilldownV2Props, IDrillDownState> {
 
     private _performance: ILoadPerformance = null;
 
@@ -362,6 +369,10 @@ export default class DrillDown extends React.Component<IDrilldownV2Props, IDrill
   
         let allColumns = ['Title','Id','Created','Modified','Author/Title','Author/ID','Author/Name','Editor/Title','Editor/ID','Editor/Name'];
 
+        // Added this for AgeSlider
+        list.ageColumns.map( column => {
+          if ( allColumns.indexOf( column ) === -1 ) allColumns.push( column )
+        });
         //Add all refiner columns to array.
         list.refiners.map( r => { allColumns.push(r); }); 
 
@@ -408,6 +419,7 @@ export default class DrillDown extends React.Component<IDrilldownV2Props, IDrill
         list.staticColumnsStr = allColumns.join(',');
         list.expandColumnsStr = expColumns.join(',');
         list.linkColumnsStr = linkColumns.join(',');
+        list.ageColumnsStr = list.ageColumns.join(',');
 
         return list;
 
@@ -466,7 +478,8 @@ export default class DrillDown extends React.Component<IDrilldownV2Props, IDrill
 
 
     private _createDrillList(webURL: string, name: string, isLibrary: boolean, refiners: string[], rules: string, stats: string, 
-        OrigViewDefs: ICustViewDef[], togOtherChartpart: boolean, title: string = null, stateSourceUserInfo: boolean, language: string, location: string, itteration: number ) {
+        OrigViewDefs: ICustViewDef[], togOtherChartpart: boolean, title: string = null, stateSourceUserInfo: boolean, language: string, location: string, itteration: number,
+        FPSAgeColumnName: string ) {
 
         let viewDefs = JSON.parse(JSON.stringify(OrigViewDefs)) ;
         let refinerRules = this._createEmptyRefinerRules( rules );
@@ -529,6 +542,7 @@ export default class DrillDown extends React.Component<IDrilldownV2Props, IDrill
             expandColumns: [],
             richColumns: [],  //This is for:  https://github.com/mikezimm/drilldown7/issues/224
             imageColumns: [],
+            ageColumns: [ 'Created', 'Modified', ],
 
             multiSelectColumns: [],
             linkColumns: [],
@@ -540,10 +554,14 @@ export default class DrillDown extends React.Component<IDrilldownV2Props, IDrill
             linkColumnsStr: '',
             richColumnsStr: '',   //This is for:  https://github.com/mikezimm/drilldown7/issues/224
             imageColumnsStr: '',
+            ageColumnsStr: '',
 
             removeFromSelect: ['currentTime','currentUser'],
             errors:  [],
         };
+
+        if ( FPSAgeColumnName ) list.ageColumns.push( FPSAgeColumnName );
+
 
         consoleMe( 'createDL' + location , this.state ? this.state.allItems : null , list );
         list = this._updateDrillListColumns( list ) ;
@@ -571,7 +589,8 @@ export default class DrillDown extends React.Component<IDrilldownV2Props, IDrill
          * This is copied later in code when you have to call the data in case something changed.
          */
 
-        let drillList = this._createDrillList(this.props.webURL, this.props.listName, this.props.isLibrary, this.props.refiners, this.props.rules, this.props.stats, this.props.viewDefs, this.props.toggles.togOtherChartpart, '', false, this.props.language, 'constructor', 0);
+        let drillList = this._createDrillList(this.props.webURL, this.props.listName, this.props.isLibrary, this.props.refiners, this.props.rules, this.props.stats, 
+          this.props.viewDefs, this.props.toggles.togOtherChartpart, '', false, this.props.language, 'constructor', 0, this.props.ageSliderWPProps.FPSAgeColumnName );
         let errMessage = drillList.refinerRules === undefined ? 'Invalid Rule set: ' +  this.props.rules : '';
         if ( drillList.refinerRules === undefined ) { drillList.refinerRules = [[],[],[]] ; } 
 
@@ -632,11 +651,13 @@ export default class DrillDown extends React.Component<IDrilldownV2Props, IDrill
 
             meta: [],
             resetArrows: makeid(4),
+            richHeight: this.props.richHeight[0],
 
             webURL: this.props.webURL,
 
             searchMeta: [pivCats.all.title],
             searchText: '',
+            searchAge: this.props.ageSliderWPProps.FPSAgeDefault ,  //ageIndex is negative... needs inverse to get array element
 
             errMessage: errMessage,
 
@@ -713,8 +734,6 @@ public componentDidUpdate( prevProps: IDrilldownV2Props ){
       this._webPartHelpElement = getWebPartHelpElement( this.props.sitePresets, ); //{ webURL: this.props.webURL, listTitle: this.props.listName }
     }
 
-
-
     if ( prevProps.performance.fetchCount !== this.props.performance.fetchCount ) {
         rebuildPart = true ;
     }
@@ -751,6 +770,11 @@ public componentDidUpdate( prevProps: IDrilldownV2Props ){
  *                                                          
  */
 
+    private _renderRich = ( item , fieldName, ) => {
+      console.log('renderExecuted: ', fieldName, item );
+      return ( item: any, index: number ) => { return <div dangerouslySetInnerHTML={{__html: item[ fieldName ]}} /> };
+    }
+
     public render(): React.ReactElement<IDrilldownV2Props> {
 
         // const {
@@ -762,9 +786,12 @@ public componentDidUpdate( prevProps: IDrilldownV2Props ){
         //   } = this.props;
 
         const { 
-          bannerMessage, quickCommands
+          bannerMessage, quickCommands, searchText, searchAge
         } = this.state;
 
+        const { FPSAgeColumnTitle,  } = this.props.ageSliderWPProps
+        const isOOTBMeta: boolean = FPSAgeColumnTitle === 'Modified' || FPSAgeColumnTitle === 'Created' ? true : false;
+        const FPSAgeSliderText: string = isOOTBMeta? FPSAgeSliderOptionsOOTB[ searchAge ].text : FPSAgeSliderOptions[ searchAge ].text;
         let x = 1;
         if ( x === 1 ) {
 
@@ -783,8 +810,10 @@ public componentDidUpdate( prevProps: IDrilldownV2Props ){
         // this.state.drillList.multiSelectColumns.map( msColumn => {
         //     viewDefsString = viewDefsString.replace( msColumn , msColumn.replace(/\//g,'') + 'MultiString' );
         // });
-        
+
         let viewDefs: ICustViewDef[] = JSON.parse(viewDefsString);
+
+        console.log(`Showing rich text columns: ~ 789`, this.state.drillList.richColumns );
 
         viewDefs.map( view => {
             view.viewFields.map ( field => {
@@ -797,10 +826,72 @@ public componentDidUpdate( prevProps: IDrilldownV2Props ){
 
                 //This is for:  https://github.com/mikezimm/drilldown7/issues/224
                 if ( this.state.drillList.richColumns.indexOf( field.name ) > -1 ) {
-                  field.render = ( item: string) => { return <div dangerouslySetInnerHTML={{ __html: item[ field.name ] }} /> }
+                  // field.render =  ( item, index ) => { return <div dangerouslySetInnerHTML={{__html: item[ field.name ]}} /> }
+                  field.render =  ( item, index ) => { this._renderRich( item, field.name ) }
                 }
             });
         });
+
+        // viewDefs[0].viewFields = [
+        //   {
+        //     "name": "Id",
+        //     "displayName": "Id",
+        //     "minWidth": 30,
+        //     "maxWidth": 35,
+        //     "linkPropertyName": "goToPropsLink"
+        //   },
+        //     {
+        //     "name": "Modified/YYYY-MM-DD",
+        //     "displayName": "Modified",
+        //     "minWidth": 50,
+        //     "maxWidth": 70
+        //   },
+        //     {
+        //     "name": "IT_Reviewer/Title/FirstWord",
+        //     "displayName": "Reviewer",
+        //     "minWidth": 50,
+        //     "maxWidth": 70
+        //   },
+        //   {
+        //     "name": "MigDest",
+        //     "displayName": "MigDest",
+        //     "minWidth": 50,
+        //     "maxWidth": 100
+        //   },
+        //     {
+        //     "name": "Owner",
+        //     "displayName": "Owner",
+        //     "minWidth": 50,
+        //     "maxWidth": 120
+        //   },
+        //   {
+        //     "name": "Title",
+        //     "displayName": "Title",
+        //     "minWidth": 100,
+        //     "maxWidth": 200
+        //   },
+        //   {
+        //     "name": "FriendlyURL/ShowCollUrl",
+        //     "displayName": "Current site",
+        //     "minWidth": 100,
+        //     "maxWidth": 200,
+        //     "linkPropertyName": "FriendlyURL/GetLinkUrl"
+        //   },
+        //   {
+        //     "name": "SPO_URL/ShowPageUrl",
+        //     "displayName": "SPO site",
+        //     "minWidth": 100,
+        //     "maxWidth": 200,
+        //     "linkPropertyName": "SPO_URL/GetLinkUrl"
+        //   },
+        //   {
+        //     "name": "Site_x0020_Documentation",
+        //     "displayName": "Site Documentation",
+        //     "minWidth": 10,
+        //     "maxWidth": 20,
+        //     "render": ( item: any, index: number ) => { return <div dangerouslySetInnerHTML={{__html: item.Site_x0020_Documentation }} /> }
+        //   }
+        // ]
 
         let drillListErrors = this.state.drillList.errors.length === 0 ? null : <div style={{ padding: '20px'}}>
             <h3>{`These column functions have errors... Check refiners or ViewFields :)`}</h3>
@@ -840,7 +931,7 @@ public componentDidUpdate( prevProps: IDrilldownV2Props ){
         // eslint-disable-next-line prefer-const
         let nearBannerElementsArray: any[] = [];
         // if ( this.props.bannerProps.beAUser !== true )  {
-          if ( this.props.easyPagesExtraProps.easyPageEnable === true )  {
+          if ( this.props.easyPagesExtraProps.EasyPagesEnable === true )  {
             nearBannerElementsArray.push( [
               <Icon key='Link12' iconName='Link12' onClick={ this._toggleEasyLinks.bind(this) } style={ this.props.bannerProps.bannerCmdReactCSS }/>
             ] );
@@ -875,7 +966,7 @@ public componentDidUpdate( prevProps: IDrilldownV2Props ){
         />;
 
         const EasyPagesElement = <EasyPagesHook 
-          easyPagesExtraProps={ { ...this.props.easyPagesExtraProps, ...{ expanded: this.state.showEasyPages, toggleExpanded: this._toggleEasyLinks.bind(this) } } }
+          easyPagesExtraProps={ { ...this.props.easyPagesExtraProps, ...{ easyPagesExpanded: this.state.showEasyPages, easyPagesToggleExpanded: this._toggleEasyLinks.bind(this) } } }
           easyPagesCommonProps= { this.props.easyPagesCommonProps }
           // easyPagesCommonProps= { this.props.easyPagesCommonProps }
           EasyIconsObject= { this.props.EasyIconsObject }
@@ -960,22 +1051,65 @@ public componentDidUpdate( prevProps: IDrilldownV2Props ){
                     *                                                                                   
                     */
 
+                /**
+                 * 
+                 *  NOTES FOR 11/22/2022
+                 *  Test page:  /SharePointOnlineMigration/SitePages/ttpKarina.aspx?debug=true&noredir=true&debugManifestsFile=https://localhost:4321/temp/manifests.js
+                 * It's showing both Sliders, BUT 
+                 * FPSAgeColumnTitle === 2 on WP per props.
+                 * BUT it shows as the first one in the default on the component
+                 * 
+                 * 
+                 * ADD THIS TO THE <AgeSlider props
+                 * FPSAgeDefault ={ this.state.searchAge }
+                 * 
+                 * HOWEVER, in HOK FPSAgeDefault is Positive which should be negative.
+                 * VERIFY the value is correct in the PropPaneGroup.
+                 * It seems to not be sending the Key Value but the Index?
+                 * 
+                 * 
+                 * 
+                 * 
+                 * 
+                 * 
+                 * 
+                 * 
+                 * 
+                 */
                 /*https://developer.microsoft.com/en-us/fabric#/controls/web/searchbox*/
                 let searchBox =  
                 <div className={[styles.searchContainer, styles.padLeft20, styles.padTop20, styles.padBot10 ].join(' ')} >
                     <SearchBox
-                    className={styles.searchBox}
-                    styles={{ root: { maxWidth: this.props.allowRailsOff === true ? 200 : 300 } }}
-                    placeholder="Search"
-                    onSearch={ this._searchForText.bind(this) }
-                    onFocus={ null } // () => console.log('this.state',  this.state)
-                    onBlur={ () => console.log('onBlur called') }
-                    onChange={ this._searchForText.bind(this) }
+                      className={styles.searchBox}
+                      styles={{ root: { maxWidth: this.props.allowRailsOff === true ? 200 : 300 } }}
+                      placeholder="Search"
+                      onSearch={ this._searchForText.bind(this) }
+                      onFocus={ null } // () => console.log('this.state',  this.state)
+                      onBlur={ () => console.log('onBlur called') }
+                      onChange={ this._searchForText.bind(this) }
                     />
                     <div className={styles.searchStatus}>
                     { 'Searching ' + this.state.searchCount + ' items' }
                     { /* 'Searching ' + (this.state.searchType !== 'all' ? this.state.filteredTiles.length : ' all' ) + ' items' */ }
                     </div>
+                    {/* https://github.com/mikezimm/drilldown7/issues/255 */}
+                    {/* <Slider 
+                      label={ `Modified age (days ago)` }
+                      min={ -4 }
+                      max= { 0 }
+                      step={ 1 }
+                      defaultValue={ this.state.searchAge }
+                      valueFormat= { (value: number) => FPSAgeSliderOptions[ value ].text }  //ageIndex is negative... needs inverse to get array element
+                      // onChanged={ (event: any, value: number, ) => this.setState({ searchAge: value }) }
+                      // onChanged={ (event: any, value: number, ) => this._searchForItems( this.state.searchText, this.state.searchMeta, this.state.searchMeta.length, 'age', value ) }
+                      onChange={ (value: number, ) => this._searchForItems( this.state.searchText, this.state.searchMeta, this.state.searchMeta.length, 'age', value ) }
+                      styles= {{ container: { width: '300px' }, valueLabel: { width: '100px' } }}
+                      originFromZero={ true }
+                    /> */}
+                    <FPSAgeSliderHook 
+                      props = { { ...this.props.ageSliderWPProps, ... {
+                          onChange: (value: number, ) => this._searchForItems( this.state.searchText, this.state.searchMeta, this.state.searchMeta.length, 'age', value ) ,  // value * - to make positive
+                        } } } />
                 </div>;
 
                 const stackPageTokens: IStackTokens = { childrenGap: 10 };
@@ -1050,10 +1184,32 @@ public componentDidUpdate( prevProps: IDrilldownV2Props ){
 
                 }
 
-                let noInfo = [];
-                noInfo.push( <h3>{'Found ' + this.state.searchCount + ' items with this search criteria:'}</h3> )  ;
-                if ( !this.state.searchText ) { noInfo.push( <p>{'Search Text: ' + this.state.searchText}</p> )  ; }
-                if ( !this.state.searchMeta[0] ) { noInfo.push( <p>{'Refiner: ' + this.state.searchMeta[0]}</p> ) ; }
+                const noItemsElement: JSX.Element = <div>
+                    <h2>Hmmm... I could not find any items with</h2>
+                    <h3>Search text: </h3>
+                    <div style={{ fontWeight: 'bold', color: 'darkred', marginLeft: '30px' }}>{ searchText ? searchText : 'Does not look like you typed anything in the search box...' }</div>
+                    <h3>With any of these refiners</h3>
+                    {this.state.searchMeta.length === 0 ? 
+                      <div>
+                        No refiners were selected.
+                      </div>
+                      :
+                      <div style={{ fontWeight: 'bold', color: 'blue' }}>{ this.state.searchMeta.map( (str: string, idx: number ) => {
+                        return <li key={idx} style={{ marginLeft: '30px' }} >{ `${this.props.refiners[ idx ]} - ${str}` }</li>
+                      })}</div>
+                    }
+                      {this.state.searchAge === 5 ? 
+                      <h3>
+                        All ${ FPSAgeColumnTitle } dates included.
+                      </h3>
+                      :<div>
+                        <h3>Filtering dates:</h3>
+                        <div style={{ marginLeft: '30px', fontWeight: 'bold' }}>{ FPSAgeColumnTitle} { FPSAgeSliderText}</div>
+                      </div>
+                    }
+                  </div>;
+
+                let noInfo = [ noItemsElement ];
 
                 if ( this.state.allItems.length === 0 ) {
                     thisPage = <div style={{ paddingBottom: 30 }}className={styles.contents}>
@@ -1139,10 +1295,13 @@ public componentDidUpdate( prevProps: IDrilldownV2Props ){
                                 </span>; });
 
                             instructionBlock = null;
-                            reactListItems  = this.state.searchedItems.length === 0 ? <div>NO ITEMS FOUND</div> : 
+                            reactListItems  = this.state.searchCount === 0 ? null : 
                             <ReactListItems 
                                 parentListFieldTitles={ viewDefs.length > 0 ? null : this.props.parentListFieldTitles }
     
+                                richColumns = { this.state.drillList.richColumns }
+                                richHeight = { getMaxRichHeight( this.props.autoRichHeight, this.state.richHeight, this.state.searchedItems ) }
+                                updateRichHeightProps = { this._updateRichHeightState.bind(this) }
                                 webURL = { this.state.drillList.webURL }
                                 parentListURL = { this.state.drillList.parentListURL }
                                 listName = { this.state.drillList.name }
@@ -1197,28 +1356,28 @@ public componentDidUpdate( prevProps: IDrilldownV2Props ){
                     consoleRef( 'rederObjects1', this.state.refinerObj );
                     if ( this.state.maxRefinersToShow > 1 && this.state.searchMeta[0] !== 'All' ) { 
                         textMaxRefinersToShow = 1;
-                        childIndex0 = this.state.refinerObj.childrenKeys.indexOf(this.state.searchMeta[0]);
-                        if ( buildStats ) {  statRefinerObject = this.state.refinerObj.childrenObjs[childIndex0]; }
+                        childIndex0 = this.state.refinerObj?.childrenKeys?.indexOf(this.state.searchMeta[0]);
+                        if ( buildStats ) {  statRefinerObject = this.state.refinerObj?.childrenObjs[childIndex0]; }
                         consoleRef( 'rederObjects2', this.state.refinerObj );
                     }
                     if ( textMaxRefinersToShow >= 1 && this.state.maxRefinersToShow > 2 && this.state.searchMeta.length > 1 && this.state.searchMeta[1] !== 'All' ) { 
                         textMaxRefinersToShow = 2;
-                        childIndex1 = this.state.refinerObj.childrenObjs[childIndex0].childrenKeys.indexOf(this.state.searchMeta[1]);
-                        if ( buildStats ) {  statRefinerObject = this.state.refinerObj.childrenObjs[childIndex0].childrenObjs[childIndex1]; }
+                        childIndex1 = this.state.refinerObj?.childrenObjs[childIndex0]?.childrenKeys?.indexOf(this.state.searchMeta[1]);
+                        if ( buildStats ) {  statRefinerObject = this.state.refinerObj?.childrenObjs[childIndex0]?.childrenObjs[childIndex1]; }
                         consoleRef( 'rederObjects3', this.state.refinerObj );
                     }
 
                     if ( this.state.showCountChart === true || statsVisible === true ) {
                         if ( buildCount ) { countCharts.push( this._buildCountCharts( this.state.refiners[0], 'refiner0' , this.state.refinerObj, RefinerChartTypes ) ); }
                         if ( textMaxRefinersToShow >= 1 ) {
-                            if ( buildCount ) {  countCharts.push( this._buildCountCharts( this.state.refiners[1], 'refiner1' , this.state.refinerObj.childrenObjs[childIndex0], RefinerChartTypes ) ); }
+                            if ( buildCount ) {  countCharts.push( this._buildCountCharts( this.state.refiners[1], 'refiner1' , this.state.refinerObj?.childrenObjs[childIndex0], RefinerChartTypes ) ); }
                             if ( textMaxRefinersToShow >= 2 ) {
-                                if ( buildCount ) {  countCharts.push( this._buildCountCharts( this.state.refiners[2], 'refiner2' , this.state.refinerObj.childrenObjs[childIndex0].childrenObjs[childIndex1],  RefinerChartTypes ) ); }
+                                if ( buildCount ) {  countCharts.push( this._buildCountCharts( this.state.refiners[2], 'refiner2' , this.state.refinerObj?.childrenObjs[childIndex0]?.childrenObjs[childIndex1],  RefinerChartTypes ) ); }
                             }
                         }
 
                         if ( countCharts.length === 0 ) { countCharts = null ; }
-                        if ( buildStats && statsVisible === true && statRefinerObject && statRefinerObject.childrenKeys.length > 0  ) {
+                        if ( buildStats && statsVisible === true && statRefinerObject && statRefinerObject?.childrenKeys.length > 0  ) {
                             let statChartArray = buildStatChartsArray( this.state.drillList.refinerStats, 'summaries', statRefinerObject );
                             statCharts = this._buildStatCharts( statChartArray );
 
@@ -1353,6 +1512,10 @@ public componentDidUpdate( prevProps: IDrilldownV2Props ){
 
     }   //End Public Render
 
+    private _updateSearchAge( event: any, value: number, ) {
+      this.setState({ searchAge: value });
+    }
+
     private async _getAllItemsCall( viewDefs: ICustViewDef[], refiners: string[] ): Promise<void> {
 
         //Start tracking performance
@@ -1362,10 +1525,10 @@ public componentDidUpdate( prevProps: IDrilldownV2Props ){
          * This is copied from constructor when you have to call the data in case something changed.
          */
 
-        let drillList = this._createDrillList(this.props.webURL, this.props.listName, this.props.isLibrary, refiners, this.state.rules, this.props.stats, viewDefs, this.props.toggles.togOtherChartpart, '', false, this.props.language, 'getAllItemsCall', this.state.drillList.itteration );
+        let drillList = this._createDrillList(this.props.webURL, this.props.listName, this.props.isLibrary, refiners, this.state.rules, this.props.stats, 
+          viewDefs, this.props.toggles.togOtherChartpart, '', false, this.props.language, 'getAllItemsCall', this.state.drillList.itteration, this.props.ageSliderWPProps.FPSAgeColumnName  );
         // let errMessage = drillList.refinerRules === undefined ? 'Invalid Rule set: ' +  this.state.rules : '';
         if ( drillList.refinerRules === undefined ) { drillList.refinerRules = [[],[],[]] ; } 
-
 
         let restFilter: string = !this.props.performance.restFilter ? '' : this.props.performance.restFilter;
         let evalFilter: string = this.props.performance.evalFilter;
@@ -1421,9 +1584,16 @@ public componentDidUpdate( prevProps: IDrilldownV2Props ){
 
         this._performance.ops.analyze2 = startPerformOp( 'analyze2 addItems', this.props.displayMode );
 
+        const maxAge = FPSAgeSliderOptions[ Math.abs ( this.state.searchAge ) ].maxAge;  //ageIndex is negative... needs inverse to get array element
+
+        let newFilteredItems : IDrillItemInfo[] = this._getNewFilteredItems( '', [], allItems, 0, this.props.ageSliderWPProps.FPSAgeColumnName, maxAge );
+        const searchCount = newFilteredItems.length;
+
         consoleRef( 'addTheseItems1REF', refinerObj );
         consoleMe( 'addTheseItems1' , allItems, drillList );
+        consoleMe( 'ageFilterTheseItems1' , newFilteredItems, drillList );
         //let newFilteredItems : IDrillItemInfo[] = this.getNewFilteredItems( '', this.state.searchMeta, allItems, 0 );
+
         let pivotCats : any = [];
         let cmdCats : any = [];
         pivotCats.push ( refinerObj.childrenKeys.map( r => { return this._createThisPivotCat(r,'',0); }));
@@ -1519,8 +1689,8 @@ public componentDidUpdate( prevProps: IDrilldownV2Props ){
 
         this.setState({
             allItems: allItems,
-            searchedItems: allItems, //newFilteredItems,  //Replaced with allItems to update when props change.
-            searchCount: allItems.length,
+            searchedItems: newFilteredItems,
+            searchCount: searchCount,
             errMessage: errMessage,
             searchText: '',
             searchMeta: [pivCats.all.title],
@@ -1556,6 +1726,16 @@ public componentDidUpdate( prevProps: IDrilldownV2Props ){
         return pivCat;
 
     }
+
+    private _updateRichHeightState(): void {
+
+      const oldValue = this.state.richHeight;
+      const oldIdx = this.props.richHeight.indexOf( oldValue );
+      const nextIdx = oldIdx === this.props.richHeight.length -1 ? 0 : oldIdx + 1;
+
+      this.setState({ richHeight: this.props.richHeight[ nextIdx ] });
+    }
+
 
 /***
  *         .d8888. d88888b  .d8b.  d8888b.  .o88b. db   db 
@@ -1657,14 +1837,14 @@ public componentDidUpdate( prevProps: IDrilldownV2Props ){
         //This sends back the correct pivot category which matches the category on the tile.
         //https://github.com/mikezimm/drilldown7/issues/242
         let searchString = item && item.target && item.target.value ? item.target.value : typeof item === 'string' ? item : '';
-        this._searchForItems( searchString, this.state.searchMeta, 0, 'text' );
+        this._searchForItems( searchString, this.state.searchMeta, 0, 'text', this.state.searchAge );
     }
 
     //This function works great for Pivots, not neccessarily anything with icons.
     public _onSearchForMetaPivot0 = (item: any): void => {
         //This sends back the correct pivot category which matches the category on the tile.
         let validText = item.props.itemKey;
-        this._searchForItems( this.state.searchText, [validText], 0, 'meta' );
+        this._searchForItems( this.state.searchText, [validText], 0, 'meta', this.state.searchAge );
     }
 
 
@@ -1692,7 +1872,7 @@ public componentDidUpdate( prevProps: IDrilldownV2Props ){
         if ( clickInfo.isAltClick === '!Value' ) {
             this._changeRefinerOrder('refiner0', clickInfo.validText ) ;
         } else {
-            this._searchForItems( this.state.searchText, [clickInfo.validText], 0, 'meta' );
+            this._searchForItems( this.state.searchText, [clickInfo.validText], 0, 'meta', this.state.searchAge );
         }
     }
 
@@ -1727,7 +1907,7 @@ public componentDidUpdate( prevProps: IDrilldownV2Props ){
             newMeta.push( validText ) ; 
         } else { alert('Had unexpected error in _onSearchForMeta1, lastMeta.length = ' + lastMeta.length); }
 
-        this._searchForItems( this.state.searchText, newMeta, 1, 'meta' );
+        this._searchForItems( this.state.searchText, newMeta, 1, 'meta', this.state.searchAge );
       }
 
     public _onSearchForMetaPivot2= (item: any): void => {
@@ -1761,7 +1941,7 @@ public componentDidUpdate( prevProps: IDrilldownV2Props ){
         newMeta.push( validText ) ; 
     } else { alert('Had unexpected error in _onSearchForMeta2, lastMeta.length = ' + lastMeta.length); }
 
-    this._searchForItems( this.state.searchText, newMeta, 2, 'meta' );
+    this._searchForItems( this.state.searchText, newMeta, 2, 'meta', this.state.searchAge );
   }
 
     private _changeRefinerOrder1() { 
@@ -1816,7 +1996,8 @@ public componentDidUpdate( prevProps: IDrilldownV2Props ){
      */ 
     let viewDefs: ICustViewDef[] = JSON.parse(JSON.stringify(this.props.viewDefs));
 
-    let drillList = this._createDrillList(this.props.webURL, this.props.listName, this.props.isLibrary, refiners, JSON.stringify(refinerRulesNew), this.props.stats, viewDefs, this.props.toggles.togOtherChartpart, '', true, this.props.language, 'changeRefinerOrder', this.state.drillList.itteration  );
+    let drillList = this._createDrillList(this.props.webURL, this.props.listName, this.props.isLibrary, refiners, JSON.stringify(refinerRulesNew), this.props.stats, 
+    viewDefs, this.props.toggles.togOtherChartpart, '', true, this.props.language, 'changeRefinerOrder', this.state.drillList.itteration, this.props.ageSliderWPProps.FPSAgeColumnName );
 
     drillList.refinerInstructions = stateRefinerInstructions;
     
@@ -1884,13 +2065,14 @@ public componentDidUpdate( prevProps: IDrilldownV2Props ){
 
   }
 
-  public _searchForItems = (text: string, newMeta: string[] , layer: number, searchType: 'meta' | 'text' ): void => {
+  public _searchForItems = (text: string, newMeta: string[] , layer: number, searchType: 'meta' | 'text' | 'age', ageIndex: number = this.state.searchAge ): void => {
 
     consoleMe( 'searchForItems1: ' + text , this.state.allItems, this.state.drillList );
     let searchItems : IDrillItemInfo[] = this.state.allItems;
     let searchCount = searchItems.length;
+    const maxAge = FPSAgeSliderOptions[ Math.abs( ageIndex ) ].maxAge;  //ageIndex is negative... needs inverse to get array element
 
-    let newFilteredItems : IDrillItemInfo[] = this._getNewFilteredItems( text, newMeta, searchItems, layer );
+    let newFilteredItems : IDrillItemInfo[] = this._getNewFilteredItems( text, newMeta, searchItems, layer, this.props.ageSliderWPProps.FPSAgeColumnName, maxAge );
 
     let pivotCats : any = [];
     let cmdCats : any = [];
@@ -1899,6 +2081,11 @@ public componentDidUpdate( prevProps: IDrilldownV2Props ){
     let prevMetaString = JSON.stringify( this.state.searchMeta );
     let thisMetaString = JSON.stringify( newMeta );
     let metaChanged = prevMetaString === thisMetaString ? false : true;
+
+    let prevTextString = JSON.stringify( this.state.searchText );
+    let thisTextString = JSON.stringify( text );
+    let textChanged = prevTextString === thisTextString ? false : true;
+
     let refinerObj = this.state.refinerObj;
 
     /**
@@ -1949,7 +2136,7 @@ public componentDidUpdate( prevProps: IDrilldownV2Props ){
         cmdCats = this.state.cmdCats;
     }
 
-    if ( searchType === 'text' && this.props.updateRefinersOnTextSearch === true ) {
+    if ((  searchType === 'text' ||  searchType === 'age' ) && this.props.updateRefinersOnTextSearch === true ) {
         refinerObj = buildRefinersObject(newFilteredItems, this.state.drillList );
         pivotCats = [];
         cmdCats = [];
@@ -1966,21 +2153,21 @@ public componentDidUpdate( prevProps: IDrilldownV2Props ){
             parentListURL : this.state.drillList.parentListURL,
             listName : this.state.drillList.name,
             togOtherListview: this.props.toggles.togOtherListview,
-    
+
             viewDefs: this.props.viewDefs,
             viewFields: null, // This is derived from viewDefs
             groupByFields: null, // This is derived from viewDefs
-    
+
             contextUserInfo: this.state.drillList.contextUserInfo,  //For site you are on ( aka current page context )
             sourceUserInfo: this._sourceUser, //this.state.sourceUserInfo,   //For site where the list is stored
 
             quickCommands: this.state.quickCommands,
-    
+
             items : newFilteredItems,
             breadCrumb: newMeta,
-    
+
         };
-    
+
         if ( this.props.handleListPost ) { this.props.handleListPost( listViewDD ); }
         searchCount = newFilteredItems.length;
     } else {
@@ -2018,11 +2205,13 @@ public componentDidUpdate( prevProps: IDrilldownV2Props ){
       searchCount: searchCount,
       searchText: text.toLowerCase(),
       searchMeta: newMeta,
-      resetArrows: metaChanged === true ? makeid(4) : this.state.resetArrows,
+      //https://github.com/mikezimm/drilldown7/issues/269
+      resetArrows: metaChanged === true || textChanged === true ? makeid(4) : this.state.resetArrows,
       pivotCats: pivotCats,
       cmdCats: cmdCats,
       refinerObj: refinerObj,
       instructionsHidden: 'dynamic',
+      searchAge: ageIndex,
     });
 
 
@@ -2031,7 +2220,7 @@ public componentDidUpdate( prevProps: IDrilldownV2Props ){
   } //End searchForItems
 
 
-  private _getNewFilteredItems(text: string, meta: string[] , searchItems : IDrillItemInfo[], layer: number ) {
+  private _getNewFilteredItems(text: string, meta: string[] , searchItems : IDrillItemInfo[], layer: number, FPSAgeColumnName: string, maxAge: number ) {
 
     let newFilteredItems : IDrillItemInfo[] = [];
 
@@ -2045,7 +2234,26 @@ public componentDidUpdate( prevProps: IDrilldownV2Props ){
       // Changed from this
       // if ( meta !== undefined && meta !== null && meta.length > 0 ) {
       // To this based on Jared's reply in thread:  "What am I missing? false and true have no overlap"
-      if ( meta?.length && meta.length > 0 ) {
+
+      let skipItemDueToAge: any = false;
+      if ( maxAge === FPSAgeSliderOptions[ FPSAgeSliderOptionsOOTB.length - 1 ].maxAge ) { 
+        // Do nothing This is because 'All Items' are selected
+      } else {
+        if ( FPSAgeColumnName ) {
+          if ( !thisSearchItem[ `time${FPSAgeColumnName}` ] ) { 
+            skipItemDueToAge = true; // There is no Time in the column, skip item
+  
+          } else if ( thisSearchItem[ `time${FPSAgeColumnName}` ].daysAgo > maxAge ) {
+            skipItemDueToAge = true; // There is a Time and it does excede maxAage
+  
+          }
+        }
+      }
+
+      if ( skipItemDueToAge === true ) {
+        // do not show item
+
+      } else if ( meta?.length && meta.length > 0 ) {
           // for ( let m in meta ) { // eslint-disable-line guard-for-in
           meta.map( ( m: string, idx: number ) => { 
 

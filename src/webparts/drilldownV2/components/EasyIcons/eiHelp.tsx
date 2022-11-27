@@ -1,25 +1,16 @@
 import * as React from 'react';
 // import { Icon, } from 'office-ui-fabric-react/lib/Icon';
 // import { escape } from '@microsoft/sp-lodash-subset';
-import ReactJson from "react-json-view";
 
 import { PivotItem, } from 'office-ui-fabric-react/lib/Pivot';
 
-import { IRepoLinks } from '../../fpsReferences';
 import { IEasyIcons } from './eiTypes'; //, IEasyIconGroup, IEasyIconGroups, EasyIconLocation
-// import { urlCombine } from '@pnp/spfx-controls-react';
+
 import { getEasyIconElement } from './eiHelpIcons';
 
 require('./easyicons.css');
 
-// require('@mikezimm/npmfunctions/dist/PropPaneHelp/PropPanelHelp.css');
-
-export function putObjectIntoJSON ( obj: any, name: string = null ): JSX.Element {
-  // return <ReactJson src={ obj } name={ 'panelItem' } collapsed={ true } displayDataTypes={ true } displayObjectSize={ true } enableClipboard={ true } style={{ padding: '20px 0px' }}/>;
-  return <ReactJson src={ obj } name={ name } collapsed={ false } displayDataTypes={ false } displayObjectSize={ false } enableClipboard={ true } style={{ padding: '20px 0px' }} theme= { 'rjv-default' } indentWidth={ 2}/>;
-}
-
-export function getEasyIconsHelp ( EasyIcons: IEasyIcons, repoLink: IRepoLinks ): JSX.Element {
+export function getEasyIconsHelp ( EasyIcons: IEasyIcons, ): JSX.Element {
 
   // const PleaseSeeWiki = <p>Please see the { repoLink.wiki }  for more information</p>;
 

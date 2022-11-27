@@ -8,7 +8,7 @@
 
 export function basicsContent(  ): any {
 
-    return null;
+    return undefined;
 
 //     let messageRows = [];
 

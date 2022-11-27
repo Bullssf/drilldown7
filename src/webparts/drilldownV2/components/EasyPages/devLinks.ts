@@ -42,6 +42,19 @@ export const EasyDevPages: IEasyLink[] = [ EasyDevTypescript, EasyDevJSON, EasyD
   EasyDevPnpJS, EasyDevRegex, EasyDevSPFxReact, EasyDevSPFxReactIO, EasyDevFluent, EasyDevFliconIO
 ];
 
+
+export const EasyDevFPSReact: IEasyLink = { title: 'FPS-React', description: `fps-react contains react based components for reuse - ${EasyPagesDevTab}`, 
+  url: 'https://github.com/mikezimm/fps-React/issues' , imageUrl: 'https://www.pinpng.com/pngs/m/675-6758716_react-native-logo-svg-hd-png-download.png' , type: 'current', tabs: [ EasyPagesDevTab ] } as any;
+
+export const EasyDevFPSJS: IEasyLink = { title: 'FPS-JS', description: `fps-js contains JS based functions, interfaces and constants for reuse - ${EasyPagesDevTab}`, 
+  url: 'https://github.com/mikezimm/fps-JS/issues' , imageUrl: 'https://www.freepnglogos.com/uploads/javascript-png/black-js-logo-symbol-icon-29.png' , type: 'current', tabs: [ EasyPagesDevTab ] } as any;
+
+export const EasyDevFPSBanner: IEasyLink = { title: 'FPS-Banner', description: `fps-banner contains react based banner for reuse - ${EasyPagesDevTab}`, 
+  url: 'https://github.com/mikezimm/fps-Banner/issues' , imageUrl: 'https://th.bing.com/th/id/R.4512e93706f461f09f26aed42607023a?rik=GcuIKkzKDw%2bloA&riu=http%3a%2f%2fwww.newdesignfile.com%2fpostpic%2f2010%2f06%2fblue-header-graphic_64584.jpg&ehk=JzYQX4j4PVDUgA71x07NSS82%2fQB%2bvegBe56z%2fPPvVjA%3d&risl=&pid=ImgRaw&r=0' , type: 'current', tabs: [ EasyPagesDevTab ] } as any;
+
+export const EasyDevFPSPnp2: IEasyLink = { title: 'FPS-Pnp2', description: `fps-pnp2 contains services and functions related to pnpv2 library - ${EasyPagesDevTab}`, 
+  url: 'https://github.com/mikezimm/fps-Pnp2/issues' , imageUrl: 'https://th.bing.com/th/id/OIP.cVFWUghT4GBYXb6XogqVegAAAA?pid=ImgDet&rs=1' , type: 'current', tabs: [ EasyPagesDevTab ] } as any;
+
 export function getZGitLinks( repo : IRepoLinks ) : IEasyLink[] {
 
   const links: IEasyLink[] = [];
@@ -53,20 +66,28 @@ export function getZGitLinks( repo : IRepoLinks ) : IEasyLink[] {
    * +- is required in that case.
    */
   
-  links.push(  { title: `Issues`, description: `${repo.desc}/issues`, 
+  links.push(  { title: `Issues`, description: `${repo.desc}/issues`,
                  url: `${repo.href}/issues` , imageUrl: TheCKLogo , type: 'current', tabs: [ EasyPagesRepoTab ]  } as any );
 
-  links.push(  { title: `Open Priority Issues`, description: `${repo.desc}/issues`, 
+  links.push(  { title: `Open Priority Issues`, description: `${repo.desc}/issues`,
                  url: `${repo.href}/issues?q=is:issue++is:open++label:priority` , imageUrl: TheCKLogo , type: 'current', tabs: [ EasyPagesRepoTab ]  } as any );
 
-  links.push(  { title: `Open Priority Issues - NOT Complete`, description: `${repo.desc}/issues`, 
+  links.push(  { title: `Open Priority Issues - NOT Complete`, description: `${repo.desc}/issues`,
                  url: `${repo.href}/issues?q=is:issue++is:open++label:priority+-label:complete` , imageUrl: TheCKLogo , type: 'current', tabs: [ EasyPagesRepoTab ]  } as any );
 
-  links.push(  { title: `Open Priority Issues - Completed`, description: `${repo.desc}/issues`, 
+  links.push(  { title: `Open Priority Issues - Completed`, description: `${repo.desc}/issues`,
                  url: `${repo.href}/issues?q=is:issue+is:open++label:priority++label:complete` , imageUrl: TheCKLogo , type: 'current', tabs: [ EasyPagesRepoTab ]  } as any );
 
-  links.push(  { title: `Closed Issues`, description: `${repo.desc}/issues`, 
+  links.push(  { title: `Closed Issues`, description: `${repo.desc}/issues`,
                 url: `${repo.href}/issues?q=is:issue++is:closed` , imageUrl: TheCKLogo , type: 'current', tabs: [ EasyPagesRepoTab ]  } as any );
+
+  links.push(  { title: `Open Issues - Completed`, description: `${repo.desc}/issues`,
+                url: `${repo.href}/issues?q=is:issue+is:open++label:complete` , imageUrl: TheCKLogo , type: 'current', tabs: [ EasyPagesRepoTab ]  } as any );
+
+  links.push( EasyDevFPSReact );
+  links.push( EasyDevFPSJS );
+  links.push( EasyDevFPSBanner );
+  links.push( EasyDevFPSPnp2 );
 
   return links;
 
