@@ -716,18 +716,39 @@ export default class DrilldownV2WebPart extends BaseClientSideWebPart<IDrilldown
   
      const exportProps = buildExportProps( this.properties , this._wpInstanceID, this.context.pageContext.web.serverRelativeUrl );
   
+
+     console.log('mainWPRenderBanSetup - displayMode', this.displayMode );
+     console.log('mainWPRenderBanSetup - _beAReader', this._beAReader);
+     console.log('mainWPRenderBanSetup - _FPSUser', this._FPSUser);
+     console.log('mainWPRenderBanSetup - properties', this.properties );
+     console.log('mainWPRenderBanSetup - repoLink', repoLink );
+     console.log('mainWPRenderBanSetup - trickyEmails', trickyEmails );
+     console.log('mainWPRenderBanSetup - exportProps', exportProps);
+     console.log('mainWPRenderBanSetup - strings', strings);
+     console.log('mainWPRenderBanSetup - clientWidth', this.domElement.clientWidth);
+     console.log('mainWPRenderBanSetup - this.context', this.context );
+     console.log('mainWPRenderBanSetup - _modifyBannerTitle', this._modifyBannerTitle);
+     console.log('mainWPRenderBanSetup - _forceBanner', this._forceBanner);
+     console.log('mainWPRenderBanSetup - false', false );
+     console.log('mainWPRenderBanSetup - null', null );
+     console.log('mainWPRenderBanSetup - _keysToShow', this._keysToShow );
+     console.log('mainWPRenderBanSetup - true', true);
+     console.log('mainWPRenderBanSetup - true', true);
+
      const bannerProps: IWebpartBannerProps = mainWebPartRenderBannerSetup( this.displayMode, this._beAReader, this._FPSUser, //repoLink.desc, 
          this.properties, repoLink, trickyEmails, exportProps, strings , this.domElement.clientWidth, this.context as any, this._modifyBannerTitle,  // 2022-09-22:  Set this.context as any
          this._forceBanner, false, null, this._keysToShow, true, true );
   
-      if ( bannerProps.showBeAUserIcon === true ) { bannerProps.beAUserFunction = this._beAUserFunction.bind(this); }
-  
-      // console.log('mainWebPart: baseFetchInfo ~ 308',   );
-      // this._fetchInfo = baseFetchInfo( '', this._performance );
-  
-      // This gets done a second time if you do not want to pass it in the first time.
-      // bannerProps.replacePanelHTML = visitorPanelInfo( this.properties, repoLink, '', '', createPerformanceTableVisitor( this._fetchInfo.performance ) );
-      console.log('mainWebPart: createElement ~ 316',   );
+    console.log('mainWPRenderBanSetup - bannerProps', bannerProps);
+
+    if ( bannerProps.showBeAUserIcon === true ) { bannerProps.beAUserFunction = this._beAUserFunction.bind(this); }
+
+    // console.log('mainWebPart: baseFetchInfo ~ 308',   );
+    // this._fetchInfo = baseFetchInfo( '', this._performance );
+
+    // This gets done a second time if you do not want to pass it in the first time.
+    // bannerProps.replacePanelHTML = visitorPanelInfo( this.properties, repoLink, '', '', createPerformanceTableVisitor( this._fetchInfo.performance ) );
+    console.log('mainWebPart: createElement ~ 316',   );
 
 
     let errMessage = '';
@@ -786,6 +807,13 @@ export default class DrilldownV2WebPart extends BaseClientSideWebPart<IDrilldown
     /**
      * NEED TO CHECK:  CREATE ITEM LINK  LIST LINK AUDIENCE
      */
+
+     console.log('verifyAudienceVsUser - _FPSUser', this._FPSUser);
+     console.log('verifyAudienceVsUser - showTricks', bannerProps.showTricks);
+     console.log('verifyAudienceVsUser - detailsAudience', this.properties.detailsAudience);
+     console.log('verifyAudienceVsUser - null', null);
+     console.log('verifyAudienceVsUser - _beAReader', this._beAReader);
+
     const canUseDetails = verifyAudienceVsUser( this._FPSUser, bannerProps.showTricks, this.properties.detailsAudience , null, this._beAReader );
     const includeDetails = this.properties.includeDetails === true && canUseDetails === true ? true : false ;
 
