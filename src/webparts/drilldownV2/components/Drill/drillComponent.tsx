@@ -967,8 +967,8 @@ public componentDidUpdate( prevProps: IDrilldownV2Props ){
 
         const EasyPagesElement = <EasyPagesHook 
           easyPagesExtraProps={ { ...this.props.easyPagesExtraProps, ...{ easyPagesExpanded: this.state.showEasyPages, easyPagesToggleExpanded: this._toggleEasyLinks.bind(this) } } }
-          easyPagesCommonProps= { this.props.easyPagesCommonProps }
-          // easyPagesCommonProps= { this.props.easyPagesCommonProps }
+          easyPagesSourceProps= { this.props.easyPagesSourceProps }
+          // easyPagesSourceProps= { this.props.easyPagesSourceProps }
           EasyIconsObject= { this.props.EasyIconsObject }
         />;
 

@@ -210,7 +210,7 @@ export interface IDrilldownV2Props extends IFPSCorePinMeReactComponentProps {
 
      loadPerformance: ILoadPerformance;
 
-     easyPagesCommonProps: IEasyPagesSourceProps;  // General props which apply to all Sources/Pages
+     easyPagesSourceProps: IEasyPagesSourceProps;  // General props which apply to all Sources/Pages
      easyPagesExtraProps: IEasyPagesExtraProps;  // General props which are used on the SourcesPage but not component page
      EasyIconsObject: IEasyIcons;
      ageSliderWPProps: IFPSAgeSliderWPProps;

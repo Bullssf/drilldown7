@@ -37,7 +37,7 @@ export interface IEasyPagesExtraProps {
 }
 
 export interface IEasyPagesHookProps {
-  easyPagesCommonProps: IEasyPagesSourceProps;  // General props which apply to all Sources/Pages
+  easyPagesSourceProps: IEasyPagesSourceProps;  // General props which apply to all Sources/Pages
   easyPagesExtraProps: IEasyPagesExtraProps;  // General props which are used on the SourcesPage but not component page
   EasyIconsObject: IEasyIcons; 
 }
@@ -56,7 +56,7 @@ export interface IEasyPagesHookProps {
 const EasyPagesHook: React.FC<IEasyPagesHookProps> = ( props ) => {
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const { context, styles, containerStyles, repo } = props.easyPagesCommonProps;
+  const { context, styles, containerStyles, repo } = props.easyPagesSourceProps;
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { easyPagesExpanded, EasyPageOverflowTab, tabsC, tabsP, tabsA, tabsB, EasyPageParentFetch, EasyPageUrlA, EasyPagesSiteTitleA, EasyPageUrlB, EasyPagesSiteTitleB, showTricks } = props.easyPagesExtraProps;
 
@@ -147,7 +147,7 @@ const EasyPagesHook: React.FC<IEasyPagesHookProps> = ( props ) => {
   if ( expandedState === true ) classNames.push ( 'expand' );
 
   // Rebuilt logic for:  https://github.com/mikezimm/drilldown7/issues/263 , https://github.com/mikezimm/Pnpjs-v2-Upgrade-sample/issues/72
-  if ( props.easyPagesCommonProps.pageLayout === 'SharePointFullPage' || props.easyPagesCommonProps.pageLayout === 'SingleWebPartAppPageLayout' ) {
+  if ( props.easyPagesSourceProps.pageLayout === 'SharePointFullPage' || props.easyPagesSourceProps.pageLayout === 'SingleWebPartAppPageLayout' ) {
 
     if ( repo.href.toLowerCase().indexOf('drilldown') > -1 ) {
       classNames.push( 'ep-drilldown-spa' ) ;
@@ -156,7 +156,7 @@ const EasyPagesHook: React.FC<IEasyPagesHookProps> = ( props ) => {
 
   } else {
     if ( repo.href.toLowerCase().indexOf('drilldown') > -1 ) classNames.push( 'ep-drilldown' );
-    if ( ( props.easyPagesCommonProps.pinState === 'pinFull' || props.easyPagesCommonProps.pinState === 'pinMini' ) && classNames.indexOf('easy-pages-spa') < 0 ) classNames.push ( 'easy-pages-spa' );
+    if ( ( props.easyPagesSourceProps.pinState === 'pinFull' || props.easyPagesSourceProps.pinState === 'pinMini' ) && classNames.indexOf('easy-pages-spa') < 0 ) classNames.push ( 'easy-pages-spa' );
 
   }
 
@@ -195,7 +195,7 @@ const EasyPagesHook: React.FC<IEasyPagesHookProps> = ( props ) => {
         sourceName: 'Current',
         parentUrl: parentUrl,
       }}
-      easyPagesCommonProps={ props.easyPagesCommonProps }  // General props which apply to all Sources/Pages
+      easyPagesSourceProps={ props.easyPagesSourceProps }  // General props which apply to all Sources/Pages
       EasyIconsObject = { props.EasyIconsObject }
     />
 
@@ -207,7 +207,7 @@ const EasyPagesHook: React.FC<IEasyPagesHookProps> = ( props ) => {
         sourceName: 'Parent',
         parentUrl: '',
       }}
-      easyPagesCommonProps={ props.easyPagesCommonProps }  // General props which apply to all Sources/Pages
+      easyPagesSourceProps={ props.easyPagesSourceProps }  // General props which apply to all Sources/Pages
       EasyIconsObject = { props.EasyIconsObject }
     />
 
@@ -219,7 +219,7 @@ const EasyPagesHook: React.FC<IEasyPagesHookProps> = ( props ) => {
         sourceName: realSiteA,
         parentUrl: '',
       }}
-      easyPagesCommonProps={ props.easyPagesCommonProps }  // General props which apply to all Sources/Pages
+      easyPagesSourceProps={ props.easyPagesSourceProps }  // General props which apply to all Sources/Pages
       EasyIconsObject = { props.EasyIconsObject }
     />
 
@@ -231,7 +231,7 @@ const EasyPagesHook: React.FC<IEasyPagesHookProps> = ( props ) => {
         sourceName: realSiteB,
         parentUrl: '',
       }}
-      easyPagesCommonProps={ props.easyPagesCommonProps }  // General props which apply to all Sources/Pages
+      easyPagesSourceProps={ props.easyPagesSourceProps }  // General props which apply to all Sources/Pages
       EasyIconsObject = { props.EasyIconsObject }
     />
 
@@ -243,7 +243,7 @@ const EasyPagesHook: React.FC<IEasyPagesHookProps> = ( props ) => {
         sourceName: EasyPagesDevTab,
         parentUrl: '',
       }}
-      easyPagesCommonProps={ props.easyPagesCommonProps }  // General props which apply to all Sources/Pages
+      easyPagesSourceProps={ props.easyPagesSourceProps }  // General props which apply to all Sources/Pages
       EasyIconsObject = { props.EasyIconsObject }
     />
 
@@ -255,7 +255,7 @@ const EasyPagesHook: React.FC<IEasyPagesHookProps> = ( props ) => {
         sourceName: EasyPagesRepoTab,
         parentUrl: '',
       }}
-      easyPagesCommonProps={ props.easyPagesCommonProps }  // General props which apply to all Sources/Pages
+      easyPagesSourceProps={ props.easyPagesSourceProps }  // General props which apply to all Sources/Pages
       EasyIconsObject = { props.EasyIconsObject }
     />
 

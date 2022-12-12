@@ -715,7 +715,6 @@ export default class DrilldownV2WebPart extends BaseClientSideWebPart<IDrilldown
       doHeadings: false } );  //doHeadings is currently only used in PageInfo so set to false.
   
      const exportProps = buildExportProps( this.properties , this._wpInstanceID, this.context.pageContext.web.serverRelativeUrl );
-  
 
      console.log('mainWPRenderBanSetup - displayMode', this.displayMode );
      console.log('mainWPRenderBanSetup - _beAReader', this._beAReader);
@@ -994,8 +993,12 @@ export default class DrilldownV2WebPart extends BaseClientSideWebPart<IDrilldown
         forcePinState: true,
         domElement: this.context.domElement,
         pageLayout: this.properties.pageLayout,
-      }, 
-      easyPagesCommonProps: {
+      },
+
+      /**
+       * In fps-library-v2:  easyPagesSourceProps: setEasyPagesSourceWPProps( this.properties, this.context, repoLink )
+      */
+      easyPagesSourceProps: {
 
         context: this.context,
         pageLayout: this.properties.pageLayout,
@@ -1008,6 +1011,9 @@ export default class DrilldownV2WebPart extends BaseClientSideWebPart<IDrilldown
         containerStyles: getReactCSSFromString( 'EasyPageContainerStyles', this.properties.EasyPageContainerStyles, {} ).parsed,
       },
 
+      /**
+       * In fps-library-v2:  easyPagesExtraProps: setEasyPagesExtraWPProps( this.properties, bannerProps.showTricks )
+       */
       easyPagesExtraProps: {
         easyPagesExpanded: false ,
         showTricks: bannerProps.showTricks,
@@ -1027,8 +1033,15 @@ export default class DrilldownV2WebPart extends BaseClientSideWebPart<IDrilldown
         tabsB: getStringArrayFromString( this.properties.EasyPageTabsB , ';', true, null, true ) ,
 
       },
-
+      /**
+       * in fps-library-v2:  src\components\atoms\EasyIcons\createEasyIconsWPProps.ts
+       */
       EasyIconsObject: setEasyIconsObjectProps( this.properties ),
+
+
+      /**
+       * In fps-library-v2:   ageSliderWPProps: setAgeSliderWPProps( this.properties ),
+       */
       ageSliderWPProps: {
         FPSAgeIsVisible: this.properties.FPSAgeIsVisible,
         FPSAgeColumnName: this.properties.FPSAgeColumnName,

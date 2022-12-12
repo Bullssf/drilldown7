@@ -59,7 +59,7 @@ export interface IEasyPagesPageProps {
 
 export interface IEasyPagesPageHookProps {
   easyPagesPageProps: IEasyPagesPageProps;  // Props specific to this Source/Page component
-  easyPagesCommonProps: IEasyPagesSourceProps;  // General props which apply to all Sources/Pages
+  easyPagesSourceProps: IEasyPagesSourceProps;  // General props which apply to all Sources/Pages
   EasyIconsObject: IEasyIcons;
 }
 
@@ -92,7 +92,7 @@ export const InfoIcon = 'History';
 const EasyPagesPageHook: React.FC<IEasyPagesPageHookProps> = ( props ) => {
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const { context, styles, containerStyles, repo } = props.easyPagesCommonProps;
+  const { context, styles, containerStyles, repo } = props.easyPagesSourceProps;
   const { expandedState, tabs, source, sourceName, parentUrl } = props.easyPagesPageProps;
 
   /**
@@ -188,8 +188,8 @@ const EasyPagesPageHook: React.FC<IEasyPagesPageHookProps> = ( props ) => {
   const classNames: string[] = [ 'source-page' ];
   // const classNames: string[] = [ 'easy-pages' ];
   if ( expandedState !== true ) classNames.push ( 'hide-source-page' );
-  // if ( props.easyPagesCommonProps.pageLayout === 'SharePointFullPage' || props.easyPagesCommonProps.pageLayout === 'SingleWebPartAppPageLayout' ) classNames.push ( 'easy-pages-spa' );
-  // if ( ( props.easyPagesCommonProps.pinState === 'pinFull' || props.easyPagesCommonProps.pinState === 'pinMini' ) && classNames.indexOf('easy-pages-spa') < 0 ) classNames.push ( 'easy-pages-spa' );
+  // if ( props.easyPagesSourceProps.pageLayout === 'SharePointFullPage' || props.easyPagesSourceProps.pageLayout === 'SingleWebPartAppPageLayout' ) classNames.push ( 'easy-pages-spa' );
+  // if ( ( props.easyPagesSourceProps.pinState === 'pinFull' || props.easyPagesSourceProps.pinState === 'pinMini' ) && classNames.indexOf('easy-pages-spa') < 0 ) classNames.push ( 'easy-pages-spa' );
 
   const EasyPagesPageElement: JSX.Element = <div className = { classNames.join( ' ' ) } style={ styles }>
 
