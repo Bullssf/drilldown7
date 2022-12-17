@@ -2,7 +2,7 @@ import * as React from 'react';
 import { escape } from '@microsoft/sp-lodash-subset';
 // import { IRepoLinks } from '@mikezimm/npmfunctions/dist/Links/CreateLinks';
 
-export function errorsContent( ) {
+export function errorsContent( ): { html1: JSX.Element } {
 
     let thisPage = null;
     let messageRows = [];

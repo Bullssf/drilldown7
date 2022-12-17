@@ -6,7 +6,7 @@
 
 // import { createAboutRow } from '../../fpsReferences';
 
-export function advancedContent(  ) : any {
+export function advancedContent(  ) : undefined {
 
 //Returning null because it should be in the prop pane helper now
 return undefined;

@@ -1,15 +1,22 @@
 import * as React from 'react';
 
-import { IHelpTable, } from '../../fpsReferences';
-import { repoLink, IRepoLinks } from '../../fpsReferences';
-import { convertIssuesMarkdownStringToSpan } from '../../fpsReferences';
-import { makeid } from '../../fpsReferences';
+// import { IHelpTable, } from '../../fpsReferences';
+import { IRepoLinks } from '../../fpsReferences';
+import { convertIssuesMarkdownStringToSpan } from '@mikezimm/fps-library-v2/lib/components/atoms/Elements/markdown';
+import { makeid } from '@mikezimm/fps-library-v2/lib/logic/Strings/guids';
 
+
+
+import { IHelpTable, } from '@mikezimm/fps-library-v2/lib/banner/components/SingleHelpPage/ISinglePageProps';
+// import { convertIssuesMarkdownStringToSpan } from '../../fpsReferences';
+
+// import { createAboutRow } from '@mikezimm/fps-library-v2/lib/banner/components/Panel/createAboutRow';
+import { IWebpartBannerProps } from '@mikezimm/fps-library-v2/lib/banner/mainReact/IWebpartBannerProps';
 // import { createAboutRow } from '../../fpsReferences';
 
 
-export function whyContent( ): any{
-
+export function whyContent( bannerProps: IWebpartBannerProps ): any{
+    const repoLink = bannerProps.gitHubRepo;
     // return null;
 
     let table : IHelpTable  = {

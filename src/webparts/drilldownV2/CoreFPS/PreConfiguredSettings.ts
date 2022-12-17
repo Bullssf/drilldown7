@@ -1,10 +1,8 @@
 // import { IPropertyFieldGroupOrPerson } from "@pnp/spfx-property-controls/lib/PropertyFieldPeoplePicker";
 // import { IDrilldownV2WebPartProps } from "../IDrilldownV2WebPartProps";
 
-import { EasyIconDefaultKeys } from '../components/EasyIcons/eiTypes';
-import { DefaultEasyPagesTabs, DefaultOverflowTab } from '../components/EasyPages/epTypes';
 // import { FPSAgeSliderPresetEverywhere } from '../components/FPSAgeSlider/FPSAgeTypes';
-import { FPSAgeSliderPresetEverywhere } from '@mikezimm/fps-react/lib/FPSAgeSlider';
+import { FPSAgeSliderPresetEverywhere } from '@mikezimm/fps-library-v2/lib/components/atoms/FPSAgeSlider/FPSAgeTypes';
 import { PresetFPSBanner, IPreConfigSettings, IAllPreConfigSettings,  } from '../fpsReferences';
 // import { encrptMeOriginalTest } from '@mikezimm/npmfunctions/dist/HelpPanelOnNPM/onNpm/logTest';
 // import { ContALVFMContent, ContALVFMWebP } from '@mikezimm/npmfunctions/dist/HelpPanelOnNPM/onNpm/constants';
@@ -117,25 +115,25 @@ export const WPPresetEverywhere : IPreConfigSettings = {
 
       //Move these to npmFunctions when code is moved
 
-      EasyPagesEnable: false, //Disabled by default on Drilldown until can test in prod
-      EasyPagesAudience: 'Everyone',
-      EasyPageTabsC:  DefaultEasyPagesTabs.join(' ; '), // Added spaces for readability
-      EasyPageTabsP:  DefaultEasyPagesTabs.join(' ; '), // Added spaces for readability
-      EasyPageTabsA:  DefaultEasyPagesTabs.join(' ; '), // Added spaces for readability
-      EasyPageTabsB:  DefaultEasyPagesTabs.join(' ; '), // Added spaces for readability
-      EasyPageOverflowTab:  DefaultOverflowTab,
-      EasyPageParent: true, //Include parent site pages
-      EasyPageUrlA: '', //Include alternate site's site pages
-      EasyPagesSiteTitleA:  '', //Include navigation elements from other site
-      EasyPageUrlB: '', //Include alternate site's site pages
-      EasyPagesSiteTitleB:  '', //Include navigation elements from other site
-      easyPageSeparateExtras:  true, //Include navigation elements from other site
-      EasyPageStyles:  '',  //Optional styles on entire page
-      EasyPageContainerStyles:  '',  //Optional styles on container element
+      // EasyPagesEnable: false, //Disabled by default on Drilldown until can test in prod
+      // EasyPagesAudience: 'Everyone',
+      // EasyPageTabsC:  DefaultEasyPagesTabs.join(' ; '), // Added spaces for readability
+      // EasyPageTabsP:  DefaultEasyPagesTabs.join(' ; '), // Added spaces for readability
+      // EasyPageTabsA:  DefaultEasyPagesTabs.join(' ; '), // Added spaces for readability
+      // EasyPageTabsB:  DefaultEasyPagesTabs.join(' ; '), // Added spaces for readability
+      // EasyPageOverflowTab:  DefaultOverflowTab,
+      // EasyPageParent: true, //Include parent site pages
+      // EasyPageUrlA: '', //Include alternate site's site pages
+      // EasyPagesSiteTitleA:  '', //Include navigation elements from other site
+      // EasyPageUrlB: '', //Include alternate site's site pages
+      // EasyPagesSiteTitleB:  '', //Include navigation elements from other site
+      // easyPageSeparateExtras:  true, //Include navigation elements from other site
+      // EasyPageStyles:  '',  //Optional styles on entire page
+      // EasyPageContainerStyles:  '',  //Optional styles on container element
 
-      easyIconEnable: true, // Used 
-      easyIconKeys:  EasyIconDefaultKeys.join(' ; '), // Added spaces for readability
-      easyIconIgnore:  '',
+      // easyIconEnable: true, // Used 
+      // easyIconKeys:  EasyIconDefaultKeys.join(' ; '), // Added spaces for readability
+      // easyIconIgnore:  '',
 
       // FPSAgeIsVisible:  false,
       // FPSAgeColumnName: 'Modified',

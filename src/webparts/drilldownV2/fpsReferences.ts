@@ -15,15 +15,15 @@ export { IPreConfigSettings, IAllPreConfigSettings,  } from '@mikezimm/fps-libra
 
 export { IQuickButton, IQuickCommands, IQuickField } from '@mikezimm/fps-library-v2/lib/components/interfaces/QuickCommands/IQuickCommands'
 
-export { doesObjectExistInArray, } from './fpsReferences';
+export { doesObjectExistInArray, } from '@mikezimm/fps-library-v2/lib/logic/Arrays/searching/objectfind';
 
-export { getHelpfullError } from './fpsReferences';
+export { getHelpfullError } from '@mikezimm/fps-library-v2/lib/logic/Errors/friendly';
 
 export { ICustViewDef, } from './fpsReferences';
 
-export { makeTheTimeObject, } from './fpsReferences';
+export { makeTheTimeObject, } from '@mikezimm/fps-library-v2/lib/logic/Time/timeObject';
 
-export { getNumberArrayFromString } from './fpsReferences';
+export { getNumberArrayFromString } from '@mikezimm/fps-library-v2/lib/logic/Strings/arraysFromString';
 
 
 
