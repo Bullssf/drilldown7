@@ -1,6 +1,7 @@
 
 import { PageContext } from '@microsoft/sp-page-context';
-import { IMyProgress } from '@mikezimm/npmfunctions/dist/ReusableInterfaces/IMyInterfaces';
+import { IMyProgress } from '@mikezimm/fps-library-v2/lib/common/interfaces/fps/IMyInterfaces';
+import { IFPSAgeSliderWPProps } from '@mikezimm/fps-library-v2/lib/components/atoms/FPSAgeSlider/FPSAgeTypes';
 import { IWhenToShowItems } from './components/Drill/IDrillProps';
 import { ICssChartProps } from './components/CssCharts/ICssChartProps';
 
@@ -9,36 +10,10 @@ import { ICssChartProps } from './components/CssCharts/ICssChartProps';
  * Or else it will get into an endless loop because these values are imported into fpsPreferences
  * 
  */
- import { exportIgnorePropsFPS, } from '@mikezimm/npmfunctions/dist/HelpPanelOnNPM/onNpm/BannerInterface';
- import { importBlockPropsFPS } from '@mikezimm/npmfunctions/dist/HelpPanelOnNPM/onNpm/BannerInterface';
- import { IItemEditorAudience , IEveryoneAudience } from '@mikezimm/npmfunctions/dist/Services/PropPane/Audiences';
 
- import { IMinBannerUIProps, IMinPinMeProps, IMinPandoramicProps, IMinBannerThemeProps, IMinCustomHelpProps, 
-   IMinPageStyleProps, IMinBannerUtilityProps, IMinFPSLegacyProps } from "@mikezimm/npmfunctions/dist/HelpPanelOnNPM/onNpm/BannerInterface";
-// import { IWebpartHistory } from '@mikezimm/npmfunctions/dist/Services/PropPane/WebPartHistory/Interface';
+ import { IItemEditorAudience , IEveryoneAudience } from '@mikezimm/fps-library-v2/lib/common/interfaces/fps/AudienceInterfaces';
 
 
-import { IEasyIconsWPProps } from './components/EasyIcons/eiTypes';
-import { IEasyPagesWPProps } from './components/EasyPages/epTypes';
-import { IFPSAgeSliderWPProps } from '@mikezimm/fps-react/lib/FPSAgeSlider';
-// import { IFPSAgeSliderWPProps } from './components/FPSAgeSlider/FPSAgeTypes';
-
-
-//Specific for this web part
-export const exportIgnorePropsThis : string[] = [ ];
-
-export const exportIgnoreProps : string[] = [ ...exportIgnorePropsFPS, ...exportIgnorePropsThis  ];
-
-//These props will not be imported even if they are in one of the change arrays above (fail-safe)
-//This was done so user could not manually insert specific props to over-right fail-safes built in to the webpart
-
-//Specific for this web part
-export const importBlockPropsThis : string[] = [ 'showSomeProps' ];
-
-export const importBlockProps : string[] = [ ...importBlockPropsFPS, ...importBlockPropsThis ];
-
-// importChanges: [  changeListConfig, changeListInfo, changePerformance, changeRefiners, changeToggles, changeInstructions, changeGrouping,
-//       changeViews, changeListToggles, changeStats, changeCommands ]
 export const changeListConfig : string[] = [ 'definitionToggle', 'listDefinition' , ];
 export const changeListInfo : string[] = [ 'parentListWeb', 'parentListTitle', 'parentListURL' , 'language' , 'hideFolders' , ];
 
@@ -61,12 +36,61 @@ export const changeCommands : string[] = [ 'quickCommands', ];
    * 
    */
 
-  export interface IDrilldownV2WebPartProps  extends IMinBannerUIProps, IMinPinMeProps, IMinPandoramicProps, IMinBannerThemeProps, 
-    IMinCustomHelpProps, IMinPageStyleProps, IMinBannerUtilityProps, IMinFPSLegacyProps, 
-    IEasyPagesWPProps, IEasyIconsWPProps, IFPSAgeSliderWPProps {
 
-    // [key: string]: string | number | number[] | any[] | boolean | string[] | IMyProgress | PageContext | ICssChartProps | IWebpartHistory | undefined;
-    [key: string]: any;
+
+
+
+
+/***
+ * NOTE:  All imports in here Must be imported directly from fps-library-v2, not the fpsPreferences
+ * Or else it will get into an endless loop because these values are imported into fpsPreferences
+ * 
+ */
+import { IMinWPBannerProps } from '@mikezimm/fps-library-v2/lib/banner/interfaces/MinWP/IMinWPBannerProps';
+
+import { changesFieldPanel } from '@mikezimm/fps-library-v2/lib/components/molecules/FieldPanel/components/IMinWPFieldPanelProps';
+
+
+ /**
+  For props to export to panel but NOT save in analytics
+ */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export const WebPartAnalyticsChanges : any = {
+  FieldPanel: changesFieldPanel,
+
+  ListConfig : changeListConfig,
+  ListInfo : changeListInfo,
+  Performance : changePerformance,
+  Refiners : changeRefiners,
+  Toggles : changeToggles,
+  Instructions : changeInstructions,
+  Grouping : changeGrouping,
+  Views : changeViews,
+  ListToggles : changeListToggles,
+
+}
+
+
+ /**
+ * These are properties to export BOTH to analytics AND the panel
+ */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export const WebPartPanelChanges : any = {
+  Views : changeViews,
+  Stats : changeStats,
+  Commands : changeCommands,
+}
+
+//Specific for this web part
+export const exportIgnorePropsWP : string[] = [ ];
+
+//These props will not be imported even if they are in one of the change arrays above (fail-safe)
+//This was done so user could not manually insert specific props to over-right fail-safes built in to the webpart
+
+//Specific for this web part
+export const importBlockPropsWP : string[] = [ 'showSomeProps' ];
+
+  export interface IDrilldownV2WebPartProps  extends IMinWPBannerProps, IFPSAgeSliderWPProps {
 
     description: string;
   

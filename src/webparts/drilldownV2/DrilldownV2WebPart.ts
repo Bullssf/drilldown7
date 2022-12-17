@@ -8,13 +8,13 @@ import * as ReactDom from 'react-dom';
 // import { BaseClientSideWebPart } from '@microsoft/sp-webpart-base';
 // import { IReadonlyTheme } from '@microsoft/sp-component-base';
 
-
-import { DisplayMode, Version } from '@microsoft/sp-core-library';
+import { SPPermission, } from '@microsoft/sp-page-context';
+import { Version,  } from '@microsoft/sp-core-library';
 import {
-  IPropertyPaneConfiguration,
+  IPropertyPaneConfiguration, IPropertyPaneGroup,
   // PropertyPaneTextField
 } from '@microsoft/sp-property-pane';
-import { BaseClientSideWebPart } from '@microsoft/sp-webpart-base';
+// import { BaseClientSideWebPart,  } from '@microsoft/sp-webpart-base';
 import {   
   ThemeProvider,
   ThemeChangedEventArgs,
@@ -45,83 +45,83 @@ import { IDrilldownV2Props, IWhenToShowItems } from './components/Drill/IDrillPr
 import { consoleRef } from './components/Drill/drillFunctions';
 
 
-/***
- *    d88888b d8888b. .d8888.      d8888b. d8888b. d88888b .d8888. d88888b d888888b .d8888. 
- *    88'     88  `8D 88'  YP      88  `8D 88  `8D 88'     88'  YP 88'     `~~88~~' 88'  YP 
- *    88ooo   88oodD' `8bo.        88oodD' 88oobY' 88ooooo `8bo.   88ooooo    88    `8bo.   
- *    88~~~   88~~~     `Y8b.      88~~~   88`8b   88~~~~~   `Y8b. 88~~~~~    88      `Y8b. 
- *    88      88      db   8D      88      88 `88. 88.     db   8D 88.        88    db   8D 
- *    YP      88      `8888Y'      88      88   YD Y88888P `8888Y' Y88888P    YP    `8888Y' 
- *
- *    USED IN PRESETTING PROPS
- */
+// /***
+//  *    d88888b d8888b. .d8888.      d8888b. d8888b. d88888b .d8888. d88888b d888888b .d8888. 
+//  *    88'     88  `8D 88'  YP      88  `8D 88  `8D 88'     88'  YP 88'     `~~88~~' 88'  YP 
+//  *    88ooo   88oodD' `8bo.        88oodD' 88oobY' 88ooooo `8bo.   88ooooo    88    `8bo.   
+//  *    88~~~   88~~~     `Y8b.      88~~~   88`8b   88~~~~~   `Y8b. 88~~~~~    88      `Y8b. 
+//  *    88      88      db   8D      88      88 `88. 88.     db   8D 88.        88    db   8D 
+//  *    YP      88      `8888Y'      88      88   YD Y88888P `8888Y' Y88888P    YP    `8888Y' 
+//  *
+//  *    USED IN PRESETTING PROPS
+//  */
 
- import { applyPresetCollectionDefaults, ISitePreConfigProps,  } from './fpsReferences';
- import { PreConfiguredProps,  } from './CoreFPS/PreConfiguredSettings';
+//  import { applyPresetCollectionDefaults, ISitePreConfigProps,  } from './fpsReferences';
+//  import { PreConfiguredProps,  } from './CoreFPS/PreConfiguredSettings';
  
  
- /***
-  *     .d88b.  d8b   db      d888888b d8b   db d888888b d888888b 
-  *    .8P  Y8. 888o  88        `88'   888o  88   `88'   `~~88~~' 
-  *    88    88 88V8o 88         88    88V8o 88    88       88    
-  *    88    88 88 V8o88         88    88 V8o88    88       88    
-  *    `8b  d8' 88  V888        .88.   88  V888   .88.      88    
-  *     `Y88P'  VP   V8P      Y888888P VP   V8P Y888888P    YP    
-  *
-  *     USED FIRST IN ONINIT
-  */
+//  /***
+//   *     .d88b.  d8b   db      d888888b d8b   db d888888b d888888b 
+//   *    .8P  Y8. 888o  88        `88'   888o  88   `88'   `~~88~~' 
+//   *    88    88 88V8o 88         88    88V8o 88    88       88    
+//   *    88    88 88 V8o88         88    88 V8o88    88       88    
+//   *    `8b  d8' 88  V888        .88.   88  V888   .88.      88    
+//   *     `Y88P'  VP   V8P      Y888888P VP   V8P Y888888P    YP    
+//   *
+//   *     USED FIRST IN ONINIT
+//   */
  
- import { webpartInstance, IFPSUser, getFPSUser, repoLink, trickyEmails } from './fpsReferences';
- import { createBasePerformanceInit, startPerformOp, updatePerformanceEnd } from './fpsReferences';
- import { IPerformanceOp, ILoadPerformance, IHistoryPerformance, ILoadPerformanceOps } from './fpsReferences';  // eslint-disable-line @typescript-eslint/no-unused-vars
+//  import { webpartInstance, IFPSUser, getFPSUser, repoLink, trickyEmails } from './fpsReferences';
+//  import { createBasePerformanceInit, startPerformOp, updatePerformanceEnd } from './fpsReferences';
+//  import { IPerformanceOp, ILoadPerformance, IHistoryPerformance, ILoadPerformanceOps } from './fpsReferences';  // eslint-disable-line @typescript-eslint/no-unused-vars
  
- /***
-  *    .d8888. d888888b db    db db      d88888b .d8888. 
-  *    88'  YP `~~88~~' `8b  d8' 88      88'     88'  YP 
-  *    `8bo.      88     `8bd8'  88      88ooooo `8bo.   
-  *      `Y8b.    88       88    88      88~~~~~   `Y8b. 
-  *    db   8D    88       88    88booo. 88.     db   8D 
-  *    `8888Y'    YP       YP    Y88888P Y88888P `8888Y' 
-  *
-  *    USED FOR STYLES
-  */
+//  /***
+//   *    .d8888. d888888b db    db db      d88888b .d8888. 
+//   *    88'  YP `~~88~~' `8b  d8' 88      88'     88'  YP 
+//   *    `8bo.      88     `8bd8'  88      88ooooo `8bo.   
+//   *      `Y8b.    88       88    88      88~~~~~   `Y8b. 
+//   *    db   8D    88       88    88booo. 88.     db   8D 
+//   *    `8888Y'    YP       YP    Y88888P Y88888P `8888Y' 
+//   *
+//   *    USED FOR STYLES
+//   */
  
- import { renderCustomStyles, updateBannerThemeStyles, expandoOnInit, refreshBannerStylesOnPropChange } from './fpsReferences';
- import { getReactCSSFromString } from './fpsReferences';
+//  import { renderCustomStyles, updateBannerThemeStyles, expandoOnInit, refreshBannerStylesOnPropChange } from './fpsReferences';
+//  import { getReactCSSFromString } from './fpsReferences';
  
- /***
-  *    db   d8b   db d8888b.      db   db d888888b .d8888. d888888b  .d88b.  d8888b. db    db 
-  *    88   I8I   88 88  `8D      88   88   `88'   88'  YP `~~88~~' .8P  Y8. 88  `8D `8b  d8' 
-  *    88   I8I   88 88oodD'      88ooo88    88    `8bo.      88    88    88 88oobY'  `8bd8'  
-  *    Y8   I8I   88 88~~~        88~~~88    88      `Y8b.    88    88    88 88`8b      88    
-  *    `8b d8'8b d8' 88           88   88   .88.   db   8D    88    `8b  d8' 88 `88.    88    
-  *     `8b8' `8d8'  88           YP   YP Y888888P `8888Y'    YP     `Y88P'  88   YD    YP    
-  *
-  *     USED FOR WEB PART HISTORY
-  */
+//  /***
+//   *    db   d8b   db d8888b.      db   db d888888b .d8888. d888888b  .d88b.  d8888b. db    db 
+//   *    88   I8I   88 88  `8D      88   88   `88'   88'  YP `~~88~~' .8P  Y8. 88  `8D `8b  d8' 
+//   *    88   I8I   88 88oodD'      88ooo88    88    `8bo.      88    88    88 88oobY'  `8bd8'  
+//   *    Y8   I8I   88 88~~~        88~~~88    88      `Y8b.    88    88    88 88`8b      88    
+//   *    `8b d8'8b d8' 88           88   88   .88.   db   8D    88    `8b  d8' 88 `88.    88    
+//   *     `8b8' `8d8'  88           YP   YP Y888888P `8888Y'    YP     `Y88P'  88   YD    YP    
+//   *
+//   *     USED FOR WEB PART HISTORY
+//   */
  
- import { getWebPartHistoryOnInit, updateWebpartHistoryV2,  } from './fpsReferences';
+//  import { getWebPartHistoryOnInit, updateWebpartHistoryV2,  } from './fpsReferences';
  
- /***
-  *    d8888b.  .d8b.  d8b   db d8b   db d88888b d8888b. 
-  *    88  `8D d8' `8b 888o  88 888o  88 88'     88  `8D 
-  *    88oooY' 88ooo88 88V8o 88 88V8o 88 88ooooo 88oobY' 
-  *    88~~~b. 88~~~88 88 V8o88 88 V8o88 88~~~~~ 88`8b   
-  *    88   8D 88   88 88  V888 88  V888 88.     88 `88. 
-  *    Y8888P' YP   YP VP   V8P VP   V8P Y88888P 88   YD 
-  *
-  *     USED FOR CREATING BANNER
-  */
+//  /***
+//   *    d8888b.  .d8b.  d8b   db d8b   db d88888b d8888b. 
+//   *    88  `8D d8' `8b 888o  88 888o  88 88'     88  `8D 
+//   *    88oooY' 88ooo88 88V8o 88 88V8o 88 88ooooo 88oobY' 
+//   *    88~~~b. 88~~~88 88 V8o88 88 V8o88 88~~~~~ 88`8b   
+//   *    88   8D 88   88 88  V888 88  V888 88.     88 `88. 
+//   *    Y8888P' YP   YP VP   V8P VP   V8P Y88888P 88   YD 
+//   *
+//   *     USED FOR CREATING BANNER
+//   */
  
- import { verifyAudienceVsUser, } from './fpsReferences';
- import { IWebpartBannerProps, } from './fpsReferences';
- import { buildExportProps, buildFPSAnalyticsProps , } from './CoreFPS/BuildExportProps';
- 
-//  import { mainWebPartRenderBannerSetup } from './fpsReferences';
-//  import { mainWebPartRenderBannerSetup } from './CoreFPS/WebPartRenderBanner';
 
-//For whatever reason, THIS NEEDS TO BE CALLED Directly and NOT through fpsReferences or it gives error.
-import { mainWebPartRenderBannerSetup, refreshPanelHTML } from '@mikezimm/npmfunctions/dist/HelpPanelOnNPM/onNpm/WebPartRenderBannerV2';  // eslint-disable-line @typescript-eslint/no-unused-vars
+//  import { IWebpartBannerProps, } from './fpsReferences';
+//  import { buildExportProps, buildFPSAnalyticsProps , } from './CoreFPS/BuildExportProps';
+ 
+// //  import { mainWebPartRenderBannerSetup } from './fpsReferences';
+// //  import { mainWebPartRenderBannerSetup } from './CoreFPS/WebPartRenderBanner';
+
+// //For whatever reason, THIS NEEDS TO BE CALLED Directly and NOT through fpsReferences or it gives error.
+// import { mainWebPartRenderBannerSetup, refreshPanelHTML } from '@mikezimm/npmfunctions/dist/HelpPanelOnNPM/onNpm/WebPartRenderBannerV2';  // eslint-disable-line @typescript-eslint/no-unused-vars
 
 
  /***
@@ -151,46 +151,110 @@ import { mainWebPartRenderBannerSetup, refreshPanelHTML } from '@mikezimm/npmfun
   import { buildViewGroupFields } from './PropPaneGroups/Page2/Views';
 
   
- import { WebPartInfoGroup, } from './fpsReferences';
- import { FPSOptionsGroupBasic, } from './fpsReferences';
- import { FPSBanner4BasicGroup, FPSBanner3NavGroup, FPSBanner3ThemeGroup } from './fpsReferences';
- import { FPSBanner3VisHelpGroup } from './fpsReferences';
- import { FPSPinMePropsGroup } from './fpsReferences';  // eslint-disable-line @typescript-eslint/no-unused-vars
- import { FPSOptionsExpando, } from './fpsReferences'; //expandAudienceChoicesAll
+//  import { WebPartInfoGroup, } from './fpsReferences';
+//  import { FPSOptionsGroupBasic, } from './fpsReferences';
+//  import { FPSBanner4BasicGroup, FPSBanner3NavGroup, FPSBanner3ThemeGroup } from './fpsReferences';
+//  import { FPSBanner3VisHelpGroup } from './fpsReferences';
+//  import { FPSPinMePropsGroup } from './fpsReferences';  // eslint-disable-line @typescript-eslint/no-unused-vars
+//  import { FPSOptionsExpando, } from './fpsReferences'; //expandAudienceChoicesAll
  
  
- /***
-  *    d8888b. d8888b.  .d88b.  d8888b.      d888888b .88b  d88. d8888b.  .d88b.  d8888b. d888888b d888888b d8b   db  d888b  
-  *    88  `8D 88  `8D .8P  Y8. 88  `8D        `88'   88'YbdP`88 88  `8D .8P  Y8. 88  `8D `~~88~~'   `88'   888o  88 88' Y8b 
-  *    88oodD' 88oobY' 88    88 88oodD'         88    88  88  88 88oodD' 88    88 88oobY'    88       88    88V8o 88 88      
-  *    88~~~   88`8b   88    88 88~~~           88    88  88  88 88~~~   88    88 88`8b      88       88    88 V8o88 88  ooo 
-  *    88      88 `88. `8b  d8' 88             .88.   88  88  88 88      `8b  d8' 88 `88.    88      .88.   88  V888 88. ~8~ 
-  *    88      88   YD  `Y88P'  88           Y888888P YP  YP  YP 88       `Y88P'  88   YD    YP    Y888888P VP   V8P  Y888P  
-  *
-  *    USED for IMPORTING and EXPORTING
-  */
+//  /***
+//   *    d8888b. d8888b.  .d88b.  d8888b.      d888888b .88b  d88. d8888b.  .d88b.  d8888b. d888888b d888888b d8b   db  d888b  
+//   *    88  `8D 88  `8D .8P  Y8. 88  `8D        `88'   88'YbdP`88 88  `8D .8P  Y8. 88  `8D `~~88~~'   `88'   888o  88 88' Y8b 
+//   *    88oodD' 88oobY' 88    88 88oodD'         88    88  88  88 88oodD' 88    88 88oobY'    88       88    88V8o 88 88      
+//   *    88~~~   88`8b   88    88 88~~~           88    88  88  88 88~~~   88    88 88`8b      88       88    88 V8o88 88  ooo 
+//   *    88      88 `88. `8b  d8' 88             .88.   88  88  88 88      `8b  d8' 88 `88.    88      .88.   88  V888 88. ~8~ 
+//   *    88      88   YD  `Y88P'  88           Y888888P YP  YP  YP 88       `Y88P'  88   YD    YP    Y888888P VP   V8P  Y888P  
+//   *
+//   *    USED for IMPORTING and EXPORTING
+//   */
  
- import { updateFpsImportProps, FPSImportPropsGroup, validateDocumentationUrl } from './fpsReferences';
+//  import { updateFpsImportProps, FPSImportPropsGroup, validateDocumentationUrl } from './fpsReferences';
 
  
- /***
-  *     .d8b.  d8b   db  .d8b.  db      db    db d888888b d888888b  .o88b. .d8888. 
-  *    d8' `8b 888o  88 d8' `8b 88      `8b  d8' `~~88~~'   `88'   d8P  Y8 88'  YP 
-  *    88ooo88 88V8o 88 88ooo88 88       `8bd8'     88       88    8P      `8bo.   
-  *    88~~~88 88 V8o88 88~~~88 88         88       88       88    8b        `Y8b. 
-  *    88   88 88  V888 88   88 88booo.    88       88      .88.   Y8b  d8 db   8D 
-  *    YP   YP VP   V8P YP   YP Y88888P    YP       YP    Y888888P  `Y88P' `8888Y' 
-  *
-  *    USED FOR ANALYTICS AND LOGGING
-  */
+//  /***
+//   *     .d8b.  d8b   db  .d8b.  db      db    db d888888b d888888b  .o88b. .d8888. 
+//   *    d8' `8b 888o  88 d8' `8b 88      `8b  d8' `~~88~~'   `88'   d8P  Y8 88'  YP 
+//   *    88ooo88 88V8o 88 88ooo88 88       `8bd8'     88       88    8P      `8bo.   
+//   *    88~~~88 88 V8o88 88~~~88 88         88       88       88    8b        `Y8b. 
+//   *    88   88 88  V888 88   88 88booo.    88       88      .88.   Y8b  d8 db   8D 
+//   *    YP   YP VP   V8P YP   YP Y88888P    YP       YP    Y888888P  `Y88P' `8888Y' 
+//   *
+//   *    USED FOR ANALYTICS AND LOGGING
+//   */
  
- import { importBlockProps,  } from './IDrilldownV2WebPartProps';
- import { buildEasyPagesGroup } from './components/EasyPages/EasyPagesGroup';
- import { getStringArrayFromString } from '@mikezimm/npmfunctions/dist/Services/Strings/stringServices';
- // eslint-disable-next-line @typescript-eslint/no-unused-vars
- import { EasyIconDefaultKeys, IEasyIconGroups } from './components/EasyIcons/eiTypes';
- import { setEasyIconsObjectProps } from './components/EasyIcons/eiFunctions';
- import { DefaultEasyPagesTabs, DefaultOverflowTab } from './components/EasyPages/epTypes';
+//  import { importBlockProps,  } from './IDrilldownV2WebPartProps';
+//  import { buildEasyPagesGroup } from './components/EasyPages/EasyPagesGroup';
+//  import { getStringArrayFromString } from '@mikezimm/npmfunctions/dist/Services/Strings/stringServices';
+//  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+//  import { EasyIconDefaultKeys, IEasyIconGroups } from './components/EasyIcons/eiTypes';
+//  import { setEasyIconsObjectProps } from './components/EasyIcons/eiFunctions';
+//  import { DefaultEasyPagesTabs, DefaultOverflowTab } from './components/EasyPages/epTypes';
+
+//  /***
+//   *     .o88b. .d8888. .d8888.      d8888b. d88888b  .d88b.  db    db d888888b d8888b. d88888b .d8888. 
+//   *    d8P  Y8 88'  YP 88'  YP      88  `8D 88'     .8P  Y8. 88    88   `88'   88  `8D 88'     88'  YP 
+//   *    8P      `8bo.   `8bo.        88oobY' 88ooooo 88    88 88    88    88    88oobY' 88ooooo `8bo.   
+//   *    8b        `Y8b.   `Y8b.      88`8b   88~~~~~ 88    88 88    88    88    88`8b   88~~~~~   `Y8b. 
+//   *    Y8b  d8 db   8D db   8D      88 `88. 88.     `8P  d8' 88b  d88   .88.   88 `88. 88.     db   8D 
+//   *     `Y88P' `8888Y' `8888Y'      88   YD Y88888P  `Y88'Y8 ~Y8888P' Y888888P 88   YD Y88888P `8888Y' 
+//   *
+//   *     USED BY BANNER COMPONENTS
+//   */
+
+//   import { initializeIcons } from '@uifabric/icons';
+//   initializeIcons();
+
+// require('@mikezimm/npmfunctions/dist/Services/PropPane/GrayPropPaneAccordions.css');
+// require('@mikezimm/npmfunctions/dist/Services/DOM/PinMe/FPSPinMe.css');
+// require('@mikezimm/npmfunctions/dist/HeadingCSS/FPSHeadings.css');
+// require('@mikezimm/npmfunctions/dist/PropPaneHelp/PropPanelHelp.css');
+// require('@mikezimm/npmfunctions/dist/Performance/styles.css');
+
+
+
+
+
+import { IQuickButton, IQuickCommands, makeTheTimeObject, updatePerformanceEnd } from './fpsReferences';
+
+//Checks
+import { doesObjectExistInArray, } from './fpsReferences';
+
+import { getHelpfullError } from './fpsReferences';
+
+// import { sp } from '@pnp/sp';
+
+// import { propertyPaneBuilder } from '../../services/propPane/PropPaneBuilder';
+import { getAllItems } from '../../services/propPane/PropPaneFunctions';
+
+// import { ICSSChartDD } from './fpsReferences';
+
+// import { IListViewDDDrillDown } from './fpsReferences';
+import { ICustViewDef, } from './fpsReferences';
+
+// import { IQuickCommands, IQuickButton } from './fpsReferences';
+
+// import { IRefinerLayer, RefineRuleValues, IRefinerStat } from './fpsReferences'; // eslint-disable-line @typescript-eslint/no-unused-vars
+
+// /**
+//  * DD Provider: Step 1 - import from sp-dynamic-data
+//  */
+// import { IDynamicDataCallables, IDynamicDataPropertyDefinition} from '@microsoft/sp-dynamic-data';  // eslint-disable-line @typescript-eslint/no-unused-vars
+
+import { IGrouping, } from "@pnp/spfx-controls-react/lib/ListView";
+import { IViewFieldDD } from './components/Drill/reactListView';
+import { buildQuickCommandsGroup } from './PropPaneGroups/Page2/QuickCommands';
+import { buildAgeSliderGroup } from '@mikezimm/fps-library-v2/lib/components/atoms/FPSAgeSlider/FPSAgePropPaneGroup';
+
+import { getNumberArrayFromString } from './fpsReferences';
+// import { buildAgeSliderGroup } from './components/FPSAgeSlider/FPSAgePropPaneGroup';
+// import { buildAgeSliderGroup } from '@mikezimm/fps-react/lib/FPSAgeSlider';
+
+
+
+
+
 
  /***
   *     .o88b. .d8888. .d8888.      d8888b. d88888b  .d88b.  db    db d888888b d8888b. d88888b .d8888. 
@@ -203,57 +267,47 @@ import { mainWebPartRenderBannerSetup, refreshPanelHTML } from '@mikezimm/npmfun
   *     USED BY BANNER COMPONENTS
   */
 
-  import { initializeIcons } from '@uifabric/icons';
-  initializeIcons();
+ import { initializeIcons } from '@uifabric/icons';
+ initializeIcons();
+ 
+ require('@mikezimm/fps-styles/dist/GrayPropPaneAccordions.css');
+ require('@mikezimm/fps-styles/dist/FPSPinMe.css');
+ require('@mikezimm/fps-styles/dist/FPSHeadings.css');
+ require('@mikezimm/fps-styles/dist/PropPanelHelp.css');
+ require('@mikezimm/fps-styles/dist/performance.css');
+ 
+ 
+ /***
+  *    d88888b d8888b. .d8888.      d8888b. d8888b. d88888b .d8888. d88888b d888888b .d8888. 
+  *    88'     88  `8D 88'  YP      88  `8D 88  `8D 88'     88'  YP 88'     `~~88~~' 88'  YP 
+  *    88ooo   88oodD' `8bo.        88oodD' 88oobY' 88ooooo `8bo.   88ooooo    88    `8bo.   
+  *    88~~~   88~~~     `Y8b.      88~~~   88`8b   88~~~~~   `Y8b. 88~~~~~    88      `Y8b. 
+  *    88      88      db   8D      88      88 `88. 88.     db   8D 88.        88    db   8D 
+  *    YP      88      `8888Y'      88      88   YD Y88888P `8888Y' Y88888P    YP    `8888Y' 
+  *
+  *    USED IN PRESETTING PROPS
+  */
+  import { verifyAudienceVsUser, } from '@mikezimm/fps-library-v2/lib/logic/Users/CheckPermissions';
+  import { PreConfiguredProps,  } from './CoreFPS/PreConfiguredSettings';
 
-require('@mikezimm/npmfunctions/dist/Services/PropPane/GrayPropPaneAccordions.css');
-require('@mikezimm/npmfunctions/dist/Services/DOM/PinMe/FPSPinMe.css');
-require('@mikezimm/npmfunctions/dist/HeadingCSS/FPSHeadings.css');
-require('@mikezimm/npmfunctions/dist/PropPaneHelp/PropPanelHelp.css');
-require('@mikezimm/npmfunctions/dist/Performance/styles.css');
+  import { PropertyPaneWebPartInformation } from '@pnp/spfx-property-controls/lib/PropertyPaneWebPartInformation';
+  import { getAllDefaultFPSFeatureGroups } from '@mikezimm/fps-library-v2/lib/banner/propPane/AllDefaultFPSGroups';
 
+  import { WebPartInfoGroup, } from '@mikezimm/fps-library-v2/lib/banner/propPane/WebPartInfoGroup';
 
+  import { exportIgnorePropsWP, importBlockPropsWP, WebPartAnalyticsChanges, WebPartPanelChanges,  } from './IDrilldownV2WebPartProps';
 
-
-
-import { makeTheTimeObject } from './fpsReferences';
-
-//Checks
-import { doesObjectExistInArray, } from './fpsReferences';
-
-import { getHelpfullError } from './fpsReferences';
-
-import { sp } from '@pnp/sp';
-
-// import { propertyPaneBuilder } from '../../services/propPane/PropPaneBuilder';
-import { getAllItems } from '../../services/propPane/PropPaneFunctions';
-
-import { ICSSChartDD } from './fpsReferences';
-
-import { IListViewDDDrillDown } from './fpsReferences';
-import { ICustViewDef, } from './fpsReferences';
-
-import { IQuickCommands, IQuickButton } from './fpsReferences';
-
-import { IRefinerLayer, RefineRuleValues, IRefinerStat } from './fpsReferences'; // eslint-disable-line @typescript-eslint/no-unused-vars
-
-/**
- * DD Provider: Step 1 - import from sp-dynamic-data
- */
-import { IDynamicDataCallables, IDynamicDataPropertyDefinition} from '@microsoft/sp-dynamic-data';  // eslint-disable-line @typescript-eslint/no-unused-vars
-
-import { IGrouping, } from "@pnp/spfx-controls-react/lib/ListView";
-import { IViewFieldDD } from './components/Drill/reactListView';
-import { buildQuickCommandsGroup } from './PropPaneGroups/Page2/QuickCommands';
-
-import { getNumberArrayFromString } from './fpsReferences';
-// import { buildAgeSliderGroup } from './components/FPSAgeSlider/FPSAgePropPaneGroup';
-import { buildAgeSliderGroup } from '@mikezimm/fps-react/lib/FPSAgeSlider';
+  import { gitRepoALVFinManSmall } from '@mikezimm/fps-library-v2/lib/components/atoms/Links/LinksRepos';
+  import { runFPSSuperOnInit } from '@mikezimm/fps-library-v2/lib/banner/FPSWebPartClass/runSuperOnInit';
+  import { runFPSWebPartRender } from '@mikezimm/fps-library-v2/lib/banner/FPSWebPartClass/runWebPartRender';
+  import { onFPSPropPaneCHanged } from '@mikezimm/fps-library-v2/lib/banner/FPSWebPartClass/runOnPropChange';
+  import { FPSBaseClass } from '@mikezimm/fps-library-v2/lib/banner/FPSWebPartClass/FPSBaseClass';
+  import { IThisFPSWebPartClass } from '@mikezimm/fps-library-v2/lib/banner/FPSWebPartClass/IThisFPSWebPartClass';
 
 
 
 
-export default class DrilldownV2WebPart extends BaseClientSideWebPart<IDrilldownV2WebPartProps> {
+export default class DrilldownV2WebPart extends FPSBaseClass<IDrilldownV2WebPartProps> {
 
   private _windowAny: any = window;
 
@@ -261,32 +315,32 @@ export default class DrilldownV2WebPart extends BaseClientSideWebPart<IDrilldown
   private _environmentMessage: string = '';
 
   
-  //Common FPS variables
+  // //Common FPS variables
 
-  private _sitePresets : ISitePreConfigProps = null;
-  private _trickyApp = 'FPS Core114';
-  private _wpInstanceID: any = webpartInstance( this._trickyApp );
-  private _FPSUser: IFPSUser = null;
+  // private _sitePresets : ISitePreConfigProps = null;
+  // private _trickyApp = 'FPS Core114';
+  // private _wpInstanceID: any = webpartInstance( this._trickyApp );
+  // private _FPSUser: IFPSUser = null;
 
-  //For FPS Banner
-  private _forceBanner = true ;
-  private _modifyBannerTitle = true ;
-  private _modifyBannerStyle = true ;
+  // //For FPS Banner
+  // private _forceBanner = true ;
+  // private _modifyBannerTitle = true ;
+  // private _modifyBannerStyle = true ;
 
-  private _exitPropPaneChanged = false;
-  private _importErrorMessage = '';
+  // private _exitPropPaneChanged = false;
+  // private _importErrorMessage = '';
   
-  private _keysToShow : ILoadPerformanceOps[] = [ ];
-  private _performance : ILoadPerformance = null;
+  // private _keysToShow : ILoadPerformanceOps[] = [ ];
+  // private _performance : ILoadPerformance = null;
 
-  //2022-04-07:  Intent of this is a one-time per instance to 'become a reader' level user.  aka, hide banner buttons that reader won't see
-  private _beAReader: boolean = false; 
+  // //2022-04-07:  Intent of this is a one-time per instance to 'become a reader' level user.  aka, hide banner buttons that reader won't see
+  // private _beAReader: boolean = false; 
 
     /**
    * DD Provider: Step 6 - (9:51) add _selectedSwitch to be the placeholder for what was selected
    */
-  private _selected_cssChartProps : ICSSChartDD;
-  private _selected_listProps : any;
+  // private _selected_cssChartProps : ICSSChartDD;
+  // private _selected_listProps : any;
 
   private _quickCommands : IQuickCommands = null;
 
@@ -350,44 +404,54 @@ export default class DrilldownV2WebPart extends BaseClientSideWebPart<IDrilldown
   //Added for Get List Data:  https://www.youtube.com/watch?v=b9Ymnicb1kc
   public async onInit():Promise<void> {
     this._environmentMessage = this._getEnvironmentMessage();
+
+    this._repoLink = gitRepoALVFinManSmall; //Set as any but will get created in FPSSuperOnOnit
+    this._exportIgnorePropsWP = exportIgnorePropsWP;
+    this._importBlockPropsWP = importBlockPropsWP;
+    this._trickyApp = 'FPS UPDATE FPSBaseClass';
+    this._trickyEmailsWP = []; // These are emails that get tricky functionality for this specific web part
+    this._allowPinMe = true;
+    this._allowFieldPanel = 'Manual';
+    this._FieldPanelDesignMode = 'Drilldown';
+
     return super.onInit().then(_ => {
       
 
 
-      /** Add Theme including on SPAs
-       * 
-       *   https://n8d.at/how-to-make-css-variables-work-in-every-web-part-context
-       */
+      // /** Add Theme including on SPAs
+      //  * 
+      //  *   https://n8d.at/how-to-make-css-variables-work-in-every-web-part-context
+      //  */
 
-      // Consume the new ThemeProvider service
-      this._themeProvider = this.context.serviceScope.consume(ThemeProvider.serviceKey);
+      // // Consume the new ThemeProvider service
+      // this._themeProvider = this.context.serviceScope.consume(ThemeProvider.serviceKey);
 
-      // If it exists, get the theme variant
-      this._themeVariant = this._themeProvider.tryGetTheme();
+      // // If it exists, get the theme variant
+      // this._themeVariant = this._themeProvider.tryGetTheme();
 
-      console.debug('Theme variant ::: ', this._themeVariant);
+      // console.debug('Theme variant ::: ', this._themeVariant);
 
-      // If there is a theme variant
-      if (this._themeVariant) {
+      // // If there is a theme variant
+      // if (this._themeVariant) {
 
-        // we set transfer semanticColors into CSS variables
-        this.setCSSVariables(this._themeVariant.semanticColors);
+      //   // we set transfer semanticColors into CSS variables
+      //   this.setCSSVariables(this._themeVariant.semanticColors);
 
-      } else if (this._windowAny["__themeState__"].theme) {
+      // } else if (this._windowAny["__themeState__"].theme) {
 
-        // FALLBACK TO App Page
+      //   // FALLBACK TO App Page
 
-        // we set transfer semanticColors into CSS variables
-        this.setCSSVariables(this._windowAny["__themeState__"].theme);
+      //   // we set transfer semanticColors into CSS variables
+      //   this.setCSSVariables(this._windowAny["__themeState__"].theme);
 
-      }
+      // }
 
 
       /**
        * DD Provider: Step 3 - add / update OnInit
        *  Tell DD Service that this is a provider
        */
-      this.context.dynamicDataSourceManager.initializeSource(this);
+      // this.context.dynamicDataSourceManager.initializeSource(this);
 
       // if ( !this.properties.rules0 ) { 
       //   this.properties.rules0 = [] ; 
@@ -411,68 +475,70 @@ export default class DrilldownV2WebPart extends BaseClientSideWebPart<IDrilldown
       // if ( !this.properties.refinerInstruction3 ) { this.properties.refinerInstruction3 = `Select a {{refiner2}}`; }
       // if ( !this.properties.language ) { this.properties.language = `en-us`; }
 
+      runFPSSuperOnInit( this as any, PreConfiguredProps, SPPermission );
+
       this.getQuickCommandsObject( 'Group Quick Commands', this.properties.quickCommands);
       
       // other init code may be present
 
-      let mess = 'onInit - ONINIT: ' + new Date().toLocaleTimeString();
+      // let mess = 'onInit - ONINIT: ' + new Date().toLocaleTimeString();
 
-      console.log(mess);
+      // console.log(mess);
 
       //https://stackoverflow.com/questions/52010321/sharepoint-online-full-width-page
-      if ( window.location.href &&  
-        window.location.href.toLowerCase().indexOf("layouts/15/workbench.aspx") > 0 ) {
+      // if ( window.location.href &&  
+      //   window.location.href.toLowerCase().indexOf("layouts/15/workbench.aspx") > 0 ) {
           
-        if (document.getElementById("workbenchPageContent")) {
-          document.getElementById("workbenchPageContent").style.maxWidth = "none";
-        }
-      } 
+      //   if (document.getElementById("workbenchPageContent")) {
+      //     document.getElementById("workbenchPageContent").style.maxWidth = "none";
+      //   }
+      // } 
 
       // this._getListDefintions(true, true);
       //console.log('window.location',window.location);
-      sp.setup({
-        spfxContext: this.context as any, //2022-09-22:  HAD TO SET as any to not get error
-      });
+      // sp.setup({
+      //   spfxContext: this.context as any, //2022-09-22:  HAD TO SET as any to not get error
+      // });
 
       
 
-      /***
-     *     .d88b.  d8b   db      d888888b d8b   db d888888b d888888b      d8888b. db   db  .d8b.  .d8888. d88888b      .d888b. 
-     *    .8P  Y8. 888o  88        `88'   888o  88   `88'   `~~88~~'      88  `8D 88   88 d8' `8b 88'  YP 88'          VP  `8D 
-     *    88    88 88V8o 88         88    88V8o 88    88       88         88oodD' 88ooo88 88ooo88 `8bo.   88ooooo         odD' 
-     *    88    88 88 V8o88         88    88 V8o88    88       88         88~~~   88~~~88 88~~~88   `Y8b. 88~~~~~       .88'   
-     *    `8b  d8' 88  V888        .88.   88  V888   .88.      88         88      88   88 88   88 db   8D 88.          j88.    
-     *     `Y88P'  VP   V8P      Y888888P VP   V8P Y888888P    YP         88      YP   YP YP   YP `8888Y' Y88888P      888888D 
-     *                                                                                                                         
-     *                                                                                                                         
-     */
+    //   /***
+    //  *     .d88b.  d8b   db      d888888b d8b   db d888888b d888888b      d8888b. db   db  .d8b.  .d8888. d88888b      .d888b. 
+    //  *    .8P  Y8. 888o  88        `88'   888o  88   `88'   `~~88~~'      88  `8D 88   88 d8' `8b 88'  YP 88'          VP  `8D 
+    //  *    88    88 88V8o 88         88    88V8o 88    88       88         88oodD' 88ooo88 88ooo88 `8bo.   88ooooo         odD' 
+    //  *    88    88 88 V8o88         88    88 V8o88    88       88         88~~~   88~~~88 88~~~88   `Y8b. 88~~~~~       .88'   
+    //  *    `8b  d8' 88  V888        .88.   88  V888   .88.      88         88      88   88 88   88 db   8D 88.          j88.    
+    //  *     `Y88P'  VP   V8P      Y888888P VP   V8P Y888888P    YP         88      YP   YP YP   YP `8888Y' Y88888P      888888D 
+    //  *                                                                                                                         
+    //  *                                                                                                                         
+    //  */
 
-      // DEFAULTS SECTION:  Performance   <<< ================================================================
-      this._performance = createBasePerformanceInit( this.displayMode, false );
-      this._performance.ops.superOnInit = startPerformOp( 'superOnInit', this.displayMode );
+    //   // DEFAULTS SECTION:  Performance   <<< ================================================================
+    //   this._performance = createBasePerformanceInit( this.displayMode, false );
+    //   this._performance.ops.superOnInit = startPerformOp( 'superOnInit', this.displayMode );
 
-      //NEED TO APPLY THIS HERE as well as follow-up in render for it to not visibly change
-      this._sitePresets = applyPresetCollectionDefaults( this._sitePresets, PreConfiguredProps, this.properties, this.context.pageContext.web.serverRelativeUrl ) ;
+    //   //NEED TO APPLY THIS HERE as well as follow-up in render for it to not visibly change
+    //   this._sitePresets = applyPresetCollectionDefaults( this._sitePresets, PreConfiguredProps, this.properties, this.context.pageContext.web.serverRelativeUrl ) ;
 
-      //This indicates if its SPA, Teams etc.... always keep.
-      this.properties.pageLayout =  this.context['_pageLayoutType']?this.context['_pageLayoutType'] : this.context['_pageLayoutType'];
-      // this.urlParameters = getUrlVars();
+    //   //This indicates if its SPA, Teams etc.... always keep.
+    //   this.properties.pageLayout =  this.context['_pageLayoutType']?this.context['_pageLayoutType'] : this.context['_pageLayoutType'];
+    //   // this.urlParameters = getUrlVars();
 
-      this._FPSUser = getFPSUser( this.context as any, trickyEmails, this._trickyApp ) ;
-      console.log( 'FPSUser: ', this._FPSUser );
+    //   this._FPSUser = getFPSUser( this.context as any, trickyEmails, this._trickyApp ) ;
+    //   console.log( 'FPSUser: ', this._FPSUser );
 
-      expandoOnInit( this.properties, this.context.domElement, this.displayMode );
+    //   expandoOnInit( this.properties, this.context.domElement, this.displayMode );
 
-      updateBannerThemeStyles( this.properties, this.properties.bannerStyleChoice ? this.properties.bannerStyleChoice : 'corpDark1', true, this.properties.defPinState, this._sitePresets.forces );
+    //   updateBannerThemeStyles( this.properties, this.properties.bannerStyleChoice ? this.properties.bannerStyleChoice : 'corpDark1', true, this.properties.defPinState, this._sitePresets.forces );
  
-      this.properties.webpartHistory = getWebPartHistoryOnInit( this.context.pageContext.user.displayName, this.properties.webpartHistory );
+    //   this.properties.webpartHistory = getWebPartHistoryOnInit( this.context.pageContext.user.displayName, this.properties.webpartHistory );
 
-      renderCustomStyles( 
-        { wpInstanceID: this._wpInstanceID, domElement: this.domElement, wpProps: this.properties, 
-          displayMode: this.displayMode,
-          doHeadings: false } ); //doHeadings is currently only used in PageInfo so set to false.
+    //   renderCustomStyles( 
+    //     { wpInstanceID: this._wpInstanceID, domElement: this.domElement, wpProps: this.properties, 
+    //       displayMode: this.displayMode,
+    //       doHeadings: false } ); //doHeadings is currently only used in PageInfo so set to false.
 
-      this._performance.ops.superOnInit = updatePerformanceEnd( this._performance.ops.superOnInit, true, null );  
+    //   this._performance.ops.superOnInit = updatePerformanceEnd( this._performance.ops.superOnInit, true, null );  
 
 
     });
@@ -484,30 +550,30 @@ export default class DrilldownV2WebPart extends BaseClientSideWebPart<IDrilldown
    * DD Provider: Step 4 - (8:25) add getPropertyDefinitions
    * This tells SPFx what properties I can publish
    */
-  public getPropertyDefinitions(): ReadonlyArray<IDynamicDataPropertyDefinition>{
-    return [
-      {
-        id: 'cssChartProps',
-        title: 'Summary Stats 1'
-      },
-      {
-        id: 'listProps',
-        title: 'List Items',
-      },
-      {
-        id: 'refiner0Name',
-        title: 'Field you are filtering on',
-      },
-      {
-        id: 'refiner0Value',
-        title: 'Value you are filtering on',
-      },
-      {
-        id: 'filterBy',
-        title: 'Filter by refiner component',
-      }
-    ];
-  }
+  // public getPropertyDefinitions(): ReadonlyArray<IDynamicDataPropertyDefinition>{
+  //   return [
+  //     {
+  //       id: 'cssChartProps',
+  //       title: 'Summary Stats 1'
+  //     },
+  //     {
+  //       id: 'listProps',
+  //       title: 'List Items',
+  //     },
+  //     {
+  //       id: 'refiner0Name',
+  //       title: 'Field you are filtering on',
+  //     },
+  //     {
+  //       id: 'refiner0Value',
+  //       title: 'Value you are filtering on',
+  //     },
+  //     {
+  //       id: 'filterBy',
+  //       title: 'Filter by refiner component',
+  //     }
+  //   ];
+  // }
 
   /**
    * DD Provider: Step 5 - (8:43) add getPropertyValue
@@ -516,22 +582,22 @@ export default class DrilldownV2WebPart extends BaseClientSideWebPart<IDrilldown
    * This takes in the name of the property that you want to return back.
    * string | any => any could be any interface if you want to use Interface
    */
-  public getPropertyValue(propertyId: string): string | ICSSChartDD {
-    switch(propertyId) {
-      case 'refiner0Name': 
-        return this._selectedRefiner0Name;
-      case 'refiner0Value':
-        return this._selectedRefiner0Value;
-      case 'filterBy':
-        return this._filterBy;
-      case 'cssChartProps':
-        return this._selected_cssChartProps;
-      case 'listProps': 
-        return this._selected_listProps;
-    }
-    throw new Error('Bad property ID');
+  // public getPropertyValue(propertyId: string): string | ICSSChartDD {
+  //   switch(propertyId) {
+  //     case 'refiner0Name': 
+  //       return this._selectedRefiner0Name;
+  //     case 'refiner0Value':
+  //       return this._selectedRefiner0Value;
+  //     case 'filterBy':
+  //       return this._filterBy;
+  //     case 'cssChartProps':
+  //       return this._selected_cssChartProps;
+  //     case 'listProps': 
+  //       return this._selected_listProps;
+  //   }
+  //   throw new Error('Bad property ID');
 
-  }
+  // }
 
   public getUrlVars(): {} {
     var vars = {};
@@ -708,46 +774,49 @@ export default class DrilldownV2WebPart extends BaseClientSideWebPart<IDrilldown
    * PERFORMANCE - START
    * This is how you can start a performance snapshot - make the _performance.ops.KEYHERE = startPerforOp('KEYHERE', this.displayMode)
    */ 
-   this._performance.ops.renderWebPartStart = startPerformOp( 'renderWebPartStart', this.displayMode );
+  //  this._performance.ops.renderWebPartStart = startPerformOp( 'renderWebPartStart', this.displayMode );
 
-    renderCustomStyles(  { wpInstanceID: this._wpInstanceID, domElement: this.domElement, wpProps: this.properties, 
-      displayMode: this.displayMode,
-      doHeadings: false } );  //doHeadings is currently only used in PageInfo so set to false.
+  //   renderCustomStyles(  { wpInstanceID: this._wpInstanceID, domElement: this.domElement, wpProps: this.properties, 
+  //     displayMode: this.displayMode,
+  //     doHeadings: false } );  //doHeadings is currently only used in PageInfo so set to false.
   
-     const exportProps = buildExportProps( this.properties , this._wpInstanceID, this.context.pageContext.web.serverRelativeUrl );
+  //    const exportProps = buildExportProps( this.properties , this._wpInstanceID, this.context.pageContext.web.serverRelativeUrl );
 
-     console.log('mainWPRenderBanSetup - displayMode', this.displayMode );
-     console.log('mainWPRenderBanSetup - _beAReader', this._beAReader);
-     console.log('mainWPRenderBanSetup - _FPSUser', this._FPSUser);
-     console.log('mainWPRenderBanSetup - properties', this.properties );
-     console.log('mainWPRenderBanSetup - repoLink', repoLink );
-     console.log('mainWPRenderBanSetup - trickyEmails', trickyEmails );
-     console.log('mainWPRenderBanSetup - exportProps', exportProps);
-     console.log('mainWPRenderBanSetup - strings', strings);
-     console.log('mainWPRenderBanSetup - clientWidth', this.domElement.clientWidth);
-     console.log('mainWPRenderBanSetup - this.context', this.context );
-     console.log('mainWPRenderBanSetup - _modifyBannerTitle', this._modifyBannerTitle);
-     console.log('mainWPRenderBanSetup - _forceBanner', this._forceBanner);
-     console.log('mainWPRenderBanSetup - false', false );
-     console.log('mainWPRenderBanSetup - null', null );
-     console.log('mainWPRenderBanSetup - _keysToShow', this._keysToShow );
-     console.log('mainWPRenderBanSetup - true', true);
-     console.log('mainWPRenderBanSetup - true', true);
+    //  console.log('mainWPRenderBanSetup - displayMode', this.displayMode );
+    //  console.log('mainWPRenderBanSetup - _beAReader', this._beAReader);
+    //  console.log('mainWPRenderBanSetup - _FPSUser', this._FPSUser);
+    //  console.log('mainWPRenderBanSetup - properties', this.properties );
+    //  console.log('mainWPRenderBanSetup - repoLink', repoLink );
+    //  console.log('mainWPRenderBanSetup - trickyEmails', trickyEmails );
+    //  console.log('mainWPRenderBanSetup - exportProps', exportProps);
+    //  console.log('mainWPRenderBanSetup - strings', strings);
+    //  console.log('mainWPRenderBanSetup - clientWidth', this.domElement.clientWidth);
+    //  console.log('mainWPRenderBanSetup - this.context', this.context );
+    //  console.log('mainWPRenderBanSetup - _modifyBannerTitle', this._modifyBannerTitle);
+    //  console.log('mainWPRenderBanSetup - _forceBanner', this._forceBanner);
+    //  console.log('mainWPRenderBanSetup - false', false );
+    //  console.log('mainWPRenderBanSetup - null', null );
+    //  console.log('mainWPRenderBanSetup - _keysToShow', this._keysToShow );
+    //  console.log('mainWPRenderBanSetup - true', true);
+    //  console.log('mainWPRenderBanSetup - true', true);
 
-     const bannerProps: IWebpartBannerProps = mainWebPartRenderBannerSetup( this.displayMode, this._beAReader, this._FPSUser, //repoLink.desc, 
-         this.properties, repoLink, trickyEmails, exportProps, strings , this.domElement.clientWidth, this.context as any, this._modifyBannerTitle,  // 2022-09-22:  Set this.context as any
-         this._forceBanner, false, null, this._keysToShow, true, true );
+    //  const bannerProps: IWebpartBannerProps = mainWebPartRenderBannerSetup( this.displayMode, this._beAReader, this._FPSUser, //repoLink.desc, 
+    //      this.properties, repoLink, trickyEmails, exportProps, strings , this.domElement.clientWidth, this.context as any, this._modifyBannerTitle,  // 2022-09-22:  Set this.context as any
+    //      this._forceBanner, false, null, this._keysToShow, true, true );
   
-    console.log('mainWPRenderBanSetup - bannerProps', bannerProps);
+    // console.log('mainWPRenderBanSetup - bannerProps', bannerProps);
 
-    if ( bannerProps.showBeAUserIcon === true ) { bannerProps.beAUserFunction = this._beAUserFunction.bind(this); }
+    // if ( bannerProps.showBeAUserIcon === true ) { bannerProps.beAUserFunction = this._beAUserFunction.bind(this); }
 
     // console.log('mainWebPart: baseFetchInfo ~ 308',   );
     // this._fetchInfo = baseFetchInfo( '', this._performance );
 
     // This gets done a second time if you do not want to pass it in the first time.
     // bannerProps.replacePanelHTML = visitorPanelInfo( this.properties, repoLink, '', '', createPerformanceTableVisitor( this._fetchInfo.performance ) );
-    console.log('mainWebPart: createElement ~ 316',   );
+    // console.log('mainWebPart: createElement ~ 316',   );
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const bannerProps = runFPSWebPartRender( this as any, strings, WebPartAnalyticsChanges, WebPartPanelChanges, );
 
 
     let errMessage = '';
@@ -848,6 +917,7 @@ export default class DrilldownV2WebPart extends BaseClientSideWebPart<IDrilldown
       console.log('Unable to convert language to lower case.' );
     }
 
+    this._performance.ops.renderWebPartStart = updatePerformanceEnd( this._performance.ops.renderWebPartStart, true, 555 );
 
 
     const element: React.ReactElement<IDrilldownV2Props> = React.createElement(
@@ -869,20 +939,9 @@ export default class DrilldownV2WebPart extends BaseClientSideWebPart<IDrilldown
         hasTeamsContext: !!this.context.sdks.microsoftTeams,
         userDisplayName: this.context.pageContext.user.displayName,
 
-      // 0 - Context
-      context: this.context as any,  //2022-09-22:  Had to set as any to pass in
-      displayMode: this.displayMode,
-
       loadPerformance: this._performance,
 
-      // saveLoadAnalytics: this.saveLoadAnalytics.bind(this),
-      FPSPropsObj: buildFPSAnalyticsProps( this.properties, this._wpInstanceID, this.context.pageContext.web.serverRelativeUrl ),
-
       bannerProps: bannerProps,
-
-      webpartHistory: this.properties.webpartHistory,
-
-      sitePresets: this._sitePresets,
 
       errMessage: errMessage,
 
@@ -951,22 +1010,7 @@ export default class DrilldownV2WebPart extends BaseClientSideWebPart<IDrilldown
       richHeight: getNumberArrayFromString( this.properties.richHeight, ';', true, true, 'asis', 2 ),
       autoRichHeight: this.properties.autoRichHeight,
 
-      // 3 - General how accurate do you want this to be
-
-      // 4 - Info Options
-
-      // 5 - UI Defaults
-
-      // 6 - User Feedback:
-      /*
-      progress: {
-        label: '',
-        description: '',
-        percentComplete: 0,
-        progressHidden: true,
-      },
-      */
-      progress: null,
+      // progress: null,
       // 7 - TBD
 
       // 9 - Other web part options
@@ -978,66 +1022,15 @@ export default class DrilldownV2WebPart extends BaseClientSideWebPart<IDrilldown
       pivotOptions: this.properties.pivotOptions,
       pivotTab: 'Projects', //this.properties.pivotTab (was setTab in pivot-tiles)
       
-      onRefiner0Selected: this._handleRefiner0Selected,
+      // onRefiner0Selected: this._handleRefiner0Selected,
 
       /**
        * DD Provider: Step 0 - add props to React Component to receive the switches and the handler.
        */
-      handleSwitch: this.handleSwitch,  //Commented out due to something causing viewFields names to get messed up (removed the / for expanded columns )
+      // handleSwitch: this.handleSwitch,  //Commented out due to something causing viewFields names to get messed up (removed the / for expanded columns )
       // handleSwitch: null,
-      handleListPost: this.handleListPost,  //Commented out due to something causing viewFields names to get messed up (removed the / for expanded columns )
+      // handleListPost: this.handleListPost,  //Commented out due to something causing viewFields names to get messed up (removed the / for expanded columns )
       // handleListPost: null,
-
-      fpsPinMenu: {
-        defPinState: 'disabled',
-        forcePinState: true,
-        domElement: this.context.domElement,
-        pageLayout: this.properties.pageLayout,
-      },
-
-      /**
-       * In fps-library-v2:  easyPagesSourceProps: setEasyPagesSourceWPProps( this.properties, this.context, repoLink )
-      */
-      easyPagesSourceProps: {
-
-        context: this.context,
-        pageLayout: this.properties.pageLayout,
-        repo: repoLink,  //This can eventually be taken from bannerProps directly
-
-        pinState: this.properties.defPinState,
-
-        // altSiteNavigation: this.properties.easyPageAltNav,
-        styles: getReactCSSFromString( 'EasyPageStyles', this.properties.EasyPageStyles, {} ).parsed,
-        containerStyles: getReactCSSFromString( 'EasyPageContainerStyles', this.properties.EasyPageContainerStyles, {} ).parsed,
-      },
-
-      /**
-       * In fps-library-v2:  easyPagesExtraProps: setEasyPagesExtraWPProps( this.properties, bannerProps.showTricks )
-       */
-      easyPagesExtraProps: {
-        easyPagesExpanded: false ,
-        showTricks: bannerProps.showTricks,
-        EasyPagesEnable: this.properties.EasyPagesEnable,
-        EasyPageParentFetch: this.properties.EasyPagesEnable === true ? this.properties.EasyPageParent : false,
-        EasyPageUrlA: this.properties.EasyPagesEnable === true ? this.properties.EasyPageUrlA : '',
-        EasyPagesSiteTitleA: this.properties.EasyPagesSiteTitleA,
-
-        EasyPageUrlB: this.properties.EasyPagesEnable === true ? this.properties.EasyPageUrlB : '',
-        EasyPagesSiteTitleB: this.properties.EasyPagesSiteTitleB,
-
-        EasyPageOverflowTab: this.properties.EasyPageOverflowTab,
-
-        tabsC: getStringArrayFromString( this.properties.EasyPageTabsC , ';', true, null, true ) ,
-        tabsP: getStringArrayFromString( this.properties.EasyPageTabsP , ';', true, null, true ) ,
-        tabsA: getStringArrayFromString( this.properties.EasyPageTabsA , ';', true, null, true ) ,
-        tabsB: getStringArrayFromString( this.properties.EasyPageTabsB , ';', true, null, true ) ,
-
-      },
-      /**
-       * in fps-library-v2:  src\components\atoms\EasyIcons\createEasyIconsWPProps.ts
-       */
-      EasyIconsObject: setEasyIconsObjectProps( this.properties ),
-
 
       /**
        * In fps-library-v2:   ageSliderWPProps: setAgeSliderWPProps( this.properties ),
@@ -1089,59 +1082,59 @@ export default class DrilldownV2WebPart extends BaseClientSideWebPart<IDrilldown
    * 1) Set value of selected Switch on the internal property
    * 2) Tell anybody who subscribed, that property changed
    */
-   private handleSwitch = ( stats: IRefinerStat[], callBackID: string, refinerObj: IRefinerLayer, breadCrumb: string[] ) : void => {
+  //  private handleSwitch = ( stats: IRefinerStat[], callBackID: string, refinerObj: IRefinerLayer, breadCrumb: string[] ) : void => {
 
-    consoleRef( 'handleSwitch', refinerObj );
-    let e = event; // eslint-disable-line @typescript-eslint/no-unused-vars
+  //   consoleRef( 'handleSwitch', refinerObj );
+  //   let e = event; // eslint-disable-line @typescript-eslint/no-unused-vars
 
-    let cssChartProps : ICSSChartDD = {
-      stats: stats,
-      callBackID: callBackID,
-      refinerObj: refinerObj,
-      breadCrumb: breadCrumb,
-    };
+  //   let cssChartProps : ICSSChartDD = {
+  //     stats: stats,
+  //     callBackID: callBackID,
+  //     refinerObj: refinerObj,
+  //     breadCrumb: breadCrumb,
+  //   };
 
-    this._selected_cssChartProps = cssChartProps;
-    this.context.dynamicDataSourceManager.notifyPropertyChanged( 'cssChartProps' );
+  //   this._selected_cssChartProps = cssChartProps;
+  //   this.context.dynamicDataSourceManager.notifyPropertyChanged( 'cssChartProps' );
 
-  }
+  // }
 
     /**
    * DD Provider: Step 7 - (10:45) add handleSwichSelected - handler for when things changed.
    * 1) Set value of selected Switch on the internal property
    * 2) Tell anybody who subscribed, that property changed
    */
-  private handleListPost = ( listProps : IListViewDDDrillDown ) : void => {
-    consoleRef( 'handleListPost-No Object', null );
-    console.log('this.props.viewDefs ~ 638 - handleListPost: callback listProps if any other webparts are listening', listProps );
-    if ( this.properties.togOtherListview === true ) {
-      let e = event; // eslint-disable-line @typescript-eslint/no-unused-vars
+  // private handleListPost = ( listProps : IListViewDDDrillDown ) : void => {
+  //   consoleRef( 'handleListPost-No Object', null );
+  //   console.log('this.props.viewDefs ~ 638 - handleListPost: callback listProps if any other webparts are listening', listProps );
+  //   if ( this.properties.togOtherListview === true ) {
+  //     let e = event; // eslint-disable-line @typescript-eslint/no-unused-vars
 
-      this._selected_listProps = listProps;
-      this.context.dynamicDataSourceManager.notifyPropertyChanged( 'listProps' );
-    }
-  }
+  //     this._selected_listProps = listProps;
+  //     this.context.dynamicDataSourceManager.notifyPropertyChanged( 'listProps' );
+  //   }
+  // }
 
 
   /**
    * 2020-09-08:  Add for dynamic data refiners.   private handleFieldSelected:
    * @param field 
    */
-  private _handleRefiner0Selected = ( field: string, value: any ) : void => {
-    console.log( '_handleRefiner0Selected:', field, value );
-    this._selectedRefiner0Name = field;
-    this._selectedRefiner0Value = value;
-    this._filterBy = {
-      field: field,
-      value: value,
-    };
+  // private _handleRefiner0Selected = ( field: string, value: any ) : void => {
+  //   console.log( '_handleRefiner0Selected:', field, value );
+  //   this._selectedRefiner0Name = field;
+  //   this._selectedRefiner0Value = value;
+  //   this._filterBy = {
+  //     field: field,
+  //     value: value,
+  //   };
 
-    console.log('Main Webpart: Refiners updated: ', field, value);
-    this.context.dynamicDataSourceManager.notifyPropertyChanged('refiner0Name');
-    this.context.dynamicDataSourceManager.notifyPropertyChanged('refiner0Value');
-    this.context.dynamicDataSourceManager.notifyPropertyChanged('filterBy');
+  //   console.log('Main Webpart: Refiners updated: ', field, value);
+  //   this.context.dynamicDataSourceManager.notifyPropertyChanged('refiner0Name');
+  //   this.context.dynamicDataSourceManager.notifyPropertyChanged('refiner0Value');
+  //   this.context.dynamicDataSourceManager.notifyPropertyChanged('filterBy');
 
-  }
+  // }
 
   protected onDispose(): void {
     ReactDom.unmountComponentAtNode(this.domElement);
@@ -1163,46 +1156,46 @@ export default class DrilldownV2WebPart extends BaseClientSideWebPart<IDrilldown
  *                                                                       
  */
 
-   private _beAUserFunction() {
-    console.log('_beAUserFunction:',   );
-    if ( this.displayMode === DisplayMode.Edit ) {
-      alert("'Be a regular user' mode is only available while viewing the page.  \n\nOnce you are out of Edit mode, please refresh the page (CTRL-F5) to reload the web part.");
+  //  private _beAUserFunction() {
+  //   console.log('_beAUserFunction:',   );
+  //   if ( this.displayMode === DisplayMode.Edit ) {
+  //     alert("'Be a regular user' mode is only available while viewing the page.  \n\nOnce you are out of Edit mode, please refresh the page (CTRL-F5) to reload the web part.");
 
-    } else {
-      this._beAReader = this._beAReader === true ? false : true;
-      this.render();
-    }
+  //   } else {
+  //     this._beAReader = this._beAReader === true ? false : true;
+  //     this.render();
+  //   }
 
-  }
+  // }
   
 
-  private async UpdateTitles(): Promise<boolean> {
+  // private async UpdateTitles(): Promise<boolean> {
 
-    let listName = this.properties.parentListTitle ? this.properties.parentListTitle : 'ParentListTitle';
-    const list = sp.web.lists.getByTitle(listName);
-    const r = await list.fields();
+  //   let listName = this.properties.parentListTitle ? this.properties.parentListTitle : 'ParentListTitle';
+  //   const list = sp.web.lists.getByTitle(listName);
+  //   const r = await list.fields();
 
-    //2020-05-13:  Remove Active since it's replaced with StatusTMT which is not applicable here
-    let defFields = ["Title","Author","Editor","Created","Modified"];
-    let filterFields=[]; //["SSChoice1","SSChoiceA","MSChoice2","MSChoiceB"];
-    if ( this.properties.refiner0 != '' ) { filterFields.push( this.properties.refiner0 ); } // eslint-disable-line eqeqeq
-    if ( this.properties.refiner1 != '' ) { filterFields.push( this.properties.refiner1 ); } // eslint-disable-line eqeqeq
-    if ( this.properties.refiner2 != '' ) { filterFields.push( this.properties.refiner2 ); } // eslint-disable-line eqeqeq
+  //   //2020-05-13:  Remove Active since it's replaced with StatusTMT which is not applicable here
+  //   let defFields = ["Title","Author","Editor","Created","Modified"];
+  //   let filterFields=[]; //["SSChoice1","SSChoiceA","MSChoice2","MSChoiceB"];
+  //   if ( this.properties.refiner0 != '' ) { filterFields.push( this.properties.refiner0 ); } // eslint-disable-line eqeqeq
+  //   if ( this.properties.refiner1 != '' ) { filterFields.push( this.properties.refiner1 ); } // eslint-disable-line eqeqeq
+  //   if ( this.properties.refiner2 != '' ) { filterFields.push( this.properties.refiner2 ); } // eslint-disable-line eqeqeq
 
-    let allFields = defFields.concat(filterFields);
+  //   let allFields = defFields.concat(filterFields);
 
-    let fieldTitles = r.filter(f => f.Hidden !== true && allFields.indexOf(f.StaticName) > -1).map( 
-      f => {return [f.StaticName,f.Title,f.Description,f.Required,f.FieldTypeKind];});
+  //   let fieldTitles = r.filter(f => f.Hidden !== true && allFields.indexOf(f.StaticName) > -1).map( 
+  //     f => {return [f.StaticName,f.Title,f.Description,f.Required,f.FieldTypeKind];});
     
-    //Update properties here:
-    this.properties.parentListFieldTitles = JSON.stringify(fieldTitles);
+  //   //Update properties here:
+  //   this.properties.parentListFieldTitles = JSON.stringify(fieldTitles);
 
-    console.log('list fields: ', r);
-    console.log('fieldTitles: ', fieldTitles);
+  //   console.log('list fields: ', r);
+  //   console.log('fieldTitles: ', fieldTitles);
     
-    return true;
+  //   return true;
 
-  } 
+  // } 
 
 
 
@@ -1254,6 +1247,32 @@ export default class DrilldownV2WebPart extends BaseClientSideWebPart<IDrilldown
   protected getPropertyPaneConfiguration(): IPropertyPaneConfiguration {
     // Log.Write(`getPropertyPaneConfiguration`);
 
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-this-alias
+        const thisAsAny: IThisFPSWebPartClass = this as any;
+        let groups: IPropertyPaneGroup[] = [ WebPartInfoGroup( this._repoLink, 'Sample FPS Banner component :)', PropertyPaneWebPartInformation ) ];
+        const FPSGroups: IPropertyPaneGroup[] = getAllDefaultFPSFeatureGroups ( thisAsAny );
+    
+        const DrillGroups1 : IPropertyPaneGroup[] = [
+          buildPreConfigGroup( this.properties ), //End this group
+          buildYourListGroup( ),
+          buildPerformanceGroup( this.properties, ),
+          buildRefinerGroup( this.properties, ),
+          buildTogglesGroup( this.properties ),
+        ];
+        //   {groupName: 'Npm Banner Web Part Sample',
+        //   isCollapsed: false,
+        //   groupFields: [
+        //     PropertyPaneTextField('webURL', {
+        //       label: 'webURL',
+        //       description: 'Leave blank for current site',
+        //     }),
+        //     PropertyPaneTextField('listTitle', {
+        //       label: 'listTitle',
+        //       description: 'Full Title of list or library',
+        //     }),]}
+    
+        groups = [ ...groups, ...DrillGroups1, ...FPSGroups ];
+
     return {
       pages: [
         {
@@ -1261,25 +1280,7 @@ export default class DrilldownV2WebPart extends BaseClientSideWebPart<IDrilldown
           //   description: strings.PropertyPaneDescription
           // },
           displayGroupsAsAccordion: true, //DONT FORGET THIS IF PROP PANE GROUPS DO NOT EXPAND
-          groups: [
-            WebPartInfoGroup( repoLink, 'Best TOC and Page Info available :)' ),
-            buildPreConfigGroup( this.properties ), //End this group
-            buildYourListGroup( ),
-            buildPerformanceGroup( this.properties, ),
-            buildRefinerGroup( this.properties, ),
-            buildTogglesGroup( this.properties ),
-            
-            FPSBanner3VisHelpGroup( this.context, this.onPropertyPaneFieldChanged, this.properties ),
-            FPSBanner4BasicGroup( this._forceBanner , this._modifyBannerTitle, this.properties.showBanner, this.properties.infoElementChoice === 'Text' ? true : false, true, true ),
-            FPSBanner3NavGroup(), 
-            FPSBanner3ThemeGroup( this._modifyBannerStyle, this.properties.showBanner, this.properties.lockStyles, false ),
-
-            FPSOptionsGroupBasic( false, true, true, true, this.properties.allSectionMaxWidthEnable, true, this.properties.allSectionMarginEnable, true ), // this group
-            FPSOptionsExpando( this.properties.enableExpandoramic, this.properties.enableExpandoramic,null, null ),
-            // FPSOptionsExpando( this.properties.enableExpandoramic, this.properties.enableExpandoramic,null, null ),
-  
-            FPSImportPropsGroup, // this group
-          ]
+          groups: groups
         },
         {
           // header: {
@@ -1299,11 +1300,11 @@ export default class DrilldownV2WebPart extends BaseClientSideWebPart<IDrilldown
             buildStatsGroup( ),
             buildQuickCommandsGroup(),
 
-            buildEasyPagesGroup( this.properties, this.context.pageContext.site.absoluteUrl !== this.context.pageContext.web.absoluteUrl ),
+            // buildEasyPagesGroup( this.properties, this.context.pageContext.site.absoluteUrl !== this.context.pageContext.web.absoluteUrl ),
 
             // FPSOptionsExpando( this.properties.enableExpandoramic, this.properties.enableExpandoramic,null, null ),
   
-            FPSImportPropsGroup, // this group
+            // FPSImportPropsGroup, // this group
           ]
         }
       ]
@@ -1361,14 +1362,22 @@ export default class DrilldownV2WebPart extends BaseClientSideWebPart<IDrilldown
   }
 
   protected async onPropertyPaneFieldChanged(propertyPath: string, oldValue: any, newValue: any) {
+    //Added super during fps-library-v2 update because it was found in the Pnpjs-v2Upgrade webpart
+    super.onPropertyPaneFieldChanged(propertyPath, oldValue, newValue);
 
-    try {
-      await validateDocumentationUrl ( this.properties, propertyPath , newValue );
-    } catch(e) {
-      alert('unalbe to validateDocumentationUrl' );
-    }
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    await onFPSPropPaneCHanged( this as any, propertyPath, oldValue, newValue );
 
-    this.properties.webpartHistory = updateWebpartHistoryV2( this.properties.webpartHistory , propertyPath , newValue, this.context.pageContext.user.displayName, [], [] );
+    this.context.propertyPane.refresh();
+
+
+    // try {
+    //   await validateDocumentationUrl ( this.properties, propertyPath , newValue );
+    // } catch(e) {
+    //   alert('unalbe to validateDocumentationUrl' );
+    // }
+
+    // this.properties.webpartHistory = updateWebpartHistoryV2( this.properties.webpartHistory , propertyPath , newValue, this.context.pageContext.user.displayName, [], [] );
 
 //    console.log('PropFieldChange:', propertyPath, oldValue, newValue);
     if (propertyPath === 'listDefinition' && newValue !== oldValue) {
@@ -1508,54 +1517,55 @@ export default class DrilldownV2WebPart extends BaseClientSideWebPart<IDrilldown
 
       }
       this.context.propertyPane.refresh();
-    } else if ( propertyPath === 'fpsImportProps' ) {
+
+    // } else if ( propertyPath === 'fpsImportProps' ) {
   
-      this._importErrorMessage = updateFpsImportProps( this.properties, importBlockProps, propertyPath, newValue,
-        this.context.propertyPane.refresh,
-        this.onPropertyPaneConfigurationStart,
-        this._exitPropPaneChanged,
-      );
+    //   this._importErrorMessage = updateFpsImportProps( this.properties, importBlockProps, propertyPath, newValue,
+    //     this.context.propertyPane.refresh,
+    //     this.onPropertyPaneConfigurationStart,
+    //     this._exitPropPaneChanged,
+    //   );
 
-    } else if ( propertyPath === 'easyIconKeys' && !newValue )  {
-      //https://github.com/mikezimm/Pnpjs-v2-Upgrade-sample/issues/59
-      this.properties.easyIconKeys = EasyIconDefaultKeys.join(' ; ');
+    // } else if ( propertyPath === 'easyIconKeys' && !newValue )  {
+    //   //https://github.com/mikezimm/Pnpjs-v2-Upgrade-sample/issues/59
+    //   this.properties.easyIconKeys = EasyIconDefaultKeys.join(' ; ');
 
-    } else if ( propertyPath === 'EasyPageTabsC' && !newValue )  {
-      //https://github.com/mikezimm/Pnpjs-v2-Upgrade-sample/issues/59
-      this.properties.EasyPageTabsC = DefaultEasyPagesTabs.join(' ; ');
+    // } else if ( propertyPath === 'EasyPageTabsC' && !newValue )  {
+    //   //https://github.com/mikezimm/Pnpjs-v2-Upgrade-sample/issues/59
+    //   this.properties.EasyPageTabsC = DefaultEasyPagesTabs.join(' ; ');
 
-    } else if ( propertyPath === 'EasyPageTabsP' && !newValue )  {
-      //https://github.com/mikezimm/Pnpjs-v2-Upgrade-sample/issues/59
-      this.properties.EasyPageTabsP = DefaultEasyPagesTabs.join(' ; ');
+    // } else if ( propertyPath === 'EasyPageTabsP' && !newValue )  {
+    //   //https://github.com/mikezimm/Pnpjs-v2-Upgrade-sample/issues/59
+    //   this.properties.EasyPageTabsP = DefaultEasyPagesTabs.join(' ; ');
 
-    } else if ( propertyPath === 'EasyPageTabsA' && !newValue )  {
-      //https://github.com/mikezimm/Pnpjs-v2-Upgrade-sample/issues/59
-      this.properties.EasyPageTabsA = DefaultEasyPagesTabs.join(' ; ');
+    // } else if ( propertyPath === 'EasyPageTabsA' && !newValue )  {
+    //   //https://github.com/mikezimm/Pnpjs-v2-Upgrade-sample/issues/59
+    //   this.properties.EasyPageTabsA = DefaultEasyPagesTabs.join(' ; ');
 
-    } else if ( propertyPath === 'EasyPageTabsB' && !newValue )  {
-      //https://github.com/mikezimm/Pnpjs-v2-Upgrade-sample/issues/59
-      this.properties.EasyPageTabsB = DefaultEasyPagesTabs.join(' ; ');
+    // } else if ( propertyPath === 'EasyPageTabsB' && !newValue )  {
+    //   //https://github.com/mikezimm/Pnpjs-v2-Upgrade-sample/issues/59
+    //   this.properties.EasyPageTabsB = DefaultEasyPagesTabs.join(' ; ');
 
-} else if ( propertyPath === 'EasyPageOverflowTab' && !newValue )  {
-      this.properties.EasyPageOverflowTab = DefaultOverflowTab;
+    // } else if ( propertyPath === 'EasyPageOverflowTab' && !newValue )  {
+    //   this.properties.EasyPageOverflowTab = DefaultOverflowTab;
 
 
-     } else if ( propertyPath === 'bannerStyle' || propertyPath === 'bannerCmdStyle' )  {
+    //  } else if ( propertyPath === 'bannerStyle' || propertyPath === 'bannerCmdStyle' )  {
 
-      refreshBannerStylesOnPropChange( this.properties, propertyPath, newValue, this.context.propertyPane.refresh );
+    //   refreshBannerStylesOnPropChange( this.properties, propertyPath, newValue, this.context.propertyPane.refresh );
 
-    } else if (propertyPath === 'bannerStyleChoice')  {
-      // bannerThemes, bannerThemeKeys, makeCSSPropPaneString
+    // } else if (propertyPath === 'bannerStyleChoice')  {
+    //   // bannerThemes, bannerThemeKeys, makeCSSPropPaneString
 
-      updateBannerThemeStyles( this.properties , newValue, true, this.properties.defPinState, this._sitePresets.forces );
+    //   updateBannerThemeStyles( this.properties , newValue, true, this.properties.defPinState, this._sitePresets.forces );
 
-      if ( newValue === 'custom' || newValue === 'lock' ) {
-        //Do nothing for these cases.
+    //   if ( newValue === 'custom' || newValue === 'lock' ) {
+    //     //Do nothing for these cases.
         
-      } else {
-        //Reset main web part styles to defaults
+    //   } else {
+    //     //Reset main web part styles to defaults
 
-      }
+    //   }
 
     } else if ( propertyPath === 'parentListWeb' || propertyPath === 'parentListTitle' ) {
       let webUrl = propertyPath === 'parentListWeb' ? newValue : this.properties.parentListWeb;

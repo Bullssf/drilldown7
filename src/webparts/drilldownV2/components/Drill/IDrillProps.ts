@@ -1,7 +1,7 @@
 
 import { IReadonlyTheme } from '@microsoft/sp-component-base';
 
-import { IFPSCorePinMeReactComponentProps, IFPSCorePinMeReactComponentState, ILoadPerformance } from '../../fpsReferences';
+// import { IFPSCorePinMeReactComponentProps, IFPSCorePinMeReactComponentState, ILoadPerformance } from '../../fpsReferences';
 
 import { IGrouping } from "@pnp/spfx-controls-react/lib/ListView";
 
@@ -23,13 +23,7 @@ import { ICMDItem } from './refiners/commandBar';
 
 import { IDrillItemInfo } from '../../fpsReferences';
 
-import { IEasyPagesSourceProps,  } from '../EasyPages/componentPage';
-import { IEasyPagesExtraProps } from '../EasyPages/componentSources';
-// import { IFPSAgeSliderWPProps,  } from '../FPSAgeSlider/FPSAgeTypes';
 import { IFPSAgeSliderWPProps,  } from '@mikezimm/fps-react/lib/FPSAgeSlider';
-
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-import { IEasyIconProps, IEasyIcons } from '../EasyIcons/eiTypes';
 
 /***
  *    d888888b      d8888b. d8888b. d888888b db      db      db      d888888b .d8888. d888888b 
@@ -43,7 +37,7 @@ import { IEasyIconProps, IEasyIcons } from '../EasyIcons/eiTypes';
  */
 
  export interface IDrillList extends Partial<IPickedList> {
-  [key: string]: string | string[] | boolean | IRefinerRules[][] | IUser | IRefinerStat[] | ICustViewDef[] | any[] | any | undefined;
+  // [key: string]: string | string[] | boolean | IRefinerRules[][] | IUser | IRefinerStat[] | ICustViewDef[] | any[] | any | undefined;
     itteration: number;
     location: string;
 
@@ -192,12 +186,30 @@ Page owner can set:
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+import { IFPSCoreReactComponentProps } from '@mikezimm/fps-library-v2/lib/banner/mainReact/ReactComponentProps';
+import { IFPSCorePinMeReactComponentState } from '@mikezimm/fps-library-v2/lib/banner/mainReact/ReactComponentState';
+import { ILoadPerformance } from '../../fpsReferences';
+
+
+
 /**
  * Extends IFPSCorePinMeReactComponentProps with all basics required for FPS Banner
  */
 
-export interface IDrilldownV2Props extends IFPSCorePinMeReactComponentProps {
-  [key: string]: string | string[] | boolean | any | undefined;
+export interface IDrilldownV2Props extends IFPSCoreReactComponentProps {
     /**
      * Default 1.14 properties
      */
@@ -210,15 +222,9 @@ export interface IDrilldownV2Props extends IFPSCorePinMeReactComponentProps {
 
      loadPerformance: ILoadPerformance;
 
-     easyPagesSourceProps: IEasyPagesSourceProps;  // General props which apply to all Sources/Pages
-     easyPagesExtraProps: IEasyPagesExtraProps;  // General props which are used on the SourcesPage but not component page
-     EasyIconsObject: IEasyIcons;
      ageSliderWPProps: IFPSAgeSliderWPProps;
 
     allowOtherSites?: boolean; //default is local only.  Set to false to allow provisioning parts on other sites.
-
-    allowRailsOff?: boolean;
-    allowSettings?: boolean;
 
     tenant: string;
     urlVars: {};
@@ -275,22 +281,6 @@ export interface IDrilldownV2Props extends IFPSCorePinMeReactComponentProps {
     showRefinerCounts?: boolean;
     showCountChart?: boolean;
 
-    /**    
-     * 'parseBySemiColons' |
-     * 'groupBy10s' |  'groupBy100s' |  'groupBy1000s' |  'groupByMillions' |
-     * 'groupByDays' |  'groupByMonths' |  'groupByYears' |
-     * 'groupByUsers' | 
-     * 
-     * rules string formatted as JSON : [ string[] ]  =  [['parseBySemiColons''groupByMonths'],['groupByMonths'],['groupByUsers']]
-     * [ ['parseBySemiColons''groupByMonths'],
-     * ['groupByMonths'],
-     * ['groupByUsers'] ]
-     * 
-    */
-
-    // 6 - User Feedback:
-    progress: IMyProgress;
-
     rules: string;
     stats: string;
 
@@ -305,18 +295,17 @@ export interface IDrilldownV2Props extends IFPSCorePinMeReactComponentProps {
     /**
      * 2020-09-08:  Add for dynamic data refiners.   onRefiner0Selected  -- callback to update main web part dynamic data props.
      */
-    onRefiner0Selected?: any;
+    // onRefiner0Selected?: any;
 
     style: IRefinerStyles; //RefinerStyle
 
     //For DD
-    handleSwitch: any;
-    handleListPost: any;
+    // handleSwitch: any;
+    // handleListPost: any;
 
 }
 
   export interface ICSSChartData {
-  [key: string]: string | number | number[] | any[] | boolean | string[] | undefined;
     axisTitle?: string;
     val1?: number[];
     percents?: any[];
@@ -340,7 +329,6 @@ export interface IDrilldownV2Props extends IFPSCorePinMeReactComponentProps {
   }
 
   export interface ICSSChartSettings {
-    [key: string]: string | number | ICSSChartTypes[] | ILabelColor[] | any | boolean | undefined;
     title: string;
 
     chartTypes: ICSSChartTypes[];

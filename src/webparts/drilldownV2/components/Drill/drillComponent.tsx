@@ -1081,7 +1081,7 @@ public componentDidUpdate( prevProps: IDrilldownV2Props ){
                 <div className={[styles.searchContainer, styles.padLeft20, styles.padTop20, styles.padBot10 ].join(' ')} >
                     <SearchBox
                       className={styles.searchBox}
-                      styles={{ root: { maxWidth: this.props.allowRailsOff === true ? 200 : 300 } }}
+                      styles={{ root: { maxWidth: 250 } }}
                       placeholder="Search"
                       onSearch={ this._searchForText.bind(this) }
                       onFocus={ null } // () => console.log('this.state',  this.state)
