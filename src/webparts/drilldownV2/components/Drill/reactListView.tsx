@@ -45,7 +45,7 @@ import { PrimaryButton, DefaultButton } from 'office-ui-fabric-react/lib/Button'
 // import { Button, ButtonType, } 			from 'office-ui-fabric-react/lib/Button';
 // import { Label } 			from 'office-ui-fabric-react/lib/Label';
 
-import { updateReactListItem } from './listFunctions';
+import { updateReactListItem } from "./functions/updateReactListItem";
 
 import { IContentsToggles, makeToggles } from '../fields/toggleFieldBuilder';
 

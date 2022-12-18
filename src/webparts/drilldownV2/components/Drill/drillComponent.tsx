@@ -82,7 +82,7 @@ import Cssreactbarchart from '../CssCharts/Cssreactbarchart';
 
 import {buildCountChartsObject ,  buildStatChartsArray} from '../CssCharts/cssChartFunctions';
 
-import { getAppropriateViewFields, getAppropriateViewGroups, getAppropriateViewProp, } from './listFunctions';
+import { getAppropriateViewFields, getAppropriateViewGroups, getAppropriateViewProp } from "./functions/getBestFitView";
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { CommandItemNotUpdatedMessage, CommandUpdateFailedMessage, CommandEnterCommentString, 
@@ -90,7 +90,7 @@ import { CommandItemNotUpdatedMessage, CommandUpdateFailedMessage, CommandEnterC
   CommandCancelRequired, CommandEmptyCommentMessage } from '../../fpsReferences';
 
   //MOVE TO IQuickCommands in npmFunctions
-import { CommandCaptchaTestFailed, CommandCaptchaRequiredFailed } from './listFunctions';
+import { CommandCaptchaTestFailed, CommandCaptchaRequiredFailed } from './functions/listFunctions';
 
 // import FetchBanner from '../CoreFPS/FetchBannerElement';
 import FetchBanner from '@mikezimm/npmfunctions/dist/HelpPanelOnNPM/onNpm/FetchBannerElement';
@@ -102,7 +102,7 @@ import FPSAgeSliderHook from '@mikezimm/fps-react/lib/FPSAgeSlider';
 // import { ISpecialMessage, specialUpgrade } from '@mikezimm/npmfunctions/dist/HelpPanelOnNPM/special/interface';
 
 
-import { getWebPartHelpElement } from '../../CoreFPS/PropPaneHelp';
+import { getWebPartHelpElement } from '../../CoreFPS/PropPaneHelp/PropPaneHelp';
 import { getBannerPages, } from '../HelpPanel/AllContent';
 import { IBannerPages } from '../../fpsReferences';
 

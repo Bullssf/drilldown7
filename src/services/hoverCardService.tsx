@@ -11,58 +11,58 @@ import styles from '../webparts/drilldownV2/components/Contents/listView.module.
 import { mergeStyles } from 'office-ui-fabric-react/lib/Styling';
 // import { Fabric, Stack, IStackTokens, initializeIcons } from 'office-ui-fabric-react';
 
-export const autoDetailsList = ( item: any, highlightKeys: string[], specialKeys: string[], showOthers: boolean ): any[] => {
+// export const autoDetailsList = ( item: any, highlightKeys: string[], specialKeys: string[], showOthers: boolean ): any[] => {
 
-        //Build Highlighted Props:
-        let hoverWebStyle = { fontWeight: 700};
-        let showTheseProps = [];
+//         //Build Highlighted Props:
+//         let hoverWebStyle = { fontWeight: 700};
+//         let showTheseProps = [];
 
-        let missingProp = "Error:  prop not available";
+//         let missingProp = "Error:  prop not available";
 
-        if ( highlightKeys.length > 0 ) { showTheseProps.push( <div><h2>Highligted Props</h2></div> ); }
-        highlightKeys.map( prop => {
-            if ( prop === 'refElement') { showTheseProps.push(  item[prop] );
-            } else  {
-                let propType = typeof item[prop];
-                let propVal = propType === 'object' || propType === 'boolean' ? JSON.stringify(item[prop]) : item[prop];
-                if ( propVal === undefined ) { propVal = missingProp ; }
-                showTheseProps.push(  <p><span style={hoverWebStyle}>{ prop }:</span> { propVal }</p> );
-            }
-        });
+//         if ( highlightKeys.length > 0 ) { showTheseProps.push( <div><h2>Highligted Props</h2></div> ); }
+//         highlightKeys.map( prop => {
+//             if ( prop === 'refElement') { showTheseProps.push(  item[prop] );
+//             } else  {
+//                 let propType = typeof item[prop];
+//                 let propVal = propType === 'object' || propType === 'boolean' ? JSON.stringify(item[prop]) : item[prop];
+//                 if ( propVal === undefined ) { propVal = missingProp ; }
+//                 showTheseProps.push(  <p><span style={hoverWebStyle}>{ prop }:</span> { propVal }</p> );
+//             }
+//         });
 
-        //console.log('spespecialKeys', specialKeys);
+//         //console.log('spespecialKeys', specialKeys);
 
-        //showTheseProps.push( <div><ColoredLine color='black' height='1px'></ColoredLine></div> );
-        if ( specialKeys.length > 0 ) { showTheseProps.push( <div><h2>Special Props</h2></div> ); }
-        specialKeys.map( prop => {
-            if ( prop === 'refElement') { showTheseProps.push(  item[prop] );
-            } else  {
-                let propType = typeof item[prop];
-                let propVal = propType === 'object' || propType === 'boolean' ? JSON.stringify(item[prop]) : item[prop];
-                if ( propVal === undefined ) { propVal = missingProp ; }
-                showTheseProps.push(  <p><span style={hoverWebStyle}>{ prop }:</span> { propVal }</p> );
-            }
-        });
+//         //showTheseProps.push( <div><ColoredLine color='black' height='1px'></ColoredLine></div> );
+//         if ( specialKeys.length > 0 ) { showTheseProps.push( <div><h2>Special Props</h2></div> ); }
+//         specialKeys.map( prop => {
+//             if ( prop === 'refElement') { showTheseProps.push(  item[prop] );
+//             } else  {
+//                 let propType = typeof item[prop];
+//                 let propVal = propType === 'object' || propType === 'boolean' ? JSON.stringify(item[prop]) : item[prop];
+//                 if ( propVal === undefined ) { propVal = missingProp ; }
+//                 showTheseProps.push(  <p><span style={hoverWebStyle}>{ prop }:</span> { propVal }</p> );
+//             }
+//         });
 
-        if ( showOthers ) {
+//         if ( showOthers ) {
 
-            showTheseProps.push( <div><h2>Other Props</h2></div> );
-            let hoverMinorPropStyle = { fontSize: 'smaller', fontWeight: 700 };
+//             showTheseProps.push( <div><h2>Other Props</h2></div> );
+//             let hoverMinorPropStyle = { fontSize: 'smaller', fontWeight: 700 };
 
-            Object.keys(item).map( prop => {
+//             Object.keys(item).map( prop => {
 
-                if ( prop === 'refElement') { showTheseProps.push(  item[prop] );
-                } else if (highlightKeys.indexOf(prop) < 0 && specialKeys.indexOf(prop) < 0) {
-                    let propType = typeof item[prop];
-                    let propVal = propType === 'object' || propType === 'boolean' ? JSON.stringify(item[prop]) : item[prop];
-                    if ( propVal === undefined ) { propVal = missingProp ; }
-                    showTheseProps.push(  <p><span style={hoverMinorPropStyle}>{ prop }:</span> { propVal }</p> ); }
-            });
-        }
+//                 if ( prop === 'refElement') { showTheseProps.push(  item[prop] );
+//                 } else if (highlightKeys.indexOf(prop) < 0 && specialKeys.indexOf(prop) < 0) {
+//                     let propType = typeof item[prop];
+//                     let propVal = propType === 'object' || propType === 'boolean' ? JSON.stringify(item[prop]) : item[prop];
+//                     if ( propVal === undefined ) { propVal = missingProp ; }
+//                     showTheseProps.push(  <p><span style={hoverMinorPropStyle}>{ prop }:</span> { propVal }</p> ); }
+//             });
+//         }
 
-  return showTheseProps;
+//   return showTheseProps;
 
-};
+// };
 
 
 export function buildPropsHoverCard (item: any, highlightKeys: string[], specialKeys: string[], showOthers: boolean, icon: any ) {

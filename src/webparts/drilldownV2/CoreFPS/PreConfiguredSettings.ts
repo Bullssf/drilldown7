@@ -102,43 +102,6 @@ export const WPPresetEverywhere : IPreConfigSettings = {
 
       itemsPerPage:20,
 
-      // FPS Banner Navigation
-      // showGoToHome: true,
-      // showGoToParent: true,
-
-      //  Banner Theme props that are not preset in manifest.json
-      //  bannerStyleChoice: 'corpDark1',
-      //  bannerStyle: '{\"color\":\"white\",\"backgroundColor\":\"#005495\",\"fontSize\":\"larger\",\"fontWeight\":600,\"fontStyle\":\"normal\",\"padding\":\"0px 10px\",\"height\":\"48px\",\"cursor\":\"pointer\"}',
-      //  bannerCmdStyle: '{\"color\":\"white\",\"backgroundColor\":\"#005495\",\"fontSize\":16,\"fontWeight\":\"normal\",\"fontStyle\":\"normal\",\"padding\":\"7px 4px\",\"marginRight\":\"0px\",\"borderRadius\":\"5px\",\"cursor\":\"pointer\"}',
-      //  lockStyles: true,
-      //  Move these to npmFunctions when code is moved
-
-      //Move these to npmFunctions when code is moved
-
-      // EasyPagesEnable: false, //Disabled by default on Drilldown until can test in prod
-      // EasyPagesAudience: 'Everyone',
-      // EasyPageTabsC:  DefaultEasyPagesTabs.join(' ; '), // Added spaces for readability
-      // EasyPageTabsP:  DefaultEasyPagesTabs.join(' ; '), // Added spaces for readability
-      // EasyPageTabsA:  DefaultEasyPagesTabs.join(' ; '), // Added spaces for readability
-      // EasyPageTabsB:  DefaultEasyPagesTabs.join(' ; '), // Added spaces for readability
-      // EasyPageOverflowTab:  DefaultOverflowTab,
-      // EasyPageParent: true, //Include parent site pages
-      // EasyPageUrlA: '', //Include alternate site's site pages
-      // EasyPagesSiteTitleA:  '', //Include navigation elements from other site
-      // EasyPageUrlB: '', //Include alternate site's site pages
-      // EasyPagesSiteTitleB:  '', //Include navigation elements from other site
-      // easyPageSeparateExtras:  true, //Include navigation elements from other site
-      // EasyPageStyles:  '',  //Optional styles on entire page
-      // EasyPageContainerStyles:  '',  //Optional styles on container element
-
-      // easyIconEnable: true, // Used 
-      // easyIconKeys:  EasyIconDefaultKeys.join(' ; '), // Added spaces for readability
-      // easyIconIgnore:  '',
-
-      // FPSAgeIsVisible:  false,
-      // FPSAgeColumnName: 'Modified',
-      // FPSAgeColumnTitle: 'Modified',
-      // FPSAgeDefault: 4,  //Should be index of AgeSliderOption
     }, ...{ ...FPSAgeSliderPresetEverywhere } }
 };
 
