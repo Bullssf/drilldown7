@@ -53,6 +53,11 @@ import { createItemFunctionProp,  } from '@mikezimm/fps-library-v2/lib/logic/Str
 
 import { DoNotExpandColumns } from "@mikezimm/fps-library-v2/lib/pnpjs/Lists/getVX/IGetInterfaceV2";
 
+import { getSourceItems } from '@mikezimm/fps-library-v2/lib/pnpjs/SourceItems/getSourceItems';
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import { IMinSourceFetchProps } from '@mikezimm/fps-pnp2/lib/services/sp/fetch/items/fetchSourceItems';
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import { ISourceProps } from "@mikezimm/fps-library-v2/lib/pnpjs";
 
 // export async function getIUser ( webURL: string, email: string, callBack: any )   {
 
@@ -141,27 +146,25 @@ export async function getAllItems( drillList: IDrillList, addTheseItemsToState: 
       }
     }
 
-
-    let thisListObject = thisListWeb.lists.getByTitle(drillList.name);
-
     /**
      * IN FUTURE, ALWAYS BE SURE TO PUT SELECT AND EXPAND AFTER .ITEMS !!!!!!
      */
+    drillList.selectColumns = selectCols.split(',');
+    drillList.selectColumnsStr = selectCols;
 
-    try {
-        let fetchCount = drillList.fetchCount > 0 ? drillList.fetchCount : 200;
-
-        if ( drillList.restFilter.length > 1 ) {
-            allItems = await thisListObject.items.select(selectCols).expand(expandThese).orderBy('ID',false).top(fetchCount).filter(drillList.restFilter).get();
-        } else {
-            allItems = await thisListObject.items.select(selectCols).expand(expandThese).orderBy('ID',false).top(fetchCount).get();
-        }
-    } catch (e) {
-        errMessage = getHelpfullError(e, false, true).friendly;
+    const DrillSource: IMinSourceFetchProps = {
+      webUrl: drillList.webURL,
+      listTitle: drillList.title,
+      fetchCount: drillList.fetchCount,
+      selectThese: drillList.selectColumns,
+      expandThese: drillList.expandColumns,
 
     }
-    consoleMe( 'getAllItems' , allItems, drillList );
-    allItems = processAllItems( allItems, errMessage, drillList, addTheseItemsToState, setProgress, updatePerformance, sourceUser );
+
+    const getItems = await getSourceItems( DrillSource as ISourceProps, true, true )
+
+    consoleMe( 'getAllItems' , getItems.items, drillList );
+    getItems.items = processAllItems( getItems.items, errMessage, drillList, addTheseItemsToState, setProgress, updatePerformance, sourceUser );
 
 
 }

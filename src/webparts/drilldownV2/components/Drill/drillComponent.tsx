@@ -6,6 +6,8 @@ import * as React from 'react';
 import { IDrilldownV2Props, IDrillDownState, IDrillList, IViewType, IRefinerStyles, RefinerChartTypes } from './IDrillProps';
 import { pivCats } from './IDrillProps';
 
+import { IUser } from '@mikezimm/fps-library-v2/lib/logic/Users/IUserInterfaces';
+
 import { saveViewAnalytics } from '../../CoreFPS/Analytics';
 
 import { Stack, IStackTokens, Icon, } from 'office-ui-fabric-react';
@@ -154,7 +156,7 @@ export default class DrillDown extends React.Component<IDrilldownV2Props, IDrill
 
     private _fetchUserId: string = '';  //Caching fetch Id and Web as soon as possible to prevent race
     private _fetchWeb: string = this.props.webURL ? this.props.webURL : '';  //Caching fetch Id and Web as soon as possible to prevent race
-    private _sourceUser: IEnsureUserInfo = null;
+    private _sourceUser: IUser = null;
 
 
     private _newRefreshId() {
@@ -547,7 +549,7 @@ export default class DrillDown extends React.Component<IDrilldownV2Props, IDrill
          */
 
         let drillList = this._createDrillList(this.props.webURL, this.props.listName, this.props.isLibrary, this.props.refiners, this.props.rules, this.props.stats, 
-          this.props.viewDefs, this.props.toggles.togOtherChartpart, '', false, this.props.language, 'constructor', 0, this.props.ageSliderWPProps.FPSAgeColumnName );
+          this.props.viewDefs, this.props.toggles.togOtherChartpart, this.props.listName, false, this.props.language, 'constructor', 0, this.props.ageSliderWPProps.FPSAgeColumnName );
         let errMessage = drillList.refinerRules === undefined ? 'Invalid Rule set: ' +  this.props.rules : '';
         if ( drillList.refinerRules === undefined ) { drillList.refinerRules = [[],[],[]] ; } 
 
@@ -661,7 +663,7 @@ export default class DrillDown extends React.Component<IDrilldownV2Props, IDrill
       if ( !webURL || ( !this._sourceUser && webURLOnCurrentCollection === true ) ) {
         //If current web is the sourceListWeb, then just use the context FPSUser
         this._sourceUser = this.props.bannerProps.FPSUser ;
-        this._fetchUserId = this._sourceUser.user.Id;
+        this._fetchUserId = this._sourceUser.Id;
         this._fetchWeb = webURL;
 
         return this._sourceUser;
@@ -677,7 +679,7 @@ export default class DrillDown extends React.Component<IDrilldownV2Props, IDrill
   
           this._fetchUserId = sourceUser.user.id;
           this._fetchWeb = webURL;
-          this._sourceUser = sourceUser;
+          this._sourceUser = sourceUser.user;
 
           this._updatePerformance( 'fetch1', 'update', '', 1 );
   
@@ -1319,7 +1321,7 @@ public componentDidUpdate( prevProps: IDrilldownV2Props ){
                                 blueBarTitleText= { `Refiners selected: ${ this.state.searchMeta.join( ' > ') }` }
 
                                 contextUserInfo = { this.state.drillList.contextUserInfo }
-                                sourceUserInfo = { this._sourceUser.user }
+                                sourceUserInfo = { this._sourceUser }
     
                                 viewFields={ currentViewFields }
                                 groupByFields={ currentViewGroups }
@@ -1535,7 +1537,7 @@ public componentDidUpdate( prevProps: IDrilldownV2Props ){
          */
 
         let drillList = this._createDrillList(this.props.webURL, this.props.listName, this.props.isLibrary, refiners, this.state.rules, this.props.stats, 
-          viewDefs, this.props.toggles.togOtherChartpart, '', false, this.props.language, 'getAllItemsCall', this.state.drillList.itteration, this.props.ageSliderWPProps.FPSAgeColumnName  );
+          viewDefs, this.props.toggles.togOtherChartpart, this.props.listName, false, this.props.language, 'getAllItemsCall', this.state.drillList.itteration, this.props.ageSliderWPProps.FPSAgeColumnName  );
         // let errMessage = drillList.refinerRules === undefined ? 'Invalid Rule set: ' +  this.state.rules : '';
         if ( drillList.refinerRules === undefined ) { drillList.refinerRules = [[],[],[]] ; } 
 
@@ -1543,17 +1545,17 @@ public componentDidUpdate( prevProps: IDrilldownV2Props ){
         let evalFilter: string = this.props.performance.evalFilter;
 
         if ( restFilter && restFilter.indexOf('[Me]') > 1 ) {   
-          const sourceUser: IEnsureUserInfo = await this._presetDrillListUser( this.props.webURL, this.props.bannerProps.FPSUser.email );
-          if ( sourceUser.user.Id ) restFilter = restFilter.replace('[Me]',  sourceUser.user.Id ) ;
+          const sourceUser: IUser = await this._presetDrillListUser( this.props.webURL, this.props.bannerProps.FPSUser.email );
+          if ( sourceUser.Id ) restFilter = restFilter.replace('[Me]',  sourceUser.Id ) ;
 
         } else if ( this.props.quickCommands?.quickCommandsRequireUser === true || evalFilter && evalFilter.indexOf('sourceUser') > -1 ) {
-          const sourceUser: IEnsureUserInfo = await this._presetDrillListUser( this.props.webURL, this.props.bannerProps.FPSUser.email );
+          const sourceUser: IUser = await this._presetDrillListUser( this.props.webURL, this.props.bannerProps.FPSUser.email );
           console.log('fetched sourceUser:', sourceUser );
         }
 
         drillList.restFilter = restFilter;
 
-        getAllItems( drillList, this._addTheseItemsToState.bind(this), this._setProgress.bind(this), null,  this._updatePerformance.bind( this ), this._sourceUser.user ); // eslint-disable-line @typescript-eslint/no-floating-promises
+        getAllItems( drillList, this._addTheseItemsToState.bind(this), this._setProgress.bind(this), null,  this._updatePerformance.bind( this ), this._sourceUser ); // eslint-disable-line @typescript-eslint/no-floating-promises
 
     }
 
@@ -2006,14 +2008,14 @@ public componentDidUpdate( prevProps: IDrilldownV2Props ){
     let viewDefs: ICustViewDef[] = JSON.parse(JSON.stringify(this.props.viewDefs));
 
     let drillList = this._createDrillList(this.props.webURL, this.props.listName, this.props.isLibrary, refiners, JSON.stringify(refinerRulesNew), this.props.stats, 
-    viewDefs, this.props.toggles.togOtherChartpart, '', true, this.props.language, 'changeRefinerOrder', this.state.drillList.itteration, this.props.ageSliderWPProps.FPSAgeColumnName );
+    viewDefs, this.props.toggles.togOtherChartpart, this.props.listName, true, this.props.language, 'changeRefinerOrder', this.state.drillList.itteration, this.props.ageSliderWPProps.FPSAgeColumnName );
 
     drillList.refinerInstructions = stateRefinerInstructions;
     
     let errMessage = drillList.refinerRules === undefined ? 'Invalid Rule set: ' +  this.state.rules : '';
     if ( drillList.refinerRules === undefined ) { drillList.refinerRules = [[],[],[]] ; }
 
-    processAllItems( this.state.allItems, errMessage, drillList, this._addTheseItemsToState.bind(this), this._setProgress.bind(this), null, this._sourceUser.user );
+    processAllItems( this.state.allItems, errMessage, drillList, this._addTheseItemsToState.bind(this), this._setProgress.bind(this), null, this._sourceUser );
 
   }
 
