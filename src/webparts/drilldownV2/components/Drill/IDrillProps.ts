@@ -5,25 +5,27 @@ import { IReadonlyTheme } from '@microsoft/sp-component-base';
 
 import { IGrouping } from "@pnp/spfx-controls-react/lib/ListView";
 
-import { ITheTime, } from '../../fpsReferences';
+import { ITheTime, } from '@mikezimm/fps-library-v2/lib/logic/Time/Interfaces';
 
-import { IPickedList, IMyProgress, ICSSChartTypes, ILabelColor } from '../../fpsReferences';
+import { ICSSChartTypes, ILabelColor } from '@mikezimm/fps-library-v2/lib/components/interfaces/CSSCharts/ICSSCharts';
+import { IMyProgress, } from '@mikezimm/fps-library-v2/lib/common/interfaces/fps/IMyInterfaces';
+import { IPickedList, } from '@mikezimm/fps-library-v2/lib/common/interfaces/fps/Picked/IPickedList';
 
 import { ICustViewDef } from '../../fpsReferences';
 
-import { IUser } from '../../fpsReferences';
+import { IUser } from '@mikezimm/fps-library-v2/lib/logic/Users/IUserInterfaces';
 
-import { IQuickCommands } from '../../fpsReferences';
+import { IQuickCommandsDesign } from '../../fpsReferences';
 
 import { IRefinerLayer, IRefinerRules, IRefinerStat } from '../../fpsReferences';
 
-import { IMyPivCat } from '../../fpsReferences';
+import { IMyPivCat } from '@mikezimm/fps-library-v2/lib/common/interfaces/fps/IzPivots';
 
 import { ICMDItem } from './refiners/commandBar';
 
 import { IDrillItemInfo } from '../../fpsReferences';
 
-import { IFPSAgeSliderWPProps,  } from '@mikezimm/fps-react/lib/FPSAgeSlider';
+import { IFPSAgeSliderWPProps,  } from '@mikezimm/fps-library-v2/lib/components/atoms/FPSAgeSlider/FPSAgeTypes';
 
 /***
  *    d888888b      d8888b. d8888b. d888888b db      db      db      d888888b .d8888. d888888b 
@@ -265,7 +267,7 @@ export interface IDrilldownV2Props extends IFPSCoreReactComponentProps {
         refinerInstructions: string[];
     };
 
-    quickCommands?: IQuickCommands;
+    quickCommands?: IQuickCommandsDesign;
 
     viewType?: IViewType;
     viewDefs?: ICustViewDef[];
@@ -397,8 +399,8 @@ export const RefinerChartTypes : ICSSChartTypes[] = ['stacked-column-labels', 'p
  */
 
 export interface IDrillDownState extends IFPSCorePinMeReactComponentState {
-  [key: string]: string | string[] | boolean | IDrillItemInfo[] | IStat[] | IMyProgress | IQuickCommands | 
-    IWhenToShowItems | IViewType | any[] | IMyPivCat[][] | ICMDItem[][] | IRefinerStyles | IGrouping[] | IRefinerLayer | any | undefined;
+  // [key: string]: string | string[] | boolean | IDrillItemInfo[] | IStat[] | IMyProgress | IQuickCommandsDesign | 
+  //   IWhenToShowItems | IViewType | any[] | IMyPivCat[][] | ICMDItem[][] | IRefinerStyles | IGrouping[] | IRefinerLayer | any | undefined;
     allowOtherSites?: boolean; //default is local only.  Set to false to allow provisioning parts on other sites.
 
     webURL?: string;
@@ -432,7 +434,7 @@ export interface IDrillDownState extends IFPSCorePinMeReactComponentState {
 
     progress: IMyProgress;
 
-    quickCommands: IQuickCommands;
+    quickCommands: IQuickCommandsDesign;
 
     allItems: IDrillItemInfo[];
 

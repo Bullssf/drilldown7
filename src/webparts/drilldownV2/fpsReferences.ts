@@ -10,20 +10,32 @@ export { IPerformanceOp, ILoadPerformance, IHistoryPerformance, ILoadPerformance
 export { IBannerPages, } from '@mikezimm/fps-library-v2/lib/banner/mainReact/IWebpartBannerProps';
 export { IPinMeState, } from '@mikezimm/fps-library-v2/lib/banner/features/PinMe/Interfaces';
 
-export { PresetFPSBanner, } from '@mikezimm/fps-library-v2/lib/common/PropPaneHelp/PreConfiguredConstants';
-export { IPreConfigSettings, IAllPreConfigSettings,  } from '@mikezimm/fps-library-v2/lib/common/PropPaneHelp/IPreConfig';
+export { PresetFPSBanner, } from '@mikezimm/fps-library-v2/lib/common/PropPaneHelp/preconfig/PreConfiguredConstants';
+export { IPreConfigSettings, IAllPreConfigSettings,  } from '@mikezimm/fps-library-v2/lib/common/PropPaneHelp/preconfig/IPreConfig';
+
+export { JSON_Edit_Link } from '@mikezimm/fps-library-v2/lib/common/PropPaneHelp/atoms/JSONEdit';  //JSON_Edit_Link, 
+
+export { defaultBannerCommandStyles } from '@mikezimm/fps-library-v2/lib/common/commandStyles/defaults';
+export { createAudienceGroup } from '@mikezimm/fps-library-v2/lib/banner/propPane/Audiences/AudiencePropGroup';
 
 export { IQuickButton, IQuickCommands, IQuickField } from '@mikezimm/fps-library-v2/lib/components/interfaces/QuickCommands/IQuickCommands'
+export { IQuickCommandsDesign } from '@mikezimm/fps-library-v2/lib/components/molecules/FieldPanel/components/command/IAccordion'
 
 export { doesObjectExistInArray, } from '@mikezimm/fps-library-v2/lib/logic/Arrays/searching/objectfind';
 
 export { getHelpfullError } from '@mikezimm/fps-library-v2/lib/logic/Errors/friendly';
 
-export { ICustViewDef, } from './fpsReferences';
+export { ICustViewDef, } from '@mikezimm/fps-library-v2/lib/components/interfaces/Views/IListViews';
+export { IViewFieldDD, } from '@mikezimm/fps-library-v2/lib/components/molecules/ReactListV1/interfaces/IViewFieldDD';
 
 export { makeTheTimeObject, } from '@mikezimm/fps-library-v2/lib/logic/Time/timeObject';
 
 export { getNumberArrayFromString } from '@mikezimm/fps-library-v2/lib/logic/Strings/arraysFromString';
+
+
+
+
+
 
 
 

@@ -9,7 +9,7 @@ import * as ReactDom from 'react-dom';
 // import { IReadonlyTheme } from '@microsoft/sp-component-base';
 
 import { SPPermission, } from '@microsoft/sp-page-context';
-import { Version,  } from '@microsoft/sp-core-library';
+// import { Version,  } from '@microsoft/sp-core-library';
 import {
   IPropertyPaneConfiguration, IPropertyPaneGroup,
   // PropertyPaneTextField
@@ -20,7 +20,7 @@ import {
   ThemeChangedEventArgs,
   IReadonlyTheme } from '@microsoft/sp-component-base';
 
-import { Web, } from "@pnp/sp/presets/all"
+// import { Web, } from "@pnp/sp/presets/all"
 
 /***
  *    d888888b db   db d888888b .d8888.      db   d8b   db d88888b d8888b.      d8888b.  .d8b.  d8888b. d888888b 
@@ -42,7 +42,7 @@ import * as strings from 'DrilldownV2WebPartStrings';
 import { IDrilldownV2WebPartProps } from './IDrilldownV2WebPartProps';
 import DrilldownV2 from './components/Drill/drillComponent';
 import { IDrilldownV2Props, IWhenToShowItems } from './components/Drill/IDrillProps';
-import { consoleRef } from './components/Drill/drillFunctions';
+// import { consoleRef } from './components/Drill/drillFunctions';
 
 
 // /***
@@ -216,12 +216,12 @@ import { consoleRef } from './components/Drill/drillFunctions';
 
 
 
-import { IQuickButton, IQuickCommands, makeTheTimeObject, updatePerformanceEnd } from './fpsReferences';
+import { IQuickButton, IQuickCommandsDesign, makeTheTimeObject, updatePerformanceEnd } from './fpsReferences';
 
 //Checks
 import { doesObjectExistInArray, } from './fpsReferences';
 
-import { getHelpfullError } from './fpsReferences';
+// import { getHelpfullError } from './fpsReferences';
 
 // import { sp } from '@pnp/sp';
 
@@ -243,7 +243,7 @@ import { ICustViewDef, } from './fpsReferences';
 // import { IDynamicDataCallables, IDynamicDataPropertyDefinition} from '@microsoft/sp-dynamic-data';  // eslint-disable-line @typescript-eslint/no-unused-vars
 
 import { IGrouping, } from "@pnp/spfx-controls-react/lib/ListView";
-import { IViewFieldDD } from './components/Drill/reactListView';
+import { IViewFieldDD } from './fpsReferences';
 import { buildQuickCommandsGroup } from './PropPaneGroups/Page2/QuickCommands';
 import { buildAgeSliderGroup } from '@mikezimm/fps-library-v2/lib/components/atoms/FPSAgeSlider/FPSAgePropPaneGroup';
 
@@ -304,7 +304,10 @@ import { getNumberArrayFromString } from './fpsReferences';
   import { FPSBaseClass } from '@mikezimm/fps-library-v2/lib/banner/FPSWebPartClass/FPSBaseClass';
   import { IThisFPSWebPartClass } from '@mikezimm/fps-library-v2/lib/banner/FPSWebPartClass/IThisFPSWebPartClass';
 
-
+  // import { } from '@mikezimm/fps-library-v2/lib/pnpjs/Lists/getVX/PnpjsListGetBasic';
+  import { IMinFetchListProps } from '@mikezimm/fps-pnp2/lib/services/sp/fetch/lists/fetchListProps';
+  import { getSourceList, IGetMinSourceListReturn } from '@mikezimm/fps-library-v2/lib/pnpjs/Lists/getList/getSourceList';
+import { Version } from '@microsoft/sp-core-library';
 
 
 export default class DrilldownV2WebPart extends FPSBaseClass<IDrilldownV2WebPartProps> {
@@ -342,7 +345,7 @@ export default class DrilldownV2WebPart extends FPSBaseClass<IDrilldownV2WebPart
   // private _selected_cssChartProps : ICSSChartDD;
   // private _selected_listProps : any;
 
-  private _quickCommands : IQuickCommands = null;
+  private _quickCommands : IQuickCommandsDesign = null;
 
   /**
    * 2020-09-08:  Add for dynamic data refiners.
@@ -615,7 +618,7 @@ export default class DrilldownV2WebPart extends FPSBaseClass<IDrilldownV2WebPart
 
   public getQuickCommandsObject( message: string, str: string ) {
 
-    let result : IQuickCommands = undefined;
+    let result : IQuickCommandsDesign = undefined;
 
     if ( str === null || str === undefined ) { return result; }
     try {
@@ -1140,6 +1143,9 @@ export default class DrilldownV2WebPart extends FPSBaseClass<IDrilldownV2WebPart
     ReactDom.unmountComponentAtNode(this.domElement);
   }
 
+  // https://dreamsof.dev/2020-09-21-typescript-upgrade-breaking-dataversion-get-override-spfx11/
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-ignore
   protected get dataVersion(): Version {
     return Version.parse('1.0');
   }
@@ -1573,21 +1579,28 @@ export default class DrilldownV2WebPart extends FPSBaseClass<IDrilldownV2WebPart
 
       let listTitle = propertyPath === 'parentListTitle' ? newValue : this.properties.parentListTitle;
 
-      let thisListWeb = Web( parentWeb );
-      let thisListObject : any = thisListWeb.lists.getByTitle(listTitle);
-      thisListObject.expand('RootFolder, ParentWeb').select('Title,RootFolder/ServerRelativeUrl, ParentWeb/Url').get().then( (response: any) => {
-          let tenantURL = response.ParentWeb.Url.substring(0, response.ParentWeb.Url.indexOf('/sites/') );
-          this.properties.parentListURL = tenantURL + response.RootFolder.ServerRelativeUrl;
-          this.context.propertyPane.refresh();
-      }).catch((e: any) => {
-        let errMessage = getHelpfullError(e, false, true);
+      const fetchProps: IMinFetchListProps = {
+        webUrl: parentWeb,
+        listTitle: listTitle,
+        selectThese: [ 'Title', 'RootFolder/ServerRelativeUrl', 'ParentWeb/Url', ],
+        expandThese: ['RootFolder', 'ParentWeb'],
+
+      }
+      const FetchList: IGetMinSourceListReturn = await getSourceList( fetchProps, true, true );
+
+      if ( FetchList.status === 'Success' ) {
+        let tenantURL = FetchList.list.ParentWebUrl.substring(0, FetchList.list.ParentWebUrl.indexOf('/sites/') );
+        this.properties.parentListURL = tenantURL + FetchList.list.RootFolder.ServerRelativeUrl;
+        this.context.propertyPane.refresh();
+      } else if ( FetchList.status === 'Error' ) {
+        let errMessage = FetchList.errorInfo.friendly;
         console.log(errMessage);
         if (errMessage.indexOf('missing a column') > -1) {
-          
+
         } else {
 
         }
-      });
+      }
 
     } else if ( propertyPath === 'viewJSON1' || propertyPath === 'syncViews' ) {  //Update viewJSON if synced is selected
 

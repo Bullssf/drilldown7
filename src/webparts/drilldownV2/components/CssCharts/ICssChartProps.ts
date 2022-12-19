@@ -1,5 +1,5 @@
 
-import { ICSSChartDD } from '../../fpsReferences';
+import { ICSSChartDD } from '@mikezimm/fps-library-v2/lib/components/interfaces/CSSCharts/ICSSCharts';
 
 import { IRefinerLayer, IRefinerStat } from '../../fpsReferences';
 

@@ -21,7 +21,7 @@ import {
 
 import * as strings from 'DrilldownV2WebPartStrings';
 // import { IDrilldownV2WebPartProps } from '../IDrilldownV2WebPartProps';
-import { ValidLocalLanguages } from '../../fpsReferences';  //JSON_Edit_Link, 
+import { ValidLocalLanguages } from '@mikezimm/fps-library-v2/lib/common/PropPaneHelp/atoms/ValidLanguages';  //JSON_Edit_Link, 
 
 export function buildYourListGroup( ) {
 
