@@ -135,7 +135,13 @@ export async function getAllItems( drillList: IDrillList, addTheseItemsToState: 
               //https://reactgo.com/javascript-variable-regex/
               const removeStr = `/${doNotExp}`;
               const regex =  new RegExp(removeStr,'gi'); // eslint-disable-line @rushstack/security/no-unsafe-regexp
-              cleanColumn = cleanColumn.replace(regex,''); // it works  
+              if ( doNotExp.toLowerCase() === 'object.' ) {
+                const cleanSplit = cleanColumn.split(regex); // it works  
+                cleanColumn = cleanSplit[0];
+              } else {
+                cleanColumn = cleanColumn.replace(regex,''); // it works  
+              }
+              
             });
           }
           cleanSelectCols.push( cleanColumn ); // it works  
