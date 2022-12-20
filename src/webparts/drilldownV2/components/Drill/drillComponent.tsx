@@ -126,6 +126,8 @@ import { ensureUserInfo } from '@mikezimm/fps-library-v2/lib/pnpjs/Users/calls/e
 // import { DisplayMode } from '@microsoft/sp-core-library';
 import { IEnsureUserInfo } from '@mikezimm/fps-library-v2/lib/pnpjs/Users/interfaces/IEnsureUserInfo';
 
+import { ISiteThemes } from "@mikezimm/fps-library-v2/lib/common/commandStyles/ISiteThemeChoices";
+const SiteThemes: ISiteThemes = { dark: stylesD.fpsSiteThemeDark, light: stylesD.fpsSiteThemeLight, primary: stylesD.fpsSiteThemePrimary };
 
 /***
  *    d88888b db    db d8888b.  .d88b.  d8888b. d888888b      d8888b. d88888b d88888b       .o88b. db       .d8b.  .d8888. .d8888. 
@@ -959,7 +961,7 @@ public componentDidUpdate( prevProps: IDrilldownV2Props ){
             // bonusHTML1={ this._bonusHTML }
             panelPerformance={ this._performance }
             // bonusHTML2={ this._bonusHTML }
-
+            siteThemes = { SiteThemes }
             bannerProps={ this.props.bannerProps }
             parentState={ this.state }
 
@@ -1309,7 +1311,8 @@ public componentDidUpdate( prevProps: IDrilldownV2Props ){
                             reactListItems  = this.state.searchCount === 0 ? null : 
                             <ReactListItems 
                                 parentListFieldTitles={ viewDefs.length > 0 ? null : this.props.parentListFieldTitles }
-    
+                                // themeClass={ getThemeClass( this.props.bannerProps.themeChoice, SiteThemes ) }  // This keeps bar and banner in sync
+                                themeClass={ stylesD.fpsSiteThemePrimary }
                                 richColumns = { this.state.drillList.richColumns }
                                 richHeight = { getMaxRichHeight( this.props.autoRichHeight, this.state.richHeight, this.state.searchedItems ) }
                                 updateRichHeightProps = { this._updateRichHeightState.bind(this) }
@@ -2208,6 +2211,7 @@ public componentDidUpdate( prevProps: IDrilldownV2Props ){
     //     searchCount = newFilteredItems.length;
     // }
 
+    searchCount = newFilteredItems.length;
     consoleMe( 'searchForItems2: ' + text , this.state.allItems, this.state.drillList );
     consoleRef( 'searchForItems2: ' + text , refinerObj );
     this._consoleClick('searchForItems2: cmdCats', cmdCats );
@@ -2253,10 +2257,10 @@ public componentDidUpdate( prevProps: IDrilldownV2Props ){
         if ( FPSAgeColumnName ) {
           if ( !thisSearchItem[ `time${FPSAgeColumnName}` ] ) { 
             skipItemDueToAge = true; // There is no Time in the column, skip item
-  
+
           } else if ( thisSearchItem[ `time${FPSAgeColumnName}` ].daysAgo > maxAge ) {
             skipItemDueToAge = true; // There is a Time and it does excede maxAage
-  
+
           }
         }
       }

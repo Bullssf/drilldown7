@@ -1,13 +1,33 @@
 @import '~office-ui-fabric-react/dist/sass/References.scss';
 
 //Copied to chartsPage.module.scss so it can be more stand alone.
-
-@import '~office-ui-fabric-react/dist/sass/References.scss';
-
-//Copied to chartsPage.module.scss so it can be more stand alone.
-
+// define variables first
+//https://docs.microsoft.com/en-us/sharepoint/dev/spfx/use-theme-colors-in-your-customizations#available-theme-tokens-and-their-occurances
+$themePrimary: '[theme:themePrimary, default:#0078d7]';
+$themeWhite: '[theme:white, default:white]';
 
 .drillDown {
+
+//https://docs.microsoft.com/en-us/sharepoint/dev/spfx/use-theme-colors-in-your-customizations#available-theme-tokens-and-their-occurances
+$themePrimary: '[theme:themePrimary, default:#0078d7]';
+// $themeWhite: '[theme:white, default:white]';
+
+.fpsSiteThemeDark {
+  background-color: $ms-color-themeDark;
+  color: $ms-color-white;
+}
+
+.fpsSiteThemeLight {
+  background-color: $ms-color-themeLight;
+  color: $ms-color-themeDark;
+}
+
+.fpsSiteThemePrimary {
+  background-color: $ms-color-themePrimary;
+  color: $ms-color-white !important ;
+}
+
+
 
       //https://www.w3.org/TR/CSS21/selector.html%23id-selectors#type-selectors
 
