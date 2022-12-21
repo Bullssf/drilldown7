@@ -414,8 +414,11 @@ export default class DrilldownV2WebPart extends FPSBaseClass<IDrilldownV2WebPart
     this._trickyApp = 'FPS UPDATE FPSBaseClass';
     this._trickyEmailsWP = []; // These are emails that get tricky functionality for this specific web part
     this._allowPinMe = true;
-    this._allowFieldPanel = 'Manual';
-    this._FieldPanelDesignMode = 'Drilldown';
+    this._allowFieldPanel = 'Auto';
+    this._FieldPanelDesignMode = 'Disabled';
+    this._FieldPanelWebProp = 'parentListWeb';
+    this._FieldPanelListProp = 'parentListTitle'
+    this._allowPinMe = false;
 
     return super.onInit().then(_ => {
       

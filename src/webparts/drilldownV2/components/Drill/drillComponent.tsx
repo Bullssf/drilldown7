@@ -127,6 +127,7 @@ import { ensureUserInfo } from '@mikezimm/fps-library-v2/lib/pnpjs/Users/calls/e
 import { IEnsureUserInfo } from '@mikezimm/fps-library-v2/lib/pnpjs/Users/interfaces/IEnsureUserInfo';
 
 import { ISiteThemes } from "@mikezimm/fps-library-v2/lib/common/commandStyles/ISiteThemeChoices";
+import { getFieldPanelElement } from '../../CoreFPS/PropPaneHelp/FieldPanel';
 const SiteThemes: ISiteThemes = { dark: stylesD.fpsSiteThemeDark, light: stylesD.fpsSiteThemeLight, primary: stylesD.fpsSiteThemePrimary };
 
 /***
@@ -153,7 +154,7 @@ export default class DrillDown extends React.Component<IDrilldownV2Props, IDrill
 
     private _performance: ILoadPerformance = null;
 
-    private _webPartHelpElement = DrilldownHelp( this.props.bannerProps );
+    private _webPartHelpElement = [ ...[ getFieldPanelElement( this.props.bannerProps ) ] , ...DrilldownHelp( this.props.bannerProps )];
     private _contentPages : IBannerPages = getBannerPages( this.props.bannerProps );
 
     private _fetchUserId: string = '';  //Caching fetch Id and Web as soon as possible to prevent race
@@ -720,11 +721,17 @@ export default class DrillDown extends React.Component<IDrilldownV2Props, IDrill
 public componentDidUpdate( prevProps: IDrilldownV2Props ){
 
     let rebuildPart = false;
+    const currList = this.props.bannerProps.fieldPanelProps.lists[0];
+    const prevList = prevProps.bannerProps.fieldPanelProps.lists[0];
 
-    const refresh = this.props.bannerProps.displayMode !== prevProps.bannerProps.displayMode ? true : false;
+    let refresh = this.props.bannerProps.displayMode !== prevProps.bannerProps.displayMode ? true : false;
+
+    if ( JSON.stringify( currList ) !== JSON.stringify( prevList ) ) {
+      this._webPartHelpElement = [ ...[ getFieldPanelElement( this.props.bannerProps ) ] , ...DrilldownHelp( this.props.bannerProps )];
+      refresh = true;
+    }
 
     if ( refresh === true ) {
-      this._webPartHelpElement = DrilldownHelp( this.props.bannerProps );
       this._contentPages = getBannerPages( this.props.bannerProps );
     }
 
@@ -973,8 +980,8 @@ public componentDidUpdate( prevProps: IDrilldownV2Props ){
 
             // SpecialMessage = { Special }
 
-            updatePinState = { null }
-            pinState = { this.state.pinState }
+            // updatePinState = { null }
+            // pinState = { this.state.pinState }
 
         />;
 
