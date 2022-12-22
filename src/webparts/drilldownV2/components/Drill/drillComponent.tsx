@@ -98,9 +98,9 @@ import { getAppropriateViewFields, getAppropriateViewGroups, getAppropriateViewP
 import { CommandItemNotUpdatedMessage, CommandUpdateFailedMessage, CommandEnterCommentString, 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   CommandCancelRequired, CommandEmptyCommentMessage } from '@mikezimm/fps-library-v2/lib/components/interfaces/QuickCommands/IQuickCommands';
-
   //MOVE TO IQuickCommands in npmFunctions
-import { CommandCaptchaTestFailed, CommandCaptchaRequiredFailed } from '@mikezimm/fps-library-v2/lib/components/interfaces/QuickCommands/IQuickCommands';
+import { CommandCaptchaTestFailed, CommandCaptchaRequiredFailed, } from '@mikezimm/fps-library-v2/lib/components/interfaces/QuickCommands/IQuickCommands';
+import { IUpdateCommandItemReturn, } from '@mikezimm/fps-library-v2/lib/pnpjs/CommandItems/updateItem';
 
 // import FetchBanner from '../CoreFPS/FetchBannerElement';
 import FetchBannerX from '@mikezimm/fps-library-v2/lib/banner/bannerX/FetchBannerX';
@@ -127,7 +127,7 @@ import { ensureUserInfo } from '@mikezimm/fps-library-v2/lib/pnpjs/Users/calls/e
 import { IEnsureUserInfo } from '@mikezimm/fps-library-v2/lib/pnpjs/Users/interfaces/IEnsureUserInfo';
 
 import { ISiteThemes } from "@mikezimm/fps-library-v2/lib/common/commandStyles/ISiteThemeChoices";
-import { getFieldPanelElement } from '../../CoreFPS/PropPaneHelp/FieldPanel';
+// import { getFieldPanelElement } from '../../CoreFPS/PropPaneHelp/FieldPanel';
 const SiteThemes: ISiteThemes = { dark: stylesD.fpsSiteThemeDark, light: stylesD.fpsSiteThemeLight, primary: stylesD.fpsSiteThemePrimary };
 
 /***
@@ -154,7 +154,7 @@ export default class DrillDown extends React.Component<IDrilldownV2Props, IDrill
 
     private _performance: ILoadPerformance = null;
 
-    private _webPartHelpElement = [ ...[ getFieldPanelElement( this.props.bannerProps ) ] , ...DrilldownHelp( this.props.bannerProps )];
+    private _webPartHelpElement = [];
     private _contentPages : IBannerPages = getBannerPages( this.props.bannerProps );
 
     private _fetchUserId: string = '';  //Caching fetch Id and Web as soon as possible to prevent race
@@ -168,6 +168,11 @@ export default class DrillDown extends React.Component<IDrilldownV2Props, IDrill
         const refreshId = startTime.toISOString().replace('T', ' T'); // + ' ~ ' + startTime.toLocaleTimeString();
         return refreshId;
 
+    }
+
+    private _updateWebPartHelpElement () {
+      // this._webPartHelpElement = [ ...[ getFieldPanelElement( this.props.bannerProps ) ] , ...DrilldownHelp( this.props.bannerProps )];
+      this._webPartHelpElement = DrilldownHelp( this.props.bannerProps );
     }
 
     /***
@@ -457,7 +462,8 @@ export default class DrillDown extends React.Component<IDrilldownV2Props, IDrill
         let restFilter: string = !this.props.performance.restFilter ? ' ' : this.props.performance.restFilter;
         const evalFilter: string = !this.props.performance.evalFilter ? '' : this.props.performance.evalFilter;
 
-        if ( !this.props.webURL || this.props.bannerProps.context.pageContext.site.absoluteUrl.indexOf( this.props.webURL.toLowerCase() ) > -1 ) {  //The web part is on the current page context... get user object from Context instead.
+        // 2022-12-21:  Changed from this.props.webURL to just webURL to pull from function arguments
+        if ( !webURL || this.props.bannerProps.context.pageContext.site.absoluteUrl.indexOf( webURL.toLowerCase() ) > -1 ) {  //The web part is on the current page context... get user object from Context instead.
           if ( restFilter && restFilter.indexOf('[Me]') > 1 ) {
             restFilter = restFilter.replace('[Me]',  this.props.bannerProps.FPSUser.Id ? this.props.bannerProps.FPSUser.Id : this.props.bannerProps.FPSUser.id ) ; 
           }
@@ -545,7 +551,7 @@ export default class DrillDown extends React.Component<IDrilldownV2Props, IDrill
 
     public constructor(props:IDrilldownV2Props){
         super(props);
-
+        this._updateWebPartHelpElement();
         if ( this._performance === null ) { this._performance = this.props.loadPerformance;  }
         /**
          * This is copied later in code when you have to call the data in case something changed.
@@ -588,6 +594,8 @@ export default class DrillDown extends React.Component<IDrilldownV2Props, IDrill
             // sourceUserInfo: null,
 
             bannerMessage: null,
+            bannerMessageStatus: 'Unknown',
+
             showPropsHelp: false,
             showTips: false,
             showRefinerCounts: this.props.showRefinerCounts ? this.props.showRefinerCounts : false,
@@ -702,7 +710,7 @@ export default class DrillDown extends React.Component<IDrilldownV2Props, IDrill
   public componentDidMount() {
     // const analyticsWasExecuted: boolean = saveViewAnalytics( 'Drilldown Webpart', 'didMount', this.props, this.state.analyticsWasExecuted );
 
-    this._updateStateOnPropsChange( '', false, true );
+    this._updateStateOnPropsChange( null, false, true );
     console.log('DrillComponent Mounted!');
   }
 
@@ -727,7 +735,8 @@ public componentDidUpdate( prevProps: IDrilldownV2Props ){
     let refresh = this.props.bannerProps.displayMode !== prevProps.bannerProps.displayMode ? true : false;
 
     if ( JSON.stringify( currList ) !== JSON.stringify( prevList ) ) {
-      this._webPartHelpElement = [ ...[ getFieldPanelElement( this.props.bannerProps ) ] , ...DrilldownHelp( this.props.bannerProps )];
+      this._updateWebPartHelpElement();
+
       refresh = true;
     }
 
@@ -775,7 +784,7 @@ public componentDidUpdate( prevProps: IDrilldownV2Props ){
       }
 
     if (rebuildPart === true) {
-      this._updateStateOnPropsChange( '', false, true );
+      this._updateStateOnPropsChange( null, false, true );
     }
   }
 
@@ -806,7 +815,7 @@ public componentDidUpdate( prevProps: IDrilldownV2Props ){
         //   } = this.props;
 
         const { 
-          bannerMessage, quickCommands, searchText, searchAge
+          bannerMessage, bannerMessageStatus, quickCommands, searchText, searchAge
         } = this.state;
 
         const { FPSAgeColumnTitle,  } = this.props.ageSliderWPProps
@@ -922,10 +931,10 @@ public componentDidUpdate( prevProps: IDrilldownV2Props ){
 
         let createBanner = quickCommands !== null && quickCommands.successBanner > 0 ? true : false; //CommandItemNotUpdatedMessage
         const bannerEleClasses = [ stylesD.bannerFooterStyles, bannerMessage === null ? stylesD.bannerHide : stylesD.bannerShow ];
-        if ( bannerMessage && ( [CommandCancelRequired, CommandItemNotUpdatedMessage ].indexOf(bannerMessage) > -1 ) ) bannerEleClasses.push( stylesD.bannerWarn); 
-        if ( typeof bannerMessage === 'string' && bannerMessage.indexOf( CommandUpdateFailedMessage) > -1 ) bannerEleClasses.push( stylesD.bannerWarn); 
-        if ( typeof bannerMessage === 'string' && bannerMessage.indexOf( CommandCaptchaTestFailed) > -1 ) bannerEleClasses.push( stylesD.bannerWarn); 
-        if ( typeof bannerMessage === 'string' && bannerMessage.indexOf( CommandCaptchaRequiredFailed) > -1 ) bannerEleClasses.push( stylesD.bannerWarn); 
+
+        if ( bannerMessageStatus === 'Success' ) {  }
+        else if ( bannerMessageStatus === 'Unknown' ) {  }
+        else { bannerEleClasses.push( stylesD.bannerWarn ) }
 
         let bannerMessageEle = createBanner === false ? null : <div className={ bannerEleClasses.join(' ') }>
             { bannerMessage }
@@ -1484,7 +1493,7 @@ public componentDidUpdate( prevProps: IDrilldownV2Props ){
                                 <div>
 
                                     <div className={ this.state.searchCount !== 0 ? styles.hideMe : styles.showErrorMessage  }>{ noInfo } </div>
-                                    { bannerMessageEle }
+                                    {/* { bannerMessageEle } */}
 
                                     {/* Removed stack due to issue:  https://github.com/mikezimm/drilldown7/issues/240 */}
                                     { reactListItems }
@@ -2400,7 +2409,7 @@ public componentDidUpdate( prevProps: IDrilldownV2Props ){
  *                                                                                                          
  */
 
-    private _updateStateOnPropsChange( message: string, hasError: boolean, hasNewProps: boolean = false ) : void {
+    private _updateStateOnPropsChange( updateResult: IUpdateCommandItemReturn, hasError: boolean, hasNewProps: boolean = false ) : void {
 
         /**
          * 2022-01-17:  Added this to see if this gets mutated and breaks on refresh items.  
@@ -2408,9 +2417,10 @@ public componentDidUpdate( prevProps: IDrilldownV2Props ){
          */
         let viewDefs: ICustViewDef[] = JSON.parse(JSON.stringify(this.props.viewDefs));
 
-        if ( message ) {
+        if ( updateResult ) {
           this.setState({
-            bannerMessage: message,
+            bannerMessage: updateResult.errorInfo ? updateResult.errorInfo.returnMess : '',
+            bannerMessageStatus:  updateResult.status,
           });
         }
 
@@ -2419,10 +2429,13 @@ public componentDidUpdate( prevProps: IDrilldownV2Props ){
         // eslint-disable-next-line no-void
         void this._getAllItemsCall( viewDefs, hasNewProps === true ? this.props.refiners : this.state.refiners );
 
-        if ( message ) {
+        if ( updateResult ) {
           const delay = hasError === true ? 10000 : this.state.quickCommands.successBanner;
           setTimeout(() => {
-            this.setState({ bannerMessage: null });
+            this.setState({ 
+              bannerMessage: null,
+              bannerMessageStatus: 'Unknown',
+             });
           } , delay);
         }
 

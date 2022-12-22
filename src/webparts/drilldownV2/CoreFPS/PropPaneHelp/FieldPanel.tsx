@@ -11,16 +11,16 @@ export function getFieldPanelElement ( bannerProps: IWebpartBannerProps ) {
   const { fieldPanelProps } = bannerProps;
 
   const WebPartHelpElement = <PivotItem headerText={ 'Fields' } > 
-        <FieldPanelMin
-          designMode={ fieldPanelProps.designMode }
-          displayMode={ fieldPanelProps.displayMode }
-          lists={ fieldPanelProps.lists }
-          tryCommands={ fieldPanelProps.lists }
-          tryViews={ fieldPanelProps.tryViews }
-          saveCommands={ fieldPanelProps.saveCommands }
-          saveViews={ fieldPanelProps.saveViews }
-          />
-      </PivotItem>
+      <FieldPanelMin
+        designMode={ fieldPanelProps.designMode }
+        displayMode={ fieldPanelProps.displayMode }
+        lists={ fieldPanelProps.lists }
+        tryCommands={ fieldPanelProps.lists }
+        tryViews={ fieldPanelProps.tryViews }
+        saveCommands={ fieldPanelProps.saveCommands }
+        saveViews={ fieldPanelProps.saveViews }
+        />
+    </PivotItem>
   ;
  
   return WebPartHelpElement;

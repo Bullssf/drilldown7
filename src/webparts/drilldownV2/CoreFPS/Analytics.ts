@@ -13,7 +13,7 @@ import { DisplayMode, } from '@microsoft/sp-core-library';
  */
 
 import { IDrilldownV2Props } from '../components/Drill/IDrillProps';
-import { ILoadPerformance, } from '../fpsReferences';
+import { check4Gulp, ILoadPerformance, } from '../fpsReferences';
 import { saveAnalytics3, getMinPerformanceString } from '@mikezimm/fps-library-v2/lib/pnpjs/Logging/saveAnalytics';
 import { IZLoadAnalytics, IZSentAnalytics, } from '@mikezimm/fps-library-v2/lib/pnpjs/Logging/interfaces';
 
@@ -141,6 +141,19 @@ export function saveViewAnalytics( Title: string, Result: string, thisProps: IDr
     console.log( 'zzzRichText3Obj:', zzzRichText3Obj);
 
     const performance : string = getMinPerformanceString( performanceObj );
+
+    // let FPSProps: string = analyticsProps;
+
+    let FPSProps: string = null;
+    if ( analyticsProps ) {
+      try {
+        FPSProps = JSON.stringify( analyticsProps );
+      } catch(e) {
+        if ( check4Gulp() === true ) {
+          alert( 'Unable to stringify FPSProps in analytics' );
+        }
+      }
+    }
     // {
     //   mode: null,
     // };
@@ -216,14 +229,14 @@ export function saveViewAnalytics( Title: string, Result: string, thisProps: IDr
 
       performance: performance,
 
-      FPSProps: analyticsProps,
+      FPSProps: FPSProps,
 
     };
 
-    saveAnalytics3( analyticsWeb , `${analyticsViewsList}` , saveObject, true );
+    const result = saveAnalytics3( analyticsWeb , `${analyticsViewsList}` , saveObject, true );
 
     const saved = true;
-    console.log('saved view info');
+    console.log('saved view info' );
     return saved;
 
   }

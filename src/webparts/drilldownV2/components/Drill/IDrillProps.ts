@@ -10,6 +10,7 @@ import { ITheTime, } from '@mikezimm/fps-library-v2/lib/logic/Time/Interfaces';
 import { ICSSChartTypes, ILabelColor } from '@mikezimm/fps-library-v2/lib/components/interfaces/CSSCharts/ICSSCharts';
 import { IMyProgress, } from '@mikezimm/fps-library-v2/lib/common/interfaces/fps/IMyInterfaces';
 import { IPickedList, } from '@mikezimm/fps-library-v2/lib/common/interfaces/fps/Picked/IPickedList';
+import { IFPSResultStatus, } from '@mikezimm/fps-pnp2/lib/services/sp/IFPSResultStatus';
 
 import { ICustViewDef } from '../../fpsReferences';
 
@@ -409,6 +410,7 @@ export interface IDrillDownState extends IFPSCorePinMeReactComponentState {
 
     showPropsHelp: boolean;
     bannerMessage: any;
+    bannerMessageStatus: IFPSResultStatus;
 
     showTips: boolean;
 

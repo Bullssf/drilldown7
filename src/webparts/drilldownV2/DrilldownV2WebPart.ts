@@ -297,7 +297,7 @@ import { getNumberArrayFromString } from './fpsReferences';
 
   import { exportIgnorePropsWP, importBlockPropsWP, WebPartAnalyticsChanges, WebPartPanelChanges,  } from './IDrilldownV2WebPartProps';
 
-  import { gitRepoALVFinManSmall } from '@mikezimm/fps-library-v2/lib/components/atoms/Links/LinksRepos';
+  import { gitRepoDrillDownSmall } from '@mikezimm/fps-library-v2/lib/components/atoms/Links/LinksRepos';
   import { runFPSSuperOnInit } from '@mikezimm/fps-library-v2/lib/banner/FPSWebPartClass/runSuperOnInit';
   import { runFPSWebPartRender } from '@mikezimm/fps-library-v2/lib/banner/FPSWebPartClass/runWebPartRender';
   import { onFPSPropPaneCHanged } from '@mikezimm/fps-library-v2/lib/banner/FPSWebPartClass/runOnPropChange';
@@ -408,7 +408,7 @@ export default class DrilldownV2WebPart extends FPSBaseClass<IDrilldownV2WebPart
   public async onInit():Promise<void> {
     this._environmentMessage = this._getEnvironmentMessage();
 
-    this._repoLink = gitRepoALVFinManSmall; //Set as any but will get created in FPSSuperOnOnit
+    this._repoLink = gitRepoDrillDownSmall; //Set as any but will get created in FPSSuperOnOnit
     this._exportIgnorePropsWP = exportIgnorePropsWP;
     this._importBlockPropsWP = importBlockPropsWP;
     this._trickyApp = 'FPS UPDATE FPSBaseClass';
@@ -1585,15 +1585,16 @@ export default class DrilldownV2WebPart extends FPSBaseClass<IDrilldownV2WebPart
       const fetchProps: IMinFetchListProps = {
         webUrl: parentWeb,
         listTitle: listTitle,
-        selectThese: [ 'Title', 'RootFolder/ServerRelativeUrl', 'ParentWeb/Url', ],
-        expandThese: ['RootFolder', 'ParentWeb'],
-
+        selectThese: [ 'Title', 'RootFolder/ServerRelativeUrl', 'ParentWebUrl', ],
+        expandThese: [ 'RootFolder' ],
       }
+      
       const FetchList: IGetMinSourceListReturn = await getSourceList( fetchProps, true, true );
 
       if ( FetchList.status === 'Success' ) {
-        let tenantURL = FetchList.list.ParentWebUrl.substring(0, FetchList.list.ParentWebUrl.indexOf('/sites/') );
-        this.properties.parentListURL = tenantURL + FetchList.list.RootFolder.ServerRelativeUrl;
+
+        this.properties.parentListURL = `${window.location.origin}${FetchList.list.RootFolder.ServerRelativeUrl}`;
+        this.properties.isLibrary = FetchList.list.BaseType === 1 ? true : false;
         this.context.propertyPane.refresh();
       } else if ( FetchList.status === 'Error' ) {
         let errMessage = FetchList.errorInfo.friendly;
