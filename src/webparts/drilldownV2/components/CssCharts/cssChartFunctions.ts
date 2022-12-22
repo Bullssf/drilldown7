@@ -15,9 +15,6 @@ export function buildCountChartsObject( title: string, callBackID: string, refin
     
     let chartKey : string = labels.join('') + counts.join('');
 
-//        console.log('buildCountChartsObject labels:', labels );
-//        console.log('buildCountChartsObject counts:', counts );
-
     let chartSettings: ICSSChartSettings = {
         title: title,
         chartTypes: chartTypes,

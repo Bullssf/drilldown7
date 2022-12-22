@@ -139,69 +139,6 @@ export type IWhenToShowItems = 0 | 1 | 2 | 3;
 
 export type IViewType = 'React' | 'MZ' | 'Other' ;
 
-/**
- * ## Property Pane updates:
-Page owner can set:
-- min Refiner level required to hide instructions: whenToShowItems
-- minItemsForHide to avoid instructions ( in case count is below this hide instructions )
-- First line of instruction text
-- Instruction text for each refiner to be clicked
-- If nothing is touched, it will  do it's best to tell the user what to do.
-
-## Logic should be:
-
-- If the item count is greater than minItemsForHide && user has not clicked enough refiners, ONLY instructions are shown.
-- If instructions are shown, user can always 'Hide' them via button in instructions div.
-- This setting sticks unless the user clicks on certain things that trigger a reload of the data.
-- At any time the user can press the "Instructions" button in the right side of banner element to show instructions.
-
-## Properties Added this the code
-
-```js
-//Added to webpart props and property pane:
-  whenToShowItems: IWhenToShowItems;
-  minItemsForHide: number;
-  instructionIntro: string;
-  refinerInstruction1: string;
-  refinerInstruction2: string;
-  refinerInstruction3: string;
-
-//Added to IDrilldownV2Props
-    showItems: {
-        whenToShowItems: IWhenToShowItems;
-        minItemsForHide: number;
-        instructionIntro: string;
-        refinerInstruction1: string;
-        refinerInstruction2: string;
-        refinerInstruction3: string;
-    };
-
-//Added to IDrillDownSTATE
-    whenToShowItems: IWhenToShowItems;
-    instructionsHidden: 'force' | 'hide' | 'dynamic';
-```
-
-
-![image](https://user-images.githubusercontent.com/49648086/159371801-c2977995-6abe-4ade-8cd8-2932b538ab58.png)
-
- */
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 import { IFPSCoreReactComponentProps } from '@mikezimm/fps-library-v2/lib/banner/mainReact/ReactComponentProps';
 import { IFPSCorePinMeReactComponentState } from '@mikezimm/fps-library-v2/lib/banner/mainReact/ReactComponentState';
 import { ILoadPerformance } from '../../fpsReferences';
@@ -295,16 +232,7 @@ export interface IDrilldownV2Props extends IFPSCoreReactComponentProps {
     pivotOptions: string;
     pivotTab: string;  //May not be needed because we have projectMasterPriority
 
-    /**
-     * 2020-09-08:  Add for dynamic data refiners.   onRefiner0Selected  -- callback to update main web part dynamic data props.
-     */
-    // onRefiner0Selected?: any;
-
     style: IRefinerStyles; //RefinerStyle
-
-    //For DD
-    // handleSwitch: any;
-    // handleListPost: any;
 
 }
 

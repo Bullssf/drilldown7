@@ -6,43 +6,23 @@ import "@pnp/sp/webs";
 import "@pnp/sp/clientside-pages/web";
 import "@pnp/sp/site-users/web";
 
-// import { escape } from '@microsoft/sp-lodash-subset';
-// import { ClientsideWebpart } from "@pnp/sp/clientside-pages";
-// import { CreateClientsidePage, PromotedState, ClientsidePageLayoutType, ClientsideText,  } from "@pnp/sp/clientside-pages";
-
-// import { IContentsListInfo, IMyListInfo, IServiceLog, IContentsLists } from '../../../../services/listServices/listTypes'; //Import view arrays for Time list
 
 import { IDrillItemInfo } from '../../fpsReferences';
 
 import { IDrillList, } from  './IDrillProps';
 
 
-// import { changes, IMyFieldTypes } from '../../../../services/listServices/columnTypes'; //Import view arrays for Time list
-
-// import { IMyView,  } from '../../../../services/listServices/viewTypes'; //Import view arrays for Time list
-
-// import { addTheseItemsToList, addTheseItemsToListInBatch } from '../../../../services/listServices/listServices';
-
 import { makeTheTimeObject } from '../../fpsReferences';
 import { monthStr3 } from '@mikezimm/fps-library-v2/lib/logic/Time/monthLabels';
 import { getBestTimeDelta, getAge } from '@mikezimm/fps-library-v2/lib/logic/Time/deltas';
 
-// import { doesObjectExistInArray } from '@mikezimm/npmfunctions/dist/Services/Arrays/checks';
+
 import { addItemToArrayIfItDoesNotExist, } from '@mikezimm/fps-library-v2/lib/logic/Arrays/manipulation';
 import { sortKeysByOtherKey, } from '@mikezimm/fps-library-v2/lib/logic/Arrays/sorting/objects';
 
-import { getHelpfullError } from '../../fpsReferences';
-
-// import { IViewLog, addTheseViews } from '../../../../services/listServices/viewServices'; //Import view arrays for Time list
-
-// import { IAnyArray } from  '../../../../services/listServices/listServices';
-// import { DoNotExpandFuncColumns, convertArrayToLC } from  '../../../../services/getInterfaceV2';
 
 import { getDetailValueType, ITypeStrings } from '@mikezimm/fps-library-v2/lib/logic/Types/typeServices';
 
-// import { ensureUserInfo } from '@mikezimm/npmfunctions/dist/Services/Users/userServices';
-
-// import { mergeAriaAttributeValues } from "office-ui-fabric-react";
 
 import { IRefinerLayer, IItemRefiners, RefineRuleValues, IRefinerStatType, IRefinerStat } from '../../fpsReferences';
 
@@ -59,17 +39,7 @@ import { IMinSourceFetchProps } from '@mikezimm/fps-pnp2/lib/services/sp/fetch/i
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { ISourceProps } from "@mikezimm/fps-library-v2/lib/pnpjs";
 
-// export async function getIUser ( webURL: string, email: string, callBack: any )   {
 
-//   // try {
-//     const sourceUser: IUser = await ensureUserInfo( webURL, email );
-//     callBack( sourceUser, '' );
-
-//   // } catch (e) {
-//   //   const errMessage = getHelpfullError(e, false, true);
-//   //   callBack( null, errMessage );
-
-//   // }
 
 // }
 
@@ -86,14 +56,10 @@ import { ISourceProps } from "@mikezimm/fps-library-v2/lib/pnpjs";
 export async function getAllItems( drillList: IDrillList, addTheseItemsToState: any, setProgress: any, markComplete: any, updatePerformance: any, sourceUser: IUser ): Promise<void>{
 
     let errMessage = '';
-    let allItems : IDrillItemInfo[] = [];
 
     updatePerformance( 'fetch2', 'start', 'items', null  );
 
-    //lists.getById(listGUID).webs.orderBy("Title", true).get().then(function(result) {
-    //let allItems : IDrillItemInfo[] = await sp.web.webs.get();
 
-    let thisListWeb = Web(drillList.webURL);
     let selColumns = drillList.selectColumnsStr;
 
     //Needed to add these to select columns as well as say it's a library
@@ -111,11 +77,6 @@ export async function getAllItems( drillList: IDrillList, addTheseItemsToState: 
     }
     //Always add this column to fetch an embed url
     selColumns += ',ServerRedirectedEmbedUrl';
-
-    let expandThese = drillList.expandColumnsStr;
-    // let staticCols = drillList.staticColumns.length > 0 ? drillList.staticColumns.join(',') : '';
-    // let selectCols = '*,' + staticCols;
-    // let selectCols = drillList.getAllProps === true ? '*,' + selColumns : selColumns;
 
     // let selectCols = '*,' + staticCols;
     let selectCols = drillList.getAllProps === true ? '*,' + selColumns : selColumns;
@@ -169,7 +130,6 @@ export async function getAllItems( drillList: IDrillList, addTheseItemsToState: 
 
     const getItems = await getSourceItems( DrillSource as ISourceProps, true, true )
 
-    consoleMe( 'getAllItems' , getItems.items, drillList );
     getItems.items = processAllItems( getItems.items, errMessage, drillList, addTheseItemsToState, setProgress, updatePerformance, sourceUser );
 
 
@@ -344,16 +304,15 @@ export function processAllItems( allItems : IDrillItemInfo[], errMessage: string
             });
 
 
-
             if ( drillList.isLibrary === true || item.ServerRedirectedEmbedUrl || item.FileRef ) {
                 const useUrl = item.ServerRedirectedEmbedUrl ? item.ServerRedirectedEmbedUrl : item.FileRef;
                 item.goToItemPreview = useUrl;
                 item.goToItemLink = useUrl ? useUrl.replace('&action=interactivepreview','') : null ;
                 item.goToPropsLink = drillList.parentListURL + "/Forms/DispForm.aspx?ID=" + item.Id;
                 item.isFile = true;
-    
+
                 drillList.isLibrary = true;
-    
+
             } else {
                 item.goToItemPreview = drillList.parentListURL + "/DispForm.aspx?ID=" + item.Id;
                 item.goToItemLink = drillList.parentListURL + "/DispForm.aspx?ID=" + item.Id;
@@ -362,52 +321,6 @@ export function processAllItems( allItems : IDrillItemInfo[], errMessage: string
             }
 
             drillList.multiSelectColumns.map( msColumn => {
-
-                // let splitCol = msColumn.split("/");
-                // let leftSide = [];
-                // let rightSide = splitCol[ splitCol.length -1 ];  
-
-                /**
-                 * Example object (Multi-select lookup value )
-                    Role: (4) [{..}, {...}, {...}, {...}]
-                        Role@odata.navigationLinkUrl: "Web/Lists(guid'7057e999-09a5-4044-9310-f1192153ee59')/Items(358)/Role"
-                    RoleDepartmentCalc: (2) ['Quality', 'Other']
-                    RoleDepartmentCalcMultiString: "Quality; Other"
-                    RoleDepartmentCalcinitials: (2) ['Q', 'O']
-                    RoleId: (4) [7, 6, 5, 4]
-                    RoleTitle: (4) ['Coordinador de QMS', 'ING de cal Proveedores', 'Ingeniero de Calidad', 'Supervisor de Calidad']
-                    RoleTitleMultiString: "Coordinador de QMS; ING de cal Proveedores; Ingeniero de Calidad; Supervisor de Calidad"
-                    ServerRedirectedEmbedUri: null
-                 */
-                
-                // let splitCol = staticColumn.split("/");
-                // let rightSide = splitCol[ splitCol.length -1 ];
-                // let leftSide = [];
-                // let itemLeftSide: any = null;
-
-                // if ( splitCol.length === 3 ) {
-                //     leftSide = [ splitCol[0], splitCol[1] ] ;
-                //     //Added ternary to the update below for cases where the base column ( like person column is null or empty )
-                
-                //     if ( item [ splitCol[0] ] ) {
-                //     //   itemLeftSide =  item [ splitCol[0] + splitCol[1] ] ;
-                
-                //     } else {
-                //     //   itemLeftSide = null ;
-                //     }
-                
-                //   }  else if ( splitCol.length === 2 ) {
-                //     leftSide = [ splitCol[0] ] ;
-                //     // itemLeftSide = item [ splitCol[0] ] ;
-                //   }
-                
-
-
-                // if ( drillList.selectColumns.indexOf( msColumn ) > -1 ) {
-                //     //Then we have to adjust the left side to be the full expanded value
-                //     leftSide = msColumn.replace(/\//g,'');
-                //     rightSide = '';
-                // }
 
                 let msColumnNoSlash = msColumn.replace(/\//g,'');
                 // let msColumnStr = rightSide? `${leftSide}MultiString${rightSide}` : `${leftSide}MultiString`;
@@ -482,16 +395,8 @@ export function processAllItems( allItems : IDrillItemInfo[], errMessage: string
     console.log('drillList.refiners =', drillList.refiners );
     //for ( let i = 0 ; i < 5000 ; i++ ) {
     allRefiners = buildRefinersObject( finalItems, drillList );
-        //console.log(i);
-    //}
-
-//    console.log('Pre-Sort: getAllItems', allRefiners);
 
     allRefiners = sortRefinerObject(allRefiners, drillList);
-
-//    console.log('Post-Sort: getAllItems', allRefiners);
-
-    consoleMe( 'processAllItems2' , finalItems, drillList );
 
     updatePerformance( 'analyze1', 'update', '', allItems.length );
 
@@ -511,9 +416,7 @@ export function processAllItems( allItems : IDrillItemInfo[], errMessage: string
 
 function sortRefinerObject ( allRefiners: IRefinerLayer, drillList: IDrillList ) {
 
-    //webPartDefs.sort((a, b) => (a.alias > b.alias) ? 1 : -1);
     consoleRef( 'buildRefinersObject1', allRefiners );
-    consoleMe( `sortRefinerObject1 ??` , null , drillList );
 
     //Adding collator per:  https://stackoverflow.com/a/52369951
     const collator = new Intl.Collator(drillList.language, { numeric: true, sensitivity: 'base' });
@@ -538,24 +441,23 @@ function sortRefinerObject ( allRefiners: IRefinerLayer, drillList: IDrillList )
 function sortRefinerLayer ( allRefiners: IRefinerLayer[], drillList: IDrillList ) {
 
   allRefiners.map( (refinerLayer: IRefinerLayer ) => {
-        //allRefiners[r].childrenKeys.sort();
 
-        //Adding collator per:  https://stackoverflow.com/a/52369951
-        const collator = new Intl.Collator(drillList.language, { numeric: true, sensitivity: 'base' });
-        refinerLayer.childrenObjs.sort((a, b) => { return collator.compare(a.thisKey, b.thisKey); });
+      //Adding collator per:  https://stackoverflow.com/a/52369951
+      const collator = new Intl.Collator(drillList.language, { numeric: true, sensitivity: 'base' });
+      refinerLayer.childrenObjs.sort((a, b) => { return collator.compare(a.thisKey, b.thisKey); });
 
-        // refinerLayer.childrenObjs.sort((a, b) => ( a.thisKey.toLowerCase() > b.thisKey.toLowerCase() ) ? 1 : -1);
-        let statsToSort : string[] = ['childrenCounts','childrenMultiCounts'];
+      // refinerLayer.childrenObjs.sort((a, b) => ( a.thisKey.toLowerCase() > b.thisKey.toLowerCase() ) ? 1 : -1);
+      let statsToSort : string[] = ['childrenCounts','childrenMultiCounts'];
 
-        let i = -1;
-        drillList.refinerStats.map(( ) => {
-          i ++;
-            statsToSort.push('stat' + i);
-            statsToSort.push('stat' + i + 'Count');
-        });
+      let i = -1;
+      drillList.refinerStats.map(( ) => {
+        i ++;
+          statsToSort.push('stat' + i);
+          statsToSort.push('stat' + i + 'Count');
+      });
 
-        refinerLayer = sortKeysByOtherKey ( refinerLayer, 'childrenKeys', 'asc', 'string', statsToSort, null, drillList.language );
-        refinerLayer.childrenObjs = sortRefinerLayer( refinerLayer.childrenObjs, drillList );
+      refinerLayer = sortKeysByOtherKey ( refinerLayer, 'childrenKeys', 'asc', 'string', statsToSort, null, drillList.language );
+      refinerLayer.childrenObjs = sortRefinerLayer( refinerLayer.childrenObjs, drillList );
     } );
 
     return allRefiners;
@@ -592,95 +494,6 @@ function createNewRefinerLayer( thisKey: string, drillList: IDrillList ) {
     return newRefiner;
 }
 
-// function buildRefinerLayerDidNotWork ( level: number, refinersParent : IRefinerLayer , i: IDrillItemInfo, drillList: IDrillList ) {
-
-//     let result: IRefinerLayer = null;
-
-//     if ( level > 2 ) {
-//         return refinersParent;
-
-//     } else {
-
-//         //Do just level 1
-//         let thisRefinerValuesLevX = i.refiners['lev' + level];
-//         //Go through each array of refinersParent... 
-//         for ( let r0 in thisRefinerValuesLevX ) { //Go through all list items
-
-//             let thisRefinerX = thisRefinerValuesLevX[r0];
-//             let topKeyX = refinersParent.childrenKeys.indexOf( thisRefinerX );
-
-//             if ( topKeyX < 0 ) { //Add to topKeys and create keys child object
-//                 refinersParent.childrenKeys.push( thisRefinerX );
-//                 refinersParent.childrenObjs.push( createNewRefinerLayer ( thisRefinerX, drillList ) );
-//                 refinersParent.childrenCounts.push( 0 );
-//                 refinersParent.childrenMultiCounts.push( 0 );
-//                 topKeyX = refinersParent.childrenKeys.length -1;
-//                 //Add empty object in array for later use
-//                 for ( let i2 in drillList.refinerStats ) {
-//                     refinersParent[statKey].push(null);
-//                     refinersParent[statKeyCount].push(0);
-//                 }
-//             }
-
-//             refinersParent.multiCount ++;
-//             refinersParent.childrenCounts[topKeyX] ++;
-//             refinersParent.childrenMultiCounts[topKeyX] ++;
-//             if ( r0 == '0') { refinersParent.itemCount ++; }
-
-//             /**
-//              * This loop gets the totals used for stats for each stat based on all items with that refiner.
-//              * By design it ignores any items of EntryType = 'start' because the entry that counts is the one that has time.
-//              * Maybe I should just ignore any with zero as time.
-//              */
-//             //if ( i.EntryType !== 'start') {
-
-//                 for ( let i2 in drillList.refinerStats ) {
-//                     let thisStat = drillList.refinerStats[i2].stat;
-//                     let thisValue = i.refiners[statKey];
-//                     let currentRefinerValue = refinersParent[statKey][topKeyX];
-
-//                     if ( thisStat === 'count' ) {
-//                         refinersParent[statKey][topKeyX] ++;
-//                         refinersParent[statKeyCount][topKeyX] ++;
-        
-//                     } else if ( thisStat === 'sum' || thisStat === 'avg' || thisStat === 'daysAgo' || thisStat === 'monthsAgo' ) {
-//                         //Add numbers up here and divide by total count later
-//                         refinersParent[statKey][topKeyX] += thisValue;
-//                         refinersParent[statKeyCount][topKeyX] ++;
-
-//                     } else if ( thisStat === 'max' ) {
-//                         if ( thisValue > currentRefinerValue || currentRefinerValue === null ) {
-//                             //Add numbers up here and divide by total count later
-//                             refinersParent[statKey][topKeyX] = thisValue;
-//                             refinersParent[statKeyCount][topKeyX] ++;
-//                         } else {
-//                             console.log( 'no update: ' + thisValue + ' is NOT LARGER than ' +currentRefinerValue );
-//                         }
-
-//                     } else if ( thisStat === 'min' ) {
-//                         if ( thisValue < currentRefinerValue || currentRefinerValue === null ) {
-//                             //Add numbers up here and divide by total count later
-//                             refinersParent[statKey][topKeyX] = thisValue;
-//                             refinersParent[statKeyCount][topKeyX] ++;
-//                         } else {
-//                             console.log( 'no update: ' + thisValue + ' is NOT LESS than ' +currentRefinerValue );
-//                         }
-
-//                     } else { console.log('Not sure what to do with this stat: ', thisStat, i.refiners ) ; }
-//                 }
-
-//             //}
-
-//             level ++;
-//             if ( level < 3 ) {
-//                 result = buildRefinerLayerDidNotWork ( level, refinersParent.childrenObjs[topKeyX] , i, drillList );
-//             }
-//         }
-//     }
-
-//     return result;
-
-// }
 
 export function updateRefinerStats( i: IDrillItemInfo , topKeyZ: number,  refiners:IRefinerLayer, drillList: IDrillList ) {
 
@@ -731,7 +544,7 @@ export function updateRefinerStats( i: IDrillItemInfo , topKeyZ: number,  refine
 
 
             } else { console.log('Not sure what to do with this stat: ', thisStat, i.refiners ) ; }
-            
+
             refinersStat[topKeyZ] = currentRefinerValue;
             refinersStatCount[topKeyZ] = currentRefinerCount;
 
@@ -862,7 +675,6 @@ export function buildRefinersObject ( items: IDrillItemInfo[], drillList: IDrill
         }
     });
 
-    consoleMe( `buildRefinersObject ???` , items , drillList );
     consoleRef( 'buildRefinersObject', refiners );
     return refiners;
 
@@ -1105,35 +917,18 @@ function getRefinerFromField ( fieldValue : any, ruleSet: RefineRuleValues[], em
 
             } else if ( tempDate.daysAgo > 1 ) {
                 reFormattedDate = '> 1 Day' ;
-                
+
             } else { reFormattedDate = 'Today' ; }
 
-        } 
+        }
         result = [ reFormattedDate ];
-    
-    // Removed this loop because it's not neccessary any more
-    // } else if ( detailType === 'link'  ) {
-    //     if ( ruleSet.indexOf( 'linkDescription' ) > -1  ) {
-    //         result = fieldValue.Description;
 
-    //     } else if ( ruleSet.indexOf( 'linkUrl' ) > -1  ) {
-    //         result = fieldValue.Url;
-
-    //     } else {
-    //         result = fieldValue.Description;
-    //         console.log( 'drillFunctions.getRefinerFromField - assuming result is linkDescription', fieldValue );
-    //     }
 
     } else if ( detailType === 'numberstring' && ruleSet.indexOf('groupByString') < 0   ) {
 
-        /**
-            options.push( buildKeyText( 'groupBy10s' ) );
-            options.push( buildKeyText( 'groupBy100s' ) );
-            options.push( buildKeyText( 'groupBy1000s' ) );
-            options.push( buildKeyText( 'groupByMillions' ) );
-         */
-        fieldValue = fieldValue.trim();
-        result = [  getGroupByNumber(fieldValue, detailType, ruleSet ) ];
+
+      fieldValue = fieldValue.trim();
+      result = [  getGroupByNumber(fieldValue, detailType, ruleSet ) ];
 
     } else if ( detailType === 'string' || ruleSet.indexOf('groupByString') > -1 ){
 
@@ -1362,26 +1157,3 @@ export function consoleRef( location: string, refiners: IRefinerLayer ) {
 
 }
 
-export function consoleMe( location: string, obj: any, drillList: IDrillList ) {
-
-    return; //Not needed for now.
-
-    // let testId = 179;
-    // let testItem = obj && obj[testId] ? true : false;
-    // let testRef = testItem && obj[testId].refiners ? true : false;
-    // let testLev = testRef && obj[testId].refiners.level1 ? true : false;
-    // let tbdNote = 'null';
-    // if ( testLev === true ) { tbdNote = 'Level found' ; }
-    // else if ( testRef === true ) { tbdNote = 'Refiner found' ; }
-    // else if ( testItem === true ) { tbdNote = 'Item found' ; }
-
-    // let pasteMe =  obj && obj[testId] && obj[testId].refiners ? obj[testId].refiners.lev1 : tbdNote ;
-    // obj = JSON.parse(JSON.stringify(obj));
-    // let drillListX = JSON.parse(JSON.stringify(drillList));
-
-    // let itteration = drillList.itteration;
-    // console.log('Error#94:', itteration, location, pasteMe, drillListX );
-
-    // return;
-
-}

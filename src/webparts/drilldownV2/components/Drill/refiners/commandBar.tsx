@@ -81,14 +81,6 @@ export interface ICMDItem {
   data?: number;
 }
 
-// function  _functionOnClick(item){
-//     //This sends back the correct pivot category which matches the category on the tile.
-//     let e: any = event;
-//     alert('Hi! you clicked: ' +  e.target.innerText );
-
-//     console.log('searchForItems: e',e);
-//     console.log('item', item);
-// }
 
 function generateData(items: ICMDItem[], checkedItem: string, cachingEnabled: boolean, showRefinerCounts: boolean, onClick: any): IOverflowData {
   const dataItems = [];
@@ -340,33 +332,6 @@ public componentDidUpdate(prevProps: IResizeGroupOverflowSetExampleProps){
 
   private _onNumberOfItemsChanged = (event: React.FormEvent<HTMLDivElement>, option: IDropdownOption): void => {
     this.setState({ numberOfItems: parseInt(option.text, 10) });
-  }
-
-  
-  private _sampleOnClick = (item: any): void => {
-    //This sends back the correct pivot category which matches the category on the tile.
-    let e: any = event;
-    alert('Hi! you clicked: ' +  e.target.innerText );
-
-    console.log('searchForItems: e',e);
-
-  /*  This confirms the text is possible to get as  e.target.innerText
-
-    for ( let c of e.target.innerText ) {
-      console.log('e.target.innerText: ', c);
-    }
-
-    */
-    /* These had various degress of success finding the text of the button.
-    console.log('', e.target.innerText.length, e.target.innerText );
-
-    console.log('lastElementChild.textContext', e.target.parentElement.lastElementChild.textContext);
-    console.log('lastElementChild.textContext', e.target.nextSibling.textContext);
-    console.log('searchForItems: item', item);
-    console.log('searchForItems: this', this);
-*/
-    //Be sure to pass item.props.itemKey to get filter value
-
   }
 
   private _updateStateOnPropsChange() {

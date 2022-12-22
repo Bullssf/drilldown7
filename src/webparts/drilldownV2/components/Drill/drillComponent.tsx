@@ -78,7 +78,7 @@ import { getMaxRichHeight } from '@mikezimm/fps-library-v2/lib/components/molecu
 
 //parentListFieldTitles
 
-import { getAllItems, buildRefinersObject, processAllItems, consoleMe, consoleRef, } from './drillFunctions';
+import { getAllItems, buildRefinersObject, processAllItems, consoleRef, } from './drillFunctions';
 
 import ResizeGroupOverflowSetExample from './refiners/commandBar';
 
@@ -94,12 +94,6 @@ import {buildCountChartsObject ,  buildStatChartsArray} from '../CssCharts/cssCh
 
 import { getAppropriateViewFields, getAppropriateViewGroups, getAppropriateViewProp } from "@mikezimm/fps-library-v2/lib/components/molecules/ReactListV1/functions/getView";
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-import { CommandItemNotUpdatedMessage, CommandUpdateFailedMessage, CommandEnterCommentString, 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  CommandCancelRequired, CommandEmptyCommentMessage } from '@mikezimm/fps-library-v2/lib/components/interfaces/QuickCommands/IQuickCommands';
-  //MOVE TO IQuickCommands in npmFunctions
-import { CommandCaptchaTestFailed, CommandCaptchaRequiredFailed, } from '@mikezimm/fps-library-v2/lib/components/interfaces/QuickCommands/IQuickCommands';
 import { IUpdateCommandItemReturn, } from '@mikezimm/fps-library-v2/lib/pnpjs/CommandItems/updateItem';
 
 // import FetchBanner from '../CoreFPS/FetchBannerElement';
@@ -112,7 +106,7 @@ import FPSAgeSliderHook from '@mikezimm/fps-library-v2/lib/components/atoms/FPSA
 
 
 import { DrilldownHelp } from '@mikezimm/fps-library-v2/lib/common/PropPaneHelp/pages/Drilldown';
-import { getBannerPages, } from '../HelpPanel/AllContent';
+// import { getBannerPages, } from '../HelpPanel/AllContent';
 import { IBannerPages } from '../../fpsReferences';
 
 import { ILoadPerformance, startPerformOp, updatePerformanceEnd, ILoadPerformanceOps } from "../../fpsReferences";
@@ -122,12 +116,12 @@ import { defaultBannerCommandStyles } from '../../fpsReferences';
 import { ensureUserInfo } from '@mikezimm/fps-library-v2/lib/pnpjs/Users/calls/ensureUserInfo';
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-// import { IFieldPanelProps } from '../../CoreFPS/PropPaneCols';
-// import { DisplayMode } from '@microsoft/sp-core-library';
 import { IEnsureUserInfo } from '@mikezimm/fps-library-v2/lib/pnpjs/Users/interfaces/IEnsureUserInfo';
 
 import { ISiteThemes } from "@mikezimm/fps-library-v2/lib/common/commandStyles/ISiteThemeChoices";
 import { getFieldPanelElement } from '../../CoreFPS/PropPaneHelp/FieldPanel';
+import { getBannerPages } from '../HelpPanel/AllContent';
+// import { getBannerPages } from '../HelpPanel/AllContent';
 const SiteThemes: ISiteThemes = { dark: stylesD.fpsSiteThemeDark, light: stylesD.fpsSiteThemeLight, primary: stylesD.fpsSiteThemePrimary };
 
 /***
@@ -156,8 +150,8 @@ export default class DrillDown extends React.Component<IDrilldownV2Props, IDrill
 
     private _webPartHelpElement = [];
     private _contentPages : IBannerPages = getBannerPages( this.props.bannerProps );
+    // private _fetchUserId: string = '';  //Caching fetch Id and Web as soon as possible to prevent race
 
-    private _fetchUserId: string = '';  //Caching fetch Id and Web as soon as possible to prevent race
     private _fetchWeb: string = this.props.webURL ? this.props.webURL : '';  //Caching fetch Id and Web as soon as possible to prevent race
     private _sourceUser: IUser = null;
 
@@ -187,20 +181,10 @@ export default class DrillDown extends React.Component<IDrilldownV2Props, IDrill
  */
 
      private _farBannerElements = this._buildFarBannerElements();
- 
-     private _buildNearBannerElements() {
-       //See banner/NearAndFarSample.js for how to build this.
-       let elements: any[] = [];
-       // defaultBannerCommandStyles.fontWeight = 'bolder';
-       // elements.push(<div style={{ paddingRight: null }} className={ '' } title={ title}>
-       //   <Icon iconName='WindDirection' onClick={ this.jumpToParentSite.bind(this) } style={ defaultBannerCommandStyles }/>
-       // </div>);
-       return elements;
-     }
-   
+
      private _buildFarBannerElements() {
        let farElements: any[] = [];
-   
+
        if ( this.props.bannerProps.showTricks === true ) {
          farElements.push( null );
        }
@@ -212,10 +196,10 @@ export default class DrillDown extends React.Component<IDrilldownV2Props, IDrill
         propsCmdCSS.backgroundColor = 'transparent';
         propsCmdCSS.marginRight = '30px';
         propsCmdCSS.fontSize = '24px'; //Make sure icon is always visible
-    
+
         return propsCmdCSS;
       }
-    
+
       private _debugCmdStyles: React.CSSProperties = this._makeDebugCmdStyles( true );
 
     /***
@@ -229,9 +213,9 @@ export default class DrillDown extends React.Component<IDrilldownV2Props, IDrill
      *                                                                                                                                                                                      
      */
 
-     /**
-      * This builds the refiner count horizontal stacked bars
-      */
+    /**
+    * This builds the refiner count horizontal stacked bars
+    */
     private _buildCountCharts( title: string, callBackID: string, refinerObj: IRefinerLayer , chartTypes: ICSSChartTypes[] ) {
         let resultSummary = null;
 
@@ -530,8 +514,6 @@ export default class DrillDown extends React.Component<IDrilldownV2Props, IDrill
 
         if ( FPSAgeColumnName ) list.ageColumns.push( FPSAgeColumnName );
 
-
-        consoleMe( 'createDL' + location , this.state ? this.state.allItems : null , list );
         list = this._updateDrillListColumns( list ) ;
 
         return list;
@@ -670,11 +652,11 @@ export default class DrillDown extends React.Component<IDrilldownV2Props, IDrill
       const FPSWindow: IFPSWindow = window as any;
 
       const webURLOnCurrentCollection = !webURL || webURL.toLowerCase().indexOf( FPSWindow.FPSEnviro.siteServerRelativeUrl ) > -1 ? true : false;
-      console.log('xxxxxxxxxx');
+
       if ( !webURL || ( !this._sourceUser && webURLOnCurrentCollection === true ) ) {
         //If current web is the sourceListWeb, then just use the context FPSUser
         this._sourceUser = this.props.bannerProps.FPSUser ;
-        this._fetchUserId = this._sourceUser.Id;
+        // this._fetchUserId = this._sourceUser.Id;
         this._fetchWeb = webURL;
 
         return this._sourceUser;
@@ -688,7 +670,7 @@ export default class DrillDown extends React.Component<IDrilldownV2Props, IDrill
           this._updatePerformance( 'fetch1', 'start', 'getUserD', null );
           const sourceUser: IEnsureUserInfo = await ensureUserInfo( webURL, email );
   
-          this._fetchUserId = sourceUser.user.id;
+          // this._fetchUserId = sourceUser.user.id;
           this._fetchWeb = webURL;
           this._sourceUser = sourceUser.user;
 
@@ -806,14 +788,6 @@ public componentDidUpdate( prevProps: IDrilldownV2Props ){
 
     public render(): React.ReactElement<IDrilldownV2Props> {
 
-        // const {
-        //     // bannerProps,
-        //     // isDarkTheme,
-        //     // environmentMessage,
-        //     // hasTeamsContext,
-        //     // userDisplayName,
-        //   } = this.props;
-
         const { 
           bannerMessage, bannerMessageStatus, quickCommands, searchText, searchAge
         } = this.state;
@@ -860,67 +834,6 @@ public componentDidUpdate( prevProps: IDrilldownV2Props ){
                 }
             });
         });
-
-        // viewDefs[0].viewFields = [
-        //   {
-        //     "name": "Id",
-        //     "displayName": "Id",
-        //     "minWidth": 30,
-        //     "maxWidth": 35,
-        //     "linkPropertyName": "goToPropsLink"
-        //   },
-        //     {
-        //     "name": "Modified/YYYY-MM-DD",
-        //     "displayName": "Modified",
-        //     "minWidth": 50,
-        //     "maxWidth": 70
-        //   },
-        //     {
-        //     "name": "IT_Reviewer/Title/FirstWord",
-        //     "displayName": "Reviewer",
-        //     "minWidth": 50,
-        //     "maxWidth": 70
-        //   },
-        //   {
-        //     "name": "MigDest",
-        //     "displayName": "MigDest",
-        //     "minWidth": 50,
-        //     "maxWidth": 100
-        //   },
-        //     {
-        //     "name": "Owner",
-        //     "displayName": "Owner",
-        //     "minWidth": 50,
-        //     "maxWidth": 120
-        //   },
-        //   {
-        //     "name": "Title",
-        //     "displayName": "Title",
-        //     "minWidth": 100,
-        //     "maxWidth": 200
-        //   },
-        //   {
-        //     "name": "FriendlyURL/ShowCollUrl",
-        //     "displayName": "Current site",
-        //     "minWidth": 100,
-        //     "maxWidth": 200,
-        //     "linkPropertyName": "FriendlyURL/GetLinkUrl"
-        //   },
-        //   {
-        //     "name": "SPO_URL/ShowPageUrl",
-        //     "displayName": "SPO site",
-        //     "minWidth": 100,
-        //     "maxWidth": 200,
-        //     "linkPropertyName": "SPO_URL/GetLinkUrl"
-        //   },
-        //   {
-        //     "name": "Site_x0020_Documentation",
-        //     "displayName": "Site Documentation",
-        //     "minWidth": 10,
-        //     "maxWidth": 20,
-        //     "render": ( item: any, index: number ) => { return <div dangerouslySetInnerHTML={{__html: item.Site_x0020_Documentation }} /> }
-        //   }
-        // ]
 
         let drillListErrors = this.state.drillList.errors.length === 0 ? null : <div style={{ padding: '20px'}}>
             <h3>{`These column functions have errors... Check refiners or ViewFields :)`}</h3>
@@ -994,12 +907,6 @@ public componentDidUpdate( prevProps: IDrilldownV2Props ){
 
         />;
 
-        // const EasyPagesElement = <EasyPagesHook 
-        //   easyPagesExtraProps={ { ...this.props.bannerProps.easyPagesExtraProps, ...{ easyPagesExpanded: this.state.showEasyPages, easyPagesToggleExpanded: this._toggleEasyLinks.bind(this) } } }
-        //   easyPagesSourceProps= { this.props.bannerProps.easyPagesSourceProps }
-        //   // easyPagesSourceProps= { this.props.easyPagesSourceProps }
-        //   EasyIconsObject= { this.props.bannerProps.EasyIconsObject }
-        // />;
 
 /***
  *              d888888b db   db d888888b .d8888.      d8888b.  .d8b.   d888b  d88888b 
@@ -1051,9 +958,6 @@ public componentDidUpdate( prevProps: IDrilldownV2Props ){
 
             } else {
 
-                // let toggleTipsButton = <div style={{marginRight: "20px", background: 'white', opacity: '.7', borderRadius: '10px' }}>
-                // { createIconButton('Help','Toggle Tips',this._toggleTips.bind(this), null, tipsStyles ) } </div>;
-
                 let errMessage = this.state.errMessage === '' ? null : <div>
                     { this.state.errMessage }
                 </div>;
@@ -1097,13 +1001,6 @@ public componentDidUpdate( prevProps: IDrilldownV2Props ){
                  * It seems to not be sending the Key Value but the Index?
                  * 
                  * 
-                 * 
-                 * 
-                 * 
-                 * 
-                 * 
-                 * 
-                 * 
                  */
                 /*https://developer.microsoft.com/en-us/fabric#/controls/web/searchbox*/
                 let searchBox =  
@@ -1121,20 +1018,7 @@ public componentDidUpdate( prevProps: IDrilldownV2Props ){
                     { 'Searching ' + this.state.searchCount + ' items' }
                     { /* 'Searching ' + (this.state.searchType !== 'all' ? this.state.filteredTiles.length : ' all' ) + ' items' */ }
                     </div>
-                    {/* https://github.com/mikezimm/drilldown7/issues/255 */}
-                    {/* <Slider 
-                      label={ `Modified age (days ago)` }
-                      min={ -4 }
-                      max= { 0 }
-                      step={ 1 }
-                      defaultValue={ this.state.searchAge }
-                      valueFormat= { (value: number) => FPSAgeSliderOptions[ value ].text }  //ageIndex is negative... needs inverse to get array element
-                      // onChanged={ (event: any, value: number, ) => this.setState({ searchAge: value }) }
-                      // onChanged={ (event: any, value: number, ) => this._searchForItems( this.state.searchText, this.state.searchMeta, this.state.searchMeta.length, 'age', value ) }
-                      onChange={ (value: number, ) => this._searchForItems( this.state.searchText, this.state.searchMeta, this.state.searchMeta.length, 'age', value ) }
-                      styles= {{ container: { width: '300px' }, valueLabel: { width: '100px' } }}
-                      originFromZero={ true }
-                    /> */}
+
                     <FPSAgeSliderHook 
                       props = { { ...this.props.ageSliderWPProps, ... {
                           onChange: (value: number, ) => this._searchForItems( this.state.searchText, this.state.searchMeta, this.state.searchMeta.length, 'age', value ) ,  // value * - to make positive
@@ -1416,17 +1300,6 @@ public componentDidUpdate( prevProps: IDrilldownV2Props ){
                         }
 
                     }
-                    // if ( statRefinerObject && statRefinerObject.childrenKeys.length > 0  ) {
-                    //     //Update Dynamic Data cssChartData  cssChartProps : ICssChartProps
-                    //     if ( this.props.handleSwitch ) {
-                    //         this.props.handleSwitch ( this.state.drillList.refinerStats, 'summaries', statRefinerObject, this.state.searchMeta ) ; //resultSummaryArray  ); //: //  { chartData : ICSSChartSeries[], callBackID: string }[]  
-                    //     }
-                    // } else {
-                    //     //Update Dynamic Data cssChartData
-                    //     if ( this.props.handleSwitch ) {
-                    //         this.props.handleSwitch ( null, null, null ); //: ICssChartProps
-                    //     }
-                    // }
 
                     /***
                         *    d888888b  .d88b.   d888b   d888b  db      d88888b .d8888. 
@@ -1510,7 +1383,6 @@ public componentDidUpdate( prevProps: IDrilldownV2Props ){
                         </div>;
                     }
                 }
-                
             }
 
 
@@ -1578,38 +1450,6 @@ public componentDidUpdate( prevProps: IDrilldownV2Props ){
 
     }
 
-    // private _doGetUser() {
-
-    //   if ( this.props.quickCommands ) {
-    //     this._updatePerformance( 'fetch1', 'start', 'getUser', null );
-
-    //     if ( !this.props.webURL || this.props.context.pageContext.site.absoluteUrl.indexOf( this.props.webURL.toLowerCase() ) > -1 ) {  //The web part is on the current page context... get user object from Context instead.
-
-    //       this.setState({
-    //         sourceUserInfo: this.props.bannerProps.FPSUser,
-    //       });
-
-    //     } else {
-    //       //Move try getIUser in here....
-    //       try {
-    //         getIUser( this.props.webURL, this.props.bannerProps.pageContext.user.loginName, this._updateUserState.bind(this) ); // eslint-disable-line @typescript-eslint/no-floating-promises
- 
-    //       } catch(e){
-    //         const errMessage = getHelpfullError(e, false, true);
-    //         this._updatePerformance( 'fetch1', 'update', '', 1 );
-    //         this.setState({ errMessage: errMessage });
-    //       }
-    //     }
-    //   }
-    // }
-
-    // private _updateUserState( sourceUserInfo: IUser, ) {
-    //   this._updatePerformance( 'fetch1', 'update', '', 1 );
-    //   this.setState({
-    //     sourceUserInfo: sourceUserInfo,
-    //   });
-    // }
-
     private _addTheseItemsToState( drillList: IDrillList, allItems: IDrillItemInfo[] , errMessage : string, refinerObj: IRefinerLayer ) {
 
         this._performance.ops.analyze2 = startPerformOp( 'analyze2 addItems', this.props.bannerProps.displayMode );
@@ -1620,8 +1460,7 @@ public componentDidUpdate( prevProps: IDrilldownV2Props ){
         const searchCount = newFilteredItems.length;
 
         consoleRef( 'addTheseItems1REF', refinerObj );
-        consoleMe( 'addTheseItems1' , allItems, drillList );
-        consoleMe( 'ageFilterTheseItems1' , newFilteredItems, drillList );
+
         //let newFilteredItems : IDrillItemInfo[] = this.getNewFilteredItems( '', this.state.searchMeta, allItems, 0 );
 
         let pivotCats : any = [];
@@ -1643,69 +1482,7 @@ public componentDidUpdate( prevProps: IDrilldownV2Props ){
             if ( this.props.refiners.length > 2 ) { maxRefinersToShow = 3; }
         }
 
-        /**
-         * 2022-01-17:  Added this to see if this gets mutated and breaks on refresh items.  
-         * After deeper testing, adding this to getBestFitView solved it but that was getting called a lot so I'm just doing it once in the render
-         */
-        // let viewDefs: ICustViewDef[] = JSON.parse(JSON.stringify(this.props.viewDefs));
-
-        // if ( this.props.toggles.togOtherListview === true ) {
-
-        //     //2022-03-22:  This will update the listViewDD for other parts if it's turned on in main webpart props.
-        //     let listViewDD : IListViewDDDrillDown = {
-
-        //         parentListFieldTitles: this.props.viewDefs.length > 0 ? null : this.props.parentListFieldTitles,
-        //         togOtherListview: this.props.toggles.togOtherListview,
-        //         webURL : drillList.webURL,
-        //         parentListURL : drillList.parentListURL,
-        //         listName : drillList.name,
-        
-        //         viewDefs: viewDefs,
-        //         viewFields: null, // This is derived from viewDefs
-        //         groupByFields: null, // This is derived from viewDefs
-        
-        //         contextUserInfo: drillList.contextUserInfo,  //For site you are on ( aka current page context )
-        //         sourceUserInfo: this._sourceUser,// this.state.sourceUserInfo,   //For site where the list is stored
-
-        //         quickCommands: this.state.quickCommands,
-        
-        //         items : allItems,
-        //         breadCrumb: [pivCats.all.title],
-
-        //     };
-
-        //     // if ( this.props.handleListPost ) { this.props.handleListPost( listViewDD ); }
-
-        // } else {
-
-        //     //2022-03-22:  This will just clear the listViewDD for other parts if it's turned off in main webpart props.
-        //     let listViewDD : IListViewDDDrillDown = {
-
-        //         parentListFieldTitles: null,
-        //         webURL :null,
-        //         parentListURL : null,
-        //         listName : null,
-        //         togOtherListview: this.props.toggles.togOtherListview,
-        
-        //         viewDefs: null,
-        //         viewFields: null, // This is derived from viewDefs
-        //         groupByFields: null, // This is derived from viewDefs
-        
-        //         contextUserInfo: null,  //For site you are on ( aka current page context )
-        //         sourceUserInfo: null,   //For site where the list is stored
-
-        //         quickCommands: null,
-        
-        //         items : [],
-        //         breadCrumb: null,
-        
-        //     };
-
-        //     // if ( this.props.handleListPost ) { this.props.handleListPost( listViewDD ); }
-
-        // }
         consoleRef( 'addTheseItems2REF', refinerObj );
-        consoleMe( 'addTheseItems2' , allItems, drillList );
 
         console.log('addTheseItemsToState: props',this.props );
         console.log('addTheseItemsToState: refinerObj',refinerObj );
@@ -1778,28 +1555,6 @@ public componentDidUpdate( prevProps: IDrilldownV2Props ){
  *                                                         
  */
 
- //Can't use this
-    private _findMatchtingElementTextOriginal(arr: string[], item: any ) {
-
-        let hasItemKey = item.props && item.props.itemKey ? true : false ;
-        let hasTargetInnerText = item.target && item.target.innerText ? true : false;
-        if ( hasTargetInnerText === true ) {  //This loop is just for debugging if needed.
-            // let testString = item.target.innerText;
-            // let testStringL = testString.length;
-            // let arr0 = arr[0];
-            // let arr0L = arr0.length;
-            console.log('_findMatchtingElementTextOriginal')
-
-        }
-        let hasTargetChildInnerText = item.target && item.target.lastElementChild && item.target.lastElementChild.innerText ? true : false;
-
-        //Added the .trim() everywhere because of the "Assit" not being found.
-        if ( hasItemKey && arr.indexOf( item.props.itemKey ) > -1 ) { return item.props.itemKey; }  //This should catch Pivot values without count or icons.
-        else if ( hasTargetInnerText &&  arr.indexOf( item.target.innerText ) > -1 ) { return item.target.innerText; } //This should catch command bars without icons
-        else if ( hasTargetChildInnerText &&  arr.indexOf( item.target.lastElementChild.innerText ) > -1 ) { return item.target.lastElementChild.innerText; } //This should catch command bars with icon
-        alert('We had a problem with this filter.  It could be that you have a special character in the selection that I can\'t figure out.');
-        return '';
-    }
 
     private _findCountOfAriaLabel( item: any ) {
         let result = '';
@@ -1882,16 +1637,16 @@ public componentDidUpdate( prevProps: IDrilldownV2Props ){
 
         //This sends back the correct pivot category which matches the category on the tile.
         let validText = this._findMatchtingElementText( item );
-        this._consoleClick( 'getClickInfo1 - validText' , validText );
+
         validText = this._getValidCountFromClickItem( item, validText );
-        this._consoleClick( 'getClickInfo2 - validText' , validText );
+
         let clickInfo: IClickInfo = {
             isAltClick : e.altKey,
             isShfitClick : e.shiftKey,
             isCtrlClick : e.ctrlKey,
             validText : validText,
         };
-        this._consoleClick( 'getClickInfo - clickInfo' , clickInfo );
+
         return clickInfo;
 
     }
@@ -1955,11 +1710,6 @@ public componentDidUpdate( prevProps: IDrilldownV2Props ){
     }
 
   public _onSearchForMeta2 = (validText: string): void => {
-    //This sends back the correct pivot category which matches the category on the tile.
-    //let e: any = event;
-    //console.log('searchForItems: e',e);
-    //console.log('searchForItems: item', item);
-    //console.log('searchForItems: this', this);
 
     //Be sure to pass item.props.itemKey to get filter value
 
@@ -2009,16 +1759,12 @@ public componentDidUpdate( prevProps: IDrilldownV2Props ){
     }
 
     let stateRefinerInstructions: string[] = [];
-
-    this._consoleClick( 'changeRefinerOrder - newOrder' , newOrder );
     
     newOrder.map( i => { 
         refiners.push( refinersOrig[i] );
         refinerRulesNew.push( refinerRulesOrig[i] );
         stateRefinerInstructions.push( `${this.state.drillList.refinerInstructions[i]}` ); // Put this in quotes to insure it is not a direct pointer to the current drillList instructions
     });
-
-    this._consoleClick( 'changeRefinerOrder - refiners', refiners );
 
     /**
      * 2022-01-17:  Added this to see if this gets mutated and breaks on refresh items.  
@@ -2097,7 +1843,6 @@ public componentDidUpdate( prevProps: IDrilldownV2Props ){
 
   public _searchForItems = (text: string, newMeta: string[] , layer: number, searchType: 'meta' | 'text' | 'age', ageIndex: number = this.state.searchAge ): void => {
 
-    consoleMe( 'searchForItems1: ' + text , this.state.allItems, this.state.drillList );
     let searchItems : IDrillItemInfo[] = this.state.allItems;
     let searchCount = searchItems.length;
     const maxAge = FPSAgeSliderOptions[ Math.abs( ageIndex ) ].maxAge;  //ageIndex is negative... needs inverse to get array element
@@ -2125,12 +1870,7 @@ public componentDidUpdate( prevProps: IDrilldownV2Props ){
      * Clicking on 3rd refiner:     newMeta: ["Daily","Break","Third"]
      */
 
-    //if ( searchType === 'meta' && layer !== prevLayer ) {
     if ( searchType === 'meta' ) {
-
-        //refinerTree: null,
-        //countTree: null,
-        //multiTree: null,
 
         let refinerTreeObj = this._getCurrentRefinerTree( newMeta );
         let refinerTree = refinerTreeObj.refinerTree;
@@ -2175,62 +1915,10 @@ public componentDidUpdate( prevProps: IDrilldownV2Props ){
         cmdCats.push ( this._convertRefinersToCMDs( ['All'],  refinerObj.childrenKeys, countTree, 0 , 0 , refinerObj) );
     }
 
-    // if ( this.props.toggles.togOtherListview === true ) {
-    //     let listViewDD : IListViewDDDrillDown = {
-
-    //         parentListFieldTitles: this.props.viewDefs.length > 0 ? null : this.props.parentListFieldTitles,
-    //         webURL :this.state.drillList.webURL,
-    //         parentListURL : this.state.drillList.parentListURL,
-    //         listName : this.state.drillList.name,
-    //         togOtherListview: this.props.toggles.togOtherListview,
-
-    //         viewDefs: this.props.viewDefs,
-    //         viewFields: null, // This is derived from viewDefs
-    //         groupByFields: null, // This is derived from viewDefs
-
-    //         contextUserInfo: this.state.drillList.contextUserInfo,  //For site you are on ( aka current page context )
-    //         sourceUserInfo: this._sourceUser, //this.state.sourceUserInfo,   //For site where the list is stored
-
-    //         quickCommands: this.state.quickCommands,
-
-    //         items : newFilteredItems,
-    //         breadCrumb: newMeta,
-
-    //     };
-
-    //     // if ( this.props.handleListPost ) { this.props.handleListPost( listViewDD ); }
-    //     searchCount = newFilteredItems.length;
-    // } else {
-    //     let listViewDD : IListViewDDDrillDown = {
-
-    //         parentListFieldTitles: null,
-    //         webURL :null,
-    //         parentListURL : null,
-    //         listName : null,
-    //         togOtherListview: this.props.toggles.togOtherListview,
-    
-    //         viewDefs: null,
-    //         viewFields: null, // This is derived from viewDefs
-    //         groupByFields: null, // This is derived from viewDefs
-    
-    //         contextUserInfo: this.state.drillList.contextUserInfo,  //For site you are on ( aka current page context )
-    //         sourceUserInfo: this._sourceUser, // this.state.sourceUserInfo,   //For site where the list is stored
-
-    //         quickCommands: null,
-    
-    //         items : [],
-    //         breadCrumb: null,
-    
-    //     };
-    
-    //     // if ( this.props.handleListPost ) { this.props.handleListPost( listViewDD ); }
-    //     searchCount = newFilteredItems.length;
-    // }
 
     searchCount = newFilteredItems.length;
-    consoleMe( 'searchForItems2: ' + text , this.state.allItems, this.state.drillList );
     consoleRef( 'searchForItems2: ' + text , refinerObj );
-    this._consoleClick('searchForItems2: cmdCats', cmdCats );
+
     this.setState({
       searchedItems: newFilteredItems,
       searchCount: searchCount,
@@ -2323,58 +2011,19 @@ public componentDidUpdate( prevProps: IDrilldownV2Props ){
   }
 
 
-  // private _getNewFilteredItems(text: string, meta: string[] , searchItems : IDrillItemInfo[], layer: number ) {
+  /**
+  * 
+  * @param progressHidden 
+  * @param page : page you want to add this to 'E' | 'C' | 'V' | 'I'
+  * @param current : current index of progress
+  * @param ofThese : total count of items in progress
+  * @param color : color of label like red, yellow, green, null
+  * @param icon : Fabric Icon name if desired
+  * @param logLabel : short label of item used for displaying in page
+  * @param label : longer label used in Progress Indicator and hover card
+  * @param description 
+  */
 
-  //   let newFilteredItems : IDrillItemInfo[] = [];
-
-  //   for (let thisSearchItem of searchItems) {
-
-  //       let showItem = false;
-  //       let searchFails = 0;
-  //       let searchString = thisSearchItem.searchString;
-
-  //       if ( meta !== undefined && meta !== null && meta.length > 0 ) {
-  //           // for ( let m in meta ) { // eslint-disable-line guard-for-in
-  //           meta.map( ( m: string, idx: number ) => { 
-
-  //               let itemMeta: string[] = thisSearchItem.refiners[`lev${idx}`] as string[];
-  //               // let metaM = typeof m === 'string' ? m : JSON.stringify(m); // Only make this so it's easier to debug.
-
-  //               if ( m === 'All' || m === '' || itemMeta.indexOf( m ) > -1  ) {
-  //                   if( searchString === '' || searchString.indexOf(text.toLowerCase()) > -1 ) {
-  //                       showItem = true;
-  //                   } else { 
-  //                     showItem = false; searchFails ++; 
-  //                   }
-  //               } else { 
-  //                 showItem = false; searchFails ++;
-  //               }
-
-  //           });
-  //       }
-
-  //       if ( showItem === true && searchFails === 0 ) {
-  //           newFilteredItems.push(thisSearchItem);
-  //       }
-
-  //     }
-
-  //     return newFilteredItems;
-
-  // }
-
-     /**
-    * 
-    * @param progressHidden 
-    * @param page : page you want to add this to 'E' | 'C' | 'V' | 'I'
-    * @param current : current index of progress
-    * @param ofThese : total count of items in progress
-    * @param color : color of label like red, yellow, green, null
-    * @param icon : Fabric Icon name if desired
-    * @param logLabel : short label of item used for displaying in page
-    * @param label : longer label used in Progress Indicator and hover card
-    * @param description 
-    */
    private _setProgress(progressHidden: boolean, page: 'E' | 'C' | 'V' | 'I', current: number , ofThese: number, color: string, icon: string, logLabel: string, label: string, description: string, ref: string = null ){
     let thisTime = new Date().toLocaleTimeString();
     const percentComplete = ofThese !== 0 ? current/ofThese : 0;
@@ -2424,8 +2073,6 @@ public componentDidUpdate( prevProps: IDrilldownV2Props ){
           });
         }
 
-        consoleMe( '_reloadOnUpdate' , this.state.allItems, this.state.drillList );
-
         // eslint-disable-next-line no-void
         void this._getAllItemsCall( viewDefs, hasNewProps === true ? this.props.refiners : this.state.refiners );
 
@@ -2441,16 +2088,6 @@ public componentDidUpdate( prevProps: IDrilldownV2Props ){
 
 
     }
-
-    // private _updateStateOnPropsChange( ): void {
-    //     /**
-    //      * 2022-01-17:  Added this to see if this gets mutated and breaks on refresh items.  
-    //      * After deeper testing, adding this to getBestFitView solved it but that was getting called a lot so I'm just doing it once in the render
-    //      */
-    //     let viewDefs: ICustViewDef[] = JSON.parse(JSON.stringify(this.props.viewDefs));
-    //     // this._doGetUser();
-    //     this._getAllItemsCall( viewDefs, this.props.refiners );
-    // }
 
     /**
      * 
@@ -2605,21 +2242,11 @@ public componentDidUpdate( prevProps: IDrilldownV2Props ){
  *                                                                   
  */
 
-    private _togglePropsHelp(){
-        let newState = this.state.showPropsHelp === true ? false : true;
-        this.setState( { showPropsHelp: newState });
-
-    }
     private _hideInstructions(){
         let newState = this.state.whenToShowItems === 0 ? this.props.showItems.whenToShowItems : 0;
         this.setState( { whenToShowItems: newState, instructionsHidden: 'hide' });
 
     }
-
-    
-    // private _toggleEasyLinks( ): void {
-    //   this.setState({ showEasyPages: !this.state.showEasyPages });
-    // }
 
     private _forceInstructions(){
         let newState = this.state.whenToShowItems === 0 ? this.props.showItems.whenToShowItems : 0;
@@ -2665,18 +2292,6 @@ public componentDidUpdate( prevProps: IDrilldownV2Props ){
             styles: '',
         };
 
-        // let togRefinerStyle = {
-        //     //label: <span style={{ color: 'red', fontWeight: 900}}>Rails Off!</span>,
-        //     label: <span>Style</span>,
-        //     key: 'togggleRefinerStyle',
-        //     _onChange: this._updateTogggleRefinerStyle.bind(this),
-        //     checked: this.state.style === 'pivot' ? true : false,
-        //     onText: 'Pivot',
-        //     offText: 'CommandBar',
-        //     className: '',
-        //     styles: '',
-        // };
-
 
         let theseToggles = [];
 
@@ -2689,7 +2304,7 @@ public componentDidUpdate( prevProps: IDrilldownV2Props ){
         if ( showStats && this.props.toggles.togStats === true  ) {
             theseToggles.push( togStats ) ;
         }
-        
+
         let pageToggles : IContentsToggles = {
             toggles: theseToggles,
             childGap: 30,
@@ -2709,7 +2324,6 @@ public componentDidUpdate( prevProps: IDrilldownV2Props ){
           });
     }
 
-    
     private _updateTogggleStats() {
         this.setState({
             showStats: !this.state.showStats,
@@ -2722,49 +2336,13 @@ public componentDidUpdate( prevProps: IDrilldownV2Props ){
           });
     }
 
-    private _updateTogggleView() {
-
-        let viewType : IViewType = 'MZ';
-        if (this.state.viewType === 'MZ') { viewType = 'React'; }
-        this.setState({
-            viewType : viewType,
-        });
-    } //
-
-    private _updateTogggleRefinerStyle() {
-
-        let newStyle : IRefinerStyles = null;
-
-        if ( this.state.style === 'pivot' ) {
-            newStyle = 'commandBar';
-
-        } else if ( this.state.style === 'commandBar' ) {
-            newStyle = 'pivot';
-
-        }
-
-        this.setState({
-            style: newStyle,
-        });
-    }
-
     public _toggleTips = (item: any): void => {
         //This sends back the correct pivot category which matches the category on the tile.
-      
+
         this.setState({
           showTips: !this.state.showTips,
         });
-      
+
       } //End toggleTips  
 
-      
-    private _consoleClick( location: string, info: any ) {
-
-        return; //Not needed for now.
-
-        let info2 = JSON.parse(JSON.stringify(info));
-
-        console.log('Error#94: - Click', location, info2 );
-
-    }
 }

@@ -40,19 +40,6 @@ export default class ButtonCompound extends React.Component<IButtonProps, IButto
 
   public createButtons(buttons: ISingleButtonProps[] ){
 
-    /*
-        let button = buttons.map(thisButton => (
-      <CompoundButton 
-        primary={thisButton.primary  ? thisButton.primary : false }
-        onClick={thisButton.buttonOnClick.bind(this)}
-        secondaryText={thisButton.secondary} 
-        disabled={thisButton.disabled} 
-        checked={thisButton.checked}>
-        {thisButton.label}
-      </CompoundButton>
-      ));
-      */
-
     let button = buttons.map(thisButton => ( thisButton.primary ?
        <PrimaryButton text={thisButton.label} onClick={thisButton.buttonOnClick.bind(this)} allowDisabledFocus disabled={thisButton.disabled} checked={thisButton.checked} />
       :<DefaultButton text={thisButton.label} onClick={thisButton.buttonOnClick.bind(this)} allowDisabledFocus disabled={thisButton.disabled} checked={thisButton.checked} />
