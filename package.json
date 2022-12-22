@@ -1,6 +1,6 @@
 {
   "name": "drilldown-15-v-2",
-  "version": "0.0.9",
+  "version": "2.0.1",
   "private": true,
   "main": "lib/index.js",
   "scripts": {
@@ -14,8 +14,8 @@
     "@microsoft/sp-office-ui-fabric-core": "1.15.2",
     "@microsoft/sp-property-pane": "1.15.2",
     "@microsoft/sp-webpart-base": "1.15.2",
-    "@mikezimm/fps-react": "^1.0.0",
-    "@mikezimm/npmfunctions": "^2.1.92",
+    "@mikezimm/fps-library-v2": "^1.0.66",
+    "@mikezimm/fps-styles": "^1.0.11",
     "@pnp/common": "^2.11.0",
     "@pnp/graph": "^2.14.0",
     "@pnp/logging": "^2.11.0",

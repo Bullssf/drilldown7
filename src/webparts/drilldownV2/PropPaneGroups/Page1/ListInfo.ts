@@ -21,7 +21,7 @@ import {
 
 import * as strings from 'DrilldownV2WebPartStrings';
 // import { IDrilldownV2WebPartProps } from '../IDrilldownV2WebPartProps';
-import { ValidLocalLanguages } from '../../fpsReferences';  //JSON_Edit_Link, 
+import { ValidLocalLanguages } from '@mikezimm/fps-library-v2/lib/common/PropPaneHelp/atoms/ValidLanguages';  //JSON_Edit_Link, 
 
 export function buildYourListGroup( ) {
 
@@ -41,6 +41,7 @@ export function buildYourListGroup( ) {
     label: 'Is List or Library',
     offText: 'Is List',
     onText: 'Is Library',
+    disabled: true, // Set to disabled because the prop pane on change now gets this value automatically
   }));
 
   groupFields.push(//https://docs.microsoft.com/en-us/previous-versions/windows/desktop/indexsrv/valid-locale-identifiers

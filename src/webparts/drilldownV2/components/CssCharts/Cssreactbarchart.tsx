@@ -2,19 +2,20 @@ import * as React from 'react';
 import styles from './Cssreactbarchart.module.scss';
 import { ICssreactbarchartProps, ICssreactbarchartState } from './ICssreactbarchartProps';
 
-import { getRandomInt, getRandomFromArray, generateVals, generateTitles } from '../../fpsReferences';
+import { getRandomInt, getRandomFromArray, generateVals, generateTitles } from '@mikezimm/fps-library-v2/lib/logic/Randomize/functions';
 
-import { sortKeysByOtherKey  } from '../../fpsReferences';
+import { sortKeysByOtherKey  } from '@mikezimm/fps-library-v2/lib/logic/Arrays/sorting/objects';
 
 //Manipulation
-import { convertNumberArrayToRelativePercents, } from '../../fpsReferences';
+import { convertNumberArrayToRelativePercents, } from '@mikezimm/fps-library-v2/lib/logic/Arrays/manipulation';
 
 import { ICSSChartSettings, ICSSChartData } from '../Drill/IDrillProps';
-import { ICSSChartTypes, ISeriesSort, CSSChartTypes } from '../../fpsReferences';
+import { ICSSChartTypes, CSSChartTypes } from '@mikezimm/fps-library-v2/lib/components/interfaces/CSSCharts/ICSSCharts';
+import { ISeriesSort, } from '@mikezimm/fps-library-v2/lib/logic/Arrays/sorting/Interfaces';
 
 import stylesC from './cssChart.module.scss';
 
-import { ColorsBlue, ColorsBrown, ColorsGray, ColorsGreen, ColorsRed } from '../../fpsReferences';
+import { ColorsBlue, ColorsBrown, ColorsGray, ColorsGreen, ColorsRed } from '@mikezimm/fps-library-v2/lib/components/interfaces/CSSCharts/themes';
 
 /***
  *    d888888b d8b   db d888888b d88888b d8888b. d88888b  .d8b.   .o88b. d88888b .d8888. 

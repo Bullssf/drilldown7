@@ -7,7 +7,7 @@ import "@pnp/sp/clientside-pages/web";
 // import { ClientsideWebpart } from "@pnp/sp/clientside-pages";
 // import { CreateClientsidePage, PromotedState, ClientsidePageLayoutType, ClientsideText,  } from "@pnp/sp/clientside-pages";
 
-import { getHelpfullError } from '../../webparts/drilldownV2/fpsReferences';
+import { getHelpfullError } from '@mikezimm/fps-library-v2/lib/logic/Errors/friendly';
 
 // import { IViewLog, addTheseViews } from '../../services/listServices/viewServices'; //Import view arrays for Time list
 
@@ -74,7 +74,7 @@ export async function getAllItems( configWebURL: string, propsListName: string, 
         */
 
     } catch (e) {
-        errMessage = getHelpfullError(e, true, true);
+        errMessage = getHelpfullError(e, true, true).returnMess;
 
     }
 

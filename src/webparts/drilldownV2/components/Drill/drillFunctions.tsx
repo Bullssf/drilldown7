@@ -24,12 +24,12 @@ import { IDrillList, } from  './IDrillProps';
 // import { addTheseItemsToList, addTheseItemsToListInBatch } from '../../../../services/listServices/listServices';
 
 import { makeTheTimeObject } from '../../fpsReferences';
-import { monthStr3 } from '../../fpsReferences';
-import { getBestTimeDelta, getAge } from '@mikezimm/npmfunctions/dist/Services/Time/deltas';
+import { monthStr3 } from '@mikezimm/fps-library-v2/lib/logic/Time/monthLabels';
+import { getBestTimeDelta, getAge } from '@mikezimm/fps-library-v2/lib/logic/Time/deltas';
 
 // import { doesObjectExistInArray } from '@mikezimm/npmfunctions/dist/Services/Arrays/checks';
-import { addItemToArrayIfItDoesNotExist, } from '../../fpsReferences';
-import { sortKeysByOtherKey, } from '../../fpsReferences';
+import { addItemToArrayIfItDoesNotExist, } from '@mikezimm/fps-library-v2/lib/logic/Arrays/manipulation';
+import { sortKeysByOtherKey, } from '@mikezimm/fps-library-v2/lib/logic/Arrays/sorting/objects';
 
 import { getHelpfullError } from '../../fpsReferences';
 
@@ -38,7 +38,7 @@ import { getHelpfullError } from '../../fpsReferences';
 // import { IAnyArray } from  '../../../../services/listServices/listServices';
 // import { DoNotExpandFuncColumns, convertArrayToLC } from  '../../../../services/getInterfaceV2';
 
-import { getDetailValueType, ITypeStrings } from '@mikezimm/npmfunctions/dist/Services/typeServices';
+import { getDetailValueType, ITypeStrings } from '@mikezimm/fps-library-v2/lib/logic/Types/typeServices';
 
 // import { ensureUserInfo } from '@mikezimm/npmfunctions/dist/Services/Users/userServices';
 
@@ -46,13 +46,18 @@ import { getDetailValueType, ITypeStrings } from '@mikezimm/npmfunctions/dist/Se
 
 import { IRefinerLayer, IItemRefiners, RefineRuleValues, IRefinerStatType, IRefinerStat } from '../../fpsReferences';
 
-import { IUser } from '../../fpsReferences';
+import { IUser } from '@mikezimm/fps-library-v2/lib/logic/Users/IUserInterfaces';
 // import { IQuickButton } from '@mikezimm/npmfunctions/dist/QuickCommands/IQuickCommands';
 
-import { createItemFunctionProp,  } from '../../../../services/parse'; //Main function to update item
+import { createItemFunctionProp,  } from '@mikezimm/fps-library-v2/lib/logic/Strings/drillParse/createItemFunctionProp'; //Main function to update item
 
-import { DoNotExpandColumns } from "../../../../services/getInterfaceV2";
+import { DoNotExpandColumns } from "@mikezimm/fps-library-v2/lib/pnpjs/Lists/getVX/IGetInterfaceV2";
 
+import { getSourceItems } from '@mikezimm/fps-library-v2/lib/pnpjs/SourceItems/getSourceItems';
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import { IMinSourceFetchProps } from '@mikezimm/fps-pnp2/lib/services/sp/fetch/items/fetchSourceItems';
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import { ISourceProps } from "@mikezimm/fps-library-v2/lib/pnpjs";
 
 // export async function getIUser ( webURL: string, email: string, callBack: any )   {
 
@@ -130,7 +135,13 @@ export async function getAllItems( drillList: IDrillList, addTheseItemsToState: 
               //https://reactgo.com/javascript-variable-regex/
               const removeStr = `/${doNotExp}`;
               const regex =  new RegExp(removeStr,'gi'); // eslint-disable-line @rushstack/security/no-unsafe-regexp
-              cleanColumn = cleanColumn.replace(regex,''); // it works  
+              if ( doNotExp.toLowerCase() === 'object.' ) {
+                const cleanSplit = cleanColumn.split(regex); // it works  
+                cleanColumn = cleanSplit[0];
+              } else {
+                cleanColumn = cleanColumn.replace(regex,''); // it works  
+              }
+              
             });
           }
           cleanSelectCols.push( cleanColumn ); // it works  
@@ -141,27 +152,25 @@ export async function getAllItems( drillList: IDrillList, addTheseItemsToState: 
       }
     }
 
-
-    let thisListObject = thisListWeb.lists.getByTitle(drillList.name);
-
     /**
      * IN FUTURE, ALWAYS BE SURE TO PUT SELECT AND EXPAND AFTER .ITEMS !!!!!!
      */
+    drillList.selectColumns = selectCols.split(',');
+    drillList.selectColumnsStr = selectCols;
 
-    try {
-        let fetchCount = drillList.fetchCount > 0 ? drillList.fetchCount : 200;
-
-        if ( drillList.restFilter.length > 1 ) {
-            allItems = await thisListObject.items.select(selectCols).expand(expandThese).orderBy('ID',false).top(fetchCount).filter(drillList.restFilter).get();
-        } else {
-            allItems = await thisListObject.items.select(selectCols).expand(expandThese).orderBy('ID',false).top(fetchCount).get();
-        }
-    } catch (e) {
-        errMessage = getHelpfullError(e, false, true);
+    const DrillSource: IMinSourceFetchProps = {
+      webUrl: drillList.webURL,
+      listTitle: drillList.title,
+      fetchCount: drillList.fetchCount,
+      selectThese: drillList.selectColumns,
+      expandThese: drillList.expandColumns,
 
     }
-    consoleMe( 'getAllItems' , allItems, drillList );
-    allItems = processAllItems( allItems, errMessage, drillList, addTheseItemsToState, setProgress, updatePerformance, sourceUser );
+
+    const getItems = await getSourceItems( DrillSource as ISourceProps, true, true )
+
+    consoleMe( 'getAllItems' , getItems.items, drillList );
+    getItems.items = processAllItems( getItems.items, errMessage, drillList, addTheseItemsToState, setProgress, updatePerformance, sourceUser );
 
 
 }

@@ -1,8 +1,7 @@
 
-import { IWebpartBannerProps } from '@mikezimm/npmfunctions/dist/HelpPanelOnNPM/onNpm/bannerProps';
-import { IBannerPages } from '@mikezimm/npmfunctions/dist/HelpPanelOnNPM/onNpm/bannerProps';
-
-import { tricksTable } from '@mikezimm/npmfunctions/dist/CoreFPS/ReusaableTricks';
+import { tricksTable } from '@mikezimm/fps-library-v2/lib/banner/features/Tricky/ReusaableTricks';
+import { IBannerPages, } from '../../fpsReferences';
+import { IWebpartBannerProps } from '@mikezimm/fps-library-v2/lib/banner/mainReact/IWebpartBannerProps';
 
 import { aboutTable } from './About';
 import { advancedContent } from './Advanced';
@@ -19,8 +18,8 @@ import { whyContent } from './Whyme';  //2022-01-31: Added Pivot Tiles
 export function getBannerPages ( bannerProps: IWebpartBannerProps ) {
 
     let result : IBannerPages = {
-        whyContent:  whyContent( ),
-        aboutTable:  aboutTable( bannerProps.showRepoLinks ),
+        whyContent:  whyContent( bannerProps ),
+        aboutTable:  aboutTable( bannerProps ),
         gettingStartedContent:  gettingStartedContent( ),
         errorsContent:  errorsContent( ),
         advancedContent:  advancedContent( ),

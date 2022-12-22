@@ -22,7 +22,8 @@ import {
 
 // import * as strings from 'DrilldownV2WebPartStrings';
 // import { IDrilldownV2WebPartProps } from '../IDrilldownV2WebPartProps';
-import { JSON_Edit_Link  } from '../../fpsReferences';  //, ValidLocalLanguages
+
+import { JSON_Edit_Link } from '../../fpsReferences';
 
 export function buildCustomizeGroup( ) {
 

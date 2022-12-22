@@ -27,7 +27,7 @@ import { PropertyFieldMultiSelect } from '@pnp/spfx-property-controls/lib/Proper
 import * as strings from 'DrilldownV2WebPartStrings';
 import { IDrilldownV2WebPartProps } from '../../IDrilldownV2WebPartProps';
 
-import { refinerRuleItems } from '../../fpsReferences';
+import { refinerRuleItems } from '@mikezimm/fps-library-v2/lib/components/interfaces/Refiners/functions';
 
 export function buildRefinerGroup( wpProps: IDrilldownV2WebPartProps ) {
 

@@ -1,7 +1,8 @@
 // import { toAbsoluteUrl } from '@pnp/sp';
 import { ICSSChartSettings, ICSSChartData, } from '../Drill/IDrillProps';
 
-import { IRefinerLayer, IRefinerStat, ICSSChartTypes } from '../../fpsReferences';
+import { IRefinerLayer, IRefinerStat } from '@mikezimm/fps-library-v2/lib/components/interfaces/Refiners/IRefiners';
+import { ICSSChartTypes } from '@mikezimm/fps-library-v2/lib/components/interfaces/CSSCharts/ICSSCharts';
 
 export function buildCountChartsObject( title: string, callBackID: string, refinerObj: IRefinerLayer , chartTypes: ICSSChartTypes[] ) {
     let resultSummaryObject = null;

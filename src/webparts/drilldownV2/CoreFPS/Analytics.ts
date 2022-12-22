@@ -13,8 +13,10 @@ import { DisplayMode, } from '@microsoft/sp-core-library';
  */
 
 import { IDrilldownV2Props } from '../components/Drill/IDrillProps';
-import { saveAnalytics3, IZLoadAnalytics, IZSentAnalytics, getMinPerformanceString } from '../fpsReferences';
-import { ILoadPerformance, } from '../fpsReferences';
+import { check4Gulp, ILoadPerformance, } from '../fpsReferences';
+import { saveAnalytics3, getMinPerformanceString } from '@mikezimm/fps-library-v2/lib/pnpjs/Logging/saveAnalytics';
+import { IZLoadAnalytics, IZSentAnalytics, } from '@mikezimm/fps-library-v2/lib/pnpjs/Logging/interfaces';
+
 // import { LoadPerformanceOps, IMinPerformance, IMinPerformanceSetting, IMinPerformanceSettingLabels, IMinPerformanceSettingLabelSS7 } from '../fpsReferences';
 
 
@@ -105,7 +107,7 @@ export const analyticsWeb: string = "/sites/Templates/Analytics/";
 // }
 
 
-export const CodeVersion = 'v2.0.0.2 +';  //  ==>  https://github.com/mikezimm/drilldown7/issues/190
+export const CodeVersion = 'v2.1.0.0 +';  //  ==>  https://github.com/mikezimm/drilldown7/issues/190
 export function saveViewAnalytics( Title: string, Result: string, thisProps: IDrilldownV2Props, analyticsWasExecuted: boolean, performanceObj: ILoadPerformance ) : boolean {
 
   if ( analyticsWasExecuted === true ) {
@@ -113,7 +115,7 @@ export function saveViewAnalytics( Title: string, Result: string, thisProps: IDr
 
   } else {
 
-    const {  context, displayMode, FPSPropsObj } = thisProps;
+    const {  context, displayMode, analyticsProps } = thisProps.bannerProps;
 
     // Do not save anlytics while in Edit Mode... only after save and page reloads
     if ( displayMode === DisplayMode.Edit ) { return; }
@@ -139,6 +141,19 @@ export function saveViewAnalytics( Title: string, Result: string, thisProps: IDr
     console.log( 'zzzRichText3Obj:', zzzRichText3Obj);
 
     const performance : string = getMinPerformanceString( performanceObj );
+
+    // let FPSProps: string = analyticsProps;
+
+    let FPSProps: string = null;
+    if ( analyticsProps ) {
+      try {
+        FPSProps = JSON.stringify( analyticsProps );
+      } catch(e) {
+        if ( check4Gulp() === true ) {
+          alert( 'Unable to stringify FPSProps in analytics' );
+        }
+      }
+    }
     // {
     //   mode: null,
     // };
@@ -178,7 +193,7 @@ export function saveViewAnalytics( Title: string, Result: string, thisProps: IDr
 
     // let FPSProps = null;
     // let FPSPropsObj = buildFPSAnalyticsProps( thisProps, this.wpInstanceID, context.pageContext.web.serverRelativeUrl );
-    const FPSProps = JSON.stringify( FPSPropsObj );
+    // const FPSProps = JSON.stringify( FPSPropsObj );
 
     const saveObject: IZSentAnalytics = {
       loadProperties: loadProperties,
@@ -218,10 +233,10 @@ export function saveViewAnalytics( Title: string, Result: string, thisProps: IDr
 
     };
 
-    saveAnalytics3( analyticsWeb , `${analyticsViewsList}` , saveObject, true );
+    const result = saveAnalytics3( analyticsWeb , `${analyticsViewsList}` , saveObject, true );
 
     const saved = true;
-    console.log('saved view info');
+    console.log('saved view info' );
     return saved;
 
   }

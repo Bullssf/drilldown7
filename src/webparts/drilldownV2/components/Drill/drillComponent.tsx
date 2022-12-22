@@ -6,6 +6,8 @@ import * as React from 'react';
 import { IDrilldownV2Props, IDrillDownState, IDrillList, IViewType, IRefinerStyles, RefinerChartTypes } from './IDrillProps';
 import { pivCats } from './IDrillProps';
 
+import { IUser } from '@mikezimm/fps-library-v2/lib/logic/Users/IUserInterfaces';
+
 import { saveViewAnalytics } from '../../CoreFPS/Analytics';
 
 import { Stack, IStackTokens, Icon, } from 'office-ui-fabric-react';
@@ -20,15 +22,17 @@ import { Pivot, PivotItem, } from 'office-ui-fabric-react/lib/Pivot';
 
 import "@pnp/sp/webs";
 
+
+import { IFPSWindow } from '@mikezimm/fps-library-v2/lib/common/interfaces/fps/Window';
 // import { IContentsListInfo, IMyListInfo, IServiceLog, IContentsLists } from '../../../../services/listServices/listTypes'; //Import view arrays for Time list
 
 // import { ITheTime, } from '@mikezimm/npmfunctions/dist/Services/Time/Interfaces';
-import { weekday3,  } from '../../fpsReferences';
-import { monthStr3 } from '../../fpsReferences';
-import { makeid } from '../../fpsReferences';
+import { weekday3,  } from '@mikezimm/fps-library-v2/lib/logic/Time/dayLabels';
+import { monthStr3 } from '@mikezimm/fps-library-v2/lib/logic/Time/monthLabels';
+import { makeid } from '@mikezimm/fps-library-v2/lib/logic/Strings/guids';
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-import { FPSAgeSliderOptions, FPSAgeSliderOptionsOOTB, IFPSAgeSliderProps } from '@mikezimm/fps-react/lib/FPSAgeSlider';
+import { FPSAgeSliderOptions, FPSAgeSliderOptionsOOTB, IFPSAgeSliderProps } from '@mikezimm/fps-library-v2/lib/components/atoms/FPSAgeSlider/FPSAgeTypes';
 // import { FPSAgeSliderOptions, FPSAgeSliderOptionsOOTB, IFPSAgeSliderProps } from '../FPSAgeSlider/FPSAgeTypes';
 
 import styles from '../Contents/contents.module.scss';
@@ -36,16 +40,18 @@ import styles from '../Contents/contents.module.scss';
 import { createIconButton ,} from "../createButtons/IconButton";
 // import { defCommandIconStyles} from "../createButtons/IconButton";
 
-import { IContentsToggles, makeToggles } from '../fields/toggleFieldBuilder';
+import { IContentsToggles, makeToggles } from '@mikezimm/fps-library-v2/lib/components/molecules/ReactListV1/atoms/toggleFieldBuilder';
 
-import { IMyProgress, ICSSChartTypes, IMyPivCat } from '../../fpsReferences';
+import { ICSSChartTypes, } from '@mikezimm/fps-library-v2/lib/components/interfaces/CSSCharts/ICSSCharts';
+import { IMyProgress, } from '@mikezimm/fps-library-v2/lib/common/interfaces/fps/IMyInterfaces';
+import { IMyPivCat, } from '@mikezimm/fps-library-v2/lib/common/interfaces/fps/IzPivots';
 
-import { ICustViewDef } from '../../fpsReferences';
+import { ICustViewDef, IQuickCommandsDesign } from '../../fpsReferences';
 
-import { IUser } from '../../fpsReferences';
-import { IQuickCommands } from '../../fpsReferences';
+// import { IUser } from '@mikezimm/fps-library-v2/lib/logic/Users/IUserInterfaces';
+// import { IQuickCommands } from '../../fpsReferences';
 
-import { IListViewDDDrillDown } from '../../fpsReferences';
+// import { IListViewDDDrillDown } from '../../fpsReferences';
 
 // import { gitRepoDrillDown } from '@mikezimm/npmfunctions/dist/Links/LinksRepos';
 
@@ -53,18 +59,22 @@ import { IRefinerLayer, IRefinerRules, IRefinerStat } from '../../fpsReferences'
 
 // import { PageContext } from '@microsoft/sp-page-context';
 
-import { pivotOptionsGroup, } from '../../fpsReferences';
+import { pivotOptionsGroup, } from './PivotOptions_NPM';
 // import { IFPSUser, } from '../../fpsReferences';
 
-import { getExpandColumnsV2, getSelectColumnsV2, getLinkColumnsV2, getFuncColumnsV2 } from '../../../../services/getFunctionsV2';
+import { getExpandColumns } from '@mikezimm/fps-library-v2/lib/pnpjs/Lists/getVX/getExpandV2';
+import { getSelectColumns } from '@mikezimm/fps-library-v2/lib/pnpjs/Lists/getVX/getSelectV2';
+import { getLinkColumns } from '@mikezimm/fps-library-v2/lib/pnpjs/Lists/getVX/getLinkV2';
+import { getFuncColumns } from '@mikezimm/fps-library-v2/lib/pnpjs/Lists/getVX/getFuncV2';
 
 // import { DoNotExpandLinkColumns, DoNotExpandTrimB4, DoNotExpandTrimAfter, DoNotExpandTrimSpecial } from '../../../../services/getInterface';
 
-import { getHelpfullError } from '@mikezimm/npmfunctions/dist/Services/Logging/ErrorHandler';
+import { getHelpfullError } from '@mikezimm/fps-library-v2/lib/logic/Errors/friendly';
 
 // import MyDrillItems from './drillListView';
 
-import ReactListItems, { getMaxRichHeight } from './reactListView';
+import ReactListItems from '@mikezimm/fps-library-v2/lib/components/molecules/ReactListV1/component/reactListView';
+import { getMaxRichHeight } from '@mikezimm/fps-library-v2/lib/components/molecules/ReactListV1/functions/richHeight';
 
 //parentListFieldTitles
 
@@ -82,27 +92,26 @@ import Cssreactbarchart from '../CssCharts/Cssreactbarchart';
 
 import {buildCountChartsObject ,  buildStatChartsArray} from '../CssCharts/cssChartFunctions';
 
-import { getAppropriateViewFields, getAppropriateViewGroups, getAppropriateViewProp, } from './listFunctions';
+import { getAppropriateViewFields, getAppropriateViewGroups, getAppropriateViewProp } from "@mikezimm/fps-library-v2/lib/components/molecules/ReactListV1/functions/getView";
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { CommandItemNotUpdatedMessage, CommandUpdateFailedMessage, CommandEnterCommentString, 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  CommandCancelRequired, CommandEmptyCommentMessage } from '../../fpsReferences';
-
+  CommandCancelRequired, CommandEmptyCommentMessage } from '@mikezimm/fps-library-v2/lib/components/interfaces/QuickCommands/IQuickCommands';
   //MOVE TO IQuickCommands in npmFunctions
-import { CommandCaptchaTestFailed, CommandCaptchaRequiredFailed } from './listFunctions';
+import { CommandCaptchaTestFailed, CommandCaptchaRequiredFailed, } from '@mikezimm/fps-library-v2/lib/components/interfaces/QuickCommands/IQuickCommands';
+import { IUpdateCommandItemReturn, } from '@mikezimm/fps-library-v2/lib/pnpjs/CommandItems/updateItem';
 
 // import FetchBanner from '../CoreFPS/FetchBannerElement';
-import FetchBanner from '@mikezimm/npmfunctions/dist/HelpPanelOnNPM/onNpm/FetchBannerElement';
+import FetchBannerX from '@mikezimm/fps-library-v2/lib/banner/bannerX/FetchBannerX';
 // import FetchBanner from '../../CoreFPS/FetchBannerElement';
-import EasyPagesHook from '../EasyPages/componentSources';
 
-import FPSAgeSliderHook from '@mikezimm/fps-react/lib/FPSAgeSlider';
+import FPSAgeSliderHook from '@mikezimm/fps-library-v2/lib/components/atoms/FPSAgeSlider/FPSAgeHook';
 
 // import { ISpecialMessage, specialUpgrade } from '@mikezimm/npmfunctions/dist/HelpPanelOnNPM/special/interface';
 
 
-import { getWebPartHelpElement } from '../../CoreFPS/PropPaneHelp';
+import { DrilldownHelp } from '@mikezimm/fps-library-v2/lib/common/PropPaneHelp/pages/Drilldown';
 import { getBannerPages, } from '../HelpPanel/AllContent';
 import { IBannerPages } from '../../fpsReferences';
 
@@ -110,12 +119,16 @@ import { ILoadPerformance, startPerformOp, updatePerformanceEnd, ILoadPerformanc
 
 import { IDrillItemInfo } from '../../fpsReferences';
 import { defaultBannerCommandStyles } from '../../fpsReferences';
-import { ensureUserInfo } from '@mikezimm/npmfunctions/dist/Services/Users/userServices';
+import { ensureUserInfo } from '@mikezimm/fps-library-v2/lib/pnpjs/Users/calls/ensureUserInfo';
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-import { IFieldPanelProps } from '../../CoreFPS/PropPaneCols';
-import { DisplayMode } from '@microsoft/sp-core-library';
+// import { IFieldPanelProps } from '../../CoreFPS/PropPaneCols';
+// import { DisplayMode } from '@microsoft/sp-core-library';
+import { IEnsureUserInfo } from '@mikezimm/fps-library-v2/lib/pnpjs/Users/interfaces/IEnsureUserInfo';
 
+import { ISiteThemes } from "@mikezimm/fps-library-v2/lib/common/commandStyles/ISiteThemeChoices";
+import { getFieldPanelElement } from '../../CoreFPS/PropPaneHelp/FieldPanel';
+const SiteThemes: ISiteThemes = { dark: stylesD.fpsSiteThemeDark, light: stylesD.fpsSiteThemeLight, primary: stylesD.fpsSiteThemePrimary };
 
 /***
  *    d88888b db    db d8888b.  .d88b.  d8888b. d888888b      d8888b. d88888b d88888b       .o88b. db       .d8b.  .d8888. .d8888. 
@@ -141,7 +154,7 @@ export default class DrillDown extends React.Component<IDrilldownV2Props, IDrill
 
     private _performance: ILoadPerformance = null;
 
-    private _webPartHelpElement = getWebPartHelpElement( this.props.sitePresets, null );
+    private _webPartHelpElement = [];
     private _contentPages : IBannerPages = getBannerPages( this.props.bannerProps );
 
     private _fetchUserId: string = '';  //Caching fetch Id and Web as soon as possible to prevent race
@@ -155,6 +168,11 @@ export default class DrillDown extends React.Component<IDrilldownV2Props, IDrill
         const refreshId = startTime.toISOString().replace('T', ' T'); // + ' ~ ' + startTime.toLocaleTimeString();
         return refreshId;
 
+    }
+
+    private _updateWebPartHelpElement () {
+      this._webPartHelpElement = [ ...[ getFieldPanelElement( this.props.bannerProps ) ] , ...DrilldownHelp( this.props.bannerProps )];
+      // this._webPartHelpElement = DrilldownHelp( this.props.bannerProps );
     }
 
     /***
@@ -399,10 +417,10 @@ export default class DrillDown extends React.Component<IDrilldownV2Props, IDrill
             });
         }
 
-        let expColumns = getExpandColumnsV2(allColumns);
-        let selColumns = getSelectColumnsV2(allColumns);
-        let linkColumns = getLinkColumnsV2(allColumns);
-        let funcColumns = getFuncColumnsV2(allColumns);
+        let expColumns = getExpandColumns(allColumns);
+        let selColumns = getSelectColumns(allColumns);
+        let linkColumns = getLinkColumns(allColumns);
+        let funcColumns = getFuncColumns(allColumns);
 
         if ( selColumns.length > 0 ) selectCols += "," + allColumns.join(","); // eslint-disable-line @typescript-eslint/no-unused-vars
         if (expColumns.length > 0) { expandThese = expColumns.join(","); } // eslint-disable-line @typescript-eslint/no-unused-vars
@@ -413,7 +431,7 @@ export default class DrillDown extends React.Component<IDrilldownV2Props, IDrill
         list.linkColumns = linkColumns;
         list.funcColumns = funcColumns.all;
         list.funcColumnsActual = funcColumns.actual;
-        list.errors = [ ...funcColumns.funcErrors ];
+        list.errors = [ ...funcColumns.errors ];
 
         list.selectColumnsStr = selColumns.join(',') ;
         list.staticColumnsStr = allColumns.join(',');
@@ -423,57 +441,6 @@ export default class DrillDown extends React.Component<IDrilldownV2Props, IDrill
 
         return list;
 
-    }
-
-
-    /***
-     *     .o88b. d8888b. d88888b  .d8b.  d888888b d88888b      d8888b. d8888b. d888888b db      db           db      d888888b .d8888. d888888b 
-     *    d8P  Y8 88  `8D 88'     d8' `8b `~~88~~' 88'          88  `8D 88  `8D   `88'   88      88           88        `88'   88'  YP `~~88~~' 
-     *    8P      88oobY' 88ooooo 88ooo88    88    88ooooo      88   88 88oobY'    88    88      88           88         88    `8bo.      88    
-     *    8b      88`8b   88~~~~~ 88~~~88    88    88~~~~~      88   88 88`8b      88    88      88           88         88      `Y8b.    88    
-     *    Y8b  d8 88 `88. 88.     88   88    88    88.          88  .8D 88 `88.   .88.   88booo. 88booo.      88booo.   .88.   db   8D    88    
-     *     `Y88P' 88   YD Y88888P YP   YP    YP    Y88888P      Y8888D' 88   YD Y888888P Y88888P Y88888P      Y88888P Y888888P `8888Y'    YP    
-     *                                                                                                                                          
-     *                                                                                                                                          
-     */
-
-    private async _presetDrillListUser( webURL: string, email: string ) {
-      const webURLOnCurrentCollection = !webURL || webURL.toLowerCase().indexOf(this.props.context.pageContext.site.serverRelativeUrl.toLowerCase()) > -1 ? true : false;
-      console.log('xxxxxxxxxx');
-      if ( !webURL || ( !this._sourceUser && webURLOnCurrentCollection === true ) ) {
-        //If current web is the sourceListWeb, then just use the context FPSUser
-        this._sourceUser = this.props.bannerProps.FPSUser;
-        this._fetchUserId = this._sourceUser.Id;
-        this._fetchWeb = webURL;
-
-        return this._sourceUser;
-
-      } else if ( webURL === this._fetchWeb && this._sourceUser ) {
-        return this._sourceUser;
-
-      } else {
-
-        try {
-          this._updatePerformance( 'fetch1', 'start', 'getUserD', null );
-          const sourceUser: IUser = await ensureUserInfo( webURL, email );
-  
-          this._fetchUserId = sourceUser.id;
-          this._fetchWeb = webURL;
-          this._sourceUser = sourceUser;
-
-          this._updatePerformance( 'fetch1', 'update', '', 1 );
-  
-          return this._sourceUser;
-  
-        } catch(e){
-          const errMessage = getHelpfullError(e, false, true);
-          this._updatePerformance( 'fetch1', 'update', '', 1 );
-          this.setState({ errMessage: errMessage });
-          return null;
-        }
-
-      }
- 
     }
 
 
@@ -495,7 +462,8 @@ export default class DrillDown extends React.Component<IDrilldownV2Props, IDrill
         let restFilter: string = !this.props.performance.restFilter ? ' ' : this.props.performance.restFilter;
         const evalFilter: string = !this.props.performance.evalFilter ? '' : this.props.performance.evalFilter;
 
-        if ( !this.props.webURL || this.props.context.pageContext.site.absoluteUrl.indexOf( this.props.webURL.toLowerCase() ) > -1 ) {  //The web part is on the current page context... get user object from Context instead.
+        // 2022-12-21:  Changed from this.props.webURL to just webURL to pull from function arguments
+        if ( !webURL || this.props.bannerProps.context.pageContext.site.absoluteUrl.indexOf( webURL.toLowerCase() ) > -1 ) {  //The web part is on the current page context... get user object from Context instead.
           if ( restFilter && restFilter.indexOf('[Me]') > 1 ) {
             restFilter = restFilter.replace('[Me]',  this.props.bannerProps.FPSUser.Id ? this.props.bannerProps.FPSUser.Id : this.props.bannerProps.FPSUser.id ) ; 
           }
@@ -509,9 +477,9 @@ export default class DrillDown extends React.Component<IDrilldownV2Props, IDrill
             name: name,
             guid: '',
             contextUserInfo: {
-                LoginName: this.props.bannerProps.pageContext.user.loginName,
-                Title: this.props.bannerProps.pageContext.user.displayName,
-                email: this.props.bannerProps.pageContext.user.email,
+                LoginName: this.props.bannerProps.context.pageContext.user.loginName,
+                Title: this.props.bannerProps.context.pageContext.user.displayName,
+                email: this.props.bannerProps.context.pageContext.user.email,
             },
             fetchCount: this.props.performance.fetchCount,
             fetchCountMobile: this.props.performance.fetchCountMobile,
@@ -583,14 +551,14 @@ export default class DrillDown extends React.Component<IDrilldownV2Props, IDrill
 
     public constructor(props:IDrilldownV2Props){
         super(props);
-
+        this._updateWebPartHelpElement();
         if ( this._performance === null ) { this._performance = this.props.loadPerformance;  }
         /**
          * This is copied later in code when you have to call the data in case something changed.
          */
 
         let drillList = this._createDrillList(this.props.webURL, this.props.listName, this.props.isLibrary, this.props.refiners, this.props.rules, this.props.stats, 
-          this.props.viewDefs, this.props.toggles.togOtherChartpart, '', false, this.props.language, 'constructor', 0, this.props.ageSliderWPProps.FPSAgeColumnName );
+          this.props.viewDefs, this.props.toggles.togOtherChartpart, this.props.listName, false, this.props.language, 'constructor', 0, this.props.ageSliderWPProps.FPSAgeColumnName );
         let errMessage = drillList.refinerRules === undefined ? 'Invalid Rule set: ' +  this.props.rules : '';
         if ( drillList.refinerRules === undefined ) { drillList.refinerRules = [[],[],[]] ; } 
 
@@ -600,7 +568,7 @@ export default class DrillDown extends React.Component<IDrilldownV2Props, IDrill
             if ( this.props.refiners.length > 2 ) { maxRefinersToShow = 3; }
         }
 
-        let quickCommands : IQuickCommands = this.props.quickCommands ? JSON.parse( JSON.stringify(this.props.quickCommands )) : null ;
+        let quickCommands : IQuickCommandsDesign = this.props.quickCommands ? JSON.parse( JSON.stringify(this.props.quickCommands )) : null ;
 
         if ( quickCommands !== null ) {
             if ( quickCommands.onUpdateReload === true ) {
@@ -612,7 +580,7 @@ export default class DrillDown extends React.Component<IDrilldownV2Props, IDrill
         }
 
         this.state = { 
-            pinState: this.props.fpsPinMenu.defPinState ? this.props.fpsPinMenu.defPinState : 'disabled',
+            pinState: this.props.bannerProps.fpsPinMenu.defPinState ? this.props.bannerProps.fpsPinMenu.defPinState : 'disabled',
             showDevHeader: false,
             lastStateChange: '', 
             analyticsWasExecuted: false,
@@ -626,6 +594,8 @@ export default class DrillDown extends React.Component<IDrilldownV2Props, IDrill
             // sourceUserInfo: null,
 
             bannerMessage: null,
+            bannerMessageStatus: 'Unknown',
+
             showPropsHelp: false,
             showTips: false,
             showRefinerCounts: this.props.showRefinerCounts ? this.props.showRefinerCounts : false,
@@ -685,11 +655,62 @@ export default class DrillDown extends React.Component<IDrilldownV2Props, IDrill
 
     }
 
+    /***
+     *     .o88b. d8888b. d88888b  .d8b.  d888888b d88888b      d8888b. d8888b. d888888b db      db           db      d888888b .d8888. d888888b 
+     *    d8P  Y8 88  `8D 88'     d8' `8b `~~88~~' 88'          88  `8D 88  `8D   `88'   88      88           88        `88'   88'  YP `~~88~~' 
+     *    8P      88oobY' 88ooooo 88ooo88    88    88ooooo      88   88 88oobY'    88    88      88           88         88    `8bo.      88    
+     *    8b      88`8b   88~~~~~ 88~~~88    88    88~~~~~      88   88 88`8b      88    88      88           88         88      `Y8b.    88    
+     *    Y8b  d8 88 `88. 88.     88   88    88    88.          88  .8D 88 `88.   .88.   88booo. 88booo.      88booo.   .88.   db   8D    88    
+     *     `Y88P' 88   YD Y88888P YP   YP    YP    Y88888P      Y8888D' 88   YD Y888888P Y88888P Y88888P      Y88888P Y888888P `8888Y'    YP    
+     *                                                                                                                                          
+     *                                                                                                                                          
+     */
+
+    private async _presetDrillListUser( webURL: string, email: string ) {
+      const FPSWindow: IFPSWindow = window as any;
+
+      const webURLOnCurrentCollection = !webURL || webURL.toLowerCase().indexOf( FPSWindow.FPSEnviro.siteServerRelativeUrl ) > -1 ? true : false;
+      console.log('xxxxxxxxxx');
+      if ( !webURL || ( !this._sourceUser && webURLOnCurrentCollection === true ) ) {
+        //If current web is the sourceListWeb, then just use the context FPSUser
+        this._sourceUser = this.props.bannerProps.FPSUser ;
+        this._fetchUserId = this._sourceUser.Id;
+        this._fetchWeb = webURL;
+
+        return this._sourceUser;
+
+      } else if ( webURL === this._fetchWeb && this._sourceUser ) {
+        return this._sourceUser;
+
+      } else {
+
+        try {
+          this._updatePerformance( 'fetch1', 'start', 'getUserD', null );
+          const sourceUser: IEnsureUserInfo = await ensureUserInfo( webURL, email );
+  
+          this._fetchUserId = sourceUser.user.id;
+          this._fetchWeb = webURL;
+          this._sourceUser = sourceUser.user;
+
+          this._updatePerformance( 'fetch1', 'update', '', 1 );
+  
+          return this._sourceUser;
+  
+        } catch(e){
+          const errMessage = getHelpfullError(e, false, true);
+          this._updatePerformance( 'fetch1', 'update', '', 1 );
+          this.setState({ errMessage: errMessage.friendly });
+          return null;
+        }
+
+      }
+ 
+    }
 
   public componentDidMount() {
     // const analyticsWasExecuted: boolean = saveViewAnalytics( 'Drilldown Webpart', 'didMount', this.props, this.state.analyticsWasExecuted );
 
-    this._updateStateOnPropsChange( '', false, true );
+    this._updateStateOnPropsChange( null, false, true );
     console.log('DrillComponent Mounted!');
   }
 
@@ -708,15 +729,22 @@ export default class DrillDown extends React.Component<IDrilldownV2Props, IDrill
 public componentDidUpdate( prevProps: IDrilldownV2Props ){
 
     let rebuildPart = false;
+    const currList = this.props.bannerProps.fieldPanelProps.lists[0];
+    const prevList = prevProps.bannerProps.fieldPanelProps.lists[0];
 
-    const refresh = this.props.displayMode !== prevProps.displayMode ? true : false;
+    let refresh = this.props.bannerProps.displayMode !== prevProps.bannerProps.displayMode ? true : false;
+
+    if ( JSON.stringify( currList ) !== JSON.stringify( prevList ) ) {
+      this._updateWebPartHelpElement();
+
+      refresh = true;
+    }
 
     if ( refresh === true ) {
-      this._webPartHelpElement = getWebPartHelpElement( this.props.sitePresets );
       this._contentPages = getBannerPages( this.props.bannerProps );
     }
 
-    if (this.props.progress !== prevProps.progress) {  rebuildPart = true ; }
+    // if (this.props.progress !== prevProps.progress) {  rebuildPart = true ; }
 
     if ( JSON.stringify(prevProps.refiners) !== JSON.stringify(this.props.refiners )) {
         rebuildPart = true;
@@ -730,9 +758,10 @@ public componentDidUpdate( prevProps: IDrilldownV2Props ){
       rebuildPart = true ;
     }
 
-    if ( this.props.displayMode === DisplayMode.Edit ) {
-      this._webPartHelpElement = getWebPartHelpElement( this.props.sitePresets, ); //{ webURL: this.props.webURL, listTitle: this.props.listName }
-    }
+    // This seems unnecessary based on the first if-then in componentDidUpdate
+    // if ( this.props.bannerProps.displayMode === DisplayMode.Edit ) {
+    //   this._webPartHelpElement = DrilldownHelp( this.props.bannerProps ); //{ webURL: this.props.webURL, listTitle: this.props.listName }
+    // }
 
     if ( prevProps.performance.fetchCount !== this.props.performance.fetchCount ) {
         rebuildPart = true ;
@@ -755,7 +784,7 @@ public componentDidUpdate( prevProps: IDrilldownV2Props ){
       }
 
     if (rebuildPart === true) {
-      this._updateStateOnPropsChange( '', false, true );
+      this._updateStateOnPropsChange( null, false, true );
     }
   }
 
@@ -786,7 +815,7 @@ public componentDidUpdate( prevProps: IDrilldownV2Props ){
         //   } = this.props;
 
         const { 
-          bannerMessage, quickCommands, searchText, searchAge
+          bannerMessage, bannerMessageStatus, quickCommands, searchText, searchAge
         } = this.state;
 
         const { FPSAgeColumnTitle,  } = this.props.ageSliderWPProps
@@ -902,10 +931,10 @@ public componentDidUpdate( prevProps: IDrilldownV2Props ){
 
         let createBanner = quickCommands !== null && quickCommands.successBanner > 0 ? true : false; //CommandItemNotUpdatedMessage
         const bannerEleClasses = [ stylesD.bannerFooterStyles, bannerMessage === null ? stylesD.bannerHide : stylesD.bannerShow ];
-        if ( bannerMessage && ( [CommandCancelRequired, CommandItemNotUpdatedMessage ].indexOf(bannerMessage) > -1 ) ) bannerEleClasses.push( stylesD.bannerWarn); 
-        if ( typeof bannerMessage === 'string' && bannerMessage.indexOf( CommandUpdateFailedMessage) > -1 ) bannerEleClasses.push( stylesD.bannerWarn); 
-        if ( typeof bannerMessage === 'string' && bannerMessage.indexOf( CommandCaptchaTestFailed) > -1 ) bannerEleClasses.push( stylesD.bannerWarn); 
-        if ( typeof bannerMessage === 'string' && bannerMessage.indexOf( CommandCaptchaRequiredFailed) > -1 ) bannerEleClasses.push( stylesD.bannerWarn); 
+
+        if ( bannerMessageStatus === 'Success' ) {  }
+        else if ( bannerMessageStatus === 'Unknown' ) {  }
+        else { bannerEleClasses.push( stylesD.bannerWarn ) }
 
         let bannerMessageEle = createBanner === false ? null : <div className={ bannerEleClasses.join(' ') }>
             { bannerMessage }
@@ -931,11 +960,11 @@ public componentDidUpdate( prevProps: IDrilldownV2Props ){
         // eslint-disable-next-line prefer-const
         let nearBannerElementsArray: any[] = [];
         // if ( this.props.bannerProps.beAUser !== true )  {
-          if ( this.props.easyPagesExtraProps.EasyPagesEnable === true )  {
-            nearBannerElementsArray.push( [
-              <Icon key='Link12' iconName='Link12' onClick={ this._toggleEasyLinks.bind(this) } style={ this.props.bannerProps.bannerCmdReactCSS }/>
-            ] );
-          }
+          // if ( this.props.bannerProps.easyPagesExtraProps.EasyPagesEnable === true )  {
+          //   nearBannerElementsArray.push( [
+          //     <Icon key='Link12' iconName='Link12' onClick={ this._toggleEasyLinks.bind(this) } style={ this.props.bannerProps.bannerCmdReactCSS }/>
+          //   ] );
+          // }
         // }
 
         // const FPSUser : IFPSUser = this.props.bannerProps.FPSUser;
@@ -943,34 +972,34 @@ public componentDidUpdate( prevProps: IDrilldownV2Props ){
         // const Special : ISpecialMessage = showSpecial === true ? specialUpgrade( 'warn', '/sites/TheSharePointHub/SitePages/DrillDown-WebPart-Upgrade---v2.aspx', ) : undefined;
         // Special.style = { color: 'black', background: 'limegreen' };
 
-        const Banner = <FetchBanner 
+        const Banner = <FetchBannerX 
 
             // bonusHTML1={ this._bonusHTML }
             panelPerformance={ this._performance }
             // bonusHTML2={ this._bonusHTML }
-
-            parentProps={ this.props }
+            siteThemes = { SiteThemes }
+            bannerProps={ this.props.bannerProps }
             parentState={ this.state }
 
             nearBannerElementsArray={ nearBannerElementsArray }
             farBannerElementsArray={ farBannerElementsArray }
 
             contentPages={ this._contentPages }
-            WebPartHelpElement={ this._webPartHelpElement }
+            WebPartHelpPivots={ this._webPartHelpElement }
 
             // SpecialMessage = { Special }
 
-            updatePinState = { null }
-            pinState = { this.state.pinState }
+            // updatePinState = { null }
+            // pinState = { this.state.pinState }
 
         />;
 
-        const EasyPagesElement = <EasyPagesHook 
-          easyPagesExtraProps={ { ...this.props.easyPagesExtraProps, ...{ easyPagesExpanded: this.state.showEasyPages, easyPagesToggleExpanded: this._toggleEasyLinks.bind(this) } } }
-          easyPagesCommonProps= { this.props.easyPagesCommonProps }
-          // easyPagesCommonProps= { this.props.easyPagesCommonProps }
-          EasyIconsObject= { this.props.EasyIconsObject }
-        />;
+        // const EasyPagesElement = <EasyPagesHook 
+        //   easyPagesExtraProps={ { ...this.props.bannerProps.easyPagesExtraProps, ...{ easyPagesExpanded: this.state.showEasyPages, easyPagesToggleExpanded: this._toggleEasyLinks.bind(this) } } }
+        //   easyPagesSourceProps= { this.props.bannerProps.easyPagesSourceProps }
+        //   // easyPagesSourceProps= { this.props.easyPagesSourceProps }
+        //   EasyIconsObject= { this.props.bannerProps.EasyIconsObject }
+        // />;
 
 /***
  *              d888888b db   db d888888b .d8888.      d8888b.  .d8b.   d888b  d88888b 
@@ -1081,7 +1110,7 @@ public componentDidUpdate( prevProps: IDrilldownV2Props ){
                 <div className={[styles.searchContainer, styles.padLeft20, styles.padTop20, styles.padBot10 ].join(' ')} >
                     <SearchBox
                       className={styles.searchBox}
-                      styles={{ root: { maxWidth: this.props.allowRailsOff === true ? 200 : 300 } }}
+                      styles={{ root: { maxWidth: 250 } }}
                       placeholder="Search"
                       onSearch={ this._searchForText.bind(this) }
                       onFocus={ null } // () => console.log('this.state',  this.state)
@@ -1298,7 +1327,8 @@ public componentDidUpdate( prevProps: IDrilldownV2Props ){
                             reactListItems  = this.state.searchCount === 0 ? null : 
                             <ReactListItems 
                                 parentListFieldTitles={ viewDefs.length > 0 ? null : this.props.parentListFieldTitles }
-    
+                                // themeClass={ getThemeClass( this.props.bannerProps.themeChoice, SiteThemes ) }  // This keeps bar and banner in sync
+                                themeClass={ stylesD.fpsSiteThemePrimary }
                                 richColumns = { this.state.drillList.richColumns }
                                 richHeight = { getMaxRichHeight( this.props.autoRichHeight, this.state.richHeight, this.state.searchedItems ) }
                                 updateRichHeightProps = { this._updateRichHeightState.bind(this) }
@@ -1386,17 +1416,17 @@ public componentDidUpdate( prevProps: IDrilldownV2Props ){
                         }
 
                     }
-                    if ( statRefinerObject && statRefinerObject.childrenKeys.length > 0  ) {
-                        //Update Dynamic Data cssChartData  cssChartProps : ICssChartProps
-                        if ( this.props.handleSwitch ) {
-                            this.props.handleSwitch ( this.state.drillList.refinerStats, 'summaries', statRefinerObject, this.state.searchMeta ) ; //resultSummaryArray  ); //: //  { chartData : ICSSChartSeries[], callBackID: string }[]  
-                        }
-                    } else {
-                        //Update Dynamic Data cssChartData
-                        if ( this.props.handleSwitch ) {
-                            this.props.handleSwitch ( null, null, null ); //: ICssChartProps
-                        }
-                    }
+                    // if ( statRefinerObject && statRefinerObject.childrenKeys.length > 0  ) {
+                    //     //Update Dynamic Data cssChartData  cssChartProps : ICssChartProps
+                    //     if ( this.props.handleSwitch ) {
+                    //         this.props.handleSwitch ( this.state.drillList.refinerStats, 'summaries', statRefinerObject, this.state.searchMeta ) ; //resultSummaryArray  ); //: //  { chartData : ICSSChartSeries[], callBackID: string }[]  
+                    //     }
+                    // } else {
+                    //     //Update Dynamic Data cssChartData
+                    //     if ( this.props.handleSwitch ) {
+                    //         this.props.handleSwitch ( null, null, null ); //: ICssChartProps
+                    //     }
+                    // }
 
                     /***
                         *    d888888b  .d88b.   d888b   d888b  db      d88888b .d8888. 
@@ -1440,7 +1470,7 @@ public componentDidUpdate( prevProps: IDrilldownV2Props ){
                     thisPage = <div>
                          {/* <div style={{ width: 50, height: 50, background: this.props.themeVariant.palette.themePrimary }}></div> */}
                         { Banner }
-                        { EasyPagesElement }
+                        {/* { EasyPagesElement } */}
                         <div className={styles.contents}>
                             <div className={stylesD.drillDown}>
                                 {  /* <div className={styles.floatRight}>{ toggleTipsButton }</div> */ }
@@ -1463,7 +1493,7 @@ public componentDidUpdate( prevProps: IDrilldownV2Props ){
                                 <div>
 
                                     <div className={ this.state.searchCount !== 0 ? styles.hideMe : styles.showErrorMessage  }>{ noInfo } </div>
-                                    { bannerMessageEle }
+                                    {/* { bannerMessageEle } */}
 
                                     {/* Removed stack due to issue:  https://github.com/mikezimm/drilldown7/issues/240 */}
                                     { reactListItems }
@@ -1526,7 +1556,7 @@ public componentDidUpdate( prevProps: IDrilldownV2Props ){
          */
 
         let drillList = this._createDrillList(this.props.webURL, this.props.listName, this.props.isLibrary, refiners, this.state.rules, this.props.stats, 
-          viewDefs, this.props.toggles.togOtherChartpart, '', false, this.props.language, 'getAllItemsCall', this.state.drillList.itteration, this.props.ageSliderWPProps.FPSAgeColumnName  );
+          viewDefs, this.props.toggles.togOtherChartpart, this.props.listName, false, this.props.language, 'getAllItemsCall', this.state.drillList.itteration, this.props.ageSliderWPProps.FPSAgeColumnName  );
         // let errMessage = drillList.refinerRules === undefined ? 'Invalid Rule set: ' +  this.state.rules : '';
         if ( drillList.refinerRules === undefined ) { drillList.refinerRules = [[],[],[]] ; } 
 
@@ -1582,7 +1612,7 @@ public componentDidUpdate( prevProps: IDrilldownV2Props ){
 
     private _addTheseItemsToState( drillList: IDrillList, allItems: IDrillItemInfo[] , errMessage : string, refinerObj: IRefinerLayer ) {
 
-        this._performance.ops.analyze2 = startPerformOp( 'analyze2 addItems', this.props.displayMode );
+        this._performance.ops.analyze2 = startPerformOp( 'analyze2 addItems', this.props.bannerProps.displayMode );
 
         const maxAge = FPSAgeSliderOptions[ Math.abs ( this.state.searchAge ) ].maxAge;  //ageIndex is negative... needs inverse to get array element
 
@@ -1617,63 +1647,63 @@ public componentDidUpdate( prevProps: IDrilldownV2Props ){
          * 2022-01-17:  Added this to see if this gets mutated and breaks on refresh items.  
          * After deeper testing, adding this to getBestFitView solved it but that was getting called a lot so I'm just doing it once in the render
          */
-        let viewDefs: ICustViewDef[] = JSON.parse(JSON.stringify(this.props.viewDefs));
+        // let viewDefs: ICustViewDef[] = JSON.parse(JSON.stringify(this.props.viewDefs));
 
-        if ( this.props.toggles.togOtherListview === true ) {
+        // if ( this.props.toggles.togOtherListview === true ) {
 
-            //2022-03-22:  This will update the listViewDD for other parts if it's turned on in main webpart props.
-            let listViewDD : IListViewDDDrillDown = {
+        //     //2022-03-22:  This will update the listViewDD for other parts if it's turned on in main webpart props.
+        //     let listViewDD : IListViewDDDrillDown = {
 
-                parentListFieldTitles: this.props.viewDefs.length > 0 ? null : this.props.parentListFieldTitles,
-                togOtherListview: this.props.toggles.togOtherListview,
-                webURL : drillList.webURL,
-                parentListURL : drillList.parentListURL,
-                listName : drillList.name,
+        //         parentListFieldTitles: this.props.viewDefs.length > 0 ? null : this.props.parentListFieldTitles,
+        //         togOtherListview: this.props.toggles.togOtherListview,
+        //         webURL : drillList.webURL,
+        //         parentListURL : drillList.parentListURL,
+        //         listName : drillList.name,
         
-                viewDefs: viewDefs,
-                viewFields: null, // This is derived from viewDefs
-                groupByFields: null, // This is derived from viewDefs
+        //         viewDefs: viewDefs,
+        //         viewFields: null, // This is derived from viewDefs
+        //         groupByFields: null, // This is derived from viewDefs
         
-                contextUserInfo: drillList.contextUserInfo,  //For site you are on ( aka current page context )
-                sourceUserInfo: this._sourceUser,// this.state.sourceUserInfo,   //For site where the list is stored
+        //         contextUserInfo: drillList.contextUserInfo,  //For site you are on ( aka current page context )
+        //         sourceUserInfo: this._sourceUser,// this.state.sourceUserInfo,   //For site where the list is stored
 
-                quickCommands: this.state.quickCommands,
+        //         quickCommands: this.state.quickCommands,
         
-                items : allItems,
-                breadCrumb: [pivCats.all.title],
+        //         items : allItems,
+        //         breadCrumb: [pivCats.all.title],
 
-            };
+        //     };
 
-            if ( this.props.handleListPost ) { this.props.handleListPost( listViewDD ); }
+        //     // if ( this.props.handleListPost ) { this.props.handleListPost( listViewDD ); }
 
-        } else {
+        // } else {
 
-            //2022-03-22:  This will just clear the listViewDD for other parts if it's turned off in main webpart props.
-            let listViewDD : IListViewDDDrillDown = {
+        //     //2022-03-22:  This will just clear the listViewDD for other parts if it's turned off in main webpart props.
+        //     let listViewDD : IListViewDDDrillDown = {
 
-                parentListFieldTitles: null,
-                webURL :null,
-                parentListURL : null,
-                listName : null,
-                togOtherListview: this.props.toggles.togOtherListview,
+        //         parentListFieldTitles: null,
+        //         webURL :null,
+        //         parentListURL : null,
+        //         listName : null,
+        //         togOtherListview: this.props.toggles.togOtherListview,
         
-                viewDefs: null,
-                viewFields: null, // This is derived from viewDefs
-                groupByFields: null, // This is derived from viewDefs
+        //         viewDefs: null,
+        //         viewFields: null, // This is derived from viewDefs
+        //         groupByFields: null, // This is derived from viewDefs
         
-                contextUserInfo: null,  //For site you are on ( aka current page context )
-                sourceUserInfo: null,   //For site where the list is stored
+        //         contextUserInfo: null,  //For site you are on ( aka current page context )
+        //         sourceUserInfo: null,   //For site where the list is stored
 
-                quickCommands: null,
+        //         quickCommands: null,
         
-                items : [],
-                breadCrumb: null,
+        //         items : [],
+        //         breadCrumb: null,
         
-            };
+        //     };
 
-            if ( this.props.handleListPost ) { this.props.handleListPost( listViewDD ); }
+        //     // if ( this.props.handleListPost ) { this.props.handleListPost( listViewDD ); }
 
-        }
+        // }
         consoleRef( 'addTheseItems2REF', refinerObj );
         consoleMe( 'addTheseItems2' , allItems, drillList );
 
@@ -1997,7 +2027,7 @@ public componentDidUpdate( prevProps: IDrilldownV2Props ){
     let viewDefs: ICustViewDef[] = JSON.parse(JSON.stringify(this.props.viewDefs));
 
     let drillList = this._createDrillList(this.props.webURL, this.props.listName, this.props.isLibrary, refiners, JSON.stringify(refinerRulesNew), this.props.stats, 
-    viewDefs, this.props.toggles.togOtherChartpart, '', true, this.props.language, 'changeRefinerOrder', this.state.drillList.itteration, this.props.ageSliderWPProps.FPSAgeColumnName );
+    viewDefs, this.props.toggles.togOtherChartpart, this.props.listName, true, this.props.language, 'changeRefinerOrder', this.state.drillList.itteration, this.props.ageSliderWPProps.FPSAgeColumnName );
 
     drillList.refinerInstructions = stateRefinerInstructions;
     
@@ -2011,7 +2041,7 @@ public componentDidUpdate( prevProps: IDrilldownV2Props ){
   private _updatePerformance( key: ILoadPerformanceOps, phase: 'start' | 'update', note: string = '', count: number ) {
 
     if ( phase === 'start' ) {
-        this._performance.ops[key] = startPerformOp( `${key} ${ note ? ' - ' + note : '' }`, this.props.displayMode );
+        this._performance.ops[key] = startPerformOp( `${key} ${ note ? ' - ' + note : '' }`, this.props.bannerProps.displayMode );
 
     } else if ( phase === 'update' ) {
         this._performance.ops[key] = updatePerformanceEnd( this._performance.ops[key], true , count );
@@ -2145,58 +2175,59 @@ public componentDidUpdate( prevProps: IDrilldownV2Props ){
         cmdCats.push ( this._convertRefinersToCMDs( ['All'],  refinerObj.childrenKeys, countTree, 0 , 0 , refinerObj) );
     }
 
-    if ( this.props.toggles.togOtherListview === true ) {
-        let listViewDD : IListViewDDDrillDown = {
+    // if ( this.props.toggles.togOtherListview === true ) {
+    //     let listViewDD : IListViewDDDrillDown = {
 
-            parentListFieldTitles: this.props.viewDefs.length > 0 ? null : this.props.parentListFieldTitles,
-            webURL :this.state.drillList.webURL,
-            parentListURL : this.state.drillList.parentListURL,
-            listName : this.state.drillList.name,
-            togOtherListview: this.props.toggles.togOtherListview,
+    //         parentListFieldTitles: this.props.viewDefs.length > 0 ? null : this.props.parentListFieldTitles,
+    //         webURL :this.state.drillList.webURL,
+    //         parentListURL : this.state.drillList.parentListURL,
+    //         listName : this.state.drillList.name,
+    //         togOtherListview: this.props.toggles.togOtherListview,
 
-            viewDefs: this.props.viewDefs,
-            viewFields: null, // This is derived from viewDefs
-            groupByFields: null, // This is derived from viewDefs
+    //         viewDefs: this.props.viewDefs,
+    //         viewFields: null, // This is derived from viewDefs
+    //         groupByFields: null, // This is derived from viewDefs
 
-            contextUserInfo: this.state.drillList.contextUserInfo,  //For site you are on ( aka current page context )
-            sourceUserInfo: this._sourceUser, //this.state.sourceUserInfo,   //For site where the list is stored
+    //         contextUserInfo: this.state.drillList.contextUserInfo,  //For site you are on ( aka current page context )
+    //         sourceUserInfo: this._sourceUser, //this.state.sourceUserInfo,   //For site where the list is stored
 
-            quickCommands: this.state.quickCommands,
+    //         quickCommands: this.state.quickCommands,
 
-            items : newFilteredItems,
-            breadCrumb: newMeta,
+    //         items : newFilteredItems,
+    //         breadCrumb: newMeta,
 
-        };
+    //     };
 
-        if ( this.props.handleListPost ) { this.props.handleListPost( listViewDD ); }
-        searchCount = newFilteredItems.length;
-    } else {
-        let listViewDD : IListViewDDDrillDown = {
+    //     // if ( this.props.handleListPost ) { this.props.handleListPost( listViewDD ); }
+    //     searchCount = newFilteredItems.length;
+    // } else {
+    //     let listViewDD : IListViewDDDrillDown = {
 
-            parentListFieldTitles: null,
-            webURL :null,
-            parentListURL : null,
-            listName : null,
-            togOtherListview: this.props.toggles.togOtherListview,
+    //         parentListFieldTitles: null,
+    //         webURL :null,
+    //         parentListURL : null,
+    //         listName : null,
+    //         togOtherListview: this.props.toggles.togOtherListview,
     
-            viewDefs: null,
-            viewFields: null, // This is derived from viewDefs
-            groupByFields: null, // This is derived from viewDefs
+    //         viewDefs: null,
+    //         viewFields: null, // This is derived from viewDefs
+    //         groupByFields: null, // This is derived from viewDefs
     
-            contextUserInfo: this.state.drillList.contextUserInfo,  //For site you are on ( aka current page context )
-            sourceUserInfo: this._sourceUser, // this.state.sourceUserInfo,   //For site where the list is stored
+    //         contextUserInfo: this.state.drillList.contextUserInfo,  //For site you are on ( aka current page context )
+    //         sourceUserInfo: this._sourceUser, // this.state.sourceUserInfo,   //For site where the list is stored
 
-            quickCommands: null,
+    //         quickCommands: null,
     
-            items : [],
-            breadCrumb: null,
+    //         items : [],
+    //         breadCrumb: null,
     
-        };
+    //     };
     
-        if ( this.props.handleListPost ) { this.props.handleListPost( listViewDD ); }
-        searchCount = newFilteredItems.length;
-    }
+    //     // if ( this.props.handleListPost ) { this.props.handleListPost( listViewDD ); }
+    //     searchCount = newFilteredItems.length;
+    // }
 
+    searchCount = newFilteredItems.length;
     consoleMe( 'searchForItems2: ' + text , this.state.allItems, this.state.drillList );
     consoleRef( 'searchForItems2: ' + text , refinerObj );
     this._consoleClick('searchForItems2: cmdCats', cmdCats );
@@ -2242,10 +2273,10 @@ public componentDidUpdate( prevProps: IDrilldownV2Props ){
         if ( FPSAgeColumnName ) {
           if ( !thisSearchItem[ `time${FPSAgeColumnName}` ] ) { 
             skipItemDueToAge = true; // There is no Time in the column, skip item
-  
+
           } else if ( thisSearchItem[ `time${FPSAgeColumnName}` ].daysAgo > maxAge ) {
             skipItemDueToAge = true; // There is a Time and it does excede maxAage
-  
+
           }
         }
       }
@@ -2378,7 +2409,7 @@ public componentDidUpdate( prevProps: IDrilldownV2Props ){
  *                                                                                                          
  */
 
-    private _updateStateOnPropsChange( message: string, hasError: boolean, hasNewProps: boolean = false ) : void {
+    private _updateStateOnPropsChange( updateResult: IUpdateCommandItemReturn, hasError: boolean, hasNewProps: boolean = false ) : void {
 
         /**
          * 2022-01-17:  Added this to see if this gets mutated and breaks on refresh items.  
@@ -2386,9 +2417,10 @@ public componentDidUpdate( prevProps: IDrilldownV2Props ){
          */
         let viewDefs: ICustViewDef[] = JSON.parse(JSON.stringify(this.props.viewDefs));
 
-        if ( message ) {
+        if ( updateResult ) {
           this.setState({
-            bannerMessage: message,
+            bannerMessage: updateResult.errorInfo ? updateResult.errorInfo.returnMess : '',
+            bannerMessageStatus:  updateResult.status,
           });
         }
 
@@ -2397,10 +2429,13 @@ public componentDidUpdate( prevProps: IDrilldownV2Props ){
         // eslint-disable-next-line no-void
         void this._getAllItemsCall( viewDefs, hasNewProps === true ? this.props.refiners : this.state.refiners );
 
-        if ( message ) {
+        if ( updateResult ) {
           const delay = hasError === true ? 10000 : this.state.quickCommands.successBanner;
           setTimeout(() => {
-            this.setState({ bannerMessage: null });
+            this.setState({ 
+              bannerMessage: null,
+              bannerMessageStatus: 'Unknown',
+             });
           } , delay);
         }
 
@@ -2582,9 +2617,9 @@ public componentDidUpdate( prevProps: IDrilldownV2Props ){
     }
 
     
-    private _toggleEasyLinks( ): void {
-      this.setState({ showEasyPages: !this.state.showEasyPages });
-    }
+    // private _toggleEasyLinks( ): void {
+    //   this.setState({ showEasyPages: !this.state.showEasyPages });
+    // }
 
     private _forceInstructions(){
         let newState = this.state.whenToShowItems === 0 ? this.props.showItems.whenToShowItems : 0;
@@ -2657,11 +2692,11 @@ public componentDidUpdate( prevProps: IDrilldownV2Props ){
         
         let pageToggles : IContentsToggles = {
             toggles: theseToggles,
-            childGap: this.props.allowRailsOff === true ? 30 : 30,
+            childGap: 30,
             vertical: false,
             hAlign: 'end',
             vAlign: 'start',
-            rootStyle: { width: this.props.allowRailsOff === true ? 120 : 120 , paddingTop: 0, paddingRight: 0, }, //This defines the styles on each toggle
+            rootStyle: { width: 120 , paddingTop: 0, paddingRight: 0, }, //This defines the styles on each toggle
         };
 
         return pageToggles;
