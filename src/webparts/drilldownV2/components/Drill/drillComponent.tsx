@@ -127,7 +127,7 @@ import { ensureUserInfo } from '@mikezimm/fps-library-v2/lib/pnpjs/Users/calls/e
 import { IEnsureUserInfo } from '@mikezimm/fps-library-v2/lib/pnpjs/Users/interfaces/IEnsureUserInfo';
 
 import { ISiteThemes } from "@mikezimm/fps-library-v2/lib/common/commandStyles/ISiteThemeChoices";
-// import { getFieldPanelElement } from '../../CoreFPS/PropPaneHelp/FieldPanel';
+import { getFieldPanelElement } from '../../CoreFPS/PropPaneHelp/FieldPanel';
 const SiteThemes: ISiteThemes = { dark: stylesD.fpsSiteThemeDark, light: stylesD.fpsSiteThemeLight, primary: stylesD.fpsSiteThemePrimary };
 
 /***
@@ -171,8 +171,8 @@ export default class DrillDown extends React.Component<IDrilldownV2Props, IDrill
     }
 
     private _updateWebPartHelpElement () {
-      // this._webPartHelpElement = [ ...[ getFieldPanelElement( this.props.bannerProps ) ] , ...DrilldownHelp( this.props.bannerProps )];
-      this._webPartHelpElement = DrilldownHelp( this.props.bannerProps );
+      this._webPartHelpElement = [ ...[ getFieldPanelElement( this.props.bannerProps ) ] , ...DrilldownHelp( this.props.bannerProps )];
+      // this._webPartHelpElement = DrilldownHelp( this.props.bannerProps );
     }
 
     /***
