@@ -233,8 +233,9 @@ export function saveViewAnalytics( Title: string, Result: string, thisProps: IDr
 
     };
 
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const result = saveAnalytics3( analyticsWeb , `${analyticsViewsList}` , saveObject, true );
-
+ 
     const saved = true;
     console.log('saved view info' );
     return saved;

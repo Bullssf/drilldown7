@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { IconButton, } from 'office-ui-fabric-react';
+import { IconButton, } from 'office-ui-fabric-react/lib/Button';
 
 // const emojiIcon: IIconProps = { iconName: 'BarChartVerticalFill' };
 

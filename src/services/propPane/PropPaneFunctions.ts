@@ -4,21 +4,10 @@ import "@pnp/sp/sites";
 
 import "@pnp/sp/webs";
 import "@pnp/sp/clientside-pages/web";
-// import { ClientsideWebpart } from "@pnp/sp/clientside-pages";
-// import { CreateClientsidePage, PromotedState, ClientsidePageLayoutType, ClientsideText,  } from "@pnp/sp/clientside-pages";
 
 import { getHelpfullError } from '@mikezimm/fps-library-v2/lib/logic/Errors/friendly';
 
-// import { IViewLog, addTheseViews } from '../../services/listServices/viewServices'; //Import view arrays for Time list
-
-// import { IAnyArray } from  '../../services/listServices/listServices';
-// import { mergeAriaAttributeValues } from "office-ui-fabric-react";
-
-//runAsync is an idea that is not currently being used.
 export async function getAllItems( configWebURL: string, propsListName: string, thisProps: string[], restFilter: string, runAsync: boolean ): Promise<any[]>{
-
-    //lists.getById(listGUID).webs.orderBy("Title", true).get().then(function(result) {
-    //let allItems : IDrillItemInfo[] = await sp.web.webs.get();
 
     let thisListObject = null;
 
@@ -58,21 +47,6 @@ export async function getAllItems( configWebURL: string, propsListName: string, 
             returnProps.push( iProps ) ;
         });
 
-        /*
-        } else {  //if ( !runAsync ) {
-            theseProps = thisListObject.lists.getByTitle(propsListName).items.orderBy('Title',false).top(300).get().then((response) => {
-                theseProps.map( i => {  //Loop through all items
-                    let iProps = {};
-                    selectProps.map( p => { //Loop through all select props
-                        if ( i[p] ) { iProps[p] = i[p] ; }
-                    });
-                    returnProps.push( iProps ) ;
-                });
-            });
-
-        }
-        */
-
     } catch (e) {
         errMessage = getHelpfullError(e, true, true).returnMess;
 
@@ -82,7 +56,7 @@ export async function getAllItems( configWebURL: string, propsListName: string, 
     if ( errMessage === '' && returnProps.length === 0 ) { 
         errMessage = 'This list or library does not have any items that you can see.';
      }
-    //  console.log('Found returnProps: ' ,returnProps );
+
     return returnProps;
 
 }

@@ -1,8 +1,6 @@
 
 import { IReadonlyTheme } from '@microsoft/sp-component-base';
 
-// import { IFPSCorePinMeReactComponentProps, IFPSCorePinMeReactComponentState, ILoadPerformance } from '../../fpsReferences';
-
 import { IGrouping } from "@pnp/spfx-controls-react/lib/ListView";
 
 import { ITheTime, } from '@mikezimm/fps-library-v2/lib/logic/Time/Interfaces';
@@ -10,7 +8,6 @@ import { ITheTime, } from '@mikezimm/fps-library-v2/lib/logic/Time/Interfaces';
 import { ICSSChartTypes, ILabelColor } from '@mikezimm/fps-library-v2/lib/components/interfaces/CSSCharts/ICSSCharts';
 import { IMyProgress, } from '@mikezimm/fps-library-v2/lib/common/interfaces/fps/IMyInterfaces';
 import { IPickedList, } from '@mikezimm/fps-library-v2/lib/common/interfaces/fps/Picked/IPickedList';
-import { IFPSResultStatus, } from '@mikezimm/fps-pnp2/lib/services/sp/IFPSResultStatus';
 
 import { ICustViewDef } from '../../fpsReferences';
 
@@ -40,7 +37,6 @@ import { IFPSAgeSliderWPProps,  } from '@mikezimm/fps-library-v2/lib/components/
  */
 
  export interface IDrillList extends Partial<IPickedList> {
-  // [key: string]: string | string[] | boolean | IRefinerRules[][] | IUser | IRefinerStat[] | ICustViewDef[] | any[] | any | undefined;
     itteration: number;
     location: string;
 
@@ -164,7 +160,7 @@ export interface IDrilldownV2Props extends IFPSCoreReactComponentProps {
 
      ageSliderWPProps: IFPSAgeSliderWPProps;
 
-    allowOtherSites?: boolean; //default is local only.  Set to false to allow provisioning parts on other sites.
+    // allowOtherSites?: boolean; //default is local only.  Set to false to allow provisioning parts on other sites.
 
     tenant: string;
     urlVars: {};
@@ -209,7 +205,7 @@ export interface IDrilldownV2Props extends IFPSCoreReactComponentProps {
 
     viewType?: IViewType;
     viewDefs?: ICustViewDef[];
-    richHeight: number[];  //=>> maxHeight: 55em ; address:  https://github.com/mikezimm/drilldown7/issues/270
+    richHeights: number[];  //=>> maxHeight: 55em ; address:  https://github.com/mikezimm/drilldown7/issues/270
     autoRichHeight: string;  //=>> maxQty;maxHeight ; address:  https://github.com/mikezimm/drilldown7/issues/271
     parentListFieldTitles: string;
 
@@ -328,17 +324,14 @@ export const RefinerChartTypes : ICSSChartTypes[] = ['stacked-column-labels', 'p
  */
 
 export interface IDrillDownState extends IFPSCorePinMeReactComponentState {
-  // [key: string]: string | string[] | boolean | IDrillItemInfo[] | IStat[] | IMyProgress | IQuickCommandsDesign | 
-  //   IWhenToShowItems | IViewType | any[] | IMyPivCat[][] | ICMDItem[][] | IRefinerStyles | IGrouping[] | IRefinerLayer | any | undefined;
-    allowOtherSites?: boolean; //default is local only.  Set to false to allow provisioning parts on other sites.
+
+    // allowOtherSites?: boolean; //default is local only.  Set to false to allow provisioning parts on other sites.
 
     webURL?: string;
 
     allLoaded: boolean;
 
     showPropsHelp: boolean;
-    bannerMessage: any;
-    bannerMessageStatus: IFPSResultStatus;
 
     showTips: boolean;
 
@@ -372,7 +365,7 @@ export interface IDrillDownState extends IFPSCorePinMeReactComponentState {
 
     meta: string[];
     resetArrows?: string;  //unique Id used to reset arrows to starting position
-    richHeight: number;  //=>> maxHeight: 55em ; address:  https://github.com/mikezimm/drilldown7/issues/270
+    // richHeight: number;  //=>> maxHeight: 55em ; address:  https://github.com/mikezimm/drilldown7/issues/270
 
     errMessage: string | JSX.Element;
 
@@ -395,6 +388,6 @@ export interface IDrillDownState extends IFPSCorePinMeReactComponentState {
 
     groupByFields: IGrouping[];
 
-    
+
 }
 

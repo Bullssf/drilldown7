@@ -1,26 +1,19 @@
 import * as React from 'react';
 import * as ReactDom from 'react-dom';
-// import { Version } from '@microsoft/sp-core-library';
-// import {
-//   IPropertyPaneConfiguration,
-//   PropertyPaneTextField
-// } from '@microsoft/sp-property-pane';
-// import { BaseClientSideWebPart } from '@microsoft/sp-webpart-base';
-// import { IReadonlyTheme } from '@microsoft/sp-component-base';
-
 import { SPPermission, } from '@microsoft/sp-page-context';
-// import { Version,  } from '@microsoft/sp-core-library';
+
 import {
   IPropertyPaneConfiguration, IPropertyPaneGroup,
-  // PropertyPaneTextField
+
 } from '@microsoft/sp-property-pane';
 // import { BaseClientSideWebPart,  } from '@microsoft/sp-webpart-base';
 import {   
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   ThemeProvider,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   ThemeChangedEventArgs,
   IReadonlyTheme } from '@microsoft/sp-component-base';
 
-// import { Web, } from "@pnp/sp/presets/all"
 
 /***
  *    d888888b db   db d888888b .d8888.      db   d8b   db d88888b d8888b.      d8888b.  .d8b.  d8888b. d888888b 
@@ -34,12 +27,11 @@ import {
  */
 
 import * as strings from 'DrilldownV2WebPartStrings';
-// import DrilldownV2 from './components/DrilldownV2';
 
 import { IDrilldownV2WebPartProps } from './IDrilldownV2WebPartProps';
 import DrilldownV2 from './components/Drill/drillComponent';
 import { IDrilldownV2Props, IWhenToShowItems } from './components/Drill/IDrillProps';
-// import { consoleRef } from './components/Drill/drillFunctions';
+
 
 
 /***
@@ -203,7 +195,7 @@ export default class DrilldownV2WebPart extends FPSBaseClass<IDrilldownV2WebPart
   }
 
 
-  public getQuickCommandsObject( message: string, str: string ) {
+  public getQuickCommandsObject( message: string, str: string ): IQuickCommandsDesign {
 
     let result : IQuickCommandsDesign = undefined;
 
@@ -292,7 +284,7 @@ export default class DrilldownV2WebPart extends FPSBaseClass<IDrilldownV2WebPart
    * @param str 
    * @param grp 
    */
-  public getViewFieldsObject(message: string, str: string, grp: string ) {
+  public getViewFieldsObject(message: string, str: string, grp: string ): IViewFieldDD[] {
 
     let result : IViewFieldDD[] = undefined;
     
@@ -545,13 +537,9 @@ export default class DrilldownV2WebPart extends FPSBaseClass<IDrilldownV2WebPart
         style: 'commandBar',
         viewDefs: viewDefs,
 
-        richHeight: getNumberArrayFromString( this.properties.richHeight, ';', true, true, 'asis', 2 ),
+        richHeights: getNumberArrayFromString( this.properties.richHeight, ';', true, true, 'asis', 2 ),
         autoRichHeight: this.properties.autoRichHeight,
 
-        // progress: null,
-        // 7 - TBD
-
-        // 9 - Other web part options
         WebpartHeight: this.domElement.getBoundingClientRect().height ,
         WebpartWidth:  this.domElement.getBoundingClientRect().width - 50 ,
 

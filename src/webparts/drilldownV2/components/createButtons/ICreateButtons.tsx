@@ -1,5 +1,6 @@
 import * as React from 'react';
-import { DefaultButton, PrimaryButton, Stack, IStackTokens, } from 'office-ui-fabric-react';
+import { Stack, IStackTokens, } from 'office-ui-fabric-react/lib/Stack';
+import { DefaultButton, PrimaryButton, } from 'office-ui-fabric-react/lib/Button';
 import styles from './CreateButtons.module.scss';
 
 export interface ISingleButtonProps {

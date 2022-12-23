@@ -1,33 +1,19 @@
-import { Web, } from "@pnp/sp/presets/all";
-
-// import { sp } from "@pnp/sp";
-
-import "@pnp/sp/webs";
-import "@pnp/sp/clientside-pages/web";
-import "@pnp/sp/site-users/web";
-
-
 import { IDrillItemInfo } from '../../fpsReferences';
 
 import { IDrillList, } from  './IDrillProps';
-
 
 import { makeTheTimeObject } from '../../fpsReferences';
 import { monthStr3 } from '@mikezimm/fps-library-v2/lib/logic/Time/monthLabels';
 import { getBestTimeDelta, getAge } from '@mikezimm/fps-library-v2/lib/logic/Time/deltas';
 
-
 import { addItemToArrayIfItDoesNotExist, } from '@mikezimm/fps-library-v2/lib/logic/Arrays/manipulation';
 import { sortKeysByOtherKey, } from '@mikezimm/fps-library-v2/lib/logic/Arrays/sorting/objects';
 
-
 import { getDetailValueType, ITypeStrings } from '@mikezimm/fps-library-v2/lib/logic/Types/typeServices';
-
 
 import { IRefinerLayer, IItemRefiners, RefineRuleValues, IRefinerStatType, IRefinerStat } from '../../fpsReferences';
 
 import { IUser } from '@mikezimm/fps-library-v2/lib/logic/Users/IUserInterfaces';
-// import { IQuickButton } from '@mikezimm/npmfunctions/dist/QuickCommands/IQuickCommands';
 
 import { createItemFunctionProp,  } from '@mikezimm/fps-library-v2/lib/logic/Strings/drillParse/createItemFunctionProp'; //Main function to update item
 
@@ -132,10 +118,9 @@ export async function getAllItems( drillList: IDrillList, addTheseItemsToState: 
 
     getItems.items = processAllItems( getItems.items, errMessage, drillList, addTheseItemsToState, setProgress, updatePerformance, sourceUser );
 
-
 }
 
-export function processAllItems( allItems : IDrillItemInfo[], errMessage: string, drillList: IDrillList, addTheseItemsToState: any, setProgress: any, updatePerformance: any, sourceUser: IUser ){
+export function processAllItems( allItems : IDrillItemInfo[], errMessage: string, drillList: IDrillList, addTheseItemsToState: any, setProgress: any, updatePerformance: any, sourceUser: IUser ): IDrillItemInfo[] {
 
     updatePerformance( 'fetch2', 'update', '', allItems.length );
 
@@ -414,9 +399,7 @@ export function processAllItems( allItems : IDrillItemInfo[], errMessage: string
 //                                                                                                   
 //    
 
-function sortRefinerObject ( allRefiners: IRefinerLayer, drillList: IDrillList ) {
-
-    consoleRef( 'buildRefinersObject1', allRefiners );
+function sortRefinerObject ( allRefiners: IRefinerLayer, drillList: IDrillList ): IRefinerLayer {
 
     //Adding collator per:  https://stackoverflow.com/a/52369951
     const collator = new Intl.Collator(drillList.language, { numeric: true, sensitivity: 'base' });
@@ -433,12 +416,11 @@ function sortRefinerObject ( allRefiners: IRefinerLayer, drillList: IDrillList )
     allRefiners = sortKeysByOtherKey ( allRefiners, 'childrenKeys', 'asc', 'string', statsToSort, null, drillList.language  );
     allRefiners.childrenObjs = sortRefinerLayer( allRefiners.childrenObjs, drillList );
 
-    consoleRef( 'buildRefinersObject2', allRefiners );
     return allRefiners;
 
 }
 
-function sortRefinerLayer ( allRefiners: IRefinerLayer[], drillList: IDrillList ) {
+function sortRefinerLayer ( allRefiners: IRefinerLayer[], drillList: IDrillList ): IRefinerLayer[] {
 
   allRefiners.map( (refinerLayer: IRefinerLayer ) => {
 
@@ -473,7 +455,7 @@ function sortRefinerLayer ( allRefiners: IRefinerLayer[], drillList: IDrillList 
 //      
 
 
-function createNewRefinerLayer( thisKey: string, drillList: IDrillList ) {
+function createNewRefinerLayer( thisKey: string, drillList: IDrillList ): IRefinerLayer {
     let newRefiner : IRefinerLayer = {
         multiCount: 0,
         itemCount: 0,
@@ -495,7 +477,7 @@ function createNewRefinerLayer( thisKey: string, drillList: IDrillList ) {
 }
 
 
-export function updateRefinerStats( i: IDrillItemInfo , topKeyZ: number,  refiners:IRefinerLayer, drillList: IDrillList ) {
+export function updateRefinerStats( i: IDrillItemInfo , topKeyZ: number,  refiners:IRefinerLayer, drillList: IDrillList ): IRefinerLayer {
 
     //if ( i.EntryType !== 'start') {
         let i2 = -1;
@@ -555,7 +537,7 @@ export function updateRefinerStats( i: IDrillItemInfo , topKeyZ: number,  refine
 
 }
 
-export function updateThisRefiner( r0: any, topKeyZ: number,  thisRefiner0: any, refiners:IRefinerLayer, drillList: IDrillList ) {
+export function updateThisRefiner( r0: any, topKeyZ: number,  thisRefiner0: any, refiners:IRefinerLayer, drillList: IDrillList ): IRefinerLayer {
 
     let refinerType = typeof thisRefiner0;
 
@@ -593,7 +575,7 @@ export function updateThisRefiner( r0: any, topKeyZ: number,  thisRefiner0: any,
 
 }
 
-export function buildRefinersObject ( items: IDrillItemInfo[], drillList: IDrillList ) {
+export function buildRefinersObject ( items: IDrillItemInfo[], drillList: IDrillList ): IRefinerLayer {
 
     let refiners : IRefinerLayer = {
         thisKey: '',
@@ -611,10 +593,6 @@ export function buildRefinersObject ( items: IDrillItemInfo[], drillList: IDrill
         refiners['stat' + i] = [];
         refiners['stat' + i + 'Count'] = [];
     });
-
-//    drillList.refinerStats.map( s => {
-//    });
-    //    refinerStats: IRefinerStat[];
 
     //Go through all items
     items.map( ( i: IDrillItemInfo ) => {
@@ -675,7 +653,6 @@ export function buildRefinersObject ( items: IDrillItemInfo[], drillList: IDrill
         }
     });
 
-    consoleRef( 'buildRefinersObject', refiners );
     return refiners;
 
 }
@@ -690,7 +667,7 @@ export function buildRefinersObject ( items: IDrillItemInfo[], drillList: IDrill
 //        
 
 
-export function getItemRefiners( drillList: IDrillList, item: IDrillItemInfo ) {
+export function getItemRefiners( drillList: IDrillList, item: IDrillItemInfo ): IItemRefiners {
     let refiners = drillList.refiners;
     let itemRefiners : IItemRefiners = {
         lev0: [],
@@ -753,7 +730,7 @@ export function getItemRefiners( drillList: IDrillList, item: IDrillItemInfo ) {
  * @param item 
  * @param result 
  */
-export function getRefinerStatsForItem( drillList: IDrillList, item: IDrillItemInfo, itemRefiners: IItemRefiners ) {
+export function getRefinerStatsForItem( drillList: IDrillList, item: IDrillItemInfo, itemRefiners: IItemRefiners ): IItemRefiners {
 
     //Added for performance:  https://github.com/mikezimm/drilldown7/issues/88
     if ( drillList.togStats !== true ) {
@@ -766,10 +743,6 @@ export function getRefinerStatsForItem( drillList: IDrillList, item: IDrillItemI
         let secondField = refinerStat.secondField;
         let title = refinerStat.title;
         let stat : IRefinerStatType = refinerStat.stat;
-        // let chartType = refinerStat.chartTypes;
-        // let evalX = refinerStat.eval;
-        // let x = RefinerStatTypes;
-        // let thisStat = undefined;
 
         let testPrimary = false;
         let primaryType : ITypeStrings = 'unknown';
@@ -957,7 +930,7 @@ function getRefinerFromField ( fieldValue : any, ruleSet: RefineRuleValues[], em
 
 }
 
-function doThisMathOp( val: number, toThis: number, ref: RefineRuleValues[] ) {
+function doThisMathOp( val: number, toThis: number, ref: RefineRuleValues[] ): number {
     let result = val;
 
     if ( ref.indexOf('mathCeiling') > -1 ) {
@@ -1061,12 +1034,6 @@ export function getGroupByNumber( fieldValue : any, type : ITypeStrings , ruleSe
 
 }
 
-export function getBestFieldType ( item: any ) {
-
-// let thisType = 'unknown';
-  console.log('doing nothing here')
-
-}
 
 //  d8888b. db    db d888888b db      d8888b.      .88b  d88. d88888b d888888b  .d8b.  
 //  88  `8D 88    88   `88'   88      88  `8D      88'YbdP`88 88'     `~~88~~' d8' `8b 
@@ -1077,7 +1044,7 @@ export function getBestFieldType ( item: any ) {
 //                                                                                     
 //     
 
-function buildMetaFromItem( theItem: IDrillItemInfo ) {
+function buildMetaFromItem( theItem: IDrillItemInfo ): string[] {
     let meta: string[] = ['All'];
 
     if ( theItem.timeCreated.daysAgo === 0 ) {
@@ -1123,7 +1090,7 @@ function buildMetaFromItem( theItem: IDrillItemInfo ) {
 //                                                                                                 
 //         
 
-function buildSearchStringFromItem (newItem : IDrillItemInfo, staticColumns: string[]) {
+function buildSearchStringFromItem (newItem : IDrillItemInfo, staticColumns: string[]): string {
 
     let result = '';
     let delim = '|||';
@@ -1145,15 +1112,3 @@ function buildSearchStringFromItem (newItem : IDrillItemInfo, staticColumns: str
     return result;
 
 }
-
-
-export function consoleRef( location: string, refiners: IRefinerLayer ) {
-
-    return; //Not needed for now.
-
-    // let refiners2 = JSON.parse(JSON.stringify(refiners));
-
-    // console.log('Error#94: - Refiners', refiners2 );
-
-}
-

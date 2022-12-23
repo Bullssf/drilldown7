@@ -8,13 +8,8 @@ import { OverflowSet } from 'office-ui-fabric-react/lib/OverflowSet';
 import { IContextualMenuItem } from 'office-ui-fabric-react/lib/ContextualMenu';
 import { IDropdownOption } from 'office-ui-fabric-react/lib/Dropdown';
 // import { Dropdown,  } from 'office-ui-fabric-react/lib/Dropdown';
-import { mergeStyleSets } from 'office-ui-fabric-react';
+import { mergeStyleSets } from 'office-ui-fabric-react/lib/Styling';
 // import { IRenderFunction } from 'office-ui-fabric-react/lib/Utilities';
-
-
-//import * as stylesImport from './ResizeGroup.Example.scss';
-//const styles: any = stylesImport;
-
 
   export const customButtonWithIcon = (props: IButtonProps) => {
 

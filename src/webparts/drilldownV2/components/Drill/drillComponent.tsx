@@ -1,32 +1,19 @@
 import * as React from 'react';
-// import { WebPartContext } from '@microsoft/sp-webpart-base';
-// import { DisplayMode, } from '@microsoft/sp-core-library';
 
-
-import { IDrilldownV2Props, IDrillDownState, IDrillList, IViewType, IRefinerStyles, RefinerChartTypes } from './IDrillProps';
+import { IDrilldownV2Props, IDrillDownState, IDrillList, RefinerChartTypes } from './IDrillProps';
 import { pivCats } from './IDrillProps';
 
 import { IUser } from '@mikezimm/fps-library-v2/lib/logic/Users/IUserInterfaces';
 
 import { saveViewAnalytics } from '../../CoreFPS/Analytics';
 
-import { Stack, IStackTokens, Icon, } from 'office-ui-fabric-react';
+import { Icon, } from 'office-ui-fabric-react/lib/Icon';
+import { Stack, IStackTokens, } from 'office-ui-fabric-react/lib/Stack';
 import { SearchBox } from 'office-ui-fabric-react/lib/SearchBox';
-// import { Slider } from 'office-ui-fabric-react/lib/Slider';
 import { Pivot, PivotItem, } from 'office-ui-fabric-react/lib/Pivot';
 
-// import { sp } from "@pnp/sp";
-// import { Web, Lists } from "@pnp/sp/presets/all"; //const projectWeb = Web(useProjectWeb);
-
-// import { IWebAddResult, IWebInfo, IWeb, } from "@pnp/sp/webs/types";
-
-import "@pnp/sp/webs";
-
-
 import { IFPSWindow } from '@mikezimm/fps-library-v2/lib/common/interfaces/fps/Window';
-// import { IContentsListInfo, IMyListInfo, IServiceLog, IContentsLists } from '../../../../services/listServices/listTypes'; //Import view arrays for Time list
 
-// import { ITheTime, } from '@mikezimm/npmfunctions/dist/Services/Time/Interfaces';
 import { weekday3,  } from '@mikezimm/fps-library-v2/lib/logic/Time/dayLabels';
 import { monthStr3 } from '@mikezimm/fps-library-v2/lib/logic/Time/monthLabels';
 import { makeid } from '@mikezimm/fps-library-v2/lib/logic/Strings/guids';
@@ -48,44 +35,27 @@ import { IMyPivCat, } from '@mikezimm/fps-library-v2/lib/common/interfaces/fps/I
 
 import { ICustViewDef, IQuickCommandsDesign } from '../../fpsReferences';
 
-// import { IUser } from '@mikezimm/fps-library-v2/lib/logic/Users/IUserInterfaces';
-// import { IQuickCommands } from '../../fpsReferences';
-
-// import { IListViewDDDrillDown } from '../../fpsReferences';
-
-// import { gitRepoDrillDown } from '@mikezimm/npmfunctions/dist/Links/LinksRepos';
-
 import { IRefinerLayer, IRefinerRules, IRefinerStat } from '../../fpsReferences';
 
-// import { PageContext } from '@microsoft/sp-page-context';
-
 import { pivotOptionsGroup, } from './PivotOptions_NPM';
-// import { IFPSUser, } from '../../fpsReferences';
 
 import { getExpandColumns } from '@mikezimm/fps-library-v2/lib/pnpjs/Lists/getVX/getExpandV2';
 import { getSelectColumns } from '@mikezimm/fps-library-v2/lib/pnpjs/Lists/getVX/getSelectV2';
 import { getLinkColumns } from '@mikezimm/fps-library-v2/lib/pnpjs/Lists/getVX/getLinkV2';
 import { getFuncColumns } from '@mikezimm/fps-library-v2/lib/pnpjs/Lists/getVX/getFuncV2';
 
-// import { DoNotExpandLinkColumns, DoNotExpandTrimB4, DoNotExpandTrimAfter, DoNotExpandTrimSpecial } from '../../../../services/getInterface';
-
 import { getHelpfullError } from '@mikezimm/fps-library-v2/lib/logic/Errors/friendly';
 
-// import MyDrillItems from './drillListView';
-
 import ReactListItems from '@mikezimm/fps-library-v2/lib/components/molecules/ReactListV1/component/reactListView';
-import { getMaxRichHeight } from '@mikezimm/fps-library-v2/lib/components/molecules/ReactListV1/functions/richHeight';
 
-//parentListFieldTitles
-
-import { getAllItems, buildRefinersObject, processAllItems, consoleRef, } from './drillFunctions';
+import { getAllItems, buildRefinersObject, processAllItems, } from './drillFunctions';
 
 import ResizeGroupOverflowSetExample from './refiners/commandBar';
 
 import { ICMDItem } from './refiners/commandBar';
 
 import stylesD from './drillComponent.module.scss';
-// import {  } from '../../../../services/listServices/viewTypes';
+
 import { IGrouping } from "@pnp/spfx-controls-react/lib/ListView";
 
 import Cssreactbarchart from '../CssCharts/Cssreactbarchart';
@@ -96,17 +66,14 @@ import { getAppropriateViewFields, getAppropriateViewGroups, getAppropriateViewP
 
 import { IUpdateCommandItemReturn, } from '@mikezimm/fps-library-v2/lib/pnpjs/CommandItems/updateItem';
 
-// import FetchBanner from '../CoreFPS/FetchBannerElement';
 import FetchBannerX from '@mikezimm/fps-library-v2/lib/banner/bannerX/FetchBannerX';
-// import FetchBanner from '../../CoreFPS/FetchBannerElement';
 
 import FPSAgeSliderHook from '@mikezimm/fps-library-v2/lib/components/atoms/FPSAgeSlider/FPSAgeHook';
 
 // import { ISpecialMessage, specialUpgrade } from '@mikezimm/npmfunctions/dist/HelpPanelOnNPM/special/interface';
 
-
 import { DrilldownHelp } from '@mikezimm/fps-library-v2/lib/common/PropPaneHelp/pages/Drilldown';
-// import { getBannerPages, } from '../HelpPanel/AllContent';
+
 import { IBannerPages } from '../../fpsReferences';
 
 import { ILoadPerformance, startPerformOp, updatePerformanceEnd, ILoadPerformanceOps } from "../../fpsReferences";
@@ -122,6 +89,7 @@ import { ISiteThemes } from "@mikezimm/fps-library-v2/lib/common/commandStyles/I
 import { getFieldPanelElement } from '../../CoreFPS/PropPaneHelp/FieldPanel';
 import { getBannerPages } from '../HelpPanel/AllContent';
 // import { getBannerPages } from '../HelpPanel/AllContent';
+
 const SiteThemes: ISiteThemes = { dark: stylesD.fpsSiteThemeDark, light: stylesD.fpsSiteThemeLight, primary: stylesD.fpsSiteThemePrimary };
 
 /***
@@ -575,9 +543,6 @@ export default class DrillDown extends React.Component<IDrilldownV2Props, IDrill
             drillList: drillList,
             // sourceUserInfo: null,
 
-            bannerMessage: null,
-            bannerMessageStatus: 'Unknown',
-
             showPropsHelp: false,
             showTips: false,
             showRefinerCounts: this.props.showRefinerCounts ? this.props.showRefinerCounts : false,
@@ -586,7 +551,7 @@ export default class DrillDown extends React.Component<IDrilldownV2Props, IDrill
 
             viewType: this.props.viewType === undefined || this.props.viewType === null ? 'React' : this.props.viewType,
 
-            allowOtherSites: this.props.allowOtherSites === true ? true : false,
+            // allowOtherSites: this.props.allowOtherSites === true ? true : false,
             currentPage: 'Click Button to start',
             allLoaded: false,
 
@@ -603,7 +568,7 @@ export default class DrillDown extends React.Component<IDrilldownV2Props, IDrill
 
             meta: [],
             resetArrows: makeid(4),
-            richHeight: this.props.richHeight[0],
+            // richHeight: this.props.richHeights[0],
 
             webURL: this.props.webURL,
 
@@ -629,11 +594,6 @@ export default class DrillDown extends React.Component<IDrilldownV2Props, IDrill
             style: this.props.style ? this.props.style : 'commandBar',
 
         };
-
-    // because our event handler needs access to the component, bind 
-    //  the component to the function so it can get access to the
-    //  components properties (this.props)... otherwise "this" is undefined
-    // this.onLinkClick = this.onLinkClick.bind(this);
 
     }
 
@@ -789,7 +749,7 @@ public componentDidUpdate( prevProps: IDrilldownV2Props ){
     public render(): React.ReactElement<IDrilldownV2Props> {
 
         const { 
-          bannerMessage, bannerMessageStatus, quickCommands, searchText, searchAge
+          quickCommands, searchText, searchAge
         } = this.state;
 
         const { FPSAgeColumnTitle,  } = this.props.ageSliderWPProps
@@ -842,17 +802,6 @@ public componentDidUpdate( prevProps: IDrilldownV2Props ){
             }) }
         </div>;
 
-        let createBanner = quickCommands !== null && quickCommands.successBanner > 0 ? true : false; //CommandItemNotUpdatedMessage
-        const bannerEleClasses = [ stylesD.bannerFooterStyles, bannerMessage === null ? stylesD.bannerHide : stylesD.bannerShow ];
-
-        if ( bannerMessageStatus === 'Success' ) {  }
-        else if ( bannerMessageStatus === 'Unknown' ) {  }
-        else { bannerEleClasses.push( stylesD.bannerWarn ) }
-
-        let bannerMessageEle = createBanner === false ? null : <div className={ bannerEleClasses.join(' ') }>
-            { bannerMessage }
-        </div>;
-
         /***
             *    d8888b.  .d8b.  d8b   db d8b   db d88888b d8888b. 
             *    88  `8D d8' `8b 888o  88 888o  88 88'     88  `8D 
@@ -872,13 +821,6 @@ public componentDidUpdate( prevProps: IDrilldownV2Props ){
 
         // eslint-disable-next-line prefer-const
         let nearBannerElementsArray: any[] = [];
-        // if ( this.props.bannerProps.beAUser !== true )  {
-          // if ( this.props.bannerProps.easyPagesExtraProps.EasyPagesEnable === true )  {
-          //   nearBannerElementsArray.push( [
-          //     <Icon key='Link12' iconName='Link12' onClick={ this._toggleEasyLinks.bind(this) } style={ this.props.bannerProps.bannerCmdReactCSS }/>
-          //   ] );
-          // }
-        // }
 
         // const FPSUser : IFPSUser = this.props.bannerProps.FPSUser;
         // const showSpecial = FPSUser.manageWeb === true || FPSUser.managePermissions === true || FPSUser.manageLists === true ? true : false;
@@ -999,11 +941,12 @@ public componentDidUpdate( prevProps: IDrilldownV2Props ){
                  * HOWEVER, in HOK FPSAgeDefault is Positive which should be negative.
                  * VERIFY the value is correct in the PropPaneGroup.
                  * It seems to not be sending the Key Value but the Index?
-                 * 
-                 * 
+                 *
+                 *
                  */
+
                 /*https://developer.microsoft.com/en-us/fabric#/controls/web/searchbox*/
-                let searchBox =  
+                let searchBox =
                 <div className={[styles.searchContainer, styles.padLeft20, styles.padTop20, styles.padBot10 ].join(' ')} >
                     <SearchBox
                       className={styles.searchBox}
@@ -1130,25 +1073,15 @@ public componentDidUpdate( prevProps: IDrilldownV2Props ){
                 } else {
 
                     /***
-                        *    db      d888888b .d8888. d888888b      d888888b d888888b d88888b .88b  d88. .d8888. 
-                        *    88        `88'   88'  YP `~~88~~'        `88'   `~~88~~' 88'     88'YbdP`88 88'  YP 
-                        *    88         88    `8bo.      88            88       88    88ooooo 88  88  88 `8bo.   
-                        *    88         88      `Y8b.    88            88       88    88~~~~~ 88  88  88   `Y8b. 
-                        *    88booo.   .88.   db   8D    88           .88.      88    88.     88  88  88 db   8D 
-                        *    Y88888P Y888888P `8888Y'    YP         Y888888P    YP    Y88888P YP  YP  YP `8888Y' 
-                        *                                                                                        
-                        *                                                                                        
-                        */
-
-                    // let blueBar = this.state.searchMeta.map( m => { return <span><span style={{ paddingLeft: 0 }}> {'>'} </span><span style={{ paddingLeft: 10, paddingRight: 20 }}> { m } </span></span>; });
-
-
-                    // let drillItems = this.state.searchedItems.length === 0 ? <div>NO ITEMS FOUND</div> : <div>
-                    //     <MyDrillItems 
-                    //         items={ this.state.searchedItems }
-                    //         blueBar={ blueBar }
-                    //     ></MyDrillItems>
-                    //     </div>;
+                      *    db      d888888b .d8888. d888888b      d888888b d888888b d88888b .88b  d88. .d8888. 
+                      *    88        `88'   88'  YP `~~88~~'        `88'   `~~88~~' 88'     88'YbdP`88 88'  YP 
+                      *    88         88    `8bo.      88            88       88    88ooooo 88  88  88 `8bo.   
+                      *    88         88      `Y8b.    88            88       88    88~~~~~ 88  88  88   `Y8b. 
+                      *    88booo.   .88.   db   8D    88           .88.      88    88.     88  88  88 db   8D 
+                      *    Y88888P Y888888P `8888Y'    YP         Y888888P    YP    Y88888P YP  YP  YP `8888Y' 
+                      *                                                                                        
+                      *                                                                                        
+                      */
 
                     let includeDetails = getAppropriateViewProp( viewDefs, this.state.WebpartWidth, 'includeDetails' );
                     let includeAttach = getAppropriateViewProp( viewDefs, this.state.WebpartWidth, 'includeAttach' );
@@ -1210,12 +1143,13 @@ public componentDidUpdate( prevProps: IDrilldownV2Props ){
                             instructionBlock = null;
                             reactListItems  = this.state.searchCount === 0 ? null : 
                             <ReactListItems 
-                                parentListFieldTitles={ viewDefs.length > 0 ? null : this.props.parentListFieldTitles }
+                                // parentListFieldTitles={ viewDefs.length > 0 ? null : this.props.parentListFieldTitles }
                                 // themeClass={ getThemeClass( this.props.bannerProps.themeChoice, SiteThemes ) }  // This keeps bar and banner in sync
                                 themeClass={ stylesD.fpsSiteThemePrimary }
                                 richColumns = { this.state.drillList.richColumns }
-                                richHeight = { getMaxRichHeight( this.props.autoRichHeight, this.state.richHeight, this.state.searchedItems ) }
-                                updateRichHeightProps = { this._updateRichHeightState.bind(this) }
+                                richHeights = { this.props.richHeights}
+                                autoRichHeight = { this.props.autoRichHeight}
+                                updateRichHeightProps = { null }
                                 webURL = { this.state.drillList.webURL }
                                 parentListURL = { this.state.drillList.parentListURL }
                                 listName = { this.state.drillList.name }
@@ -1267,18 +1201,15 @@ public componentDidUpdate( prevProps: IDrilldownV2Props ){
 
                     if ( buildStats ) {  statRefinerObject = this.state.refinerObj; }
 
-                    consoleRef( 'rederObjects1', this.state.refinerObj );
                     if ( this.state.maxRefinersToShow > 1 && this.state.searchMeta[0] !== 'All' ) { 
                         textMaxRefinersToShow = 1;
                         childIndex0 = this.state.refinerObj?.childrenKeys?.indexOf(this.state.searchMeta[0]);
                         if ( buildStats ) {  statRefinerObject = this.state.refinerObj?.childrenObjs[childIndex0]; }
-                        consoleRef( 'rederObjects2', this.state.refinerObj );
                     }
                     if ( textMaxRefinersToShow >= 1 && this.state.maxRefinersToShow > 2 && this.state.searchMeta.length > 1 && this.state.searchMeta[1] !== 'All' ) { 
                         textMaxRefinersToShow = 2;
                         childIndex1 = this.state.refinerObj?.childrenObjs[childIndex0]?.childrenKeys?.indexOf(this.state.searchMeta[1]);
                         if ( buildStats ) {  statRefinerObject = this.state.refinerObj?.childrenObjs[childIndex0]?.childrenObjs[childIndex1]; }
-                        consoleRef( 'rederObjects3', this.state.refinerObj );
                     }
 
                     if ( this.state.showCountChart === true || statsVisible === true ) {
@@ -1459,8 +1390,6 @@ public componentDidUpdate( prevProps: IDrilldownV2Props ){
         let newFilteredItems : IDrillItemInfo[] = this._getNewFilteredItems( '', [], allItems, 0, this.props.ageSliderWPProps.FPSAgeColumnName, maxAge );
         const searchCount = newFilteredItems.length;
 
-        consoleRef( 'addTheseItems1REF', refinerObj );
-
         //let newFilteredItems : IDrillItemInfo[] = this.getNewFilteredItems( '', this.state.searchMeta, allItems, 0 );
 
         let pivotCats : any = [];
@@ -1481,8 +1410,6 @@ public componentDidUpdate( prevProps: IDrilldownV2Props ){
             if ( this.props.refiners.length > 1 ) { maxRefinersToShow = 2; }
             if ( this.props.refiners.length > 2 ) { maxRefinersToShow = 3; }
         }
-
-        consoleRef( 'addTheseItems2REF', refinerObj );
 
         console.log('addTheseItemsToState: props',this.props );
         console.log('addTheseItemsToState: refinerObj',refinerObj );
@@ -1534,14 +1461,14 @@ public componentDidUpdate( prevProps: IDrilldownV2Props ){
 
     }
 
-    private _updateRichHeightState(): void {
+    // private _updateRichHeightState(): void {
 
-      const oldValue = this.state.richHeight;
-      const oldIdx = this.props.richHeight.indexOf( oldValue );
-      const nextIdx = oldIdx === this.props.richHeight.length -1 ? 0 : oldIdx + 1;
+    //   const oldValue = this.state.richHeight;
+    //   const oldIdx = this.props.richHeight.indexOf( oldValue );
+    //   const nextIdx = oldIdx === this.props.richHeight.length -1 ? 0 : oldIdx + 1;
 
-      this.setState({ richHeight: this.props.richHeight[ nextIdx ] });
-    }
+    //   this.setState({ richHeight: this.props.richHeight[ nextIdx ] });
+    // }
 
 
 /***
@@ -1917,7 +1844,6 @@ public componentDidUpdate( prevProps: IDrilldownV2Props ){
 
 
     searchCount = newFilteredItems.length;
-    consoleRef( 'searchForItems2: ' + text , refinerObj );
 
     this.setState({
       searchedItems: newFilteredItems,
@@ -2060,32 +1986,14 @@ public componentDidUpdate( prevProps: IDrilldownV2Props ){
 
     private _updateStateOnPropsChange( updateResult: IUpdateCommandItemReturn, hasError: boolean, hasNewProps: boolean = false ) : void {
 
-        /**
-         * 2022-01-17:  Added this to see if this gets mutated and breaks on refresh items.  
-         * After deeper testing, adding this to getBestFitView solved it but that was getting called a lot so I'm just doing it once in the render
-         */
-        let viewDefs: ICustViewDef[] = JSON.parse(JSON.stringify(this.props.viewDefs));
+      /**
+       * 2022-01-17:  Added this to see if this gets mutated and breaks on refresh items.  
+       * After deeper testing, adding this to getBestFitView solved it but that was getting called a lot so I'm just doing it once in the render
+       */
+      let viewDefs: ICustViewDef[] = JSON.parse(JSON.stringify(this.props.viewDefs));
 
-        if ( updateResult ) {
-          this.setState({
-            bannerMessage: updateResult.errorInfo ? updateResult.errorInfo.returnMess : '',
-            bannerMessageStatus:  updateResult.status,
-          });
-        }
-
-        // eslint-disable-next-line no-void
-        void this._getAllItemsCall( viewDefs, hasNewProps === true ? this.props.refiners : this.state.refiners );
-
-        if ( updateResult ) {
-          const delay = hasError === true ? 10000 : this.state.quickCommands.successBanner;
-          setTimeout(() => {
-            this.setState({ 
-              bannerMessage: null,
-              bannerMessageStatus: 'Unknown',
-             });
-          } , delay);
-        }
-
+      // eslint-disable-next-line no-void
+      void this._getAllItemsCall( viewDefs, hasNewProps === true ? this.props.refiners : this.state.refiners );
 
     }
 
