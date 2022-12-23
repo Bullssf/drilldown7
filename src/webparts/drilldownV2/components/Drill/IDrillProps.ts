@@ -71,6 +71,7 @@ import { IFPSAgeSliderWPProps,  } from '@mikezimm/fps-library-v2/lib/components/
     richColumns: string[];  //This is for:  https://github.com/mikezimm/drilldown7/issues/224
     imageColumns: string[];
     ageColumns: string[];
+
     staticColumnsStr: string;
     selectColumnsStr: string;
     expandColumnsStr: string;
@@ -78,9 +79,11 @@ import { IFPSAgeSliderWPProps,  } from '@mikezimm/fps-library-v2/lib/components/
     richColumnsStr: string;  //This is for:  https://github.com/mikezimm/drilldown7/issues/224
     imageColumnsStr: string;
     ageColumnsStr: string;
+
     multiSelectColumns: string[];
     linkColumns: string[];
     funcColumns: string[];
+    specialColumns: string[]; // https://github.com/mikezimm/drilldown7/issues/294
     funcColumnsActual: string[];
     removeFromSelect: string[];
 

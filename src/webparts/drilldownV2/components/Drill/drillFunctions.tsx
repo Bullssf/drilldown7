@@ -5,6 +5,7 @@ import { IDrillList, } from  './IDrillProps';
 import { makeTheTimeObject } from '../../fpsReferences';
 import { monthStr3 } from '@mikezimm/fps-library-v2/lib/logic/Time/monthLabels';
 import { getBestTimeDelta, getAge } from '@mikezimm/fps-library-v2/lib/logic/Time/deltas';
+import { GetFirstWord, GetLastWord, getInitials } from '@mikezimm/fps-library-v2/lib/logic/Strings/drillParse/getWords';
 
 import { addItemToArrayIfItDoesNotExist, } from '@mikezimm/fps-library-v2/lib/logic/Arrays/manipulation';
 import { sortKeysByOtherKey, } from '@mikezimm/fps-library-v2/lib/logic/Arrays/sorting/objects';
@@ -265,6 +266,33 @@ export function processAllItems( allItems : IDrillItemInfo[], errMessage: string
                           if ( pageName )  item[ leftSide + 'ShowPageName' ] = pageName;
 
                         }
+
+                        if ( itemUrl ) {
+                          // https://github.com/mikezimm/drilldown7/issues/293
+                          let hostName = '';
+                          if      ( itemUrl.toLowerCase().indexOf('sharepoint.com/sites/lifenet_') > 0 ) { hostName = 'LifeNET' ; }
+                          else if ( itemUrl.toLowerCase().indexOf('sharepoint.com/sites/') > 2 ) { hostName = 'SPO' ; }
+                          else if ( itemUrl.toLowerCase().indexOf('sharepoint.com/teams/') > 2 ) { hostName = 'MsftTeams' ; }
+                          else if ( itemUrl.toLowerCase().indexOf('alvteams.alv.auto/') > 2 ) { hostName = 'AlvTeams' ; }
+                          else if ( itemUrl.toLowerCase().indexOf('alvapps.alv.auto/') > 2 ) { hostName = 'AlvApps' ; }
+                          else if ( itemUrl.toLowerCase().indexOf('qaalvteams.alv.auto/') > 2 ) { hostName = 'QAAlvTeams' ; }
+                          else if ( itemUrl.toLowerCase().indexOf('qaalvapps.alv.auto/') > 2 ) { hostName = 'QAAlvApps' ; }
+                          else if ( itemUrl.toLowerCase().indexOf('lifenet/') > 2 ) { hostName = 'Old LifeNET' ; }
+                          else if ( itemUrl.toLowerCase().indexOf('file') > 2 ) { hostName = 'Network?' ; }
+                          else {
+                            const url = new URL( itemUrl );
+                            hostName = url && url.hostname ? url.hostname : 'Unknown';
+                          }
+
+                          item[ leftSide + 'ShowHostName' ] = hostName;
+
+                          //https://github.com/mikezimm/drilldown7/issues/297
+                          item[ leftSide + 'ShowProtocol' ] =  itemUrl.indexOf('https://') === 0 ? 'https' :
+                              itemUrl.indexOf('http://') === 0 ? 'http' :
+                              itemUrl.indexOf('file:') === 0 ? 'drive' :'Unknown';
+
+                        }
+
                         item[ leftSide + 'GetLinkDesc' ] = item[ leftSide ].Description;
 
                     } else {
@@ -275,6 +303,8 @@ export function processAllItems( allItems : IDrillItemInfo[], errMessage: string
                         item[ leftSide + 'ShowPageName' ] = 'No Link - No Clicky!';
                         item[ leftSide + 'ShowPageUrl' ] = 'No Link - No Clicky!';
                         item[ leftSide + 'GetLinkDesc' ] = 'No Link Description';
+                        item[ leftSide + 'ShowHostName' ] = 'No Link Hostname';
+
                     }
                 } else if ( drillList.funcColumns.indexOf( staticColumn ) > -1 ) {
 
@@ -336,6 +366,21 @@ export function processAllItems( allItems : IDrillItemInfo[], errMessage: string
 
             });
 
+            // https://github.com/mikezimm/drilldown7/issues/294
+            drillList.specialColumns.map( column => {
+              const specials: string[] = column.toLowerCase().split(/Date/gi);
+              item[ `${column}`] = specials[0] === 'create' ? item.timeCreated.dayYYYYMMDD : item.timeModified.dayYYYYMMDD ;
+              const useName = specials[0] === 'create' ? item.AuthorTitle : item.EditorTitle ;
+              let userName = '';
+              if      ( specials[1] === 'firstname' ) { userName = GetFirstWord(useName, false, false, true) ; }
+              else if ( specials[1] === 'lastname' ) { userName = GetLastWord(useName, false, false, true) ; }
+              else if ( specials[1] === 'initials' ) { userName = getInitials( useName, true, false ) ; }
+              else if ( specials[1] === 'firstl' ) { userName = `${GetFirstWord(useName, false, false, true)} ${GetLastWord(useName, false, true, true)}` ; }
+
+              item[ `${column}`] += `: ${userName}`;
+
+            })
+
             if ( item.Attachments === true ) { itemsHaveAttachments = true ; } 
             item.refiners = getItemRefiners( drillList, item );
     
@@ -355,7 +400,7 @@ export function processAllItems( allItems : IDrillItemInfo[], errMessage: string
     });
 
     drillList.hasAttach = itemsHaveAttachments;
-    
+
     if ( errMessage === '' && finalItems.length === 0 ) { 
         errMessage = 'This list or library does not have any items that you can see.';
      }

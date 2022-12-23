@@ -17,23 +17,6 @@ import { check4Gulp, ILoadPerformance, } from '../fpsReferences';
 import { saveAnalytics3, getMinPerformanceString } from '@mikezimm/fps-library-v2/lib/pnpjs/Logging/saveAnalytics';
 import { IZLoadAnalytics, IZSentAnalytics, } from '@mikezimm/fps-library-v2/lib/pnpjs/Logging/interfaces';
 
-// import { LoadPerformanceOps, IMinPerformance, IMinPerformanceSetting, IMinPerformanceSettingLabels, IMinPerformanceSettingLabelSS7 } from '../fpsReferences';
-
-
-/***
- *    db       .d88b.   .o88b.  .d8b.  db      
- *    88      .8P  Y8. d8P  Y8 d8' `8b 88      
- *    88      88    88 8P      88ooo88 88      
- *    88      88    88 8b      88~~~88 88      
- *    88booo. `8b  d8' Y8b  d8 88   88 88booo. 
- *    Y88888P  `Y88P'   `Y88P' YP   YP Y88888P 
- *                                             
- *                                             
- */
-
-//  import { buildExportProps, buildFPSAnalyticsProps } from './BuildExportProps';
-
-
 export const analyticsViewsList: string = "Drilldown";
 export const analyticsWeb: string = "/sites/Templates/Analytics/";
 
@@ -47,65 +30,6 @@ export const analyticsWeb: string = "/sites/Templates/Analytics/";
  *                                                                                
  *                                                                                
  */
-
-
-//  export function getMinPerformanceString( performanceObj: ILoadPerformance, capMS: number = 7000, capValue: any = 'paused?' ) : string {
-
-//   let minPerformanceString = '';
-
-//   if ( performanceObj ) {
-//     const minPerformance : IMinPerformance = getMinPerformance( performanceObj , capMS, capValue );
-//     minPerformanceString = JSON.stringify( minPerformance );
-//   }
-
-//   return minPerformanceString;
-
-// }
-
-// /**
-//  * 
-//  * @param performanceObj: ILoadPerformance 
-//  * @capMS - max Milliseconds to save.... else return 'error' or null for that value.
-//  * @capValue - if ms value exceeds capMS, return this value in place of value
-//  * @returns 
-//  */
-
-// export function getMinPerformance( performanceObj: any, capMS: number = 7000, capValue: any = 'paused?' ) : IMinPerformance {
-
-//   const minPerformance : IMinPerformance = {
-//     mode: null as any,
-//   };
-
-//   if ( performanceObj && performanceObj.mode ) {
-//     minPerformance.mode = performanceObj.mode ;
-//   }
-
-//   const keys: string[] = Object.keys( performanceObj );
-
-//   keys.map( ( key : any ) => {
-//     if ( LoadPerformanceOps.indexOf(key) > -1 ) {
-//       const thisKey: any = key;
-//       if ( key.indexOf( 'setting')  === 0 ) {
-
-//         minPerformance[ thisKey ] = performanceObj[key] ;
-
-//       } else if ( performanceObj[key] ) {
-
-//         const ms: number  = performanceObj[key]['ms'] && performanceObj[key]['ms'] <= capMS ? performanceObj[key]['ms'] : capValue;
-
-//         minPerformance[ thisKey ] = {
-//           label: performanceObj[key]['label'],
-//           ms: ms,
-//         };
-
-//       }
-//     }
-//   });
-
-//   return minPerformance;
-
-// }
-
 
 export const CodeVersion = 'v2.1.0.0 +';  //  ==>  https://github.com/mikezimm/drilldown7/issues/190
 export function saveViewAnalytics( Title: string, Result: string, thisProps: IDrilldownV2Props, analyticsWasExecuted: boolean, performanceObj: ILoadPerformance ) : boolean {
@@ -154,24 +78,6 @@ export function saveViewAnalytics( Title: string, Result: string, thisProps: IDr
         }
       }
     }
-    // {
-    //   mode: null,
-    // };
-
-    // if ( performanceObj && performanceObj.mode ) {
-    //   minPerformance.mode = performanceObj.mode ;
-    // }
-
-    // Object.keys( performanceObj ).map( ( key : any ) => {
-    //   if ( LoadPerformanceOps.indexOf(key) > -1 ) {
-    //     if ( performanceObj[key] ) {
-    //       minPerformance[key] = {
-    //         label: performanceObj[key]['label'],
-    //         ms: performanceObj[key]['ms'],
-    //       };
-    //     }
-    //   }
-    // });
 
     // let performance = minPerformance ? JSON.stringify( minPerformance ) : null;
     let zzzRichText1 = '';

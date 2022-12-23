@@ -37,12 +37,13 @@ import { ICustViewDef, IQuickCommandsDesign } from '../../fpsReferences';
 
 import { IRefinerLayer, IRefinerRules, IRefinerStat } from '../../fpsReferences';
 
-import { pivotOptionsGroup, } from './PivotOptions_NPM';
+import { pivotOptionsGroup, } from '@mikezimm/fps-library-v2/lib/common/Pivots/PivotOptions';
 
 import { getExpandColumns } from '@mikezimm/fps-library-v2/lib/pnpjs/Lists/getVX/getExpandV2';
 import { getSelectColumns } from '@mikezimm/fps-library-v2/lib/pnpjs/Lists/getVX/getSelectV2';
 import { getLinkColumns } from '@mikezimm/fps-library-v2/lib/pnpjs/Lists/getVX/getLinkV2';
 import { getFuncColumns } from '@mikezimm/fps-library-v2/lib/pnpjs/Lists/getVX/getFuncV2';
+import { getSpecialColumns } from '@mikezimm/fps-library-v2/lib/pnpjs/Lists/getVX/getSpecialV2';
 
 import { getHelpfullError } from '@mikezimm/fps-library-v2/lib/logic/Errors/friendly';
 
@@ -374,6 +375,9 @@ export default class DrillDown extends React.Component<IDrilldownV2Props, IDrill
         let linkColumns = getLinkColumns(allColumns);
         let funcColumns = getFuncColumns(allColumns);
 
+        // https://github.com/mikezimm/drilldown7/issues/294
+        let specColumns = getSpecialColumns( allColumns );
+
         if ( selColumns.length > 0 ) selectCols += "," + allColumns.join(","); // eslint-disable-line @typescript-eslint/no-unused-vars
         if (expColumns.length > 0) { expandThese = expColumns.join(","); } // eslint-disable-line @typescript-eslint/no-unused-vars
 
@@ -382,6 +386,7 @@ export default class DrillDown extends React.Component<IDrilldownV2Props, IDrill
         list.expandColumns = expColumns;
         list.linkColumns = linkColumns;
         list.funcColumns = funcColumns.all;
+        list.specialColumns = specColumns;
         list.funcColumnsActual = funcColumns.actual;
         list.errors = [ ...funcColumns.errors ];
 
@@ -463,6 +468,7 @@ export default class DrillDown extends React.Component<IDrilldownV2Props, IDrill
             richColumns: [],  //This is for:  https://github.com/mikezimm/drilldown7/issues/224
             imageColumns: [],
             ageColumns: [ 'Created', 'Modified', ],
+            specialColumns: [ ],
 
             multiSelectColumns: [],
             linkColumns: [],

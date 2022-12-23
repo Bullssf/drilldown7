@@ -65,7 +65,7 @@ import { IQuickButton, IQuickCommandsDesign, makeTheTimeObject, updatePerformanc
 
 import { doesObjectExistInArray, } from './fpsReferences';
 
-import { getAllItems } from '../../services/propPane/PropPaneFunctions';
+import { getPreConfigItems } from '@mikezimm/fps-library-v2/lib/pnpjs/PreConfigItems/getPreConfig';
 
 import { ICustViewDef, } from './fpsReferences';
 
@@ -617,7 +617,7 @@ export default class DrilldownV2WebPart extends FPSBaseClass<IDrilldownV2WebPart
     
     protected async onPropertyPaneConfigurationStart(): Promise<void> {
       console.log(`onPropertyPaneConfigurationStart`);
-      await this._getListDefintions(true, true);
+      this.properties.newMap = await getPreConfigItems( this.properties, 'DrilldownPreConfigProps' );
       this.context.propertyPane.refresh();
     }
 
@@ -674,50 +674,49 @@ export default class DrilldownV2WebPart extends FPSBaseClass<IDrilldownV2WebPart
   }
 
   
-  //runAsync is an idea that is not currently being used.
-  protected async _getListDefintions(forceUpdate: boolean, runAsync: boolean) {
-    /**
-     * This section is for Templated properties
-     */
+  // //runAsync is an idea that is not currently being used.
+  // protected async _getListDefintions(forceUpdate: boolean, runAsync: boolean) {
+  //   /**
+  //    * This section is for Templated properties
+  //    */
 
-    let newMap = [];
-    if ( !this.properties.newMap || forceUpdate === true ) { 
-      console.log('GETTING LIST DEFINITIONS');
-      let configWebURL = this.context.pageContext.site.absoluteUrl;
-      configWebURL = configWebURL.substring( 0, configWebURL.indexOf('/sites/') );
-      configWebURL += '/sites/PreConfigProps/';
+  //   let newMap = [];
+  //   if ( !this.properties.newMap || forceUpdate === true ) { 
+  //     console.log('GETTING LIST DEFINITIONS');
+  //     let configWebURL = this.context.pageContext.site.absoluteUrl;
+  //     configWebURL = configWebURL.substring( 0, configWebURL.indexOf('/sites/') );
+  //     configWebURL += '/sites/PreConfigProps/';
 
-      let thisProps: string[] = Object.keys( this.properties );
+  //     let thisProps: string[] = Object.keys( this.properties );
 
-      let restFilterLD = '';
+  //     let restFilterLD = '';
 
-      if ( this.properties.webPartScenario !== '' && this.properties.webPartScenario != null ) { // eslint-disable-line eqeqeq
-        //newMap = getAllItems(configWebURL, 'DrilldownPreConfigProps', thisProps );
-        restFilterLD = "webPartScenario eq '" + this.properties.webPartScenario + "'";
-        // console.log('_getListDefintions restFilterLD:', restFilterLD );
-      }
+  //     if ( this.properties.webPartScenario !== '' && this.properties.webPartScenario != null ) { // eslint-disable-line eqeqeq
+  //       //newMap = getAllItems(configWebURL, 'DrilldownPreConfigProps', thisProps );
+  //       restFilterLD = "webPartScenario eq '" + this.properties.webPartScenario + "'";
+  //       // console.log('_getListDefintions restFilterLD:', restFilterLD );
+  //     }
 
-      //Must remove 'newMap' from props because it's one can't be mapped.
-      //let newMapIdx = thisProps.indexOf('newMap');
-      //if (newMapIdx > -1) { thisProps.splice(newMapIdx, 1); }
+  //     //Must remove 'newMap' from props because it's one can't be mapped.
+  //     //let newMapIdx = thisProps.indexOf('newMap');
+  //     //if (newMapIdx > -1) { thisProps.splice(newMapIdx, 1); }
 
-      //if ( runAsync === true ) {
-        newMap = await getAllItems(configWebURL, 'DrilldownPreConfigProps', thisProps, restFilterLD, runAsync );
-      //} else {
-      //  newMap = getAllItems(configWebURL, 'DrilldownPreConfigProps', thisProps, runAsync );
-      //}
+  //     //if ( runAsync === true ) {
+  //       newMap = await getAllItems(configWebURL, 'DrilldownPreConfigProps', thisProps, restFilterLD, runAsync );
+  //     //} else {
+  //     //  newMap = getAllItems(configWebURL, 'DrilldownPreConfigProps', thisProps, runAsync );
+  //     //}
 
-      this.properties.newMap = newMap;
-      // console.log('this.properties.newMap:',  this.properties.newMap );
+  //     this.properties.newMap = newMap;
+  //     // console.log('this.properties.newMap:',  this.properties.newMap );
 
-    } else {
-      console.log('NOT GETTING LIST DEFINITIONS, already fetched:', this.properties.newMap);
-      newMap = this.properties.newMap;
+  //   } else {
+  //     console.log('NOT GETTING LIST DEFINITIONS, already fetched:', this.properties.newMap);
+  //     newMap = this.properties.newMap;
 
-    }
-    
-    return newMap;
-  }
+  //   }
+  //   return newMap;
+  // }
 
   protected async onPropertyPaneFieldChanged(propertyPath: string, oldValue: any, newValue: any) {
     //Added super during fps-library-v2 update because it was found in the Pnpjs-v2Upgrade webpart
