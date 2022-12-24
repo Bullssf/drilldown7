@@ -11,13 +11,12 @@ import { ICssChartProps } from './components/CssCharts/ICssChartProps';
  * 
  */
 
- import { IItemEditorAudience , IEveryoneAudience } from '@mikezimm/fps-library-v2/lib/common/interfaces/fps/AudienceInterfaces';
-
+import { IItemEditorAudience , IEveryoneAudience } from '@mikezimm/fps-library-v2/lib/common/interfaces/fps/AudienceInterfaces';
 
 export const changeListConfig : string[] = [ 'definitionToggle', 'listDefinition' , ];
 export const changeListInfo : string[] = [ 'parentListWeb', 'parentListTitle', 'parentListURL' , 'language' , 'hideFolders' , ];
 
-export const changePerformance : string[] = [ 'fetchCount', 'fetchCountMobile' , 'restFilter' , 'evalFilter', 'updateRefinersOnTextSearch' , 'itemsPerPage' ];
+export const changePerformance : string[] = [ 'fetchCount', 'fetchCountMobile' , 'fetchNewer', 'restFilter' , 'evalFilter', 'updateRefinersOnTextSearch' , 'itemsPerPage' ];
 
 export const changeRefiners : string[] = [ 'refiner0', 'rules0def' , 'rules0' , 'refiner1' , 'rules1def', 'rules1', 'refiner2', 'rules2def', 'rules2', ];
 export const changeToggles : string[] = [ 'togOtherListview', 'togRefinerCounts', 'togCountChart' , 'togOtherChartpart', 'togStats' , ];
@@ -30,23 +29,7 @@ export const changeListToggles : string[] = [ 'includeDetails', 'detailsAudience
 export const changeStats : string[] = [ 'stats', ];
 export const changeCommands : string[] = [ 'quickCommands', ];
 
-// export interface IFpsCore114BannerWebPartProps extends IMinWPBannerProps {
-  /**
-   * Extend with portions of FPS Props that are needed
-   * 
-   */
 
-
-
-
-
-
-/***
- * NOTE:  All imports in here Must be imported directly from fps-library-v2, not the fpsPreferences
- * Or else it will get into an endless loop because these values are imported into fpsPreferences
- * 
- */
-import { IMinWPBannerProps } from '@mikezimm/fps-library-v2/lib/banner/interfaces/MinWP/IMinWPBannerProps';
 
 import { changesFieldPanel } from '@mikezimm/fps-library-v2/lib/components/molecules/FieldPanel/components/IMinWPFieldPanelProps';
 
@@ -71,6 +54,13 @@ export const WebPartAnalyticsChanges : any = {
 }
 
 
+/***
+ * NOTE:  All imports in here Must be imported directly from fps-library-v2, not the fpsPreferences
+ * Or else it will get into an endless loop because these values are imported into fpsPreferences
+ * 
+ */
+import { IMinWPBannerProps } from '@mikezimm/fps-library-v2/lib/banner/interfaces/MinWP/IMinWPBannerProps';
+
  /**
  * These are properties to export BOTH to analytics AND the panel
  */
@@ -93,16 +83,16 @@ export const importBlockPropsWP : string[] = [ 'showSomeProps' ];
   export interface IDrilldownV2WebPartProps  extends IMinWPBannerProps, IFPSAgeSliderWPProps {
 
     description: string;
-  
+
     // 0 - Context
     pageContext: PageContext;
-  
+
     // 1 - Analytics options
     useListAnalytics: boolean;
     analyticsWeb?: string;
     analyticsList?: string;
     stressMultiplier?: number;
-  
+
     // 2 - Source and destination list information
     createVerifyLists: boolean;
 

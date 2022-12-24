@@ -65,9 +65,11 @@ export const WPPresetEverywhere : IPreConfigSettings = {
       togCountChart: true,
       togStats: true,
       togOtherListview: false,
+
       fetchCount: 500,
       fetchCountMobile: 200,
       fetchNewer: true,
+
       getAllProps: true,
       restFilter: "",
       evalFilter: "",
