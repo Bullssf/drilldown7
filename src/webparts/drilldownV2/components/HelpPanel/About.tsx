@@ -6,7 +6,7 @@ import { IHelpTable, } from '@mikezimm/fps-library-v2/lib/banner/components/Sing
 import { createAboutRow } from '@mikezimm/fps-library-v2/lib/banner/components/Panel/createAboutRow';
 import { IWebpartBannerProps } from '@mikezimm/fps-library-v2/lib/banner/mainReact/IWebpartBannerProps';
 
-export const panelVersionNumber = '2022-12-22 -  2.2.0.1'; //Added to show in panel
+export const panelVersionNumber = '2022-12-22 -  2.2.0.3'; //Added to show in panel
 
 export function aboutTable( bannerProps: IWebpartBannerProps ): { table: IHelpTable; } {
 
@@ -23,7 +23,7 @@ export function aboutTable( bannerProps: IWebpartBannerProps ): { table: IHelpTa
     // table.rows.push( createAboutRow('',''  ,'#205 - Bugs', showRepoLinks === true ? repoLink : null ) );
     // table.rows.push( createAboutRow('',''  ,'#205 - Featres', showRepoLinks === true ? repoLink : null ) );
 
-    table.rows.push( createAboutRow('2022-12-22','2.2.0.2'  ,'#140, #261, #273, #284, #286, #293, #294, #295, #297, #298, #299, #300', showRepoLinks === true ? repoLink : null ) );
+    table.rows.push( createAboutRow('2022-12-22','2.2.0.3'  ,'#140, #261, #273, #284, #286, #293, #294, #295, #297, #298, #299, #300', showRepoLinks === true ? repoLink : null ) );
     table.rows.push( createAboutRow('2022-12-22','2.2.0.1'  ,'fps-library-v2 - FieldPanel b4 clean up', showRepoLinks === true ? repoLink : null ) );
     table.rows.push( createAboutRow('2022-12-22','2.2.0.0'  ,'fps-library-v2 - no FieldPanel b4 clean up', showRepoLinks === true ? repoLink : null ) );
 
