@@ -50,6 +50,7 @@ export function buildPerformanceGroup( wpProps: IDrilldownV2WebPartProps ) {
       disabled: true,
   }));
 
+  //https://github.com/mikezimm/drilldown7/issues/299
   groupFields.push(
     PropertyPaneToggle('fetchNewer', {
       label: 'Fetch newer or older',
