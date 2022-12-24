@@ -53,9 +53,9 @@ import { IFPSAgeSliderWPProps,  } from '@mikezimm/fps-library-v2/lib/components/
     isLibrary?: boolean;
     getAllProps: boolean; //If getAllProps, then it gets * in select.  Can be slower for pages which also get CanvasContent.
     hasAttach: boolean;
-    webURL?: string;
+    webUrl?: string;
     togStats: boolean;
-    parentListURL?: string;
+    listUrl?: string;
     contextUserInfo?: IUser;  //For site you are on ( aka current page context )
     // sourceUserInfo?: IUser;   //For site where the list is stored
 
@@ -171,11 +171,11 @@ export interface IDrilldownV2Props extends IFPSCoreReactComponentProps {
     today: ITheTime;
     WebpartElement: HTMLElement;   //Size courtesy of https://www.netwoven.com/2018/11/13/resizing-of-spfx-react-web-parts-in-different-scenarios/
 
-    webURL?: string;
-    parentListURL?: string;
+    webUrl?: string;
+    listUrl?: string;
     hideFolders: boolean;
 
-    listName : string;
+    listTitle : string;
     isLibrary: boolean;  //determined in picker
     language: string; //local language list data is saved in (needed to properly sort refiners)
 
@@ -332,7 +332,7 @@ export interface IDrillDownState extends IFPSCorePinMeReactComponentState {
 
     // allowOtherSites?: boolean; //default is local only.  Set to false to allow provisioning parts on other sites.
 
-    webURL?: string;
+    webUrl?: string;
 
     allLoaded: boolean;
 

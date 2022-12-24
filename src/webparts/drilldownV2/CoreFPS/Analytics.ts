@@ -16,6 +16,7 @@ import { IDrilldownV2Props } from '../components/Drill/IDrillProps';
 import { check4Gulp, ILoadPerformance, } from '../fpsReferences';
 import { saveAnalytics3, getMinPerformanceString } from '@mikezimm/fps-library-v2/lib/pnpjs/Logging/saveAnalytics';
 import { IZLoadAnalytics, IZSentAnalytics, } from '@mikezimm/fps-library-v2/lib/pnpjs/Logging/interfaces';
+import { IThisFPSWebPartClass } from '@mikezimm/fps-library-v2/lib/banner/FPSWebPartClass/IThisFPSWebPartClass';
 
 export const analyticsViewsList: string = "Drilldown";
 export const analyticsWeb: string = "/sites/Templates/Analytics/";
@@ -150,3 +151,47 @@ export function saveViewAnalytics( Title: string, Result: string, thisProps: IDr
 
 }
 
+export const LegacyUpdatesList: string = 'LegacyUpdates';
+
+export function saveLegacyAnalytics( Title: string, Result: string, WPClass: IThisFPSWebPartClass, legacyProps: any ) : boolean {
+
+  if ( !legacyProps || legacyProps.length === 0 ) { return ; }
+
+  // Do not save anlytics while in Edit Mode... only after save and page reloads
+  if ( WPClass.displayMode === DisplayMode.Edit ) { return; }
+
+  const loadProperties: IZLoadAnalytics = {
+    SiteID: WPClass.context.pageContext.site.id['_guid'] as any,  //Current site collection ID for easy filtering in large list
+    WebID:  WPClass.context.pageContext.web.id['_guid'] as any,  //Current web ID for easy filtering in large list
+    SiteTitle:  WPClass.context.pageContext.web.title as any, //Web Title
+    TargetSite:  WPClass.context.pageContext.web.serverRelativeUrl,  //Saved as link column.  Displayed as Relative Url
+    ListID:  `${WPClass.context.pageContext.list.id}`,  //Current list ID for easy filtering in large list
+    ListTitle:  WPClass.context.pageContext.list.title,
+    TargetList: `${WPClass.context.pageContext.web.serverRelativeUrl}`,  //Saved as link column.  Displayed as Relative Url
+
+  };
+
+  const zzzRichText1Obj: any = legacyProps;
+
+  console.log( 'zzzRichText1Obj:', zzzRichText1Obj);
+
+  const zzzRichText1 = zzzRichText1Obj ? JSON.stringify( zzzRichText1Obj ) : '';
+
+  console.log('zzzRichText1 length:', zzzRichText1 ? zzzRichText1.length : 0 );
+
+  const saveObject: IZSentAnalytics = {
+    loadProperties: loadProperties,
+    Title: Title,  //General Label used to identify what analytics you are saving:  such as Web Permissions or List Permissions.
+    Result: Result,  //Success or Error
+    zzzRichText1: zzzRichText1,  //Used to store JSON objects for later use, will be stringified
+  };
+
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const result = saveAnalytics3( analyticsWeb , `${LegacyUpdatesList}` , saveObject, true );
+
+  const saved = true;
+  console.log('saved view info' );
+  return saved;
+
+
+}

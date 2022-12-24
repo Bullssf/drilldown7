@@ -106,7 +106,7 @@ export async function getAllItems( drillList: IDrillList, addTheseItemsToState: 
     drillList.selectColumnsStr = selectCols;
 
     const DrillSource: IMinSourceFetchProps = {
-      webUrl: drillList.webURL,
+      webUrl: drillList.webUrl,
       listTitle: drillList.title,
       fetchCount: drillList.fetchCount,
       selectThese: drillList.selectColumns,
@@ -331,15 +331,15 @@ export function processAllItems( allItems : IDrillItemInfo[], errMessage: string
                 const useUrl = item.ServerRedirectedEmbedUrl ? item.ServerRedirectedEmbedUrl : item.FileRef;
                 item.goToItemPreview = useUrl;
                 item.goToItemLink = useUrl ? useUrl.replace('&action=interactivepreview','') : null ;
-                item.goToPropsLink = drillList.parentListURL + "/Forms/DispForm.aspx?ID=" + item.Id;
+                item.goToPropsLink = drillList.listUrl + "/Forms/DispForm.aspx?ID=" + item.Id;
                 item.isFile = true;
 
                 drillList.isLibrary = true;
 
             } else {
-                item.goToItemPreview = drillList.parentListURL + "/DispForm.aspx?ID=" + item.Id;
-                item.goToItemLink = drillList.parentListURL + "/DispForm.aspx?ID=" + item.Id;
-                item.goToPropsLink = drillList.parentListURL + "/DispForm.aspx?ID=" + item.Id;
+                item.goToItemPreview = drillList.listUrl + "/DispForm.aspx?ID=" + item.Id;
+                item.goToItemLink = drillList.listUrl + "/DispForm.aspx?ID=" + item.Id;
+                item.goToPropsLink = drillList.listUrl + "/DispForm.aspx?ID=" + item.Id;
                 item.isFile = false;
             }
 

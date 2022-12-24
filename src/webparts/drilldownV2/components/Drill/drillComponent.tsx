@@ -121,7 +121,7 @@ export default class DrillDown extends React.Component<IDrilldownV2Props, IDrill
     private _contentPages : IBannerPages = getBannerPages( this.props.bannerProps );
     // private _fetchUserId: string = '';  //Caching fetch Id and Web as soon as possible to prevent race
 
-    private _fetchWeb: string = this.props.webURL ? this.props.webURL : '';  //Caching fetch Id and Web as soon as possible to prevent race
+    private _fetchWeb: string = this.props.webUrl ? this.props.webUrl : '';  //Caching fetch Id and Web as soon as possible to prevent race
     private _sourceUser: IUser = null;
 
 
@@ -401,7 +401,7 @@ export default class DrillDown extends React.Component<IDrilldownV2Props, IDrill
     }
 
 
-    private _createDrillList(webURL: string, name: string, isLibrary: boolean, refiners: string[], rules: string, stats: string, 
+    private _createDrillList(webUrl: string, name: string, isLibrary: boolean, refiners: string[], rules: string, stats: string, 
         OrigViewDefs: ICustViewDef[], togOtherChartpart: boolean, title: string = null, stateSourceUserInfo: boolean, language: string, location: string, itteration: number,
         FPSAgeColumnName: string ) {
 
@@ -419,8 +419,8 @@ export default class DrillDown extends React.Component<IDrilldownV2Props, IDrill
         let restFilter: string = !this.props.performance.restFilter ? ' ' : this.props.performance.restFilter;
         const evalFilter: string = !this.props.performance.evalFilter ? '' : this.props.performance.evalFilter;
 
-        // 2022-12-21:  Changed from this.props.webURL to just webURL to pull from function arguments
-        if ( !webURL || this.props.bannerProps.context.pageContext.site.absoluteUrl.indexOf( webURL.toLowerCase() ) > -1 ) {  //The web part is on the current page context... get user object from Context instead.
+        // 2022-12-21:  Changed from this.props.webUrl to just webUrl to pull from function arguments
+        if ( !webUrl || this.props.bannerProps.context.pageContext.site.absoluteUrl.indexOf( webUrl.toLowerCase() ) > -1 ) {  //The web part is on the current page context... get user object from Context instead.
           if ( restFilter && restFilter.indexOf('[Me]') > 1 ) {
             restFilter = restFilter.replace('[Me]',  this.props.bannerProps.FPSUser.Id ? this.props.bannerProps.FPSUser.Id : this.props.bannerProps.FPSUser.id ) ; 
           }
@@ -449,8 +449,8 @@ export default class DrillDown extends React.Component<IDrilldownV2Props, IDrill
             hasAttach: false,
             togStats: this.props.toggles.togStats,
 
-            webURL: webURL,
-            parentListURL: this.props.parentListURL,
+            webUrl: webUrl,
+            listUrl: this.props.listUrl,
             refiners: refiners,
             emptyRefiner: 'Unknown',
             refinerRules: refinerRules,
@@ -514,8 +514,8 @@ export default class DrillDown extends React.Component<IDrilldownV2Props, IDrill
          * This is copied later in code when you have to call the data in case something changed.
          */
 
-        let drillList = this._createDrillList(this.props.webURL, this.props.listName, this.props.isLibrary, this.props.refiners, this.props.rules, this.props.stats, 
-          this.props.viewDefs, this.props.toggles.togOtherChartpart, this.props.listName, false, this.props.language, 'constructor', 0, this.props.ageSliderWPProps.FPSAgeColumnName );
+        let drillList = this._createDrillList(this.props.webUrl, this.props.listTitle, this.props.isLibrary, this.props.refiners, this.props.rules, this.props.stats, 
+          this.props.viewDefs, this.props.toggles.togOtherChartpart, this.props.listTitle, false, this.props.language, 'constructor', 0, this.props.ageSliderWPProps.FPSAgeColumnName );
         let errMessage = drillList.refinerRules === undefined ? 'Invalid Rule set: ' +  this.props.rules : '';
         if ( drillList.refinerRules === undefined ) { drillList.refinerRules = [[],[],[]] ; } 
 
@@ -577,7 +577,7 @@ export default class DrillDown extends React.Component<IDrilldownV2Props, IDrill
             resetArrows: makeid(4),
             // richHeight: this.props.richHeights[0],
 
-            webURL: this.props.webURL,
+            webUrl: this.props.webUrl,
 
             searchMeta: [pivCats.all.title],
             searchText: '',
@@ -615,30 +615,30 @@ export default class DrillDown extends React.Component<IDrilldownV2Props, IDrill
      *                                                                                                                                          
      */
 
-    private async _presetDrillListUser( webURL: string, email: string ) {
+    private async _presetDrillListUser( webUrl: string, email: string ) {
       const FPSWindow: IFPSWindow = window as any;
 
-      const webURLOnCurrentCollection = !webURL || webURL.toLowerCase().indexOf( FPSWindow.FPSEnviro.siteServerRelativeUrl ) > -1 ? true : false;
+      const webUrlOnCurrentCollection = !webUrl || webUrl.toLowerCase().indexOf( FPSWindow.FPSEnviro.siteServerRelativeUrl ) > -1 ? true : false;
 
-      if ( !webURL || ( !this._sourceUser && webURLOnCurrentCollection === true ) ) {
+      if ( !webUrl || ( !this._sourceUser && webUrlOnCurrentCollection === true ) ) {
         //If current web is the sourceListWeb, then just use the context FPSUser
         this._sourceUser = this.props.bannerProps.FPSUser ;
         // this._fetchUserId = this._sourceUser.Id;
-        this._fetchWeb = webURL;
+        this._fetchWeb = webUrl;
 
         return this._sourceUser;
 
-      } else if ( webURL === this._fetchWeb && this._sourceUser ) {
+      } else if ( webUrl === this._fetchWeb && this._sourceUser ) {
         return this._sourceUser;
 
       } else {
 
         try {
           this._updatePerformance( 'fetch1', 'start', 'getUserD', null );
-          const sourceUser: IEnsureUserInfo = await ensureUserInfo( webURL, email );
+          const sourceUser: IEnsureUserInfo = await ensureUserInfo( webUrl, email );
   
           // this._fetchUserId = sourceUser.user.id;
-          this._fetchWeb = webURL;
+          this._fetchWeb = webUrl;
           this._sourceUser = sourceUser.user;
 
           this._updatePerformance( 'fetch1', 'update', '', 1 );
@@ -703,13 +703,13 @@ public componentDidUpdate( prevProps: IDrilldownV2Props ){
         rebuildPart = true;
     }
 
-    if ( prevProps.listName !== this.props.listName || prevProps.webURL !== this.props.webURL ) {
+    if ( prevProps.listTitle !== this.props.listTitle || prevProps.webUrl !== this.props.webUrl ) {
       rebuildPart = true ;
     }
 
     // This seems unnecessary based on the first if-then in componentDidUpdate
     // if ( this.props.bannerProps.displayMode === DisplayMode.Edit ) {
-    //   this._webPartHelpElement = DrilldownHelp( this.props.bannerProps ); //{ webURL: this.props.webURL, listTitle: this.props.listName }
+    //   this._webPartHelpElement = DrilldownHelp( this.props.bannerProps ); //{ webUrl: this.props.webUrl, listTitle: this.props.listTitle }
     // }
 
     if ( prevProps.performance.fetchCount !== this.props.performance.fetchCount ) {
@@ -1146,9 +1146,9 @@ public componentDidUpdate( prevProps: IDrilldownV2Props ){
                                 richHeights = { this.props.richHeights}
                                 autoRichHeight = { this.props.autoRichHeight}
                                 updateRichHeightProps = { null }
-                                webURL = { this.state.drillList.webURL }
-                                parentListURL = { this.state.drillList.parentListURL }
-                                listName = { this.state.drillList.name }
+                                webUrl = { this.state.drillList.webUrl }
+                                listUrl = { this.state.drillList.listUrl }
+                                listTitle = { this.state.drillList.name }
                                 isLibrary = { this.state.drillList.isLibrary }
                                 blueBar={ blueBar }
                                 blueBarTitleText= { `Refiners selected: ${ this.state.searchMeta.join( ' > ') }` }
@@ -1354,8 +1354,8 @@ public componentDidUpdate( prevProps: IDrilldownV2Props ){
          * This is copied from constructor when you have to call the data in case something changed.
          */
 
-        let drillList = this._createDrillList(this.props.webURL, this.props.listName, this.props.isLibrary, refiners, this.state.rules, this.props.stats, 
-          viewDefs, this.props.toggles.togOtherChartpart, this.props.listName, false, this.props.language, 'getAllItemsCall', this.state.drillList.itteration, this.props.ageSliderWPProps.FPSAgeColumnName  );
+        let drillList = this._createDrillList(this.props.webUrl, this.props.listTitle, this.props.isLibrary, refiners, this.state.rules, this.props.stats, 
+          viewDefs, this.props.toggles.togOtherChartpart, this.props.listTitle, false, this.props.language, 'getAllItemsCall', this.state.drillList.itteration, this.props.ageSliderWPProps.FPSAgeColumnName  );
         // let errMessage = drillList.refinerRules === undefined ? 'Invalid Rule set: ' +  this.state.rules : '';
         if ( drillList.refinerRules === undefined ) { drillList.refinerRules = [[],[],[]] ; } 
 
@@ -1363,11 +1363,11 @@ public componentDidUpdate( prevProps: IDrilldownV2Props ){
         let evalFilter: string = this.props.performance.evalFilter;
 
         if ( restFilter && restFilter.indexOf('[Me]') > 1 ) {   
-          const sourceUser: IUser = await this._presetDrillListUser( this.props.webURL, this.props.bannerProps.FPSUser.email );
+          const sourceUser: IUser = await this._presetDrillListUser( this.props.webUrl, this.props.bannerProps.FPSUser.email );
           if ( sourceUser.Id ) restFilter = restFilter.replace('[Me]',  sourceUser.Id ) ;
 
         } else if ( this.props.quickCommands?.quickCommandsRequireUser === true || evalFilter && evalFilter.indexOf('sourceUser') > -1 ) {
-          const sourceUser: IUser = await this._presetDrillListUser( this.props.webURL, this.props.bannerProps.FPSUser.email );
+          const sourceUser: IUser = await this._presetDrillListUser( this.props.webUrl, this.props.bannerProps.FPSUser.email );
           console.log('fetched sourceUser:', sourceUser );
         }
 
@@ -1698,8 +1698,8 @@ public componentDidUpdate( prevProps: IDrilldownV2Props ){
      */ 
     let viewDefs: ICustViewDef[] = JSON.parse(JSON.stringify(this.props.viewDefs));
 
-    let drillList = this._createDrillList(this.props.webURL, this.props.listName, this.props.isLibrary, refiners, JSON.stringify(refinerRulesNew), this.props.stats, 
-    viewDefs, this.props.toggles.togOtherChartpart, this.props.listName, true, this.props.language, 'changeRefinerOrder', this.state.drillList.itteration, this.props.ageSliderWPProps.FPSAgeColumnName );
+    let drillList = this._createDrillList(this.props.webUrl, this.props.listTitle, this.props.isLibrary, refiners, JSON.stringify(refinerRulesNew), this.props.stats, 
+    viewDefs, this.props.toggles.togOtherChartpart, this.props.listTitle, true, this.props.language, 'changeRefinerOrder', this.state.drillList.itteration, this.props.ageSliderWPProps.FPSAgeColumnName );
 
     drillList.refinerInstructions = stateRefinerInstructions;
     

@@ -29,11 +29,11 @@ export function buildYourListGroup( ) {
 
   var groupFields: IPropertyPaneField<any>[] = [];
 
-  groupFields.push(PropertyPaneTextField('parentListWeb', {
+  groupFields.push(PropertyPaneTextField('webUrl', {
     label: strings.FieldLabel_ParentListWeb
   }));
 
-  groupFields.push(PropertyPaneTextField('parentListTitle', {
+  groupFields.push(PropertyPaneTextField('listTitle', {
     label: strings.FieldLabel_ParentListTitle
   }));
 

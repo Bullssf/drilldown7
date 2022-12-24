@@ -14,9 +14,10 @@ import { ICssChartProps } from './components/CssCharts/ICssChartProps';
 import { IItemEditorAudience , IEveryoneAudience } from '@mikezimm/fps-library-v2/lib/common/interfaces/fps/AudienceInterfaces';
 
 export const changeListConfig : string[] = [ 'definitionToggle', 'listDefinition' , ];
-export const changeListInfo : string[] = [ 'parentListWeb', 'parentListTitle', 'parentListURL' , 'language' , 'hideFolders' , ];
 
-export const changePerformance : string[] = [ 'fetchCount', 'fetchCountMobile' , 'fetchNewer', 'restFilter' , 'evalFilter', 'updateRefinersOnTextSearch' , 'itemsPerPage' ];
+export const changeListFetch : string[] = [ 'webUrl', 'listTitle', 'restFilter' , 'fetchCount', 'fetchCountMobile' , 'language' , 'fetchNewer', ];
+
+export const changeListProcess : string[] = [ 'evalFilter', 'updateRefinersOnTextSearch' , 'itemsPerPage', 'hideFolders' ];
 
 export const changeRefiners : string[] = [ 'refiner0', 'rules0def' , 'rules0' , 'refiner1' , 'rules1def', 'rules1', 'refiner2', 'rules2def', 'rules2', ];
 export const changeToggles : string[] = [ 'togOtherListview', 'togRefinerCounts', 'togCountChart' , 'togOtherChartpart', 'togStats' , ];
@@ -24,11 +25,10 @@ export const changeInstructions : string[] = [ 'whenToShowItems', 'minItemsForHi
 export const changeGrouping : string[] = [ 'groupByFields',  ];
 export const changeViews : string[] = [ 'syncViews', 'richHeight', 'autoRichHeight', 'viewWidth1', 'viewJSON1' , 'viewWidth2' , 'viewJSON2' , 'viewWidth3', 'viewJSON3',];
 
-export const changeListToggles : string[] = [ 'includeDetails', 'detailsAudience', 'includeAttach', 'includeListLink', 'listLinkAudience', 'createItemLink', 'createItemAudience' ];
+export const changeListToggles : string[] = [ 'includeDetails', 'detailsAudience', 'includeAttach', 'listLinkAudience', 'createItemLink', 'createItemAudience', 'includeListLink', 'listUrl' ];
 
 export const changeStats : string[] = [ 'stats', ];
 export const changeCommands : string[] = [ 'quickCommands', ];
-
 
 
 import { changesFieldPanel } from '@mikezimm/fps-library-v2/lib/components/molecules/FieldPanel/components/IMinWPFieldPanelProps';
@@ -42,8 +42,8 @@ export const WebPartAnalyticsChanges : any = {
   FieldPanel: changesFieldPanel,
 
   ListConfig : changeListConfig,
-  ListInfo : changeListInfo,
-  Performance : changePerformance,
+  ListFetch : changeListFetch,
+  ListProcess : changeListProcess,
   Refiners : changeRefiners,
   Toggles : changeToggles,
   Instructions : changeInstructions,
@@ -102,11 +102,11 @@ export const importBlockPropsWP : string[] = [ 'showSomeProps' ];
     listDefinition: any; //Picked list defintion :  Title
 
     //Group 2 - List Info
-    parentListTitle: string;
+    listTitle: string;
     isLibrary: boolean;  //determined in picker
 
-    parentListWeb: string;
-    parentListURL?: string;
+    webUrl: string;
+    listUrl?: string;
     hideFolders: boolean;
     language: string; //local language list data is saved in (needed to properly sort refiners)
   

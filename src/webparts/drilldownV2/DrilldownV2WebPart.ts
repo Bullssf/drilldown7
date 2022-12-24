@@ -131,6 +131,8 @@ import { getNumberArrayFromString } from './fpsReferences';
   import { IMinFetchListProps } from '@mikezimm/fps-pnp2/lib/services/sp/fetch/lists/fetchListProps';
   import { getSourceList, IGetMinSourceListReturn } from '@mikezimm/fps-library-v2/lib/pnpjs/Lists/getList/getSourceList';
   import { Version } from '@microsoft/sp-core-library';
+// import { convertLegacyProps, LegacyPropChanges } from './CoreFPS/LegacyPropChanges';
+import { saveLegacyAnalytics } from './CoreFPS/Analytics';
 
 
 export default class DrilldownV2WebPart extends FPSBaseClass<IDrilldownV2WebPartProps> {
@@ -165,11 +167,34 @@ export default class DrilldownV2WebPart extends FPSBaseClass<IDrilldownV2WebPart
     this._allowPinMe = true;
     this._allowFieldPanel = 'Auto';
     this._FieldPanelDesignMode = 'Disabled';
-    this._FieldPanelWebProp = 'parentListWeb';
-    this._FieldPanelListProp = 'parentListTitle'
+    this._FieldPanelWebProp = 'webUrl';
+    this._FieldPanelListProp = 'listTitle'
     this._allowPinMe = false;
 
     return super.onInit().then(_ => {
+
+      /**
+       *
+       * DO NOT REMOVE UNTIL LATE 2023 - VERIFY LegacyUpdates Analytics list for web parts using old props
+       * THIS SECTION WAS ADDED DUE TO Property name changed
+       *  https://github.com/mikezimm/drilldown7/issues/300
+       */
+      const legacyUpdates: any[] = [];
+      if ( !this.properties.webUrl && this.properties[`parentListWeb`] ) { 
+        this.properties.webUrl = `${this.properties[`parentListWeb`]}`;
+        legacyUpdates.push( { webUrl : `${this.properties[`parentListWeb`]}` } );
+      }
+      if ( !this.properties.listTitle && this.properties[`parentListTitle`] ) { 
+        this.properties.listTitle = `${this.properties[`parentListTitle`]}`;
+        legacyUpdates.push( { listTitle : `${this.properties[`parentListTitle`]}` } );
+      }
+      if ( !this.properties.listUrl && this.properties[`parentListURL`] ) { 
+        this.properties.listUrl = `${this.properties[`parentListURL`]}`;
+        legacyUpdates.push( { listUrl : `${this.properties[`parentListURL`]}` } );
+      }
+      if ( legacyUpdates.length > 0 ) {
+        saveLegacyAnalytics( 'Drilldown >= 2.2.0.3', 'Required', this as any, legacyUpdates );
+      }
 
       runFPSSuperOnInit( this as any, PreConfiguredProps, SPPermission );
 
@@ -357,7 +382,7 @@ export default class DrilldownV2WebPart extends FPSBaseClass<IDrilldownV2WebPart
     let errMessage = '';
     //Be sure to always pass down an actual URL if the webpart prop is empty at this point.
     //If it's undefined, null or '', get current page context value
-    const parentWeb = this.properties.parentListWeb && this.properties.parentListWeb != '' ? this.properties.parentListWeb : this.context.pageContext.web.absoluteUrl; // eslint-disable-line eqeqeq
+    const parentWeb = this.properties.webUrl && this.properties.webUrl != '' ? this.properties.webUrl : this.context.pageContext.web.absoluteUrl; // eslint-disable-line eqeqeq
 
     const refiners: string[] = [];
 
@@ -517,10 +542,10 @@ export default class DrilldownV2WebPart extends FPSBaseClass<IDrilldownV2WebPart
         quickCommands: this._quickCommands,
 
         // 2 - Source and destination list information
-        listName: this.properties.parentListTitle,
+        listTitle: this.properties.listTitle,
         isLibrary: this.properties.isLibrary,
-        webURL: parentWeb,
-        parentListURL: this.properties.parentListURL,
+        webUrl: parentWeb,
+        listUrl: this.properties.listUrl,
         hideFolders: this.properties.hideFolders,
         language: language,
 
@@ -852,11 +877,11 @@ export default class DrilldownV2WebPart extends FPSBaseClass<IDrilldownV2WebPart
 
       this.context.propertyPane.refresh();
 
-    } else if ( propertyPath === 'parentListWeb' || propertyPath === 'parentListTitle' ) {
-      let webUrl = propertyPath === 'parentListWeb' ? newValue : this.properties.parentListWeb;
+    } else if ( propertyPath === 'webUrl' || propertyPath === 'listTitle' ) {
+      let webUrl = propertyPath === 'webUrl' ? newValue : this.properties.webUrl;
       let parentWeb = webUrl && webUrl !== '' ? webUrl : this.context.pageContext.web.absoluteUrl;
 
-      let listTitle = propertyPath === 'parentListTitle' ? newValue : this.properties.parentListTitle;
+      let listTitle = propertyPath === 'listTitle' ? newValue : this.properties.listTitle;
 
       const fetchProps: IMinFetchListProps = {
         webUrl: parentWeb,
@@ -869,7 +894,7 @@ export default class DrilldownV2WebPart extends FPSBaseClass<IDrilldownV2WebPart
 
       if ( FetchList.status === 'Success' ) {
 
-        this.properties.parentListURL = `${window.location.origin}${FetchList.list.RootFolder.ServerRelativeUrl}`;
+        this.properties.listUrl = `${window.location.origin}${FetchList.list.RootFolder.ServerRelativeUrl}`;
         this.properties.isLibrary = FetchList.list.BaseType === 1 ? true : false;
         this.context.propertyPane.refresh();
       } else if ( FetchList.status === 'Error' ) {
@@ -901,7 +926,7 @@ export default class DrilldownV2WebPart extends FPSBaseClass<IDrilldownV2WebPart
      */
     let updateOnThese = [
       'setSize','setTab','otherTab','setTab','otherTab','setTab','otherTab','setTab','otherTab',
-      'parentListFieldTitles','progress','UpdateTitles','parentListTitle','childListTitle','parentListWeb','childListWeb', 'stats',
+      'parentListFieldTitles','progress','UpdateTitles','listTitle','webUrl','childListWeb', 'stats',
       'rules0','rules1','rules2', 'syncViews',
       'togRefinerCounts', 'togCountChart', 'togStats', 'togOtherListview', 'togOtherChartpart',
       'fetchCount', 'fetchCountMobile', 'restFilter', 'quickCommands', 'definitionToggle', 'includeListLink',
