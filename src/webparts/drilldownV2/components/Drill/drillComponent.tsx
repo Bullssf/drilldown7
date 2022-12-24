@@ -440,6 +440,7 @@ export default class DrillDown extends React.Component<IDrilldownV2Props, IDrill
             },
             fetchCount: this.props.performance.fetchCount,
             fetchCountMobile: this.props.performance.fetchCountMobile,
+            fetchNewer: this.props.performance.fetchNewer,
             restFilter: restFilter,
             evalFilter: evalFilter,
             hideFolders: this.props.hideFolders,
@@ -876,32 +877,21 @@ public componentDidUpdate( prevProps: IDrilldownV2Props ){
                 performanceMessage = true;
             }
 
-            if ( this.props.errMessage ) {
-                let issues : string[] = this.props.errMessage.split(';');
+            if ( this.props.errMessage || ( this.state.errMessage && performanceMessage !== true  ) ) {
+                let issues : string[] = this.props.errMessage ? this.props.errMessage.split(';') :
+                  typeof this.state.errMessage === 'string' ? this.state.errMessage.split('--') : 
+                  [this.state.errMessage];
+
                 let issueElements = issues.map( ( issue: string, idx : number ) => {
                     return <li key={idx}>{ issue } </li>;
                 });
                 thisPage = <div>
                     { Banner }
-                    <h2>The webpart props have some issues</h2>
-                    { issueElements }
-                    { drillListErrors }
-                </div>;
-
-            } else if ( this.state.errMessage && performanceMessage !== true  ) {
-                let issues = [];
-                if ( typeof this.state.errMessage === 'string' ) {
-                    issues = this.state.errMessage.split('--');
-                } else { issues = [this.state.errMessage] ; }
-
-                let issueElements = issues.map( ( issue: any, idx : number ) => {
-                    return <li key={idx}>{ issue } </li>;
-                });
-                thisPage = <div>
-                    { Banner }
-                    <h2>The webpart props have some issues</h2>
-                    { issueElements }
-                    { drillListErrors }
+                    <div className={ stylesD.dDerrBlock }>
+                      <h2>The webpart props have some issues</h2>
+                      { issueElements }
+                      { drillListErrors }
+                    </div>
                 </div>;
 
             } else {
@@ -1389,6 +1379,9 @@ public componentDidUpdate( prevProps: IDrilldownV2Props ){
 
     private _addTheseItemsToState( drillList: IDrillList, allItems: IDrillItemInfo[] , errMessage : string, refinerObj: IRefinerLayer ) {
 
+      if ( errMessage ) {
+        this.setState({ errMessage: errMessage });
+      } else {
         this._performance.ops.analyze2 = startPerformOp( 'analyze2 addItems', this.props.bannerProps.displayMode );
 
         const maxAge = FPSAgeSliderOptions[ Math.abs ( this.state.searchAge ) ].maxAge;  //ageIndex is negative... needs inverse to get array element
@@ -1445,13 +1438,13 @@ public componentDidUpdate( prevProps: IDrilldownV2Props ){
             analyticsWasExecuted: true,
         });
 
-
-
         //This is required so that the old list items are removed and it's re-rendered.
         //If you do not re-run it, the old list items will remain and new results get added to the list.
         //However the list will show correctly if you click on a pivot.
         //this._searchForItems( '', this.state.searchMeta, 0, 'meta' );
         return true;
+      }
+
     }
 
     private _createThisPivotCat ( title: string, desc: any, order: number ) {
@@ -1956,7 +1949,11 @@ public componentDidUpdate( prevProps: IDrilldownV2Props ){
   * @param description 
   */
 
-   private _setProgress(progressHidden: boolean, page: 'E' | 'C' | 'V' | 'I', current: number , ofThese: number, color: string, icon: string, logLabel: string, label: string, description: string, ref: string = null ){
+  private _showError ( errMessage: string ) {
+    this.setState( { errMessage: errMessage } );
+  }
+
+   private _setProgress( progressHidden: boolean, current: number , ofThese: number, color: string, icon: string, logLabel: string, label: string, description: string, ref: string = null ){
     let thisTime = new Date().toLocaleTimeString();
     const percentComplete = ofThese !== 0 ? current/ofThese : 0;
 

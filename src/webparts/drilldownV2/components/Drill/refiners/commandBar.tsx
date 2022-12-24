@@ -39,7 +39,7 @@ import { mergeStyleSets } from 'office-ui-fabric-react/lib/Styling';
           ...props.styles,
           root: {backgroundColor: 'white'  ,padding:'10px 20px 10px 10px !important', height: 32, borderColor: 'white', width: 200, margin: '0px !important'},
           textContainer: { fontSize: 16, color: '#00457E' },
-        }}       
+        }}
       />
     );
   };

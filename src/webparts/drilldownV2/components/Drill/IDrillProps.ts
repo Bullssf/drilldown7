@@ -45,6 +45,7 @@ import { IFPSAgeSliderWPProps,  } from '@mikezimm/fps-library-v2/lib/components/
     name?: string;
     guid?: string;
     fetchCount: number;
+    fetchNewer: boolean;
     fetchCountMobile: number;
     restFilter: string;
     evalFilter: string;
@@ -191,6 +192,7 @@ export interface IDrilldownV2Props extends IFPSCoreReactComponentProps {
     performance: {
         fetchCount: number;
         fetchCountMobile: number;
+        fetchNewer: boolean;
         restFilter: string;
         evalFilter: string;
         itemsPerPage: number;

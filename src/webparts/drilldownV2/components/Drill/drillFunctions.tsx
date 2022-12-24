@@ -20,9 +20,8 @@ import { createItemFunctionProp,  } from '@mikezimm/fps-library-v2/lib/logic/Str
 
 import { DoNotExpandColumns } from "@mikezimm/fps-library-v2/lib/pnpjs/Lists/getVX/IGetInterfaceV2";
 
-import { getSourceItems } from '@mikezimm/fps-library-v2/lib/pnpjs/SourceItems/getSourceItems';
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-import { IMinSourceFetchProps } from '@mikezimm/fps-pnp2/lib/services/sp/fetch/items/fetchSourceItems';
+import { getSourceItems, IMinSourceFetchProps } from '@mikezimm/fps-library-v2/lib/pnpjs/SourceItems/getSourceItems';
+
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { ISourceProps } from "@mikezimm/fps-library-v2/lib/pnpjs";
 
@@ -112,12 +111,21 @@ export async function getAllItems( drillList: IDrillList, addTheseItemsToState: 
       fetchCount: drillList.fetchCount,
       selectThese: drillList.selectColumns,
       expandThese: drillList.expandColumns,
-
+      restFilter: drillList.restFilter,
+      orderBy: {
+        prop: 'Id',
+        order: drillList.fetchNewer === false ? 'asc': 'dec',
+        asc: drillList.fetchNewer === false ? true : false,
+      },
     }
 
-    const getItems = await getSourceItems( DrillSource as ISourceProps, true, true )
+    const getItems = await getSourceItems( DrillSource as ISourceProps, false, true );
 
-    getItems.items = processAllItems( getItems.items, errMessage, drillList, addTheseItemsToState, setProgress, updatePerformance, sourceUser );
+    if ( getItems.status !== 'Success' ) {
+      addTheseItemsToState(drillList, [], getItems.errorInfo.friendly ? getItems.errorInfo.friendly : getItems.errorInfo.returnMess, [] );
+    } else { 
+      getItems.items = processAllItems( getItems.items, errMessage, drillList, addTheseItemsToState, setProgress, updatePerformance, sourceUser );
+     }
 
 }
 

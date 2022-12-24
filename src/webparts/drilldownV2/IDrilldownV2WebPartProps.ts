@@ -123,6 +123,7 @@ export const importBlockPropsWP : string[] = [ 'showSomeProps' ];
     //Group 3 - Performance options
     fetchCount: number;
     fetchCountMobile: number;
+    fetchNewer: boolean;
     itemsPerPage: number;
     getAllProps: boolean;
     restFilter: string;
@@ -173,7 +174,7 @@ export const importBlockPropsWP : string[] = [ 'showSomeProps' ];
     viewWidth1: number;
     viewWidth2: number;
     viewWidth3: number;
-  
+
     viewJSON1: string;
     viewJSON2: string;
     viewJSON3: string;
@@ -189,7 +190,7 @@ export const importBlockPropsWP : string[] = [ 'showSomeProps' ];
 
     createItemLink: boolean;
     createItemAudience: IItemEditorAudience;
-    
+
     // Page 2 Group 8 - Summary Stats 
     stats: string;
 

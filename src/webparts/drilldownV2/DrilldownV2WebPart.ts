@@ -128,8 +128,6 @@ import { getNumberArrayFromString } from './fpsReferences';
 
   import { createAgeSliderWPProps } from '@mikezimm/fps-library-v2/lib/components/atoms/FPSAgeSlider/createAgeSliderWPProps';
 
-
-  // import { } from '@mikezimm/fps-library-v2/lib/pnpjs/Lists/getVX/PnpjsListGetBasic';
   import { IMinFetchListProps } from '@mikezimm/fps-pnp2/lib/services/sp/fetch/lists/fetchListProps';
   import { getSourceList, IGetMinSourceListReturn } from '@mikezimm/fps-library-v2/lib/pnpjs/Lists/getList/getSourceList';
   import { Version } from '@microsoft/sp-core-library';
@@ -495,6 +493,7 @@ export default class DrilldownV2WebPart extends FPSBaseClass<IDrilldownV2WebPart
 
         performance: {
             fetchCount: this.properties.fetchCount,
+            fetchNewer: this.properties.fetchNewer,
             itemsPerPage: this.properties.itemsPerPage,
             fetchCountMobile: this.properties.fetchCountMobile,
             getAllProps: this.properties.getAllProps,

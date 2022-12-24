@@ -23,7 +23,7 @@ export function aboutTable( bannerProps: IWebpartBannerProps ): { table: IHelpTa
     // table.rows.push( createAboutRow('',''  ,'#205 - Bugs', showRepoLinks === true ? repoLink : null ) );
     // table.rows.push( createAboutRow('',''  ,'#205 - Featres', showRepoLinks === true ? repoLink : null ) );
 
-    table.rows.push( createAboutRow('2022-12-22','2.2.0.2'  ,'#140, #273, #284, #286, #293, #294, #295, #297, ', showRepoLinks === true ? repoLink : null ) );
+    table.rows.push( createAboutRow('2022-12-22','2.2.0.2'  ,'#140, #273, #284, #286, #293, #294, #295, #297, #298, #299', showRepoLinks === true ? repoLink : null ) );
     table.rows.push( createAboutRow('2022-12-22','2.2.0.1'  ,'fps-library-v2 - FieldPanel b4 clean up', showRepoLinks === true ? repoLink : null ) );
     table.rows.push( createAboutRow('2022-12-22','2.2.0.0'  ,'fps-library-v2 - no FieldPanel b4 clean up', showRepoLinks === true ? repoLink : null ) );
 
