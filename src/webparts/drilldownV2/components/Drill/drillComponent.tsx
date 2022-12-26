@@ -783,7 +783,7 @@ public componentDidUpdate( prevProps: IDrilldownV2Props ){
 
         let viewDefs: ICustViewDef[] = JSON.parse(viewDefsString);
 
-        console.log(`Showing rich text columns: ~ 789`, this.state.drillList.richColumns );
+        // console.log(`Showing rich text columns: ~ 789`, this.state.drillList.richColumns );
 
         viewDefs.map( view => {
             view.viewFields.map ( field => {
