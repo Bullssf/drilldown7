@@ -169,7 +169,7 @@ export default class DrilldownV2WebPart extends FPSBaseClass<IDrilldownV2WebPart
     this._FieldPanelDesignMode = 'Disabled';
     this._FieldPanelWebProp = 'webUrl';
     this._FieldPanelListProp = 'listTitle'
-    this._allowPinMe = false;
+    this._allowSiteThemeChoice = true;
 
     return super.onInit().then(_ => {
 

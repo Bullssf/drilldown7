@@ -887,7 +887,7 @@ public componentDidUpdate( prevProps: IDrilldownV2Props ){
                 });
                 thisPage = <div>
                     { Banner }
-                    <div className={ stylesD.dDerrBlock }>
+                    <div className={ stylesD.fpsMainErrBlock }>
                       <h2>The webpart props have some issues</h2>
                       { issueElements }
                       { drillListErrors }

@@ -6,7 +6,7 @@
 $themePrimary: '[theme:themePrimary, default:#0078d7]';
 $themeWhite: '[theme:white, default:white]';
 
-.dDerrBlock {
+.fpsMainErrBlock {
   display: grid;
   justify-items: center;
   background: yellow;
@@ -23,27 +23,27 @@ $themeWhite: '[theme:white, default:white]';
   }
 }
 
+//https://docs.microsoft.com/en-us/sharepoint/dev/spfx/use-theme-colors-in-your-customizations#available-theme-tokens-and-their-occurances
+$themePrimary: '[theme:themePrimary, default:#0078d7]';
+// $themeWhite: '[theme:white, default:white]';
+
+.fpsSiteThemeDark {
+  background-color: $ms-color-themeDark;
+  color: $ms-color-white;
+}
+
+.fpsSiteThemeLight {
+  background-color: $ms-color-themeLight;
+  color: $ms-color-themeDark;
+}
+
+.fpsSiteThemePrimary {
+  background-color: $ms-color-themePrimary;
+  color: $ms-color-white !important ;
+}
+
+
 .drillDown {
-
-  //https://docs.microsoft.com/en-us/sharepoint/dev/spfx/use-theme-colors-in-your-customizations#available-theme-tokens-and-their-occurances
-  $themePrimary: '[theme:themePrimary, default:#0078d7]';
-  // $themeWhite: '[theme:white, default:white]';
-
-  .fpsSiteThemeDark {
-    background-color: $ms-color-themeDark;
-    color: $ms-color-white;
-  }
-
-  .fpsSiteThemeLight {
-    background-color: $ms-color-themeLight;
-    color: $ms-color-themeDark;
-  }
-
-  .fpsSiteThemePrimary {
-    background-color: $ms-color-themePrimary;
-    color: $ms-color-white !important ;
-  }
-
 
     //https://www.w3.org/TR/CSS21/selector.html%23id-selectors#type-selectors
 
