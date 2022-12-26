@@ -6,7 +6,22 @@
 $themePrimary: '[theme:themePrimary, default:#0078d7]';
 $themeWhite: '[theme:white, default:white]';
 
-.drillDown {
+.fpsMainErrBlock {
+  display: grid;
+  justify-items: center;
+  background: yellow;
+  padding: 20px 20px 50px 20px;
+
+  h2 {
+    font-size: xx-large;
+  }
+
+  li {
+    color: red;
+    font-size: 20px;
+    font-weight: 600;
+  }
+}
 
 //https://docs.microsoft.com/en-us/sharepoint/dev/spfx/use-theme-colors-in-your-customizations#available-theme-tokens-and-their-occurances
 $themePrimary: '[theme:themePrimary, default:#0078d7]';
@@ -28,271 +43,272 @@ $themePrimary: '[theme:themePrimary, default:#0078d7]';
 }
 
 
+.drillDown {
 
-      //https://www.w3.org/TR/CSS21/selector.html%23id-selectors#type-selectors
+    //https://www.w3.org/TR/CSS21/selector.html%23id-selectors#type-selectors
 
-      //#eaeaea is the default color for selected list items
-      .timeListView *[data-automationid="DetailsRowFields"] {
-        background-color:  #FFFAB0 ;
-        transition: all 0.3s ease;
-      }
+    //#eaeaea is the default color for selected list items
+    .timeListView *[data-automationid="DetailsRowFields"] {
+      background-color:  #FFFAB0 ;
+      transition: all 0.3s ease;
+    }
 
-      .timeListView *[data-automationid="DetailsRowFields"] :hover  {
-        background-color:  #c2c2c2 ;
-        color: #212121;
-        transition: all 0.3s ease;
-      }
-
-
-      //This is what can actually bound the React List View header      
-      [class*="ms-DetailsHeader-cellName"] {
-        font-weight: 600 !important;
-        font-size: larger;
-      }
-
-/*
-      [data-automationid="DetailsRowCell"] {
-        //This will let you change cell text color
-        color: black;
-      }
-*/
-
-      //  This affects all the commandButtons
-      .refiners *[type="button"]  {
-        //width: 200px;
-        background: transparent;
-        border-top: none;
-        border-left: none;
-        border-right: none;
-        border-bottom: none;
-
-      }
-
-//  "[theme: themeDark, default: #7c1d21]"//    Some button onclick and link color (e.g., “Return to classic SharePoint”). Header “Follow” star icon if the third header background color option is used. System pages: OK button border and hover.
-//  "[theme: themeDarkAlt, default: #932227]"//    Many icons (e.g., in the command bar), some borders, button/link hovers, spinner background, range element focus, checkbox background hover, web parts and lists, button hover, range element focus, add web part icon when the third section background color is selected.
-//  "[theme: themeDarker, default: #5b1519]"//    Hover color for some links. System pages: Visited link color.
-//  "[theme: themeLight, default: #e3afb2]"//    Range selector hover and focus background. Loading spinner background color in site contents view.
-//  "[theme: themeLighter, default: #f0d3d4]"//    Navigation edit menu background color, add web part panel hover background color, image background color in some web parts when the third section background color option is selected. System pages: Navigation hover background, cancel button hover background.
-//  "[theme: themeLighterAlt, default: #fbf4f4]"//    One of the section background options. Cogwheel menu hover background in site contents view.
-//  "[theme: themePrimary, default: #a4262c]"//    Some button and checkbox backgrounds, links, texts, borders and icons, icon and link hovers. Also the footer background color, and one of the section background options. System pages: OK button background, link texts.
-//  "[theme: themeSecondary, default: #ae383e]"//    The suite bar text in site contents view. Hover color for some links. Image background color in some web parts when the fourth section background color is selected. The second color in the palette icon in the “Change the look panel” (hence the token name)
-//  "[theme: themeTertiary, default: #c86c70]"//    Add web part icon when the fourth selection background color is selected. The third color in the palette icon in the “Change the look panel” (hence the token name)
-//  "[theme: neutralDark, default: #212121]"//    Some button, link and border hover text, some icons. System pages: page breadcrumb, header texts.
-//  "[theme: neutralLight, default: #eaeaea]"//    Some web part borders, command bar action hover, command bar background when a list item is selected, list view category header background when an item is selected, button hover. System pages: Ribbon tab background, OK button border, selected navigation element background, disabled text box border. Divider web part. Image background color in some web parts when the second section background color option is selected.
-//  "[theme: neutralLighter, default: #f4f4f4]"//    Some menu backgrounds (e.g., the command bar), selected left navigation element, some button backgrounds, one option for a section background color.
-//  "[theme: neutralLighterAlt, default: #f8f8f8]"//    Left navigation hover background, list info panel text background, image background color in some webparts when the first section background color is selected, some icons and texts when editing web parts. System pages: Cancel button background, disabled text box background.
-//  "[theme: neutralPrimary, default: #333333]"//    Site header texts, texts in navigation menux, command bar, buttons and web parts, web part related icon backgrounds when the page is in edit mode, add web part panel icons and texts, web part settings panel texts. System pages: dropdown arrow color, some texts.
-//  "[theme: neutralPrimaryAlt, default: #3c3c3c]"//    The suite bar background in site contents view.
-//  "[theme: neutralSecondary, default: #666666]"//    Some menu texts, empty library text, some icon hover backgrounds, some texts in web parts, command bar arrows, range selector. System pages: link color, some icons, and borders.
-//  "[theme: neutralTertiary, default: #a6a6a6]"//    Some button texts, some web part titles, some web part setting texts, some web part icons, border hover in some web parts, dashed section border in edit mode, web part settings panel control border. Most visible when editing web parts. System pages: text box, dropdown, and button border color.
-//  "[theme: neutralTertiaryAlt, default: #c8c8c8]"//    Some texts, e.g., in web part property pane, some icons in web parts, range selector background, some button onclick background, yes/no toggle control background, change section background color setting border.
-//  "[theme: neutralQuaternary, default: #d0d0d0]"//    Command bar action hover background when a list item is selected. System pages: Borders
-//  "[theme: black, default: #000000]"//    Web part settings panel dropdown text, carousel controls, site contents tab text hover, “Change the look” panel texts.
-//  "[theme: white, default: #ffffff]"//    Primary body background, search input background, some button text, hub navigation text if the themePrimary header background is selected, one of the available section background colors. System pages: Body background
-//  "[theme: neutralQuaternaryAlt, default: #dadada]"//    Info icon and selected ellipses background in lists, some web part element backgrounds when in edit mode, web part property pane dropdown item background, selected list item background.
-//  "[theme: accent*, default: #ca5010]"//    The fourth color in the palette in the “Change the look” panel.
-//  "[theme: whiteTranslucent40*, default: "rgba(255,255,255,.4)"]"//    Covers the rest of page when a modal dialog is opened.
-//  "[theme: blackTranslucent40*, default: "rgba(0,0,0,.4)"]"//    Covers the rest of page during certain mobal dialog states, i.e.: when the web part search dialog is expanded
-//  "[theme: backgroundOverlay*, default: (empty)]"//    Site contents primary background, some borders, i.e.: between hub and site navigation
-//  "[theme: primaryBackground*, default: #ffffff]"//    Some backgrounds when editing web part settings, some text field backgrounds
-
-      .refiners *[type="button"] :hover {
-        background-color: "[theme: neutralLight, default: #eaeaea]";
-        transition:all 0.4s ease;
-      }
+    .timeListView *[data-automationid="DetailsRowFields"] :hover  {
+      background-color:  #c2c2c2 ;
+      color: #212121;
+      transition: all 0.3s ease;
+    }
 
 
-//ms-ContextualMenu-link is-checked root-289
+    //This is what can actually bound the React List View header      
+    [class*="ms-DetailsHeader-cellName"] {
+      font-weight: 600 !important;
+      font-size: larger;
+    }
 
-      //  This affects all the commandButtons
-      .refiners *[class*="ms-OverflowSet-item"]  {
-        //width: 200px;
-        background: transparent;
-        border-collapse: collapse;
-        padding-left: 5px;
-        padding-right: 5px;
-      }
+  /*
+    [data-automationid="DetailsRowCell"] {
+      //This will let you change cell text color
+      color: black;
+    }
+  */
 
-      //https://css-tricks.com/almanac/selectors/e/empty/
-      // Eliminating this does not impact the click-jiggle effect
-      .refiners i:empty {
-        margin: 0 0 0 0;
-        //padding: 0;
-        //width: 0;
-        display: none;
-      }
-      
-      .refiners [class*="is-checked"]  {
-          //Do this for making button colored if checked... not needed if we do the underline below
-          //background-color: lightgray;
+    //  This affects all the commandButtons
+    .refiners *[type="button"]  {
+      //width: 200px;
+      background: transparent;
+      border-top: none;
+      border-left: none;
+      border-right: none;
+      border-bottom: none;
 
-          [class*="ms-Button-label"] {
-              //font-weight: 600;
-              
-            //Credit for using text-shadow instead of bold to prevent shift:  https://stackoverflow.com/a/14978871
-            text-shadow: 0px 0px 1px "[theme: black, default: #000000]";
-            color: "[theme: black, default: #000000]";
+    }
 
-            }
+  //  "[theme: themeDark, default: #7c1d21]"//    Some button onclick and link color (e.g., “Return to classic SharePoint”). Header “Follow” star icon if the third header background color option is used. System pages: OK button border and hover.
+  //  "[theme: themeDarkAlt, default: #932227]"//    Many icons (e.g., in the command bar), some borders, button/link hovers, spinner background, range element focus, checkbox background hover, web parts and lists, button hover, range element focus, add web part icon when the third section background color is selected.
+  //  "[theme: themeDarker, default: #5b1519]"//    Hover color for some links. System pages: Visited link color.
+  //  "[theme: themeLight, default: #e3afb2]"//    Range selector hover and focus background. Loading spinner background color in site contents view.
+  //  "[theme: themeLighter, default: #f0d3d4]"//    Navigation edit menu background color, add web part panel hover background color, image background color in some web parts when the third section background color option is selected. System pages: Navigation hover background, cancel button hover background.
+  //  "[theme: themeLighterAlt, default: #fbf4f4]"//    One of the section background options. Cogwheel menu hover background in site contents view.
+  //  "[theme: themePrimary, default: #a4262c]"//    Some button and checkbox backgrounds, links, texts, borders and icons, icon and link hovers. Also the footer background color, and one of the section background options. System pages: OK button background, link texts.
+  //  "[theme: themeSecondary, default: #ae383e]"//    The suite bar text in site contents view. Hover color for some links. Image background color in some web parts when the fourth section background color is selected. The second color in the palette icon in the “Change the look panel” (hence the token name)
+  //  "[theme: themeTertiary, default: #c86c70]"//    Add web part icon when the fourth selection background color is selected. The third color in the palette icon in the “Change the look panel” (hence the token name)
+  //  "[theme: neutralDark, default: #212121]"//    Some button, link and border hover text, some icons. System pages: page breadcrumb, header texts.
+  //  "[theme: neutralLight, default: #eaeaea]"//    Some web part borders, command bar action hover, command bar background when a list item is selected, list view category header background when an item is selected, button hover. System pages: Ribbon tab background, OK button border, selected navigation element background, disabled text box border. Divider web part. Image background color in some web parts when the second section background color option is selected.
+  //  "[theme: neutralLighter, default: #f4f4f4]"//    Some menu backgrounds (e.g., the command bar), selected left navigation element, some button backgrounds, one option for a section background color.
+  //  "[theme: neutralLighterAlt, default: #f8f8f8]"//    Left navigation hover background, list info panel text background, image background color in some webparts when the first section background color is selected, some icons and texts when editing web parts. System pages: Cancel button background, disabled text box background.
+  //  "[theme: neutralPrimary, default: #333333]"//    Site header texts, texts in navigation menux, command bar, buttons and web parts, web part related icon backgrounds when the page is in edit mode, add web part panel icons and texts, web part settings panel texts. System pages: dropdown arrow color, some texts.
+  //  "[theme: neutralPrimaryAlt, default: #3c3c3c]"//    The suite bar background in site contents view.
+  //  "[theme: neutralSecondary, default: #666666]"//    Some menu texts, empty library text, some icon hover backgrounds, some texts in web parts, command bar arrows, range selector. System pages: link color, some icons, and borders.
+  //  "[theme: neutralTertiary, default: #a6a6a6]"//    Some button texts, some web part titles, some web part setting texts, some web part icons, border hover in some web parts, dashed section border in edit mode, web part settings panel control border. Most visible when editing web parts. System pages: text box, dropdown, and button border color.
+  //  "[theme: neutralTertiaryAlt, default: #c8c8c8]"//    Some texts, e.g., in web part property pane, some icons in web parts, range selector background, some button onclick background, yes/no toggle control background, change section background color setting border.
+  //  "[theme: neutralQuaternary, default: #d0d0d0]"//    Command bar action hover background when a list item is selected. System pages: Borders
+  //  "[theme: black, default: #000000]"//    Web part settings panel dropdown text, carousel controls, site contents tab text hover, “Change the look” panel texts.
+  //  "[theme: white, default: #ffffff]"//    Primary body background, search input background, some button text, hub navigation text if the themePrimary header background is selected, one of the available section background colors. System pages: Body background
+  //  "[theme: neutralQuaternaryAlt, default: #dadada]"//    Info icon and selected ellipses background in lists, some web part element backgrounds when in edit mode, web part property pane dropdown item background, selected list item background.
+  //  "[theme: accent*, default: #ca5010]"//    The fourth color in the palette in the “Change the look” panel.
+  //  "[theme: whiteTranslucent40*, default: "rgba(255,255,255,.4)"]"//    Covers the rest of page when a modal dialog is opened.
+  //  "[theme: blackTranslucent40*, default: "rgba(0,0,0,.4)"]"//    Covers the rest of page during certain mobal dialog states, i.e.: when the web part search dialog is expanded
+  //  "[theme: backgroundOverlay*, default: (empty)]"//    Site contents primary background, some borders, i.e.: between hub and site navigation
+  //  "[theme: primaryBackground*, default: #ffffff]"//    Some backgrounds when editing web part settings, some text field backgrounds
+
+    .refiners *[type="button"] :hover {
+      background-color: "[theme: neutralLight, default: #eaeaea]";
+      transition:all 0.4s ease;
+    }
 
 
-            // Total Credit for underline goes to this answer:  https://stackoverflow.com/a/8837382
-            // Working sandbox for that answer:  https://dabblet.com/gist/e5a78f2d4bf50b6be4d3
-            // Eliminating this does not impact the click-jiggle effect
-          [class*="ms-Button-label"]:after {
-            content: '';
-            width: 75%;
-            left: 12.5%;
-            height: 2px;
-            //https://docs.microsoft.com/en-us/sharepoint/dev/spfx/use-theme-colors-in-your-customizations
-            background: $ms-color-themeDark;  //#b0b0b0;
-            position: absolute;
-            bottom: -1px;
-            //border-radius: 2px;
+  //ms-ContextualMenu-link is-checked root-289
+
+    //  This affects all the commandButtons
+    .refiners *[class*="ms-OverflowSet-item"]  {
+      //width: 200px;
+      background: transparent;
+      border-collapse: collapse;
+      padding-left: 5px;
+      padding-right: 5px;
+    }
+
+    //https://css-tricks.com/almanac/selectors/e/empty/
+    // Eliminating this does not impact the click-jiggle effect
+    .refiners i:empty {
+      margin: 0 0 0 0;
+      //padding: 0;
+      //width: 0;
+      display: none;
+    }
+    
+    .refiners [class*="is-checked"]  {
+        //Do this for making button colored if checked... not needed if we do the underline below
+        //background-color: lightgray;
+
+        [class*="ms-Button-label"] {
+            //font-weight: 600;
+            
+          //Credit for using text-shadow instead of bold to prevent shift:  https://stackoverflow.com/a/14978871
+          text-shadow: 0px 0px 1px "[theme: black, default: #000000]";
+          color: "[theme: black, default: #000000]";
+
           }
-          
-      } /**/
-      
-      .bannerFooterStyles {
-        position: fixed;
-        left: 0;
-        bottom: 0;
-        width: 100%;
-        text-align: center;
+
+
+          // Total Credit for underline goes to this answer:  https://stackoverflow.com/a/8837382
+          // Working sandbox for that answer:  https://dabblet.com/gist/e5a78f2d4bf50b6be4d3
+          // Eliminating this does not impact the click-jiggle effect
+        [class*="ms-Button-label"]:after {
+          content: '';
+          width: 75%;
+          left: 12.5%;
+          height: 2px;
+          //https://docs.microsoft.com/en-us/sharepoint/dev/spfx/use-theme-colors-in-your-customizations
+          background: $ms-color-themeDark;  //#b0b0b0;
+          position: absolute;
+          bottom: -1px;
+          //border-radius: 2px;
+        }
+        
+    } /**/
+    
+    .bannerFooterStyles {
+      position: fixed;
+      left: 0;
+      bottom: 0;
+      width: 100%;
+      text-align: center;
+      font-size: larger;
+      font-weight: 600;
+      overflow: hidden;
+    }
+
+    .bannerShow {
+      height: 110px;
+      opacity: 1;
+      background: GreenYellow;
+      transition: all 0.6s ease;
+      // margin-top: 5px;
+      // margin-bottom: 5px;
+      z-index: 100000;
+    }
+
+    .bannerWarn {
+      background: yellow;
+      padding-top: 30px;
+      font-size: x-large;
+      font-weight: 600;
+      transition: all 0.6s ease;
+    }
+
+    // NOTE ABOUT HIDING - ALWAYS DO OVERFLOW: HIDDEN OR LINKS AND BUTTONS NOT SHOWN INTERFERE WITH VISIBLE ONES
+    // REMEMBER:  In this webpart, drillPropPaneHelp.tsx and Hide Instructions panel.
+    // In Pivot Tiles - Permissions and Group Pivot Buttons
+    .bannerHide {
+      height: 0px;
+      background: transparent;
+      opacity: 0;
+      margin-top: 0px;
+      margin-bottom: 0px;
+      transition:all 0.6s ease;
+      overflow: hidden;
+    }
+
+    
+
+    .helpContent {
+      padding: .5em 1em 1em 1em;
+    }
+
+    .helpPropsShow {
+      opacity: 1;
+      background: 'lightgray';
+      transition: all 0.6s ease;
+      padding: 30px;
+      box-sizing: border-box;
+
+      .topic {
         font-size: larger;
         font-weight: 600;
-        overflow: hidden;
-      }
-
-      .bannerShow {
-        height: 110px;
-        opacity: 1;
-        background: GreenYellow;
-        transition: all 0.6s ease;
-        // margin-top: 5px;
-        // margin-bottom: 5px;
-        z-index: 100000;
-      }
-
-      .bannerWarn {
-        background: yellow;
-        padding-top: 30px;
-        font-size: x-large;
-        font-weight: 600;
-        transition: all 0.6s ease;
-      }
-
-      // NOTE ABOUT HIDING - ALWAYS DO OVERFLOW: HIDDEN OR LINKS AND BUTTONS NOT SHOWN INTERFERE WITH VISIBLE ONES
-      // REMEMBER:  In this webpart, drillPropPaneHelp.tsx and Hide Instructions panel.
-      // In Pivot Tiles - Permissions and Group Pivot Buttons
-      .bannerHide {
-        height: 0px;
-        background: transparent;
-        opacity: 0;
-        margin-top: 0px;
-        margin-bottom: 0px;
-        transition:all 0.6s ease;
-        overflow: hidden;
-      }
-
-      
-
-      .helpContent {
-        padding: .5em 1em 1em 1em;
-      }
-
-      .helpPropsShow {
-        opacity: 1;
-        background: 'lightgray';
-        transition: all 0.6s ease;
-        padding: 30px;
+        padding-top: 15px;
+        // padding-bottom: 5px !important;
         box-sizing: border-box;
-
-        .topic {
-          font-size: larger;
-          font-weight: 600;
-          padding-top: 15px;
-          // padding-bottom: 5px !important;
-          box-sizing: border-box;
-        }
-        // text-align: center;
       }
+      // text-align: center;
+    }
 
-      /**
-            .bannerStyles {
-        text-align: center;
-        font-size: larger;
-        font-weight: 600;
-      }
+    /**
+          .bannerStyles {
+      text-align: center;
+      font-size: larger;
+      font-weight: 600;
+    }
 
-      .bannerShow {
-        height: 40px;
-        opacity: 1;
-        margin-top: 5px;
-        margin-bottom: 5px;
-        background: 'GreenYellow';
-        transition: all 0.5s ease;
+    .bannerShow {
+      height: 40px;
+      opacity: 1;
+      margin-top: 5px;
+      margin-bottom: 5px;
+      background: 'GreenYellow';
+      transition: all 0.5s ease;
 
-      }
-
-      // NOTE ABOUT HIDING - ALWAYS DO OVERFLOW: HIDDEN OR LINKS AND BUTTONS NOT SHOWN INTERFERE WITH VISIBLE ONES
-      // REMEMBER:  In this webpart, drillPropPaneHelp.tsx and Hide Instructions panel.
-      // In Pivot Tiles - Permissions and Group Pivot Buttons
-
-      .bannerHide {
-        height: 0px;
-        background: transparent;
-        margin-top: 5px;
-        margin-bottom: 5px;
-        opacity: 0;
-        transition:all 0.5s ease;
-      }
-      */
-
-      .instructions {
-        padding: 20px 20px 20px 30px;
-        transition:all 0.4s ease;
-        opacity: 1;
-        overflow: hidden;
-
-        li {
-          padding-bottom: 7px;
-          [role="presentation"] {
-            padding: 0px 10px;
-          }
-        }
-
-        .instHeading {
-          font-size: large;
-          font-weight: bolder;
-          text-decoration: underline;
-          display: inline-block;
-        }
-        .complete {
-          color: green;
-        }
-
-        .incomplete {
-          color: red;
-        }
-
-      }
-
+    }
 
     // NOTE ABOUT HIDING - ALWAYS DO OVERFLOW: HIDDEN OR LINKS AND BUTTONS NOT SHOWN INTERFERE WITH VISIBLE ONES
     // REMEMBER:  In this webpart, drillPropPaneHelp.tsx and Hide Instructions panel.
     // In Pivot Tiles - Permissions and Group Pivot Buttons
 
-    .hideInstructions {
-      padding: 0px;
+    .bannerHide {
       height: 0px;
-      overflow: hidden;
       background: transparent;
+      margin-top: 5px;
+      margin-bottom: 5px;
       opacity: 0;
-      margin-top: 0px;
-      margin-bottom: 0px;
-      transition:all 0.3s ease;
+      transition:all 0.5s ease;
     }
+    */
+
+    .instructions {
+      padding: 20px 20px 20px 30px;
+      transition:all 0.4s ease;
+      opacity: 1;
+      overflow: hidden;
+
+      li {
+        padding-bottom: 7px;
+        [role="presentation"] {
+          padding: 0px 10px;
+        }
+      }
+
+      .instHeading {
+        font-size: large;
+        font-weight: bolder;
+        text-decoration: underline;
+        display: inline-block;
+      }
+      .complete {
+        color: green;
+      }
+
+      .incomplete {
+        color: red;
+      }
+
+    }
+
+
+  // NOTE ABOUT HIDING - ALWAYS DO OVERFLOW: HIDDEN OR LINKS AND BUTTONS NOT SHOWN INTERFERE WITH VISIBLE ONES
+  // REMEMBER:  In this webpart, drillPropPaneHelp.tsx and Hide Instructions panel.
+  // In Pivot Tiles - Permissions and Group Pivot Buttons
+
+  .hideInstructions {
+    padding: 0px;
+    height: 0px;
+    overflow: hidden;
+    background: transparent;
+    opacity: 0;
+    margin-top: 0px;
+    margin-bottom: 0px;
+    transition:all 0.3s ease;
+  }
   
 
 

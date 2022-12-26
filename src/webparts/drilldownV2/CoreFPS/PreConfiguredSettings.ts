@@ -35,7 +35,7 @@ export const WPPresetEverywhere : IPreConfigSettings = {
       isLibrary: false,
       newMap: [], //Added to address https://github.com/mikezimm/drilldown7/issues/184
       description: "Drilldown cascading filters",
-      parentListTitle:"",
+      listTitle:"",
       webPartScenario: "TEAM",
       refiner0: "",
       refiner1: "",
@@ -65,8 +65,11 @@ export const WPPresetEverywhere : IPreConfigSettings = {
       togCountChart: true,
       togStats: true,
       togOtherListview: false,
+
       fetchCount: 500,
       fetchCountMobile: 200,
+      fetchNewer: true,
+
       getAllProps: true,
       restFilter: "",
       evalFilter: "",

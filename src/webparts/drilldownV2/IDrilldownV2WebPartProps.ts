@@ -11,13 +11,13 @@ import { ICssChartProps } from './components/CssCharts/ICssChartProps';
  * 
  */
 
- import { IItemEditorAudience , IEveryoneAudience } from '@mikezimm/fps-library-v2/lib/common/interfaces/fps/AudienceInterfaces';
-
+import { IItemEditorAudience , IEveryoneAudience } from '@mikezimm/fps-library-v2/lib/common/interfaces/fps/AudienceInterfaces';
 
 export const changeListConfig : string[] = [ 'definitionToggle', 'listDefinition' , ];
-export const changeListInfo : string[] = [ 'parentListWeb', 'parentListTitle', 'parentListURL' , 'language' , 'hideFolders' , ];
 
-export const changePerformance : string[] = [ 'fetchCount', 'fetchCountMobile' , 'restFilter' , 'evalFilter', 'updateRefinersOnTextSearch' , 'itemsPerPage' ];
+export const changeListFetch : string[] = [ 'webUrl', 'listTitle', 'restFilter' , 'fetchCount', 'fetchCountMobile' , 'language' , 'fetchNewer', ];
+
+export const changeListProcess : string[] = [ 'evalFilter', 'updateRefinersOnTextSearch' , 'itemsPerPage', 'hideFolders' ];
 
 export const changeRefiners : string[] = [ 'refiner0', 'rules0def' , 'rules0' , 'refiner1' , 'rules1def', 'rules1', 'refiner2', 'rules2def', 'rules2', ];
 export const changeToggles : string[] = [ 'togOtherListview', 'togRefinerCounts', 'togCountChart' , 'togOtherChartpart', 'togStats' , ];
@@ -25,28 +25,11 @@ export const changeInstructions : string[] = [ 'whenToShowItems', 'minItemsForHi
 export const changeGrouping : string[] = [ 'groupByFields',  ];
 export const changeViews : string[] = [ 'syncViews', 'richHeight', 'autoRichHeight', 'viewWidth1', 'viewJSON1' , 'viewWidth2' , 'viewJSON2' , 'viewWidth3', 'viewJSON3',];
 
-export const changeListToggles : string[] = [ 'includeDetails', 'detailsAudience', 'includeAttach', 'includeListLink', 'listLinkAudience', 'createItemLink', 'createItemAudience' ];
+export const changeListToggles : string[] = [ 'includeDetails', 'detailsAudience', 'includeAttach', 'listLinkAudience', 'createItemLink', 'createItemAudience', 'includeListLink', 'listUrl' ];
 
 export const changeStats : string[] = [ 'stats', ];
 export const changeCommands : string[] = [ 'quickCommands', ];
 
-// export interface IFpsCore114BannerWebPartProps extends IMinWPBannerProps {
-  /**
-   * Extend with portions of FPS Props that are needed
-   * 
-   */
-
-
-
-
-
-
-/***
- * NOTE:  All imports in here Must be imported directly from fps-library-v2, not the fpsPreferences
- * Or else it will get into an endless loop because these values are imported into fpsPreferences
- * 
- */
-import { IMinWPBannerProps } from '@mikezimm/fps-library-v2/lib/banner/interfaces/MinWP/IMinWPBannerProps';
 
 import { changesFieldPanel } from '@mikezimm/fps-library-v2/lib/components/molecules/FieldPanel/components/IMinWPFieldPanelProps';
 
@@ -59,8 +42,8 @@ export const WebPartAnalyticsChanges : any = {
   FieldPanel: changesFieldPanel,
 
   ListConfig : changeListConfig,
-  ListInfo : changeListInfo,
-  Performance : changePerformance,
+  ListFetch : changeListFetch,
+  ListProcess : changeListProcess,
   Refiners : changeRefiners,
   Toggles : changeToggles,
   Instructions : changeInstructions,
@@ -70,6 +53,13 @@ export const WebPartAnalyticsChanges : any = {
 
 }
 
+
+/***
+ * NOTE:  All imports in here Must be imported directly from fps-library-v2, not the fpsPreferences
+ * Or else it will get into an endless loop because these values are imported into fpsPreferences
+ * 
+ */
+import { IMinWPBannerProps } from '@mikezimm/fps-library-v2/lib/banner/interfaces/MinWP/IMinWPBannerProps';
 
  /**
  * These are properties to export BOTH to analytics AND the panel
@@ -93,16 +83,16 @@ export const importBlockPropsWP : string[] = [ 'showSomeProps' ];
   export interface IDrilldownV2WebPartProps  extends IMinWPBannerProps, IFPSAgeSliderWPProps {
 
     description: string;
-  
+
     // 0 - Context
     pageContext: PageContext;
-  
+
     // 1 - Analytics options
     useListAnalytics: boolean;
     analyticsWeb?: string;
     analyticsList?: string;
     stressMultiplier?: number;
-  
+
     // 2 - Source and destination list information
     createVerifyLists: boolean;
 
@@ -112,17 +102,18 @@ export const importBlockPropsWP : string[] = [ 'showSomeProps' ];
     listDefinition: any; //Picked list defintion :  Title
 
     //Group 2 - List Info
-    parentListTitle: string;
+    listTitle: string;
     isLibrary: boolean;  //determined in picker
 
-    parentListWeb: string;
-    parentListURL?: string;
+    webUrl: string;
+    listUrl?: string;
     hideFolders: boolean;
     language: string; //local language list data is saved in (needed to properly sort refiners)
   
     //Group 3 - Performance options
     fetchCount: number;
     fetchCountMobile: number;
+    fetchNewer: boolean;
     itemsPerPage: number;
     getAllProps: boolean;
     restFilter: string;
@@ -173,7 +164,7 @@ export const importBlockPropsWP : string[] = [ 'showSomeProps' ];
     viewWidth1: number;
     viewWidth2: number;
     viewWidth3: number;
-  
+
     viewJSON1: string;
     viewJSON2: string;
     viewJSON3: string;
@@ -189,7 +180,7 @@ export const importBlockPropsWP : string[] = [ 'showSomeProps' ];
 
     createItemLink: boolean;
     createItemAudience: IItemEditorAudience;
-    
+
     // Page 2 Group 8 - Summary Stats 
     stats: string;
 

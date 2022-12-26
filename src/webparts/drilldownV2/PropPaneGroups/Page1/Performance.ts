@@ -35,7 +35,7 @@ export function buildPerformanceGroup( wpProps: IDrilldownV2WebPartProps ) {
     PropertyPaneSlider('fetchCount', {
       label: 'Load this many items from PC',
       min: 100,
-      max: 3000,
+      max: 5000,
       step: 100,
       value: wpProps.fetchCount,
   }));
@@ -48,6 +48,14 @@ export function buildPerformanceGroup( wpProps: IDrilldownV2WebPartProps ) {
       step: 100,
       value: wpProps.fetchCountMobile,
       disabled: true,
+  }));
+
+  //https://github.com/mikezimm/drilldown7/issues/299
+  groupFields.push(
+    PropertyPaneToggle('fetchNewer', {
+      label: 'Fetch newer or older',
+      offText: 'Older',
+      onText: 'Newer',
   }));
 
   groupFields.push(

@@ -1,4 +1,4 @@
-// import { toAbsoluteUrl } from '@pnp/sp';
+
 import { ICSSChartSettings, ICSSChartData, } from '../Drill/IDrillProps';
 
 import { IRefinerLayer, IRefinerStat } from '@mikezimm/fps-library-v2/lib/components/interfaces/Refiners/IRefiners';
@@ -14,9 +14,6 @@ export function buildCountChartsObject( title: string, callBackID: string, refin
     refinerObj.childrenCounts.map( ( v ) => { total += v; });
     
     let chartKey : string = labels.join('') + counts.join('');
-
-//        console.log('buildCountChartsObject labels:', labels );
-//        console.log('buildCountChartsObject counts:', counts );
 
     let chartSettings: ICSSChartSettings = {
         title: title,

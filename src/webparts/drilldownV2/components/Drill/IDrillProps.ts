@@ -1,8 +1,6 @@
 
 import { IReadonlyTheme } from '@microsoft/sp-component-base';
 
-// import { IFPSCorePinMeReactComponentProps, IFPSCorePinMeReactComponentState, ILoadPerformance } from '../../fpsReferences';
-
 import { IGrouping } from "@pnp/spfx-controls-react/lib/ListView";
 
 import { ITheTime, } from '@mikezimm/fps-library-v2/lib/logic/Time/Interfaces';
@@ -10,7 +8,6 @@ import { ITheTime, } from '@mikezimm/fps-library-v2/lib/logic/Time/Interfaces';
 import { ICSSChartTypes, ILabelColor } from '@mikezimm/fps-library-v2/lib/components/interfaces/CSSCharts/ICSSCharts';
 import { IMyProgress, } from '@mikezimm/fps-library-v2/lib/common/interfaces/fps/IMyInterfaces';
 import { IPickedList, } from '@mikezimm/fps-library-v2/lib/common/interfaces/fps/Picked/IPickedList';
-import { IFPSResultStatus, } from '@mikezimm/fps-pnp2/lib/services/sp/IFPSResultStatus';
 
 import { ICustViewDef } from '../../fpsReferences';
 
@@ -40,7 +37,6 @@ import { IFPSAgeSliderWPProps,  } from '@mikezimm/fps-library-v2/lib/components/
  */
 
  export interface IDrillList extends Partial<IPickedList> {
-  // [key: string]: string | string[] | boolean | IRefinerRules[][] | IUser | IRefinerStat[] | ICustViewDef[] | any[] | any | undefined;
     itteration: number;
     location: string;
 
@@ -49,6 +45,7 @@ import { IFPSAgeSliderWPProps,  } from '@mikezimm/fps-library-v2/lib/components/
     name?: string;
     guid?: string;
     fetchCount: number;
+    fetchNewer: boolean;
     fetchCountMobile: number;
     restFilter: string;
     evalFilter: string;
@@ -56,9 +53,9 @@ import { IFPSAgeSliderWPProps,  } from '@mikezimm/fps-library-v2/lib/components/
     isLibrary?: boolean;
     getAllProps: boolean; //If getAllProps, then it gets * in select.  Can be slower for pages which also get CanvasContent.
     hasAttach: boolean;
-    webURL?: string;
+    webUrl?: string;
     togStats: boolean;
-    parentListURL?: string;
+    listUrl?: string;
     contextUserInfo?: IUser;  //For site you are on ( aka current page context )
     // sourceUserInfo?: IUser;   //For site where the list is stored
 
@@ -75,6 +72,7 @@ import { IFPSAgeSliderWPProps,  } from '@mikezimm/fps-library-v2/lib/components/
     richColumns: string[];  //This is for:  https://github.com/mikezimm/drilldown7/issues/224
     imageColumns: string[];
     ageColumns: string[];
+
     staticColumnsStr: string;
     selectColumnsStr: string;
     expandColumnsStr: string;
@@ -82,9 +80,11 @@ import { IFPSAgeSliderWPProps,  } from '@mikezimm/fps-library-v2/lib/components/
     richColumnsStr: string;  //This is for:  https://github.com/mikezimm/drilldown7/issues/224
     imageColumnsStr: string;
     ageColumnsStr: string;
+
     multiSelectColumns: string[];
     linkColumns: string[];
     funcColumns: string[];
+    specialColumns: string[]; // https://github.com/mikezimm/drilldown7/issues/294
     funcColumnsActual: string[];
     removeFromSelect: string[];
 
@@ -139,69 +139,6 @@ export type IWhenToShowItems = 0 | 1 | 2 | 3;
 
 export type IViewType = 'React' | 'MZ' | 'Other' ;
 
-/**
- * ## Property Pane updates:
-Page owner can set:
-- min Refiner level required to hide instructions: whenToShowItems
-- minItemsForHide to avoid instructions ( in case count is below this hide instructions )
-- First line of instruction text
-- Instruction text for each refiner to be clicked
-- If nothing is touched, it will  do it's best to tell the user what to do.
-
-## Logic should be:
-
-- If the item count is greater than minItemsForHide && user has not clicked enough refiners, ONLY instructions are shown.
-- If instructions are shown, user can always 'Hide' them via button in instructions div.
-- This setting sticks unless the user clicks on certain things that trigger a reload of the data.
-- At any time the user can press the "Instructions" button in the right side of banner element to show instructions.
-
-## Properties Added this the code
-
-```js
-//Added to webpart props and property pane:
-  whenToShowItems: IWhenToShowItems;
-  minItemsForHide: number;
-  instructionIntro: string;
-  refinerInstruction1: string;
-  refinerInstruction2: string;
-  refinerInstruction3: string;
-
-//Added to IDrilldownV2Props
-    showItems: {
-        whenToShowItems: IWhenToShowItems;
-        minItemsForHide: number;
-        instructionIntro: string;
-        refinerInstruction1: string;
-        refinerInstruction2: string;
-        refinerInstruction3: string;
-    };
-
-//Added to IDrillDownSTATE
-    whenToShowItems: IWhenToShowItems;
-    instructionsHidden: 'force' | 'hide' | 'dynamic';
-```
-
-
-![image](https://user-images.githubusercontent.com/49648086/159371801-c2977995-6abe-4ade-8cd8-2932b538ab58.png)
-
- */
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 import { IFPSCoreReactComponentProps } from '@mikezimm/fps-library-v2/lib/banner/mainReact/ReactComponentProps';
 import { IFPSCorePinMeReactComponentState } from '@mikezimm/fps-library-v2/lib/banner/mainReact/ReactComponentState';
 import { ILoadPerformance } from '../../fpsReferences';
@@ -227,18 +164,18 @@ export interface IDrilldownV2Props extends IFPSCoreReactComponentProps {
 
      ageSliderWPProps: IFPSAgeSliderWPProps;
 
-    allowOtherSites?: boolean; //default is local only.  Set to false to allow provisioning parts on other sites.
+    // allowOtherSites?: boolean; //default is local only.  Set to false to allow provisioning parts on other sites.
 
     tenant: string;
     urlVars: {};
     today: ITheTime;
     WebpartElement: HTMLElement;   //Size courtesy of https://www.netwoven.com/2018/11/13/resizing-of-spfx-react-web-parts-in-different-scenarios/
 
-    webURL?: string;
-    parentListURL?: string;
+    webUrl?: string;
+    listUrl?: string;
     hideFolders: boolean;
 
-    listName : string;
+    listTitle : string;
     isLibrary: boolean;  //determined in picker
     language: string; //local language list data is saved in (needed to properly sort refiners)
 
@@ -255,6 +192,7 @@ export interface IDrilldownV2Props extends IFPSCoreReactComponentProps {
     performance: {
         fetchCount: number;
         fetchCountMobile: number;
+        fetchNewer: boolean;
         restFilter: string;
         evalFilter: string;
         itemsPerPage: number;
@@ -272,7 +210,7 @@ export interface IDrilldownV2Props extends IFPSCoreReactComponentProps {
 
     viewType?: IViewType;
     viewDefs?: ICustViewDef[];
-    richHeight: number[];  //=>> maxHeight: 55em ; address:  https://github.com/mikezimm/drilldown7/issues/270
+    richHeights: number[];  //=>> maxHeight: 55em ; address:  https://github.com/mikezimm/drilldown7/issues/270
     autoRichHeight: string;  //=>> maxQty;maxHeight ; address:  https://github.com/mikezimm/drilldown7/issues/271
     parentListFieldTitles: string;
 
@@ -295,16 +233,7 @@ export interface IDrilldownV2Props extends IFPSCoreReactComponentProps {
     pivotOptions: string;
     pivotTab: string;  //May not be needed because we have projectMasterPriority
 
-    /**
-     * 2020-09-08:  Add for dynamic data refiners.   onRefiner0Selected  -- callback to update main web part dynamic data props.
-     */
-    // onRefiner0Selected?: any;
-
     style: IRefinerStyles; //RefinerStyle
-
-    //For DD
-    // handleSwitch: any;
-    // handleListPost: any;
 
 }
 
@@ -400,17 +329,14 @@ export const RefinerChartTypes : ICSSChartTypes[] = ['stacked-column-labels', 'p
  */
 
 export interface IDrillDownState extends IFPSCorePinMeReactComponentState {
-  // [key: string]: string | string[] | boolean | IDrillItemInfo[] | IStat[] | IMyProgress | IQuickCommandsDesign | 
-  //   IWhenToShowItems | IViewType | any[] | IMyPivCat[][] | ICMDItem[][] | IRefinerStyles | IGrouping[] | IRefinerLayer | any | undefined;
-    allowOtherSites?: boolean; //default is local only.  Set to false to allow provisioning parts on other sites.
 
-    webURL?: string;
+    // allowOtherSites?: boolean; //default is local only.  Set to false to allow provisioning parts on other sites.
+
+    webUrl?: string;
 
     allLoaded: boolean;
 
     showPropsHelp: boolean;
-    bannerMessage: any;
-    bannerMessageStatus: IFPSResultStatus;
 
     showTips: boolean;
 
@@ -444,7 +370,7 @@ export interface IDrillDownState extends IFPSCorePinMeReactComponentState {
 
     meta: string[];
     resetArrows?: string;  //unique Id used to reset arrows to starting position
-    richHeight: number;  //=>> maxHeight: 55em ; address:  https://github.com/mikezimm/drilldown7/issues/270
+    // richHeight: number;  //=>> maxHeight: 55em ; address:  https://github.com/mikezimm/drilldown7/issues/270
 
     errMessage: string | JSX.Element;
 
@@ -467,6 +393,6 @@ export interface IDrillDownState extends IFPSCorePinMeReactComponentState {
 
     groupByFields: IGrouping[];
 
-    
+
 }
 

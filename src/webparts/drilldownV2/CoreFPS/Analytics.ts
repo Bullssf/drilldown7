@@ -16,23 +16,7 @@ import { IDrilldownV2Props } from '../components/Drill/IDrillProps';
 import { check4Gulp, ILoadPerformance, } from '../fpsReferences';
 import { saveAnalytics3, getMinPerformanceString } from '@mikezimm/fps-library-v2/lib/pnpjs/Logging/saveAnalytics';
 import { IZLoadAnalytics, IZSentAnalytics, } from '@mikezimm/fps-library-v2/lib/pnpjs/Logging/interfaces';
-
-// import { LoadPerformanceOps, IMinPerformance, IMinPerformanceSetting, IMinPerformanceSettingLabels, IMinPerformanceSettingLabelSS7 } from '../fpsReferences';
-
-
-/***
- *    db       .d88b.   .o88b.  .d8b.  db      
- *    88      .8P  Y8. d8P  Y8 d8' `8b 88      
- *    88      88    88 8P      88ooo88 88      
- *    88      88    88 8b      88~~~88 88      
- *    88booo. `8b  d8' Y8b  d8 88   88 88booo. 
- *    Y88888P  `Y88P'   `Y88P' YP   YP Y88888P 
- *                                             
- *                                             
- */
-
-//  import { buildExportProps, buildFPSAnalyticsProps } from './BuildExportProps';
-
+import { IThisFPSWebPartClass } from '@mikezimm/fps-library-v2/lib/banner/FPSWebPartClass/IThisFPSWebPartClass';
 
 export const analyticsViewsList: string = "Drilldown";
 export const analyticsWeb: string = "/sites/Templates/Analytics/";
@@ -47,65 +31,6 @@ export const analyticsWeb: string = "/sites/Templates/Analytics/";
  *                                                                                
  *                                                                                
  */
-
-
-//  export function getMinPerformanceString( performanceObj: ILoadPerformance, capMS: number = 7000, capValue: any = 'paused?' ) : string {
-
-//   let minPerformanceString = '';
-
-//   if ( performanceObj ) {
-//     const minPerformance : IMinPerformance = getMinPerformance( performanceObj , capMS, capValue );
-//     minPerformanceString = JSON.stringify( minPerformance );
-//   }
-
-//   return minPerformanceString;
-
-// }
-
-// /**
-//  * 
-//  * @param performanceObj: ILoadPerformance 
-//  * @capMS - max Milliseconds to save.... else return 'error' or null for that value.
-//  * @capValue - if ms value exceeds capMS, return this value in place of value
-//  * @returns 
-//  */
-
-// export function getMinPerformance( performanceObj: any, capMS: number = 7000, capValue: any = 'paused?' ) : IMinPerformance {
-
-//   const minPerformance : IMinPerformance = {
-//     mode: null as any,
-//   };
-
-//   if ( performanceObj && performanceObj.mode ) {
-//     minPerformance.mode = performanceObj.mode ;
-//   }
-
-//   const keys: string[] = Object.keys( performanceObj );
-
-//   keys.map( ( key : any ) => {
-//     if ( LoadPerformanceOps.indexOf(key) > -1 ) {
-//       const thisKey: any = key;
-//       if ( key.indexOf( 'setting')  === 0 ) {
-
-//         minPerformance[ thisKey ] = performanceObj[key] ;
-
-//       } else if ( performanceObj[key] ) {
-
-//         const ms: number  = performanceObj[key]['ms'] && performanceObj[key]['ms'] <= capMS ? performanceObj[key]['ms'] : capValue;
-
-//         minPerformance[ thisKey ] = {
-//           label: performanceObj[key]['label'],
-//           ms: ms,
-//         };
-
-//       }
-//     }
-//   });
-
-//   return minPerformance;
-
-// }
-
 
 export const CodeVersion = 'v2.1.0.0 +';  //  ==>  https://github.com/mikezimm/drilldown7/issues/190
 export function saveViewAnalytics( Title: string, Result: string, thisProps: IDrilldownV2Props, analyticsWasExecuted: boolean, performanceObj: ILoadPerformance ) : boolean {
@@ -154,24 +79,6 @@ export function saveViewAnalytics( Title: string, Result: string, thisProps: IDr
         }
       }
     }
-    // {
-    //   mode: null,
-    // };
-
-    // if ( performanceObj && performanceObj.mode ) {
-    //   minPerformance.mode = performanceObj.mode ;
-    // }
-
-    // Object.keys( performanceObj ).map( ( key : any ) => {
-    //   if ( LoadPerformanceOps.indexOf(key) > -1 ) {
-    //     if ( performanceObj[key] ) {
-    //       minPerformance[key] = {
-    //         label: performanceObj[key]['label'],
-    //         ms: performanceObj[key]['ms'],
-    //       };
-    //     }
-    //   }
-    // });
 
     // let performance = minPerformance ? JSON.stringify( minPerformance ) : null;
     let zzzRichText1 = '';
@@ -233,8 +140,9 @@ export function saveViewAnalytics( Title: string, Result: string, thisProps: IDr
 
     };
 
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const result = saveAnalytics3( analyticsWeb , `${analyticsViewsList}` , saveObject, true );
-
+ 
     const saved = true;
     console.log('saved view info' );
     return saved;
@@ -243,3 +151,47 @@ export function saveViewAnalytics( Title: string, Result: string, thisProps: IDr
 
 }
 
+export const LegacyUpdatesList: string = 'LegacyUpdates';
+
+export function saveLegacyAnalytics( Title: string, Result: string, WPClass: IThisFPSWebPartClass, legacyProps: any ) : boolean {
+
+  if ( !legacyProps || legacyProps.length === 0 ) { return ; }
+
+  // Do not save anlytics while in Edit Mode... only after save and page reloads
+  if ( WPClass.displayMode === DisplayMode.Edit ) { return; }
+
+  const loadProperties: IZLoadAnalytics = {
+    SiteID: WPClass.context.pageContext.site.id['_guid'] as any,  //Current site collection ID for easy filtering in large list
+    WebID:  WPClass.context.pageContext.web.id['_guid'] as any,  //Current web ID for easy filtering in large list
+    SiteTitle:  WPClass.context.pageContext.web.title as any, //Web Title
+    TargetSite:  WPClass.context.pageContext.web.serverRelativeUrl,  //Saved as link column.  Displayed as Relative Url
+    ListID:  `${WPClass.context.pageContext.list.id}`,  //Current list ID for easy filtering in large list
+    ListTitle:  WPClass.context.pageContext.list.title,
+    TargetList: `${WPClass.context.pageContext.web.serverRelativeUrl}`,  //Saved as link column.  Displayed as Relative Url
+
+  };
+
+  const zzzRichText1Obj: any = legacyProps;
+
+  console.log( 'zzzRichText1Obj:', zzzRichText1Obj);
+
+  const zzzRichText1 = zzzRichText1Obj ? JSON.stringify( zzzRichText1Obj ) : '';
+
+  console.log('zzzRichText1 length:', zzzRichText1 ? zzzRichText1.length : 0 );
+
+  const saveObject: IZSentAnalytics = {
+    loadProperties: loadProperties,
+    Title: Title,  //General Label used to identify what analytics you are saving:  such as Web Permissions or List Permissions.
+    Result: Result,  //Success or Error
+    zzzRichText1: zzzRichText1,  //Used to store JSON objects for later use, will be stringified
+  };
+
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const result = saveAnalytics3( analyticsWeb , `${LegacyUpdatesList}` , saveObject, true );
+
+  const saved = true;
+  console.log('saved view info' );
+  return saved;
+
+
+}
