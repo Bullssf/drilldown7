@@ -15,7 +15,7 @@ import { gettingStartedContent } from './GettingStarted';
 import { getRandomTip, webParTips } from './Tips';
 import { whyContent } from './Whyme';  //2022-01-31: Added Pivot Tiles
 
-export function getBannerPages ( bannerProps: IWebpartBannerProps ) {
+export function getBannerPages ( bannerProps: IWebpartBannerProps ): IBannerPages {
 
     let result : IBannerPages = {
         whyContent:  whyContent( bannerProps ),

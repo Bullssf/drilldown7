@@ -24,7 +24,7 @@ import { JSON_Edit_Link  } from '../../fpsReferences';  //ValidLocalLanguages,
 
 
 
-export function buildViewGroupFields ( title: string, view: 1 | 2 | 3, showSyncViews: boolean, disabled: boolean = false ) {
+export function buildViewGroupFields ( title: string, view: 1 | 2 | 3, showSyncViews: boolean, disabled: boolean = false ) :IPropertyPaneGroup {
     var groupFields: IPropertyPaneField<any>[] = [];
     groupFields.push(
         PropertyPaneSlider(`viewWidth${view}`, {

@@ -23,7 +23,7 @@ import {
 // import { IDrilldownV2WebPartProps } from '../IDrilldownV2WebPartProps';
 import { JSON_Edit_Link } from '../../fpsReferences';  //JSON_Edit_Link, ValidLocalLanguages
 
-export function buildStatsGroup( ) {
+export function buildStatsGroup( ) :IPropertyPaneGroup {
 
 // let theListChoices : IPropertyPaneDropdownOption[] = [];
 
