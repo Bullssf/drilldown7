@@ -6,7 +6,7 @@ import { IHelpTable, } from '@mikezimm/fps-library-v2/lib/banner/components/Sing
 import { createAboutRow } from '@mikezimm/fps-library-v2/lib/banner/components/Panel/createAboutRow';
 import { IWebpartBannerProps } from '@mikezimm/fps-library-v2/lib/banner/mainReact/IWebpartBannerProps';
 
-export const panelVersionNumber = '2023-01-06 -  2.2.0.5'; //Added to show in panel
+export const panelVersionNumber = '2023-01-09 -  2.2.0.6'; //Added to show in panel
 
 export function aboutTable( bannerProps: IWebpartBannerProps ): { table: IHelpTable; } {
 
@@ -22,6 +22,9 @@ export function aboutTable( bannerProps: IWebpartBannerProps ): { table: IHelpTa
     // table.rows.push( createAboutRow('',''  ,'#205 - General', showRepoLinks === true ? repoLink : null ) );
     // table.rows.push( createAboutRow('',''  ,'#205 - Bugs', showRepoLinks === true ? repoLink : null ) );
     // table.rows.push( createAboutRow('',''  ,'#205 - Featres', showRepoLinks === true ? repoLink : null ) );
+
+    table.rows.push( createAboutRow('2023-01-09','2.2.0.6'  ,'#292, #306, #310, #311, #312, #313, ', showRepoLinks === true ? repoLink : null ) );
+
 
     table.rows.push( createAboutRow('2023-01-06','2.2.0.5'  ,'#289, #304', showRepoLinks === true ? repoLink : null ) );
 

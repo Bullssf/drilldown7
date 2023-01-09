@@ -877,7 +877,9 @@ export default class DrilldownV2WebPart extends FPSBaseClass<IDrilldownV2WebPart
 
       this.context.propertyPane.refresh();
 
-    } else if ( propertyPath === 'webUrl' || propertyPath === 'listTitle' ) {
+    }
+
+    if ( propertyPath === 'listDefinition' || propertyPath === 'webUrl' || propertyPath === 'listTitle' ) {
       let webUrl = propertyPath === 'webUrl' ? newValue : this.properties.webUrl;
       let parentWeb = webUrl && webUrl !== '' ? webUrl : this.context.pageContext.web.absoluteUrl;
 
@@ -890,7 +892,7 @@ export default class DrilldownV2WebPart extends FPSBaseClass<IDrilldownV2WebPart
         expandThese: [ 'RootFolder' ],
       }
 
-      const FetchList: IGetMinSourceListReturn = await getSourceList( fetchProps, true, true );
+      const FetchList: IGetMinSourceListReturn = await getSourceList( fetchProps, false, true );
 
       if ( FetchList.status === 'Success' ) {
 
