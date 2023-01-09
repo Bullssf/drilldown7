@@ -27,7 +27,7 @@ import { createAudienceGroup  } from '../../fpsReferences';
 
 import { IDrilldownV2WebPartProps } from '../../IDrilldownV2WebPartProps';
 
-export function buildViewTogglesGroup ( wpProps: IDrilldownV2WebPartProps ) {
+export function buildViewTogglesGroup ( wpProps: IDrilldownV2WebPartProps ) :IPropertyPaneGroup {
 
   var groupFields: IPropertyPaneField<any>[] = [];
 

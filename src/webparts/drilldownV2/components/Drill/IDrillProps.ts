@@ -143,8 +143,6 @@ import { IFPSCoreReactComponentProps } from '@mikezimm/fps-library-v2/lib/banner
 import { IFPSCorePinMeReactComponentState } from '@mikezimm/fps-library-v2/lib/banner/mainReact/ReactComponentState';
 import { ILoadPerformance } from '../../fpsReferences';
 
-
-
 /**
  * Extends IFPSCorePinMeReactComponentProps with all basics required for FPS Banner
  */

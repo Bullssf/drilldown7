@@ -117,7 +117,7 @@ export default class DrillDown extends React.Component<IDrilldownV2Props, IDrill
 
     private _performance: ILoadPerformance = null;
 
-    private _webPartHelpElement = [];
+    private _webPartHelpElement: any = null;
     private _contentPages : IBannerPages = getBannerPages( this.props.bannerProps );
     // private _fetchUserId: string = '';  //Caching fetch Id and Web as soon as possible to prevent race
 

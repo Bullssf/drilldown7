@@ -25,7 +25,7 @@ import {
 
 import { JSON_Edit_Link } from '../../fpsReferences';
 
-export function buildCustomizeGroup( ) {
+export function buildCustomizeGroup( ) :IPropertyPaneGroup {
 
 // let theListChoices : IPropertyPaneDropdownOption[] = [];
 

@@ -24,7 +24,7 @@ import { IDrilldownV2WebPartProps } from '../../IDrilldownV2WebPartProps';
 
 // import { ValidLocalLanguages } from '../../fpsReferences';  //JSON_Edit_Link, 
 
-export function buildRefinerInstructionsGroup( wpProps: IDrilldownV2WebPartProps ) {
+export function buildRefinerInstructionsGroup( wpProps: IDrilldownV2WebPartProps ) :IPropertyPaneGroup {
 // let theListChoices : IPropertyPaneDropdownOption[] = [];
 
     const whenToShowChoices: IPropertyPaneDropdownOption[] = <IPropertyPaneDropdownOption[]>[

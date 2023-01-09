@@ -25,7 +25,7 @@ import {
 // import * as strings from 'DrilldownV2WebPartStrings';
 import { IDrilldownV2WebPartProps } from '../../IDrilldownV2WebPartProps';
 
-export function buildTogglesGroup( wpProps: IDrilldownV2WebPartProps ) {
+export function buildTogglesGroup( wpProps: IDrilldownV2WebPartProps ) :IPropertyPaneGroup {
 
 // let theListChoices : IPropertyPaneDropdownOption[] = [];
   var groupFields: IPropertyPaneField<any>[] = [];

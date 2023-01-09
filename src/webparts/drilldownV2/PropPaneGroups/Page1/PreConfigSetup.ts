@@ -25,7 +25,7 @@ import {
 // import * as strings from 'FpsPageInfoWebPartStrings';
 import { IDrilldownV2WebPartProps } from '../../IDrilldownV2WebPartProps';
 
-export function buildPreConfigGroup( wpProps: IDrilldownV2WebPartProps ) {
+export function buildPreConfigGroup( wpProps: IDrilldownV2WebPartProps ) :IPropertyPaneGroup {
 
     let theListChoices : IPropertyPaneDropdownOption[] = [];
 

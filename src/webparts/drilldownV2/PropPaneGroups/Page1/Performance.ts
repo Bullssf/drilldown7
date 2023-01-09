@@ -26,7 +26,7 @@ import {
 import { IDrilldownV2WebPartProps } from '../../IDrilldownV2WebPartProps';
 // import { JSON_Edit_Link, ValidLocalLanguages } from '../fpsReferences';
 
-export function buildPerformanceGroup( wpProps: IDrilldownV2WebPartProps ) {
+export function buildPerformanceGroup( wpProps: IDrilldownV2WebPartProps ) :IPropertyPaneGroup {
 
 // let theListChoices : IPropertyPaneDropdownOption[] = [];
   var groupFields: IPropertyPaneField<any>[] = [];

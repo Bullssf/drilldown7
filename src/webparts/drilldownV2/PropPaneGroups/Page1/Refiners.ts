@@ -29,7 +29,7 @@ import { IDrilldownV2WebPartProps } from '../../IDrilldownV2WebPartProps';
 
 import { refinerRuleItems } from '@mikezimm/fps-library-v2/lib/components/interfaces/Refiners/functions';
 
-export function buildRefinerGroup( wpProps: IDrilldownV2WebPartProps ) {
+export function buildRefinerGroup( wpProps: IDrilldownV2WebPartProps ) :IPropertyPaneGroup {
 
 // let theListChoices : IPropertyPaneDropdownOption[] = [];
   var groupFields: IPropertyPaneField<any>[] = [];

@@ -77,6 +77,7 @@ export function whyContent( bannerProps: IWebpartBannerProps ): any{
 
 }
   
+
 function createWhyRow( webpart: any, comments: any, repoLink: IRepoLinks | undefined ) {
 
     let fullFocus = convertIssuesMarkdownStringToSpan( comments, repoLink );

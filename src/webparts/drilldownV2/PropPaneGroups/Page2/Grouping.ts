@@ -23,7 +23,7 @@ import {
 // import { IDrilldownV2WebPartProps } from '../IDrilldownV2WebPartProps';
 // import { ValidLocalLanguages } from '../../fpsReferences';  //JSON_Edit_Link, 
 
-export function buildListGroupingGroup( ) {
+export function buildListGroupingGroup( ) :IPropertyPaneGroup {
 
 // let theListChoices : IPropertyPaneDropdownOption[] = [];
 

@@ -122,7 +122,7 @@ export async function getAllItems( drillList: IDrillList, addTheseItemsToState: 
     const getItems = await getSourceItems( DrillSource as ISourceProps, false, true );
 
     if ( getItems.status !== 'Success' ) {
-      addTheseItemsToState(drillList, [], getItems.errorInfo.friendly ? getItems.errorInfo.friendly : getItems.errorInfo.returnMess, [] );
+      addTheseItemsToState(drillList, [], !getItems.errorInfo ? getItems.status : getItems.errorInfo.friendly ? getItems.errorInfo.friendly : getItems.errorInfo.returnMess, [] );
     } else { 
       getItems.items = processAllItems( getItems.items, errMessage, drillList, addTheseItemsToState, setProgress, updatePerformance, sourceUser );
      }
