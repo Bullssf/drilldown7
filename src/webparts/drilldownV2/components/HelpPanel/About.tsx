@@ -23,8 +23,9 @@ export function aboutTable( bannerProps: IWebpartBannerProps ): { table: IHelpTa
     // table.rows.push( createAboutRow('',''  ,'#205 - Bugs', showRepoLinks === true ? repoLink : null ) );
     // table.rows.push( createAboutRow('',''  ,'#205 - Featres', showRepoLinks === true ? repoLink : null ) );
 
-    table.rows.push( createAboutRow('2023-01-09','2.2.0.6'  ,'#292, #306, #310, #311, #312, #313, ', showRepoLinks === true ? repoLink : null ) );
+    table.rows.push( createAboutRow('2023-01-XX','2.2.0.7'  ,'#316, ', showRepoLinks === true ? repoLink : null ) );
 
+    table.rows.push( createAboutRow('2023-01-09','2.2.0.6'  ,'#292, #306, #310, #311, #312, #313, ', showRepoLinks === true ? repoLink : null ) );
 
     table.rows.push( createAboutRow('2023-01-06','2.2.0.5'  ,'#289, #304', showRepoLinks === true ? repoLink : null ) );
 

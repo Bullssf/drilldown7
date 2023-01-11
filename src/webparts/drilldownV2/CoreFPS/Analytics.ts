@@ -61,9 +61,9 @@ export function saveViewAnalytics( Title: string, Result: string, thisProps: IDr
     const zzzRichText2Obj: any = null;
     const zzzRichText3Obj: any = null;
 
-    console.log( 'zzzRichText1Obj:', zzzRichText1Obj);
-    console.log( 'zzzRichText2Obj:', zzzRichText2Obj);
-    console.log( 'zzzRichText3Obj:', zzzRichText3Obj);
+    // console.log( 'zzzRichText1Obj:', zzzRichText1Obj);
+    // console.log( 'zzzRichText2Obj:', zzzRichText2Obj);
+    // console.log( 'zzzRichText3Obj:', zzzRichText3Obj);
 
     const performance : string = getMinPerformanceString( performanceObj );
 
@@ -94,9 +94,9 @@ export function saveViewAnalytics( Title: string, Result: string, thisProps: IDr
     if ( zzzRichText2Obj ) { zzzRichText2 = JSON.stringify( zzzRichText2Obj ); }
     if ( zzzRichText3Obj ) { zzzRichText3 = JSON.stringify( zzzRichText3Obj ); }
 
-    console.log('zzzRichText1 length:', zzzRichText1 ? zzzRichText1.length : 0 );
-    console.log('zzzRichText2 length:', zzzRichText2 ? zzzRichText2.length : 0 );
-    console.log('zzzRichText3 length:', zzzRichText3 ? zzzRichText3.length : 0 );
+    // console.log('zzzRichText1 length:', zzzRichText1 ? zzzRichText1.length : 0 );
+    // console.log('zzzRichText2 length:', zzzRichText2 ? zzzRichText2.length : 0 );
+    // console.log('zzzRichText3 length:', zzzRichText3 ? zzzRichText3.length : 0 );
 
     // let FPSProps = null;
     // let FPSPropsObj = buildFPSAnalyticsProps( thisProps, this.wpInstanceID, context.pageContext.web.serverRelativeUrl );
