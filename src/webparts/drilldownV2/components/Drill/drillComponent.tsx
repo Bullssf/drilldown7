@@ -160,8 +160,8 @@ export default class DrillDown extends React.Component<IDrilldownV2Props, IDrill
        return farElements;
      }
 
-     private _makeDebugCmdStyles( withLeftMargin: boolean ) {
-        let propsCmdCSS: React.CSSProperties = JSON.parse(JSON.stringify( this.props.bannerProps.bannerCmdReactCSS ));
+     private _makeDebugCmdStyles( withLeftMargin: boolean ): React.CSSProperties {
+      const propsCmdCSS: React.CSSProperties = JSON.parse(JSON.stringify( this.props.bannerProps.bannerCmdReactCSS ));
         propsCmdCSS.backgroundColor = 'transparent';
         propsCmdCSS.marginRight = '30px';
         propsCmdCSS.fontSize = '24px'; //Make sure icon is always visible
